@@ -1,0 +1,72 @@
+apply plugin: 'com.android.application'
+apply plugin: 'jacoco'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "24.0.2"
+
+    defaultConfig {
+        applicationId "ch.epfl.sweng.project"
+        minSdkVersion 15
+        targetSdkVersion 24
+
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        debug {
+            testCoverageEnabled true
+        }
+
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt')
+        }
+    }
+
+	lintOptions {
+	    // Disable lint warnings about app indexing, and about non-latest tools versions
+		// TODO consider re-enabling app indexing before publishing your application.
+	    disable 'GoogleAppIndexingWarning', 'GradleDependency'
+	}
+
+    // Workaround for an Android Studio bug in the "Missing Return Statement" warning
+    return void
+}
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:24.2.1'
+
+    androidTestCompile 'junit:junit:4.12'
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+}
+
+// Do not change the below code unless you're sure you know what you're doing
+// Also make sure Jenkins config is synced with this one.
+
+jacoco {
+    toolVersion = "0.7.7.201606060606"
+}
+
+task jacocoReport(type: JacocoReport, dependsOn: "connectedAndroidTest") {
+    sourceDirectories = files(['**/src/main/java'])
+
+    classDirectories = fileTree(
+            dir: '**/classes',
+            excludes: [
+                '**/R.class',
+                '**/R$*.class',
+                '**/BuildConfig.*',
+                '**/Manifest*.*',
+                '**/*Test*.*',
+                '**/android/**/*.*'
+            ]
+    )
+
+    executionData = files('build/outputs/code-coverage/connected/coverage.ec')
+}
