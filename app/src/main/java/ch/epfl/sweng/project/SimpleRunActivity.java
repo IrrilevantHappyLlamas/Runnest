@@ -11,5 +11,6 @@ public class SimpleRunActivity extends AppCompatActivity {
         setContentView(R.layout.activity_simple_run);
 
         setTitle("SimpleRunActivity");
+
     }
 }
