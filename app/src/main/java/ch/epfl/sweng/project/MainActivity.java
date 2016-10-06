@@ -17,7 +17,7 @@ public final class MainActivity extends AppCompatActivity {
     }
 
     public void toSimpleRunTapped(View view) {
-        Intent intent = new Intent(this, SimpleRunActivity.class);
+        Intent intent = new Intent(this, RunningMapActivity.class);
         startActivity(intent);
     }
 }

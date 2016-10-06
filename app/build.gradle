@@ -27,25 +27,26 @@ android {
         }
     }
 
-	lintOptions {
-	    // Disable lint warnings about app indexing, and about non-latest tools versions
-		// TODO consider re-enabling app indexing before publishing your application.
-	    disable 'GoogleAppIndexingWarning', 'GradleDependency'
-	}
+    lintOptions {
+        // Disable lint warnings about app indexing, and about non-latest tools versions
+        // TODO consider re-enabling app indexing before publishing your application.
+        disable 'GoogleAppIndexingWarning', 'GradleDependency'
+    }
 
     // Workaround for an Android Studio bug in the "Missing Return Statement" warning
     return void
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:24.2.1'
+    
 
-    androidTestCompile 'junit:junit:4.12'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
+    compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.google.android.gms:play-services:9.6.1'
+    androidTestCompile 'junit:junit:4.12'
 }
 
 // Do not change the below code unless you're sure you know what you're doing
