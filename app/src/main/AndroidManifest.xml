@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ch.epfl.sweng.project">
-
-    <!-- TODO: Depending on your app's features, enable some Android features here
-               such as backups or search indexing -->
-
+    <!--
+     TODO: Depending on your app's features, enable some Android features here
+               such as backups or search indexing
+    -->
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
@@ -17,5 +17,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".SimpleRunActivity"></activity>
     </application>
+
 </manifest>
