@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.example.android.multidex.ch.epfl.sweng.project.R;
+
 /**
  * Your app's main activity.
  */

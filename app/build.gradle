@@ -14,6 +14,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -46,6 +47,7 @@ dependencies {
 
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.google.android.gms:play-services:9.6.1'
+    compile 'com.android.support:multidex:1.0.0'
     androidTestCompile 'junit:junit:4.12'
 }
 
