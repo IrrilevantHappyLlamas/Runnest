@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.FragmentActivity;
 
-import com.example.android.multidex.ch.epfl.sweng.project.R;
+import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
