@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Project</string>
     <string name="title_activity_running_map">Map</string>
+    <string name="tosimplerun">toSimpleRun</string>
 </resources>

@@ -11,7 +11,7 @@
     tools:context="ch.epfl.sweng.project.MainActivity">
 
     <Button
-        android:text="toSimpleRun"
+        android:text="@string/tosimplerun"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
