@@ -7,11 +7,11 @@ package ch.epfl.sweng.project;
  */
 public interface Effort {
 
-    public String getName();
-    public Track getTrack();
+    String getName();
+    Track getTrack();
 
-    public boolean start(CheckPoint startingPoint);
-    public boolean isRunning();
-    public boolean update(CheckPoint newPoint);
-    public boolean stop();
+    boolean start(CheckPoint startingPoint);
+    boolean isRunning();
+    boolean update(CheckPoint newPoint);
+    boolean stop();
 }
