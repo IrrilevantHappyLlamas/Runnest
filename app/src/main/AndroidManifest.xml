@@ -8,19 +8,21 @@
          location permissions for the 'MyLocation' functionality. 
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <!--
      TODO: Depending on your app's features, enable some Android features here
                such as backups or search indexing
     -->
     <application
+        android:name="ch.epfl.sweng.project.AppRunnest"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        android:name="ch.epfl.sweng.project.AppRunnest">
+        android:theme="@style/AppTheme">
         <activity android:name="ch.epfl.sweng.project.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -37,8 +39,9 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name="ch.epfl.sweng.project.RunningMapActivity"
-            android:label="@string/title_activity_running_map"></activity>
+            android:name="ch.epfl.sweng.project.Activities.SideBarActivity"
+            android:label="@string/title_activity_side_bar"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

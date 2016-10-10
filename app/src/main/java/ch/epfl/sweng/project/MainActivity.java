@@ -7,6 +7,8 @@ import android.view.View;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
+import ch.epfl.sweng.project.Activities.SideBarActivity;
+
 /**
  * Your app's main activity.
  */
@@ -19,7 +21,7 @@ public final class MainActivity extends AppCompatActivity {
     }
 
     public void toSimpleRunTapped(View view) {
-        Intent intent = new Intent(this, RunningMapActivity.class);
+        Intent intent = new Intent(this, SideBarActivity.class);
         startActivity(intent);
     }
 }
