@@ -1,8 +1,4 @@
-package ch.epfl.sweng.project;
-
-import android.icu.text.SimpleDateFormat;
-
-import java.util.Calendar;
+package ch.epfl.sweng.project.Model;
 
 /**
  * Implementation of the run effort, which contains the track and

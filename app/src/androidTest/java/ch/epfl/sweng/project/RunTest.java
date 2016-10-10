@@ -3,6 +3,9 @@ package ch.epfl.sweng.project;
 import org.junit.Assert;
 import org.junit.Test;
 
+import ch.epfl.sweng.project.Model.Run;
+import ch.epfl.sweng.project.Model.Track;
+
 /**
  * Test suite for Run class
  *

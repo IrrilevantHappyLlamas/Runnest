@@ -6,6 +6,9 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import ch.epfl.sweng.project.Model.CheckPoint;
+import ch.epfl.sweng.project.Model.Track;
+
 /**
  * Test suite for Track class
  *

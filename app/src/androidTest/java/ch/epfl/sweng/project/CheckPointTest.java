@@ -5,6 +5,8 @@ import android.location.Location;
 import org.junit.Assert;
 import org.junit.Test;
 
+import ch.epfl.sweng.project.Model.CheckPoint;
+
 /**
  * Test suite for CheckPoint class
  *
