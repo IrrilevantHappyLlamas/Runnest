@@ -1,5 +1,6 @@
 package ch.epfl.sweng.project.Activities;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -21,7 +22,7 @@ import ch.epfl.sweng.project.Fragments.RunningMapFragment;
 
 
 public class SideBarActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, RunningMapFragment.RunningMapFragmentInteractionListener {
 
     private FragmentManager fragmentManager;
     private Fragment runningFragment;
@@ -29,7 +30,7 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_side_bar);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -119,5 +120,11 @@ public class SideBarActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+
+    @Override
+    public void onRunningMapFragmentInteraction(Uri uri) {
+
     }
 }
