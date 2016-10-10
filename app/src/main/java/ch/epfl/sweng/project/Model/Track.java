@@ -1,4 +1,4 @@
-package ch.epfl.sweng.project;
+package ch.epfl.sweng.project.Model;
 
 import java.util.ArrayList;
 import java.util.List;

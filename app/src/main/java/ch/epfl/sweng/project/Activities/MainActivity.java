@@ -1,4 +1,4 @@
-package ch.epfl.sweng.project;
+package ch.epfl.sweng.project.Activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
