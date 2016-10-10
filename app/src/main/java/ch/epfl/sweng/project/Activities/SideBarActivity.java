@@ -18,11 +18,14 @@ import android.view.MenuItem;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
+import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RunningMapFragment;
 
 
 public class SideBarActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, RunningMapFragment.RunningMapFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        RunningMapFragment.RunningMapFragmentInteractionListener,
+        ProfileFragment.ProfileFragmentInteractionListener {
 
     private FragmentManager fragmentManager;
     private Fragment runningFragment;
@@ -103,8 +106,10 @@ public class SideBarActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
+        if (id == R.id.nav_profile) {
+            runningFragment = new ProfileFragment();
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, runningFragment).commit();
+
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
@@ -125,6 +130,11 @@ public class SideBarActivity extends AppCompatActivity
 
     @Override
     public void onRunningMapFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onProfileFragmentInteraction(Uri uri) {
 
     }
 }
