@@ -1,5 +1,8 @@
 package ch.epfl.sweng.project.Activities;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.content.IntentSender;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,15 +20,27 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 
+import ch.epfl.sweng.project.Fragments.LocationDemo;
 import ch.epfl.sweng.project.Fragments.RunningMapFragment;
 
 
 public class SideBarActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, RunningMapFragment.RunningMapFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, LocationDemo.OnFragmentInteractionListener {
 
     private FragmentManager fragmentManager;
-    private Fragment runningFragment;
+    private Fragment mFragment;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +71,12 @@ public class SideBarActivity extends AppCompatActivity
 
         //Initializing the fragment
         fragmentManager = getSupportFragmentManager();
-        runningFragment = fragmentManager.findFragmentById(R.id.fragment_container);
+        mFragment = fragmentManager.findFragmentById(R.id.fragment_container);
 
 
-        if(runningFragment == null){
-            runningFragment = new RunningMapFragment();
-            fragmentManager.beginTransaction().add(R.id.fragment_container, runningFragment).commit();
+        if(mFragment == null){
+            mFragment = new LocationDemo();
+            fragmentManager.beginTransaction().add(R.id.fragment_container, mFragment).commit();
         }
     }
 
@@ -122,9 +137,8 @@ public class SideBarActivity extends AppCompatActivity
         return true;
     }
 
-
     @Override
-    public void onRunningMapFragmentInteraction(Uri uri) {
+    public void onFragmentInteraction(Uri uri) {
 
     }
 }
