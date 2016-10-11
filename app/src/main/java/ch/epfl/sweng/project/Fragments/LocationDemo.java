@@ -28,6 +28,9 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
+import ch.epfl.sweng.project.Model.CheckPoint;
+import ch.epfl.sweng.project.Model.Run;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -70,8 +73,10 @@ public class LocationDemo extends Fragment implements
     private LocationRequest mLocationRequest;
     protected LocationSettingsRequest mLocationSettingsRequest;
 
-    private Location mCurrentLocation;
     private boolean mRequestingLocationUpdates;
+
+    private CheckPoint mLastCheckPoint;
+    private Run mRun;
 
     /**
      * Use this factory method to create a new instance of
@@ -107,14 +112,21 @@ public class LocationDemo extends Fragment implements
         View view = inflater.inflate(R.layout.fragment_location_demo, container, false);
 
 
-        mLatitudeText = (TextView) view.findViewById((R.id.latitude_text));
-        mLongitudeText = (TextView) view.findViewById((R.id.longitude_text));
+        mLatitudeText = (TextView) view.findViewById(R.id.latitude_text);
+        mLongitudeText = (TextView) view.findViewById(R.id.longitude_text);
+
+        // Initialize mRun
+        mRun = new Run();
 
         // Buttons setup
         mStartUpdatesButton = (Button) view.findViewById(R.id.start_updates_button);
+        mStartUpdatesButton.setVisibility(View.VISIBLE);
         mStartUpdatesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                mStartUpdatesButton.setVisibility(View.INVISIBLE);
+                mStopUpdatesButton.setVisibility(View.VISIBLE);
 
                 if (!mRequestingLocationUpdates) {
                     mRequestingLocationUpdates = true;
@@ -125,6 +137,7 @@ public class LocationDemo extends Fragment implements
         });
 
         mStopUpdatesButton = (Button) view.findViewById(R.id.stop_updates_button);
+        mStopUpdatesButton.setVisibility(View.INVISIBLE);
         mStopUpdatesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -242,9 +255,9 @@ public class LocationDemo extends Fragment implements
 
     private void updateUI() {
         setButtonsEnabledState();
-        if(mCurrentLocation != null) {
-            mLatitudeText.setText(String.valueOf(mCurrentLocation.getLatitude()));
-            mLongitudeText.setText(String.valueOf(mCurrentLocation.getLongitude()));
+        if(mLastCheckPoint != null) {
+            mLatitudeText.setText(String.valueOf(mLastCheckPoint.getLatitude()));
+            mLongitudeText.setText(String.valueOf(mLastCheckPoint.getLongitude()));
         }
     }
 
@@ -258,6 +271,7 @@ public class LocationDemo extends Fragment implements
             public void onResult(Status status) {
                 mRequestingLocationUpdates = false;
                 setButtonsEnabledState();
+                mRun.stop();
             }
         });
     }
@@ -305,8 +319,12 @@ public class LocationDemo extends Fragment implements
     @Override
     public void onConnected(Bundle connectionHint) {
 
-        if (mCurrentLocation == null) {
-            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        // We don't store data yet, we wait that user start the run
+        if (mLastCheckPoint == null) {
+            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if(location != null) {
+                mLastCheckPoint = new CheckPoint(location);
+            }
             updateUI();
         }
 
@@ -327,7 +345,12 @@ public class LocationDemo extends Fragment implements
 
     @Override
     public void onLocationChanged(Location location) {
-        mCurrentLocation = location;
+        mLastCheckPoint = new CheckPoint(location);
+        if(mRun.isRunning()) {
+            mRun.update(mLastCheckPoint);
+        } else {
+            mRun.start(mLastCheckPoint);
+        }
         updateUI();
     }
 

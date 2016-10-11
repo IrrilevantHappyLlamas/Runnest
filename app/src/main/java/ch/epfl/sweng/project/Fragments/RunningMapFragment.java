@@ -1,29 +1,13 @@
 package ch.epfl.sweng.project.Fragments;
 
 import android.content.Context;
-import android.content.IntentSender;
-import android.location.Location;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.service.carrier.CarrierMessagingService;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStates;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -33,9 +17,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
-import ch.epfl.sweng.project.Activities.SideBarActivity;
-import ch.epfl.sweng.project.Model.CheckPoint;
-
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -44,9 +25,7 @@ import ch.epfl.sweng.project.Model.CheckPoint;
  * Use the {@link RunningMapFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+public class RunningMapFragment extends Fragment implements OnMapReadyCallback {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -56,21 +35,8 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
     private String mParam1;
     private String mParam2;
 
-
-    // My constants
-    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
-    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 5000;
-
-
-    // My attributes
-    private MapView mMapView;
-    private GoogleMap mMap;
-    private GoogleApiClient mGoogleApiClient;
-    private Location mLastLocation;
-    private LocationRequest mLocationRequest;
-
-    private CheckPoint mLastCheckPoint;
-
+    MapView mMapView;
+    GoogleMap mMap;
 
     private RunningMapFragmentInteractionListener mListener;
 
@@ -105,80 +71,15 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
-
-    // In da case modificare
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_running_map, container, false);
+        View view =  inflater.inflate(R.layout.fragment_running_map, container, false);
 
-        // Initilaze MapView
         mMapView = (MapView) view.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         mMapView.getMapAsync(this); //this is important
-
-
-        // Add Google location services
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(getContext())
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
-        }                                                           //Devo startare? connect() e disconnect()
-
-
-
-        /*
-
-        if(mLocationRequest == null) {
-            mLocationRequest = new LocationRequest();
-            mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
-            mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
-            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        }
-
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                .addLocationRequest(mLocationRequest);
-
-        PendingResult<LocationSettingsResult> result =
-                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
-
-        result.setResultCallback(new CarrierMessagingService.ResultCallback<LocationSettingsResult>() {
-            @Override
-            public void onReceiveResult(LocationSettingsResult result) {
-                final Status status = result.getStatus();
-                final LocationSettingsStates= result.getLocationSettingsStates();
-                switch (status.getStatusCode()) {
-                    case LocationSettingsStatusCodes.SUCCESS:
-                        // All location settings are satisfied. The client can
-                        // initialize location requests here.
-                        break;
-                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                        // Location settings are not satisfied, but this can be fixed
-                        // by showing the user a dialog.
-                        try {
-                            // Show the dialog by calling startResolutionForResult(),
-                            // and check the result in onActivityResult().
-                            status.startResolutionForResult(SideBarActivity.this, REQUEST_CHECK_SETTINGS);
-                        } catch (IntentSender.SendIntentException e) {
-                            // Ignore the error.
-                        }
-                        break;
-                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                        // Location settings are not satisfied. However, we have no way
-                        // to fix the settings so we won't show the dialog.
-                        break;
-                }
-            }
-        });
-
-        */
-
-
-
 
         return view;
     }
@@ -212,46 +113,9 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
         mMap = googleMap;
 
         // Add a marker at the EPFL and move the camera
-    }
-
-
-    //Questi due metodi devono stare qui?
-    @Override
-    public void onStart() {
-        super.onStart();
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
-    }
-
-    @Override
-    public void onConnected(Bundle connectionHint) {
-
-        if (mLastLocation != null) {
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            mLastCheckPoint = new CheckPoint(mLastLocation);
-            LatLng mCurrentCoord = new LatLng(mLastCheckPoint.getLatitude(), mLastCheckPoint.getLongitude());
-            mMap.addMarker(new MarkerOptions().position(mCurrentCoord).title("You are here!"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(mCurrentCoord));
-        }
-    }
-
-    @Override
-    public void onConnectionSuspended(int cause) {
-
-        // Connection to Google Play services was lost. We attempt to re-establish it.
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        LatLng coordEPFL = new LatLng(46.51839579373851, 6.568311452865601);
+        mMap.addMarker(new MarkerOptions().position(coordEPFL).title("You are here!"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(coordEPFL));
     }
 
     /**

@@ -11,12 +11,11 @@
     tools:context="ch.epfl.sweng.project.Activities.MainActivity">
 
     <Button
-        android:text="@string/tosimplerun"
+        android:text="@string/location_demo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/button"
-        android:onClick="toSimpleRunTapped"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="124dp" />
+        android:onClick="toLocationDemoTapped"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>
