@@ -1,5 +1,6 @@
 package ch.epfl.sweng.project.Activities;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -20,6 +21,7 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RunningMapFragment;
+import ch.epfl.sweng.project.Model.Profile;
 
 
 public class SideBarActivity extends AppCompatActivity
@@ -30,7 +32,7 @@ public class SideBarActivity extends AppCompatActivity
     private FragmentManager fragmentManager;
     private Fragment runningFragment;
 
-    private String
+    public static Profile profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,12 @@ public class SideBarActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+
+
+        //Profile
+        Intent i = getIntent();
+        profile = new Profile(i.getSerializableExtra("id").toString(), i.getSerializableExtra("id").toString(), i.getSerializableExtra("id").toString(),i.getSerializableExtra("id").toString());
+
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);

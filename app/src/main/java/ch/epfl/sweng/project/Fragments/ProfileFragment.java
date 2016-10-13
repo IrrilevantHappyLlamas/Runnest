@@ -6,8 +6,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
+
+import ch.epfl.sweng.project.Activities.SideBarActivity;
 
 /**
  * Profile tab fragment.
@@ -32,6 +35,10 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_profile, container, false);
+
+
+
+        ((TextView)view.findViewById(R.id.idTxt)).setText("id "+ SideBarActivity.profile.getId());
 
         return view;
     }

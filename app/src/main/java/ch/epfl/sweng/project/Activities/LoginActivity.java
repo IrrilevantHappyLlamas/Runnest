@@ -17,6 +17,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 
 import ch.epfl.sweng.project.AppRunnest;
 
@@ -52,6 +54,7 @@ public final class LoginActivity extends AppCompatActivity implements GoogleApiC
 
         // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);
+        findViewById(R.id.sign_out_button).setOnClickListener(this);
         // Customize sign-in button
         signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
@@ -80,13 +83,32 @@ public final class LoginActivity extends AppCompatActivity implements GoogleApiC
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-            (AppRunnest) this.getApplication().setCurrentUser(acct);
-            Toast.makeText(getBaseContext(), "Login succesful", Toast.LENGTH_LONG).show();
+            //(AppRunnest) this.getApplication().setCurrentUser(acct);
+            Toast.makeText(getBaseContext(), "Login succesful" + acct.getId(), Toast.LENGTH_LONG).show();
+
+
             Intent sideBarIntent = new Intent(this, SideBarActivity.class);
+            fetchAccountInfo(acct, sideBarIntent);
             startActivity(sideBarIntent);
         } else {
             Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void fetchAccountInfo(GoogleSignInAccount acct, Intent intent) {
+        intent.putExtra("id", acct.getId());
+        intent.putExtra("email", acct.getEmail());
+        intent.putExtra("familyName", acct.getFamilyName());
+        intent.putExtra("name", acct.getGivenName());
+    }
+
+    private void signOut() {
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+            @Override
+            public void onResult(Status status) {
+            }
+        });
     }
 
     @Override
@@ -107,6 +129,10 @@ public final class LoginActivity extends AppCompatActivity implements GoogleApiC
                 Log.d(TAG, "clickSignInBtn:");
                 signIn();
                 break;
+            case R.id.sign_out_button:
+                signOut();
         }
     }
 }
+
+

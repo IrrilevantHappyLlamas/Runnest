@@ -1,76 +1,64 @@
 <!-- in a real application you should use styles and dimens... -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/header_imageview"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:scaleType="centerCrop"
-        android:adjustViewBounds="true"
-        />
-
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="none"
-        android:layout_below="@+id/informations_container"
-        android:background="#FFF0F0F0">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <!-- Here are the tabs, Just TextViews with a selector and a clickListener... -->
-            <!-- There is also two views at each edge with a gradient drawable making the fade effect. But I find this pretty ugly. -->
-
-        </LinearLayout>
-    </HorizontalScrollView>
-
     <!-- cheat code: negative margin -->
+
     <ImageView
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:src="@drawable/profile_head"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@+id/informations_container"
-        android:layout_marginBottom="-16dp" />
+        android:layout_width="134dp"
+        android:layout_height="119dp"
+        app:srcCompat="@drawable/profile_head"
+        android:id="@+id/imageView3"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/informations_container"
-        android:layout_width="match_parent"
+    <TextView
+        android:text="ID: the_runnest_llamas"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:paddingTop="32dp"
-        android:paddingBottom="32dp"
-        android:layout_below="@+id/header_imageview"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:id="@+id/idTxt"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
+    <TextView
+        android:text="Family Name: Runnest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/emailTxt"
+        app:layout_constraintLeft_toLeftOf="@+id/idTxt"
+        android:layout_marginTop="50dp"
+        app:layout_constraintTop_toBottomOf="@+id/idTxt" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="profile"
-            android:textStyle="bold"
-            android:textSize="17dp" />
+    <TextView
+        android:text="Name: Ihl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/familyNameTxt"
+        app:layout_constraintLeft_toLeftOf="@+id/emailTxt"
+        android:layout_marginTop="50dp"
+        app:layout_constraintTop_toBottomOf="@+id/emailTxt" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:gravity="center"
-            android:textColor="#FF707070"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textColor="#FF909090" />
-
-    </LinearLayout>
-
-</RelativeLayout>
+    <TextView
+        android:text="Email: runnest.ihl@gmail.com"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/nameTxt"
+        android:layout_marginTop="50dp"
+        app:layout_constraintTop_toBottomOf="@+id/familyNameTxt"
+        app:layout_constraintLeft_toLeftOf="@+id/familyNameTxt" />
+</android.support.constraint.ConstraintLayout>
