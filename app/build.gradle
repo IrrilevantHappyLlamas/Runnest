@@ -54,7 +54,8 @@ dependencies {
 
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.google.android.gms:play-services:9.6.1'
-    compile 'com.android.support:multidex:1.0.0'
+    compile 'com.google.android.gms:play-services-auth:9.6.1'
+    compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:design:24.2.1'
     androidTestCompile 'junit:junit:4.12'
 }
@@ -83,3 +84,5 @@ task jacocoReport(type: JacocoReport, dependsOn: "connectedAndroidTest") {
 
     executionData = files('build/outputs/code-coverage/connected/coverage.ec')
 }
+
+apply plugin: 'com.google.gms.google-services'

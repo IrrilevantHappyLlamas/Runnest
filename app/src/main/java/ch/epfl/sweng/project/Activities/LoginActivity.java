@@ -3,7 +3,9 @@ package ch.epfl.sweng.project.Activities;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,114 +13,112 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 
 /**
  * Your app's main activity.
  */
-public final class LoginActivity extends AppCompatActivity {
+public final class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
-    private EditText usernameText;
-    private EditText passwordText;
-    private Button loginButton;
-    private TextView signupLink;
+    private static final String TAG = "LoginActivity";
+    private static final int RC_SIGN_IN = 9001;
 
-    private static final int REQUEST_SIGNUP = 0;
+    SignInButton signInButton;
+
+    private GoogleApiClient mGoogleApiClient;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        usernameText = (EditText) findViewById(R.id.input_username);
-        passwordText = (EditText) findViewById(R.id.input_password);
-        loginButton = (Button) findViewById(R.id.btn_login);
-        signupLink = (TextView) findViewById(R.id.link_signup);
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
 
-        // For now, the login button directly takes us to the sidebar activity
-        loginButton.setOnClickListener(new View.OnClickListener() {
+        // Build a GoogleApiClient with access to the Google Sign-In API and the
+        // options specified by gso.
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
 
-            @Override
-            public void onClick(View v) {
-                login();
-            }
-        });
+        // Customize sign-in button. The sign-in button can be displayed in
+        // multiple sizes and color schemes. It can also be contextually
+        // rendered based on the requested scopes. For example. a red button may
+        // be displayed when Google+ scopes are requested, but a white button
+        // may be displayed when only basic profile is requested. Try adding the
+        // Scopes.PLUS_LOGIN scope to the GoogleSignInOptions to see the
+        // difference.
+        signInButton = (SignInButton) findViewById(R.id.sign_in_button);
+        signInButton.setSize(SignInButton.SIZE_STANDARD);
+        signInButton.setScopes(gso.getScopeArray());
 
-        // The signup link takes us to the signup activity, which returns the signup request
-        signupLink.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                //Intent signupIntent = new Intent(getApplicationContext(), SignupActivity);
-                //startActivityForResult(signupIntent, REQUEST_SIGNUP);
-            }
-        });
+        signInButton.setOnClickListener(this);
     }
 
-    private void login() {
+    private void signIn() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
 
-        // Validate text entries
-        if (!validate()) {
-            onLoginFailed();
+    private void signOut() {
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        // [START_EXCLUDE]
+                        Toast.makeText(getBaseContext(), "Signout", Toast.LENGTH_LONG).show();
+                        // [END_EXCLUDE]
+                    }
+                });
+    }
+
+    private void revokeAccess() {
+        Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        // [START_EXCLUDE]
+                        Toast.makeText(getBaseContext(), "revokeaccess", Toast.LENGTH_LONG).show();
+                        // [END_EXCLUDE]
+                    }
+                });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        Log.d(TAG, "RequestCode:" + requestCode);
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
         }
+    }
 
-        // Disable login button while authenticating
-        loginButton.setEnabled(false);
-
-        // Show progression dialog
-        ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Authenticating");
-        progressDialog.show();
-
-        String username = usernameText.getText().toString();
-        String password = passwordText.getText().toString();
-
-        boolean loginSuccess = false;
-        if (username.equals("ihl") && password.equals("lama")) {
-            loginSuccess = true;
-        }
-
-        if (loginSuccess) {
-            onLoginSuccess();
+    private void handleSignInResult(GoogleSignInResult result) {
+        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
+        if (result.isSuccess()) {
+            // Signed in successfully, show authenticated UI.
+            GoogleSignInAccount acct = result.getSignInAccount();
+            Toast.makeText(getBaseContext(), "Login succesful", Toast.LENGTH_LONG).show();
+            Intent sideBarIntent = new Intent(this, SideBarActivity.class);
+            startActivity(sideBarIntent);
         } else {
-            onLoginFailed();
+            Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
         }
-    }
-
-    private boolean validate() {
-        boolean valid = true;
-
-        String username = usernameText.getText().toString();
-        String password = passwordText.getText().toString();
-
-        if (username.isEmpty()) {
-            usernameText.setError("Enter a valid username");
-            valid = false;
-        } else {
-            usernameText.setError(null);
-        }
-
-        if (password.isEmpty()) {
-            passwordText.setError("Enter a password");
-            valid = false;
-        } else {
-            passwordText.setError(null);
-        }
-
-        return valid;
-    }
-
-    // If the authentication logic is succesful
-    public void onLoginSuccess() {
-        loginButton.setEnabled(true);
-        Intent sideBarIntent = new Intent(this, SideBarActivity.class);
-        startActivity(sideBarIntent);
-    }
-
-    // If the authentication logic fails
-    public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Login Failed", Toast.LENGTH_LONG).show();
-        loginButton.setEnabled(true);
     }
 
 
@@ -126,5 +126,19 @@ public final class LoginActivity extends AppCompatActivity {
     public void onBackPressed() {
         // disable going back
         moveTaskToBack(true);
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.d(TAG, "onConnectionFailed:" + connectionResult);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.sign_in_button:
+                signIn();
+                break;
+        }
     }
 }
