@@ -34,18 +34,17 @@
             android:id="@+id/longitude_text" />
 
         <TextView
-            android:text="Latitude"
+            android:text="@string/latitude"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/latitude_text"
             android:layout_alignLeft="@+id/latitude_text"
             android:layout_alignStart="@+id/latitude_text"
             android:layout_marginBottom="32dp"
-            android:id="@+id/latitude_label"
             android:textStyle="normal|bold" />
 
         <TextView
-            android:text="Longitude"
+            android:text="@string/longitude"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/longitude_text"
@@ -59,7 +58,7 @@
             android:id="@+id/stop_updates_button"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:text="Stop"
+            android:text="@string/stop"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
@@ -68,7 +67,7 @@
             android:id="@+id/start_updates_button"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:text="Start"
+            android:text="@string/start"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />

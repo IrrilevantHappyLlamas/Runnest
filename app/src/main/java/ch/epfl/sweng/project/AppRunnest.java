@@ -9,8 +9,4 @@ import android.support.multidex.MultiDexApplication;
  */
 public class AppRunnest extends MultiDexApplication {
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
 }
