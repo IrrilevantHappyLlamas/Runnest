@@ -13,16 +13,16 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import ch.epfl.sweng.project.Activities.SideBarActivity;
 
 /**
- * Profile tab fragment.
- *
- * @author Tobia Albergoni
+ * Fragment which serves as profile tab, where profile informations are displayed
  */
 public class ProfileFragment extends android.support.v4.app.Fragment {
 
     private ProfileFragmentInteractionListener profileListener;
 
+    /**
+     * Empty constructor, required
+     */
     public ProfileFragment() {
-        //required empty constructor
     }
 
     @Override
@@ -36,8 +36,7 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_profile, container, false);
 
-
-
+        // Display logged profile id
         ((TextView)view.findViewById(R.id.idTxt)).setText("id "+ SideBarActivity.profile.getId());
 
         return view;
@@ -60,6 +59,9 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
         profileListener = null;
     }
 
+    /**
+     * Interface for SideBarActivity
+     */
     public interface ProfileFragmentInteractionListener {
         void onProfileFragmentInteraction(Uri uri);
     }
