@@ -12,7 +12,7 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:text="TextView"
+            android:text="@string/none"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -23,7 +23,7 @@
             android:id="@+id/latitude_text" />
 
         <TextView
-            android:text="TextView"
+            android:text="@string/none"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -72,6 +72,28 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
+
+        <TextView
+            android:text="@string/checkpoint_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="35dp"
+            android:id="@+id/nb_checkPoint_label"
+            android:layout_above="@+id/stop_updates_button"
+            android:layout_alignRight="@+id/longitude_label"
+            android:layout_alignEnd="@+id/longitude_label" />
+
+        <TextView
+            android:text="@string/none"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/nb_checkPoint_value"
+            android:layout_alignBaseline="@+id/nb_checkPoint_label"
+            android:layout_alignBottom="@+id/nb_checkPoint_label"
+            android:layout_toRightOf="@+id/nb_checkPoint_label"
+            android:layout_toEndOf="@+id/nb_checkPoint_label"
+            android:layout_marginLeft="33dp"
+            android:layout_marginStart="33dp" />
 
 
     </RelativeLayout>

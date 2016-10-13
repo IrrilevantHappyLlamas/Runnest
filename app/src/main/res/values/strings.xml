@@ -3,6 +3,8 @@
     <string name="title_activity_running_map">Map</string>
     <string name="location_demo">Location Demo</string>
     <string name="title_activity_side_bar">SideBarActivity</string>
+    <string name="checkpoint_number">CheckPoints saved:</string>
+    <string name="none">None</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
