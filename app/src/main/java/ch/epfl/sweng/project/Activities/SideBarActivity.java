@@ -30,6 +30,8 @@ public class SideBarActivity extends AppCompatActivity
     private FragmentManager fragmentManager;
     private Fragment runningFragment;
 
+    private String
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
