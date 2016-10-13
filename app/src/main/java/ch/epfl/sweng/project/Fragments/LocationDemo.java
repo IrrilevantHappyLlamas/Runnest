@@ -93,11 +93,11 @@ public class LocationDemo extends Fragment implements
         // Check location permission
         checkPermission();
 
-        // Setup Grapichs
+        // Setup Graphics
         textViewSetup(view);
         buttonsSetup(view);
 
-        // Setup locatiion tracking
+        // Setup location tracking
         mRequestingLocationUpdates = false;
         createGoogleApiClient();
         createLocationRequest();
