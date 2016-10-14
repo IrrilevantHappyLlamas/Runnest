@@ -34,12 +34,12 @@ public class SideBarActivity extends AppCompatActivity
 
     // Constants
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
-    private boolean locationPermissionGranted;
+    private boolean locationPermissionGranted = false;
 
-    private Fragment runningFragment;
-    private FragmentManager fragmentManager;
+    private Fragment runningFragment = null;
+    private FragmentManager fragmentManager = null;
 
-    public static Profile profile;
+    public static Profile profile = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -4,14 +4,10 @@
     <string name="checkpoint_number">CheckPoints saved:</string>
     <string name="none">None</string>
     <string name="desc">Default Description</string>
-
     <string name="profile_tab">Profile</string>
-
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
     <string name="action_settings">Settings</string>
-
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
     <string name="stop">Stop</string>

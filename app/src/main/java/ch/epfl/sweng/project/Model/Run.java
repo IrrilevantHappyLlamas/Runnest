@@ -6,10 +6,11 @@ package ch.epfl.sweng.project.Model;
  *
  * @author Tobia Albergoni
  */
+@SuppressWarnings("ClassNamingConvention")
 public class Run implements Effort {
 
     private String name;
-    private Track track;
+    private Track track = null;
     private boolean isRunning;
 
     public Run(String name) {

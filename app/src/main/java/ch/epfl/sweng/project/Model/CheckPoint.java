@@ -3,7 +3,7 @@ package ch.epfl.sweng.project.Model;
 import android.location.Location;
 
 /**
- * An intermediate location mesured during a run.
+ * An intermediate location measured during a run.
  *
  * @author Tobia Albergoni
  */

@@ -38,17 +38,17 @@ import ch.epfl.sweng.project.Model.Run;
 
 
 
-@SuppressWarnings("CastToConcreteClass")
+@SuppressWarnings({"CastToConcreteClass", "MethodParameterNamingConvention"})
 public class LocationDemo extends Fragment implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
         ResultCallback<LocationSettingsResult> {
 
-    // Default attibutes
+    // Default attributes
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private OnFragmentInteractionListener mListener;
+    private OnFragmentInteractionListener mListener = null;
 
     // Constants
     private static final int REQUEST_CHECK_SETTINGS = 0x1;
@@ -56,23 +56,23 @@ public class LocationDemo extends Fragment implements
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 5000;
 
     // Layout
-    private Button mStartUpdatesButton;
-    private Button mStopUpdatesButton;
-    private TextView mLatitudeText;
-    private TextView mLongitudeText;
-    private TextView mNbCheckPointLabel;
-    private TextView mNbCheckPointValue;
+    private Button mStartUpdatesButton = null;
+    private Button mStopUpdatesButton = null;
+    private TextView mLatitudeText = null;
+    private TextView mLongitudeText = null;
+    private TextView mNbCheckPointLabel = null;
+    private TextView mNbCheckPointValue = null;
 
     // Location update
-    private GoogleApiClient mGoogleApiClient;
-    private LocationRequest mLocationRequest;
-    private LocationSettingsRequest mLocationSettingsRequest;
-    private boolean mRequestingLocationUpdates;
+    private GoogleApiClient mGoogleApiClient = null;
+    private LocationRequest mLocationRequest = null;
+    private LocationSettingsRequest mLocationSettingsRequest = null;
+    private boolean mRequestingLocationUpdates = false;
 
     // Data storage
-    private  int mCheckPointSaved;
-    private CheckPoint mLastCheckPoint;
-    private Run mRun;
+    private  int mCheckPointSaved = 0;
+    private CheckPoint mLastCheckPoint = null;
+    private Run mRun = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

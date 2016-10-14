@@ -13,11 +13,11 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import ch.epfl.sweng.project.Activities.SideBarActivity;
 
 /**
- * Fragment which serves as profile tab, where profile informations are displayed
+ * Fragment which serves as profile tab, where profile information are displayed
  */
 public class ProfileFragment extends android.support.v4.app.Fragment {
 
-    private ProfileFragmentInteractionListener profileListener;
+    private ProfileFragmentInteractionListener profileListener = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

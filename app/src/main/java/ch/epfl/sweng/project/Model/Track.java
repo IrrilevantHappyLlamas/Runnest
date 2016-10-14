@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An ordinated sequence of checkpoints that modelizes a track
+ * An ordinated sequence of checkpoints that models a track
  *
  * @author Tobia Albergoni
  */

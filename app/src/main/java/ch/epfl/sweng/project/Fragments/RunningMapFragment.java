@@ -35,10 +35,10 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private MapView mMapView;
-    private GoogleMap mMap;
+    private MapView mMapView = null;
+    private GoogleMap mMap = null;
 
-    private RunningMapFragmentInteractionListener mListener;
+    private RunningMapFragmentInteractionListener mListener = null;
 
     //initialize points that will be drawn in the map.
     private static final LatLng EPFL = new LatLng(46.51839579373851, 6.568311452865601);

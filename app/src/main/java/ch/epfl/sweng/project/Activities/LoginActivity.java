@@ -29,7 +29,7 @@ public final class LoginActivity extends AppCompatActivity
     private static final String TAG = "LoginActivity";
     private static final int RC_SIGN_IN = 9001;
 
-    private GoogleApiClient mGoogleApiClient;
+    private GoogleApiClient mGoogleApiClient = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,7 +101,7 @@ public final class LoginActivity extends AppCompatActivity
 
             // Signed in successfully, show success toast
             GoogleSignInAccount acct = result.getSignInAccount();
-            Toast.makeText(getBaseContext(), "Login succesful " + acct.getId(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), "Login successful", Toast.LENGTH_LONG).show();
 
             // Start SideBarActivity
             Intent sideBarIntent = new Intent(this, SideBarActivity.class);
@@ -115,10 +115,10 @@ public final class LoginActivity extends AppCompatActivity
 
     // TODO: implement passing account informations to the rest of the app
     /**
-     * Fetches informations from a <code>GoogleSignInAccount</code> and puts them as extras
+     * Fetches information from a <code>GoogleSignInAccount</code> and puts them as extras
      * into an <code>Intent</code>.
      *
-     * @param acct      the <code>GoogleSignInAccount</code> from which to fetch informations
+     * @param acct      the <code>GoogleSignInAccount</code> from which to fetch information
      * @param intent    <code>Intent</code> in which to put info as extras
      */
     private void fetchAccountInfo(GoogleSignInAccount acct, Intent intent) {
@@ -135,7 +135,7 @@ public final class LoginActivity extends AppCompatActivity
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
             @Override
-            public void onResult(Status status) {
+            public void onResult(@NonNull Status status) {
             }
         });
     }
