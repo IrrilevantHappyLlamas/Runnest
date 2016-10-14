@@ -3,9 +3,17 @@
     <string name="title_activity_running_map">Map</string>
     <string name="tosimplerun">toSimpleRun</string>
     <string name="title_activity_side_bar">SideBarActivity</string>
+    <string name="checkpoint_number">CheckPoints saved:</string>
+    <string name="none">None</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="stop">Stop</string>
+    <string name="start">Start</string>
 </resources>

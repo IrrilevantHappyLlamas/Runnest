@@ -51,12 +51,7 @@ public class Run implements Effort {
 
     @Override
     public boolean update(CheckPoint newPoint) {
-        if (isRunning) {
-            return track.add(newPoint);
-        }
-        else {
-            return false;
-        }
+        return isRunning && track.add(newPoint);
     }
 
     @Override

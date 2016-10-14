@@ -1,0 +1,100 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="ch.epfl.sweng.project.Fragments.LocationDemo">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:text="@string/none"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:textIsSelectable="true"
+            android:layout_marginTop="150dp"
+            android:id="@+id/latitude_text" />
+
+        <TextView
+            android:text="@string/none"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:textIsSelectable="true"
+            android:layout_marginTop="300dp"
+            android:id="@+id/longitude_text" />
+
+        <TextView
+            android:text="@string/latitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/latitude_text"
+            android:layout_alignLeft="@+id/latitude_text"
+            android:layout_alignStart="@+id/latitude_text"
+            android:layout_marginBottom="32dp"
+            android:textStyle="normal|bold" />
+
+        <TextView
+            android:text="@string/longitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/longitude_text"
+            android:layout_alignLeft="@+id/longitude_text"
+            android:layout_alignStart="@+id/longitude_text"
+            android:layout_marginBottom="30dp"
+            android:id="@+id/longitude_label"
+            android:textStyle="normal|bold" />
+
+        <Button
+            android:id="@+id/stop_updates_button"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/stop"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:id="@+id/start_updates_button"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/start"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:text="@string/checkpoint_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="35dp"
+            android:id="@+id/nb_checkPoint_label"
+            android:layout_above="@+id/stop_updates_button"
+            android:layout_alignRight="@+id/longitude_label"
+            android:layout_alignEnd="@+id/longitude_label" />
+
+        <TextView
+            android:text="@string/none"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/nb_checkPoint_value"
+            android:layout_alignBaseline="@+id/nb_checkPoint_label"
+            android:layout_alignBottom="@+id/nb_checkPoint_label"
+            android:layout_toRightOf="@+id/nb_checkPoint_label"
+            android:layout_toEndOf="@+id/nb_checkPoint_label"
+            android:layout_marginLeft="33dp"
+            android:layout_marginStart="33dp" />
+
+
+    </RelativeLayout>
+
+</FrameLayout>
