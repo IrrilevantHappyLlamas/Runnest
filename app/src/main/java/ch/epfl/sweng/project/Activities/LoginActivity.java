@@ -1,6 +1,5 @@
 package ch.epfl.sweng.project.Activities;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -154,7 +153,7 @@ public final class LoginActivity extends AppCompatActivity implements GoogleApiC
     }
 
     /**
-     * Called when one of the button of the activity has been pressed, handles the diferent actions.
+     * Called when one of the button of the activity has been pressed, handles the different actions.
      *
      * @param v the <code>View</code> that triggered the call.
      */

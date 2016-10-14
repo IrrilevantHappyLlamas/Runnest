@@ -1,64 +1,56 @@
-<!-- in a real application you should use styles and dimens... -->
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/cast_expanded_controller_text_color"
+    android:orientation="vertical"
+    android:weightSum="4">
 
-    <!-- cheat code: negative margin -->
 
     <ImageView
-        android:layout_width="134dp"
-        android:layout_height="119dp"
-        app:srcCompat="@drawable/profile_head"
-        android:id="@+id/imageView3"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginRight="16dp"
-        android:layout_marginStart="16dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:text="ID: the_runnest_llamas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/idTxt"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginRight="16dp"
-        android:layout_marginStart="16dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+        app:srcCompat="@drawable/profile_head_small"
+        android:id="@+id/imageView2"
+        android:layout_marginTop="55dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
     <TextView
-        android:text="Family Name: Runnest"
+        android:text="Email : runnest.ihl@gmail.com"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/emailTxt"
-        app:layout_constraintLeft_toLeftOf="@+id/idTxt"
-        android:layout_marginTop="50dp"
-        app:layout_constraintTop_toBottomOf="@+id/idTxt" />
+        android:layout_marginTop="64dp"
+        android:layout_below="@+id/nameTxt"
+        android:layout_centerHorizontal="true" />
 
     <TextView
-        android:text="Name: Ihl"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/familyNameTxt"
-        app:layout_constraintLeft_toLeftOf="@+id/emailTxt"
-        android:layout_marginTop="50dp"
-        app:layout_constraintTop_toBottomOf="@+id/emailTxt" />
-
-    <TextView
-        android:text="Email: runnest.ihl@gmail.com"
+        android:text="Name : IHL"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/nameTxt"
-        android:layout_marginTop="50dp"
-        app:layout_constraintTop_toBottomOf="@+id/familyNameTxt"
-        app:layout_constraintLeft_toLeftOf="@+id/familyNameTxt" />
-</android.support.constraint.ConstraintLayout>
+        android:layout_weight="0.48"
+        android:layout_marginTop="51dp"
+        android:layout_below="@+id/familyTxt"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="Family Name : Runnest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/familyTxt"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="55dp"
+        android:id="@+id/idTxt"
+        android:layout_above="@+id/familyTxt"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>
