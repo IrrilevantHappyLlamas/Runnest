@@ -16,7 +16,7 @@ public class Track {
     private long duration;
 
     public Track(CheckPoint startingPoint) {
-        checkpoints = new ArrayList<CheckPoint>();
+        checkpoints = new ArrayList<>();
         checkpoints.add(startingPoint);
         totalCheckPoints = 1;
         distance = 0;
@@ -25,7 +25,7 @@ public class Track {
 
     // Copy constructor
     public Track(Track toCopy) {
-        this.checkpoints = new ArrayList<CheckPoint>(toCopy.checkpoints);
+        this.checkpoints = new ArrayList<>(toCopy.checkpoints);
         this.totalCheckPoints = toCopy.totalCheckPoints;
         this.distance = toCopy.distance;
         this.duration = toCopy.duration;

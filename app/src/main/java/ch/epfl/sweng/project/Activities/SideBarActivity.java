@@ -1,13 +1,13 @@
 package ch.epfl.sweng.project.Activities;
 
-import android.net.Uri;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -15,17 +15,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
-import ch.epfl.sweng.project.Fragments.RunningMapFragment;
+import ch.epfl.sweng.project.Fragments.LocationDemo;
 
 
 public class SideBarActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, RunningMapFragment.RunningMapFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, LocationDemo.OnFragmentInteractionListener {
 
-    private FragmentManager fragmentManager;
-    private Fragment runningFragment;
+    // Constants
+    public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
+
+    private boolean locationPermissionGranted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,13 +59,13 @@ public class SideBarActivity extends AppCompatActivity
 
 
         //Initializing the fragment
-        fragmentManager = getSupportFragmentManager();
-        runningFragment = fragmentManager.findFragmentById(R.id.fragment_container);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment mFragment = fragmentManager.findFragmentById(R.id.fragment_container);
 
 
-        if(runningFragment == null){
-            runningFragment = new RunningMapFragment();
-            fragmentManager.beginTransaction().add(R.id.fragment_container, runningFragment).commit();
+        if(mFragment == null){
+            mFragment = new LocationDemo();
+            fragmentManager.beginTransaction().add(R.id.fragment_container, mFragment).commit();
         }
     }
 
@@ -99,7 +103,7 @@ public class SideBarActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -122,9 +126,50 @@ public class SideBarActivity extends AppCompatActivity
         return true;
     }
 
-
+    /**
+     * Handle request permissions result. Update what needed and give a feedback to the user.
+     *
+     * @param requestCode       code of the request, an <code>int</code>
+     * @param permissions       requested permissions, a table of <code>String</code>
+     * @param grantResults      result of the request, a table of <code>int</code>
+     */
     @Override
-    public void onRunningMapFragmentInteraction(Uri uri) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
 
+        switch (requestCode) {
+
+            case PERMISSION_REQUEST_CODE_FINE_LOCATION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    locationPermissionGranted = true;
+                    Toast.makeText(getApplicationContext(),"You can now start a Run.",Toast.LENGTH_LONG).show();
+
+                } else {
+
+                    locationPermissionGranted = false;
+                    Toast.makeText(getApplicationContext(),"Permission Denied, you cannot start a Run.",Toast.LENGTH_LONG).show();
+                }
+                break;
+
+        }
+
+    }
+
+    /**
+     * Getter for <code>locationPermissionGranted</code>.
+     *
+     * @return      value of <code>locationPermissionGranted</code>
+     */
+    public boolean getLocationPermissionGranted() {
+        return locationPermissionGranted;
+    }
+
+    /**
+     * Setter for <code>locationPermissionGranted</coder>
+     *
+     * @param granted   the value to set, a <code>Boolean</code>
+     */
+    public void setLocationPermissionGranted(boolean granted) {
+        locationPermissionGranted = granted;
     }
 }

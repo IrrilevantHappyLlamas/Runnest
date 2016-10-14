@@ -20,7 +20,7 @@ public final class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-    public void toSimpleRunTapped(View view) {
+    public void toLocationDemoTapped(View view) {
         Intent intent = new Intent(this, SideBarActivity.class);
         startActivity(intent);
     }

@@ -41,7 +41,7 @@
         <activity
             android:name="ch.epfl.sweng.project.Activities.SideBarActivity"
             android:label="@string/title_activity_side_bar"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
