@@ -41,8 +41,7 @@ public class LocationDemo extends Fragment implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
-        ResultCallback<LocationSettingsResult>
-{
+        ResultCallback<LocationSettingsResult> {
 
     // Default attibutes
     private static final String ARG_PARAM1 = "param1";
@@ -72,8 +71,6 @@ public class LocationDemo extends Fragment implements
     private  int mCheckPointSaved;
     private CheckPoint mLastCheckPoint;
     private Run mRun;
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -111,7 +108,7 @@ public class LocationDemo extends Fragment implements
      * Setup all <code>textView</code> of the fragment, linking them to their respective
      * layout component. Also initialize their value and visibility if necessary.
      *
-     * @param view      <code>View</code> where text views must be added
+     * @param view <code>View</code> where text views must be added
      */
     private void textViewSetup(View view) {
 
@@ -131,9 +128,9 @@ public class LocationDemo extends Fragment implements
      * assigning them an appropriate listener. Also initialize their visibility
      * if necessary.
      *
-     * @param view      <code>View</code> where buttons must be added
+     * @param view <code>View</code> where buttons must be added
      */
-    private void buttonsSetup(View view){
+    private void buttonsSetup(View view) {
         mStartUpdatesButton = (Button) view.findViewById(R.id.start_updates_button);
         mStartUpdatesButton.setVisibility(View.VISIBLE);
         mStartUpdatesButton.setOnClickListener(new View.OnClickListener() {
@@ -191,8 +188,7 @@ public class LocationDemo extends Fragment implements
 
             mStopUpdatesButton.setEnabled(false);
 
-            if ( ((SideBarActivity)getActivity()).getLocationPermissionGranted() ) {
-
+            if (((SideBarActivity) getActivity()).getLocationPermissionGranted()) {
                 mStartUpdatesButton.setEnabled(true);
             } else {
 
@@ -325,12 +321,11 @@ public class LocationDemo extends Fragment implements
      * Check <code>ACCESS_FINE_LOCATION</code> permission, if necessary request it.
      * This check is necessary only with Android 6.0+ and/or SDK 22+
      */
-    public void checkPermission(){
+    public void checkPermission() {
 
         int fineLocation = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
 
-        if (fineLocation != PackageManager.PERMISSION_GRANTED){
-
+        if (fineLocation != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, SideBarActivity.PERMISSION_REQUEST_CODE_FINE_LOCATION);
             }
@@ -404,7 +399,6 @@ public class LocationDemo extends Fragment implements
             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
             if(location != null) {
-
                 mLastCheckPoint = new CheckPoint(location);
             }
             updateGUI();
@@ -449,7 +443,6 @@ public class LocationDemo extends Fragment implements
         mLastCheckPoint = new CheckPoint(location);
 
         if(mRun.isRunning()) {
-
             mRun.update(mLastCheckPoint);
             ++mCheckPointSaved;
         } else {

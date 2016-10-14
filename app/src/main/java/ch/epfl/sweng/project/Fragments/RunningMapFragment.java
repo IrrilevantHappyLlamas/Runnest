@@ -16,9 +16,11 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
 /**
  * A simple {@link Fragment} subclass.

@@ -1,0 +1,56 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/cast_expanded_controller_text_color"
+    android:orientation="vertical"
+    android:weightSum="4">
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/profile_head_small"
+        android:id="@+id/imageView2"
+        android:layout_marginTop="55dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="Email : runnest.ihl@gmail.com"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/emailTxt"
+        android:layout_marginTop="64dp"
+        android:layout_below="@+id/nameTxt"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="Name : IHL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/nameTxt"
+        android:layout_weight="0.48"
+        android:layout_marginTop="51dp"
+        android:layout_below="@+id/familyTxt"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="Family Name : Runnest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/familyTxt"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="55dp"
+        android:id="@+id/idTxt"
+        android:layout_above="@+id/familyTxt"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>

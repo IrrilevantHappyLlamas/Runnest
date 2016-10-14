@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "577629382915",
+    "project_id": "runnest-146309"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:577629382915:android:3d283d7b9bf3b490",
+        "android_client_info": {
+          "package_name": "ch.epfl.sweng.project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "577629382915-acl4qnjbg9u25jugfpvjtdv7qm53bb10.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ch.epfl.sweng.project",
+            "certificate_hash": "979F3E732914D3D309196F5F95B7BBF4F9EDACCD"
+          }
+        },
+        {
+          "client_id": "577629382915-olamat6gdlfcu1epqtbon4tpnq0fmpmb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCl9LabQrvMQCj0htMD_vAXk7mhwEpkv7w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,6 +1,8 @@
 package ch.epfl.sweng.project.Activities;
 
 import android.content.pm.PackageManager;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -22,14 +24,24 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
 import ch.epfl.sweng.project.Fragments.LocationDemo;
 
+import ch.epfl.sweng.project.Fragments.ProfileFragment;
+import ch.epfl.sweng.project.Fragments.RunningMapFragment;
+import ch.epfl.sweng.project.Model.Profile;
+
 
 public class SideBarActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, LocationDemo.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        ProfileFragment.ProfileFragmentInteractionListener,
+        LocationDemo.OnFragmentInteractionListener {
 
     // Constants
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
-
     private boolean locationPermissionGranted;
+
+    private Fragment runningFragment;
+    private FragmentManager fragmentManager;
+
+    public static Profile profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,19 +65,22 @@ public class SideBarActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+
+        //Profile
+        Intent i = getIntent();
+        profile = new Profile(i.getSerializableExtra("id").toString(), i.getSerializableExtra("id").toString(), i.getSerializableExtra("id").toString(),i.getSerializableExtra("id").toString());
+
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
-
         //Initializing the fragment
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment mFragment = fragmentManager.findFragmentById(R.id.fragment_container);
+        fragmentManager = getSupportFragmentManager();
+        runningFragment = fragmentManager.findFragmentById(R.id.fragment_container);
 
-
-        if(mFragment == null){
-            mFragment = new LocationDemo();
-            fragmentManager.beginTransaction().add(R.id.fragment_container, mFragment).commit();
+        if(runningFragment == null){
+            runningFragment = new LocationDemo();
+            fragmentManager.beginTransaction().add(R.id.fragment_container, runningFragment).commit();
         }
     }
 
@@ -107,8 +122,10 @@ public class SideBarActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
+        if (id == R.id.nav_profile) {
+            runningFragment = new ProfileFragment();
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, runningFragment).commit();
+
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
@@ -171,5 +188,10 @@ public class SideBarActivity extends AppCompatActivity
      */
     public void setLocationPermissionGranted(boolean granted) {
         locationPermissionGranted = granted;
+    }
+
+    @Override
+    public void onProfileFragmentInteraction(Uri uri) {
+
     }
 }
