@@ -1,0 +1,509 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="SwEng" />
+    <inspection_tool class="AbstractMethodCallInConstructor" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AmbiguousFieldAccess" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AmbiguousMethodCall" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AndroidElementNotAllowed" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintAdapterViewChildren" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintAppCompatMethod" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintAssert" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintCommitPrefEdits" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintCommitTransaction" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintCustomViewStyleable" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintDefaultLocale" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintDeprecated" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintDeviceAdmin" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintDuplicateIncludedIds" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintDuplicateUsesFeature" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintExtraText" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintFloatMath" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintGoogleAppIndexingUrlError" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AndroidLintGoogleAppIndexingWarning" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="AndroidLintGradleDeprecated" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintGradleDynamicVersion" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintGradleOverrides" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintGradlePath" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintHardcodedText" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintIconExpectedSize" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintIllegalResourceRef" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintInOrMmUsage" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintInflateParams" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintInlinedApi" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintInnerclassSeparator" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintLocaleFolder" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintLogConditional" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintMangledCRLF" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintManifestOrder" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintMissingId" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintMissingTvBanner" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintMissingVersion" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintNegativeMargin" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintNestedScrolling" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintOldTargetApi" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintParcelClassLoader" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintPermissionImpliesUnsupportedHardware" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintPrivateResource" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintProguardSplit" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintPxUsage" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintRecyclerView" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintRegistered" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintRtlEnabled" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintRtlHardcoded" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintRtlSymmetry" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintSQLiteString" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintScrollViewCount" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintScrollViewSize" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintSdCardPath" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintShiftFlags" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintShortAlarm" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintSimpleDateFormat" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintStateListReachable" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintStopShip" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintSuspiciousImport" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintSwitchIntDef" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintTextViewEdits" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintTypographyQuotes" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintUnlocalizedSms" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintUnusedIds" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintUnusedQuantity" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintUnusedResources" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintUseAlpha2" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintUsesMinSdkAttributes" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintWrongRegion" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidMissingOnClickHandler" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AndroidUnknownAttribute" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="Anonymous2MethodRef" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="AnonymousClassMethodCount" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_limit" value="1" />
+    </inspection_tool>
+    <inspection_tool class="AnonymousClassVariableHidesContainingMethodVariable" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ApiName" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="ApiNamespace" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="ApiParameter" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="ArrayEquality" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AssignmentToCatchBlockParameter" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AssignmentToStaticFieldFromInstanceMethod" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AssignmentUsedAsCondition" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="AutoCloseableResource" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="BadExceptionCaught" enabled="true" level="ERROR" enabled_by_default="true">
+      <option name="exceptionsString" value="" />
+      <option name="exceptions">
+        <value />
+      </option>
+    </inspection_tool>
+    <inspection_tool class="BadExceptionDeclared" enabled="true" level="ERROR" enabled_by_default="true">
+      <option name="exceptionsString" value="" />
+      <option name="exceptions">
+        <value />
+      </option>
+      <option name="ignoreTestCases" value="false" />
+      <option name="ignoreLibraryOverrides" value="false" />
+    </inspection_tool>
+    <inspection_tool class="BadExceptionThrown" enabled="true" level="ERROR" enabled_by_default="true">
+      <option name="exceptionsString" value="" />
+      <option name="exceptions">
+        <value />
+      </option>
+    </inspection_tool>
+    <inspection_tool class="BadOddness" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="BigDecimalEquals" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="BigDecimalLegacyMethod" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="BooleanVariableAlwaysNegated" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="CStyleArrayDeclaration" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="CallToStringConcatCanBeReplacedByOperator" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="CastConflictsWithInstanceof" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="CastToConcreteClass" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreAbstractClasses" value="true" />
+    </inspection_tool>
+    <inspection_tool class="CastToIncompatibleInterface" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ChainedEquality" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="ClassEscapesItsScope" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ClassMayBeInterface" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ClassNameDiffersFromFileName" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="ClassNamePrefixedWithPackageName" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ClassNameSameAsAncestorName" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ClassNamingConvention" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_regex" value="[A-Z][A-Za-z\d]*" />
+      <option name="m_minLength" value="4" />
+      <option name="m_maxLength" value="64" />
+    </inspection_tool>
+    <inspection_tool class="ClassReferencesSubclass" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ClassWithOnlyPrivateConstructors" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="CloneCallsConstructors" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="CloneDeclaresCloneNotSupported" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="CloneInNonCloneableClass" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="CloneReturnsClassType" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="CloneableImplementsClone" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_ignoreCloneableDueToInheritance" value="false" />
+    </inspection_tool>
+    <inspection_tool class="CollectionsFieldAccessReplaceableByMethodCall" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="ComparableImplementedButEqualsNotOverridden" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="ComparisonToNaN" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ConfusingElse" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="reportWhenNoStatementFollow" value="false" />
+    </inspection_tool>
+    <inspection_tool class="ConfusingOctalEscape" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ConstantAssertCondition" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="Constructor" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="ConstructorCount" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreDeprecatedConstructors" value="false" />
+      <option name="m_limit" value="5" />
+    </inspection_tool>
+    <inspection_tool class="Convert2Lambda" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="CovariantCompareTo" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="CovariantEquals" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="CyclicClassDependency" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="CyclicPackageDependency" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="DanglingJavadoc" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="DefaultNotLastCaseInSwitch" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="Deprecation" enabled="true" level="ERROR" enabled_by_default="true">
+      <option name="IGNORE_INSIDE_DEPRECATED" value="true" />
+    </inspection_tool>
+    <inspection_tool class="DivideByZero" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="DollarSignInName" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="DoubleBraceInitialization" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="DoubleLiteralMayBeFloatLiteral" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="DuplicateBooleanBranch" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="DuplicateCondition" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreMethodCalls" value="false" />
+    </inspection_tool>
+    <inspection_tool class="ElementOnlyUsedFromTestCode" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="EmptyClass" enabled="true" level="ERROR" enabled_by_default="true">
+      <option name="ignorableAnnotations">
+        <value />
+      </option>
+      <option name="ignoreClassWithParameterization" value="false" />
+      <option name="ignoreThrowables" value="true" />
+      <option name="commentsAreContent" value="true" />
+    </inspection_tool>
+    <inspection_tool class="EmptyDirectory" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="onlyReportDirectoriesUnderSourceRoots" value="true" />
+    </inspection_tool>
+    <inspection_tool class="EmptyInitializer" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="EnumSwitchStatementWhichMissesCases" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreSwitchStatementsWithDefault" value="true" />
+    </inspection_tool>
+    <inspection_tool class="EnumeratedClassNamingConvention" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_regex" value="[A-Z][A-Za-z\d]*" />
+      <option name="m_minLength" value="4" />
+      <option name="m_maxLength" value="64" />
+    </inspection_tool>
+    <inspection_tool class="EnumeratedConstantNamingConvention" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_regex" value="[A-Z][A-Z_\d]*" />
+      <option name="m_minLength" value="2" />
+      <option name="m_maxLength" value="32" />
+    </inspection_tool>
+    <inspection_tool class="EnumerationCanBeIteration" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="EqualsAndHashcode" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="EqualsCalledOnEnumConstant" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ExceptionNameDoesntEndWithException" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ExtendsObject" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="FallthruInSwitchStatement" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="FieldCount" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_countConstantFields" value="false" />
+      <option name="m_considerStaticFinalFieldsConstant" value="false" />
+      <option name="myCountEnumConstants" value="false" />
+      <option name="m_limit" value="10" />
+    </inspection_tool>
+    <inspection_tool class="FieldHidesSuperclassField" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_ignoreInvisibleFields" value="true" />
+    </inspection_tool>
+    <inspection_tool class="FinalMethodInFinalClass" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="FinalPrivateMethod" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="Finalize" enabled="true" level="ERROR" enabled_by_default="true">
+      <option name="ignoreTrivialFinalizers" value="true" />
+    </inspection_tool>
+    <inspection_tool class="FinalizeCallsSuperFinalize" enabled="true" level="ERROR" enabled_by_default="true">
+      <option name="ignoreObjectSubclasses" value="false" />
+      <option name="ignoreTrivialFinalizers" value="true" />
+    </inspection_tool>
+    <inspection_tool class="FinalizeNotProtected" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="FloatingPointEquality" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ForLoopReplaceableByWhile" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_ignoreLoopsWithoutConditions" value="true" />
+    </inspection_tool>
+    <inspection_tool class="FullJavaName" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="FullMethodName" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="HardcodedFileSeparators" enabled="true" level="ERROR" enabled_by_default="true">
+      <option name="m_recognizeExampleMediaType" value="false" />
+    </inspection_tool>
+    <inspection_tool class="HardcodedLineSeparators" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="IOResource" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredTypesString" value="java.io.ByteArrayOutputStream,java.io.ByteArrayInputStream,java.io.StringBufferInputStream,java.io.CharArrayWriter,java.io.CharArrayReader,java.io.StringWriter,java.io.StringReader" />
+      <option name="insideTryAllowed" value="false" />
+    </inspection_tool>
+    <inspection_tool class="IfStatementWithIdenticalBranches" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ImplicitDefaultCharsetUsage" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="InconsistentLineSeparators" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="IncrementDecrementUsedAsExpression" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="InnerClassMayBeStatic" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="InnerClassReferencedViaSubclass" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="InnerClassVariableHidesOuterClassVariable" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_ignoreInvisibleFields" value="true" />
+    </inspection_tool>
+    <inspection_tool class="InstanceMethodNamingConvention" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_regex" value="[a-z][A-Za-z\d]*" />
+      <option name="m_minLength" value="3" />
+      <option name="m_maxLength" value="32" />
+    </inspection_tool>
+    <inspection_tool class="InstanceVariableInitialization" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_ignorePrimitives" value="false" />
+    </inspection_tool>
+    <inspection_tool class="InstanceVariableUninitializedUse" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_ignorePrimitives" value="false" />
+      <option name="annotationNamesString" value="" />
+    </inspection_tool>
+    <inspection_tool class="InstanceofCatchParameter" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="InstanceofChain" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreInstanceofOnLibraryClasses" value="false" />
+    </inspection_tool>
+    <inspection_tool class="InstanceofIncompatibleInterface" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="InstanceofInterfaces" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="InstanceofThis" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="IntLiteralMayBeLongLiteral" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="IntegerMultiplicationImplicitCastToLong" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreNonOverflowingCompileTimeConstants" value="true" />
+    </inspection_tool>
+    <inspection_tool class="InterfaceNamingConvention" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_regex" value="[A-Z][A-Za-z\d]*" />
+      <option name="m_minLength" value="4" />
+      <option name="m_maxLength" value="64" />
+    </inspection_tool>
+    <inspection_tool class="InvalidParameterAnnotations" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="IteratorHasNextCallsIteratorNext" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="IteratorNextDoesNotThrowNoSuchElementException" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="JDBCResource" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="insideTryAllowed" value="false" />
+    </inspection_tool>
+    <inspection_tool class="JavaLangImport" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="LambdaParameterHidingMemberVariable" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="LambdaParameterNamingConvention" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ListIndexOfReplaceableByContains" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="LocalVariableHidingMemberVariable" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_ignoreInvisibleFields" value="true" />
+      <option name="m_ignoreStaticMethods" value="true" />
+    </inspection_tool>
+    <inspection_tool class="LocalVariableNamingConvention" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_ignoreForLoopParameters" value="false" />
+      <option name="m_ignoreCatchParameters" value="false" />
+      <option name="m_regex" value="[a-z][A-Za-z\d]*" />
+      <option name="m_minLength" value="1" />
+      <option name="m_maxLength" value="20" />
+    </inspection_tool>
+    <inspection_tool class="LoggerInitializedWithForeignClass" enabled="false" level="WARNING" enabled_by_default="false">
+      <option name="loggerClassName" value="org.apache.log4j.Logger,org.slf4j.LoggerFactory,org.apache.commons.logging.LogFactory,java.util.logging.Logger" />
+      <option name="loggerFactoryMethodName" value="getLogger,getLogger,getLog,getLogger" />
+    </inspection_tool>
+    <inspection_tool class="LongLine" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="LossyEncoding" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="MagicNumber" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="MarkerInterface" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="MethodCount" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_limit" value="20" />
+      <option name="ignoreGettersAndSetters" value="false" />
+      <option name="ignoreOverridingMethods" value="false" />
+    </inspection_tool>
+    <inspection_tool class="MethodName" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="MethodNamesDifferOnlyByCase" enabled="true" level="ERROR" enabled_by_default="true">
+      <option name="ignoreIfMethodIsOverride" value="false" />
+    </inspection_tool>
+    <inspection_tool class="MethodOnlyUsedFromInnerClass" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreMethodsAccessedFromAnonymousClass" value="false" />
+      <option name="ignoreStaticMethodsFromNonStaticInnerClass" value="false" />
+      <option name="onlyReportStaticMethods" value="false" />
+    </inspection_tool>
+    <inspection_tool class="MethodOverloadsParentMethod" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="MethodOverridesPackageLocalMethod" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="MethodOverridesPrivateMethod" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="MethodOverridesStaticMethod" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="MethodParameterType" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="MethodReturnType" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="MissingDeprecatedAnnotation" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="MissingOverrideAnnotation" enabled="true" level="ERROR" enabled_by_default="true">
+      <option name="ignoreObjectMethods" value="true" />
+      <option name="ignoreAnonymousClassMethods" value="true" />
+    </inspection_tool>
+    <inspection_tool class="MissortedModifiers" enabled="true" level="ERROR" enabled_by_default="true">
+      <option name="m_requireAnnotationsFirst" value="true" />
+    </inspection_tool>
+    <inspection_tool class="MisspelledCompareTo" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="MisspelledEquals" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="MisspelledHashcode" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="MisspelledToString" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="MultipleDeclaration" enabled="true" level="ERROR" enabled_by_default="true">
+      <option name="ignoreForLoopDeclarations" value="true" />
+    </inspection_tool>
+    <inspection_tool class="MultipleRepositoryUrls" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="MultipleTopLevelClassesInFile" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="MultipleTypedDeclaration" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="NamedResource" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="NativeMethods" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="NegatedConditionalExpression" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="NegatedEqualityExpression" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="NestedAssignment" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="NewExceptionWithoutArguments" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="NoExplicitFinalizeCalls" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="NonCommentSourceStatements" enabled="true" level="ERROR" enabled_by_default="true">
+      <option name="m_limit" value="150" />
+    </inspection_tool>
+    <inspection_tool class="NonFinalStaticVariableUsedInClassInitialization" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="NonFinalUtilityClass" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="NonProtectedConstructorInAbstractClass" enabled="true" level="ERROR" enabled_by_default="true">
+      <option name="m_ignoreNonPublicClasses" value="true" />
+    </inspection_tool>
+    <inspection_tool class="NonPublicClone" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="NullThrown" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="ObjectEquality" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="m_ignoreEnums" value="true" />
+      <option name="m_ignoreClassObjects" value="false" />
+      <option name="m_ignorePrivateConstructors" value="false" />
+    </inspection_tool>
+    <inspection_tool class="ObsoleteCollection" enabled="true" level="ERROR" enabled_by_default="true">
+      <option name="ignoreRequiredObsoleteCollectionTypes" value="false" />
+    </inspection_tool>
+    <inspection_tool class="OctalAndDecimalIntegersMixed" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="OctalLiteral" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="OverlyStrongTypeCast" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreInMatchingInstanceof" value="false" />
+    </inspection_tool>
+    <inspection_tool class="PackageNamingConvention" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_regex" value="[a-z]*" />
+      <option name="m_minLength" value="2" />
+      <option name="m_maxLength" value="16" />
+    </inspection_tool>
+    <inspection_tool class="PackageVisibleField" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="PackageVisibleInnerClass" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreEnums" value="false" />
+      <option name="ignoreInterfaces" value="false" />
+    </inspection_tool>
+    <inspection_tool class="ParameterHidingMemberVariable" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_ignoreInvisibleFields" value="true" />
+      <option name="m_ignoreStaticMethodParametersHidingInstanceFields" value="true" />
+      <option name="m_ignoreForConstructors" value="false" />
+      <option name="m_ignoreForPropertySetters" value="false" />
+      <option name="m_ignoreForAbstractMethods" value="false" />
+    </inspection_tool>
+    <inspection_tool class="ParameterNameDiffersFromOverriddenParameter" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_ignoreSingleCharacterNames" value="false" />
+      <option name="m_ignoreOverridesOfLibraryMethods" value="false" />
+    </inspection_tool>
+    <inspection_tool class="ParameterNamingConvention" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_regex" value="[a-z][A-Za-z\d]*" />
+      <option name="m_minLength" value="1" />
+      <option name="m_maxLength" value="20" />
+    </inspection_tool>
+    <inspection_tool class="ParameterTypePreventsOverriding" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="PointlessIndexOfComparison" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="PointlessNullCheck" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ProblematicWhitespace" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="ProtectedMemberInFinalClass" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="RawUseOfParameterizedType" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="RedundantSuppression" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="RedundantThrowsDeclaration" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ReplaceAssignmentWithOperatorAssignment" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreLazyOperators" value="true" />
+      <option name="ignoreObscureOperators" value="false" />
+    </inspection_tool>
+    <inspection_tool class="ResourceParameter" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RestSignature" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="ResultOfObjectAllocationIgnored" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ResultSetIndexZero" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ReturnOfInnerClass" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="RuntimeExec" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="SamePackageImport" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="SillyAssignment" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="SimplifiableAnnotation" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="SimplifiableEqualsExpression" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="SimplifiableIfStatement" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SizeReplaceableByIsEmpty" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="SocketResource" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="insideTryAllowed" value="false" />
+    </inspection_tool>
+    <inspection_tool class="StaticInheritance" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="StaticMethodNamingConvention" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_regex" value="[a-z][A-Za-z\d]*" />
+      <option name="m_minLength" value="3" />
+      <option name="m_maxLength" value="32" />
+    </inspection_tool>
+    <inspection_tool class="StaticVariableInitialization" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_ignorePrimitives" value="false" />
+    </inspection_tool>
+    <inspection_tool class="StaticVariableUninitializedUse" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_ignorePrimitives" value="false" />
+    </inspection_tool>
+    <inspection_tool class="StringConcatenationMissingWhitespace" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreNonStringLiterals" value="true" />
+    </inspection_tool>
+    <inspection_tool class="SuspiciousArrayCast" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="SwitchStatementWithConfusingDeclaration" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="SystemExit" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="SystemGC" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="SystemGetenv" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="SystemOutErr" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="SystemProperties" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="TextLabelInSwitchStatement" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ThreadDumpStack" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="ThrowCaughtLocally" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreRethrownExceptions" value="false" />
+    </inspection_tool>
+    <inspection_tool class="ThrowablePrintStackTrace" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="ThrowablePrintedToSystemOut" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="ThrowsRuntimeException" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="TodoComment" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="TooBroadCatch" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="TooBroadThrows" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="TypeMayBeWeakened" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="useRighthandTypeAsWeakestTypeInAssignments" value="true" />
+      <option name="useParameterizedTypeForCollectionMethods" value="true" />
+      <option name="doNotWeakenToJavaLangObject" value="true" />
+      <option name="onlyWeakentoInterface" value="true" />
+    </inspection_tool>
+    <inspection_tool class="TypeParameterExtendsFinalClass" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="TypeParameterExtendsObject" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="TypeParameterNamingConvention" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_regex" value="[A-Z][A-Za-z\d]*" />
+      <option name="m_minLength" value="1" />
+      <option name="m_maxLength" value="1" />
+    </inspection_tool>
+    <inspection_tool class="UnaryPlus" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="UnnecessaryBlockStatement" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreSwitchBranches" value="false" />
+    </inspection_tool>
+    <inspection_tool class="UnnecessaryConstructor" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="UnnecessaryDefault" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="UnnecessaryExplicitNumericCast" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="UnnecessarySuperConstructor" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="UnnecessarySuperQualifier" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="UnnecessaryThis" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="UnpredictableBigDecimalConstructorCall" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreReferences" value="true" />
+      <option name="ignoreComplexLiterals" value="false" />
+    </inspection_tool>
+    <inspection_tool class="UnusedCatchParameter" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_ignoreCatchBlocksWithComments" value="false" />
+      <option name="m_ignoreTestCases" value="false" />
+    </inspection_tool>
+    <inspection_tool class="UnusedImport" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="UnusedLabel" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="UnusedParameters" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="UseOfAWTPeerClass" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="UseOfAnotherObjectsPrivateField" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreSameClass" value="false" />
+      <option name="ignoreEquals" value="false" />
+    </inspection_tool>
+    <inspection_tool class="UseOfClone" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="UseOfJDBCDriverClass" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="UseOfObsoleteDateTimeApi" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="UseOfProcessBuilder" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="UseOfPropertiesAsHashtable" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="UseOfSunClasses" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="UtilityClassWithPublicConstructor" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="UtilityClassWithoutPrivateConstructor" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignorableAnnotations">
+        <value />
+      </option>
+      <option name="ignoreClassesWithOnlyMain" value="false" />
+    </inspection_tool>
+  </profile>
+</component>
