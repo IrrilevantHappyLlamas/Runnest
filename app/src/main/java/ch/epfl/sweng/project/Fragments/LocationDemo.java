@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -37,16 +38,17 @@ import ch.epfl.sweng.project.Model.Run;
 
 
 
+@SuppressWarnings({"CastToConcreteClass", "MethodParameterNamingConvention"})
 public class LocationDemo extends Fragment implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
         ResultCallback<LocationSettingsResult> {
 
-    // Default attibutes
+    // Default attributes
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private OnFragmentInteractionListener mListener;
+    private OnFragmentInteractionListener mListener = null;
 
     // Constants
     private static final int REQUEST_CHECK_SETTINGS = 0x1;
@@ -54,23 +56,23 @@ public class LocationDemo extends Fragment implements
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 5000;
 
     // Layout
-    private Button mStartUpdatesButton;
-    private Button mStopUpdatesButton;
-    private TextView mLatitudeText;
-    private TextView mLongitudeText;
-    private TextView mNbCheckPointLabel;
-    private TextView mNbCheckPointValue;
+    private Button mStartUpdatesButton = null;
+    private Button mStopUpdatesButton = null;
+    private TextView mLatitudeText = null;
+    private TextView mLongitudeText = null;
+    private TextView mNbCheckPointLabel = null;
+    private TextView mNbCheckPointValue = null;
 
     // Location update
-    private GoogleApiClient mGoogleApiClient;
-    private LocationRequest mLocationRequest;
-    protected LocationSettingsRequest mLocationSettingsRequest;
-    private boolean mRequestingLocationUpdates;
+    private GoogleApiClient mGoogleApiClient = null;
+    private LocationRequest mLocationRequest = null;
+    private LocationSettingsRequest mLocationSettingsRequest = null;
+    private boolean mRequestingLocationUpdates = false;
 
     // Data storage
-    private  int mCheckPointSaved;
-    private CheckPoint mLastCheckPoint;
-    private Run mRun;
+    private  int mCheckPointSaved = 0;
+    private CheckPoint mLastCheckPoint = null;
+    private Run mRun = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -250,7 +252,7 @@ public class LocationDemo extends Fragment implements
     /**
      * Check whether gps is turned on or not.
      */
-    protected void checkLocationSettings() {
+    private void checkLocationSettings() {
 
         PendingResult<LocationSettingsResult> result =
                 LocationServices.SettingsApi.checkLocationSettings(
@@ -321,13 +323,15 @@ public class LocationDemo extends Fragment implements
      * Check <code>ACCESS_FINE_LOCATION</code> permission, if necessary request it.
      * This check is necessary only with Android 6.0+ and/or SDK 22+
      */
-    public void checkPermission() {
+    private void checkPermission() {
 
         int fineLocation = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
 
         if (fineLocation != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, SideBarActivity.PERMISSION_REQUEST_CODE_FINE_LOCATION);
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        SideBarActivity.PERMISSION_REQUEST_CODE_FINE_LOCATION);
             }
 
         } else {
@@ -342,7 +346,8 @@ public class LocationDemo extends Fragment implements
      */
     private void startLocationUpdates() {
 
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             checkPermission();
             setButtonsEnabledState();
@@ -364,7 +369,7 @@ public class LocationDemo extends Fragment implements
     /**
      * Stop location updates, update buttons state and end the current run.
      */
-    protected void stopLocationUpdates() {
+    private void stopLocationUpdates() {
 
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 mGoogleApiClient,
@@ -390,7 +395,8 @@ public class LocationDemo extends Fragment implements
         // We don't store data yet, we wait that user start the run
         if (mLastCheckPoint == null) {
 
-            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(getContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
                 checkPermission();
                 setButtonsEnabledState();
@@ -494,6 +500,6 @@ public class LocationDemo extends Fragment implements
     }
 
     public interface OnFragmentInteractionListener {
-
+        void onProfileFragmentInteraction(Uri uri);
     }
 }

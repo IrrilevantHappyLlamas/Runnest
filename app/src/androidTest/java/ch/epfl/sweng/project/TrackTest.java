@@ -14,6 +14,7 @@ import ch.epfl.sweng.project.Model.Track;
  *
  * @author Tobia Albergoni
  */
+@SuppressWarnings("MagicNumber")
 public class TrackTest {
 
     public static CheckPoint buildCheckPoint(double lat, double lon, long time) {
@@ -25,7 +26,7 @@ public class TrackTest {
     }
 
     @Test
-    public void track_correctConstruction() {
+    public void correctConstruction() {
         Track testTrack = new Track(buildCheckPoint(50, 50, 100));
 
         Assert.assertEquals(0, testTrack.getDistance(), 0);
@@ -38,7 +39,7 @@ public class TrackTest {
     }
 
     @Test
-    public void track_legitAddCorrectlyUpdatesTrack() {
+    public void legitAddCorrectlyUpdatesTrack() {
         CheckPoint c1 = buildCheckPoint(50, 50, 100);
         CheckPoint c2 = buildCheckPoint(51, 51, 110);
 
@@ -52,7 +53,7 @@ public class TrackTest {
     }
 
     @Test
-    public void track_incoherentAddFails() {
+    public void incoherentAddFails() {
         CheckPoint c1 = buildCheckPoint(50, 50, 100);
         CheckPoint c2 = buildCheckPoint(51, 51, 90);
 
@@ -62,7 +63,7 @@ public class TrackTest {
     }
 
     @Test
-    public void track_correctCopyConstructor() {
+    public void correctCopyConstructor() {
         Track testTrack1 = new Track(buildCheckPoint(1, 1, 1));
         testTrack1.add(buildCheckPoint(2, 2, 2));
         testTrack1.add(buildCheckPoint(3, 3, 3));

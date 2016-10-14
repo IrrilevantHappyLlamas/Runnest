@@ -12,10 +12,11 @@ import ch.epfl.sweng.project.Model.CheckPoint;
  *
  * @author Tobia Albergoni
  */
+@SuppressWarnings("MagicNumber")
 public class CheckPointTest {
 
     @Test
-    public void checkPoint_correctLocationEncapsulation() {
+    public void correctLocationEncapsulation() {
         Location location = new Location("test");
         location.setLatitude(50);
         location.setLongitude(40);
@@ -33,7 +34,7 @@ public class CheckPointTest {
     }
 
     @Test
-    public void checkPoint_computeDistance() {
+    public void computeDistance() {
         Location location1 = new Location("test");
         location1.setLatitude(50);
         location1.setLongitude(40);
@@ -51,7 +52,7 @@ public class CheckPointTest {
     }
 
     @Test
-    public void checkPoint_distanceToSamePointIsZero() {
+    public void distanceToSamePointIsZero() {
         Location location1 = new Location("test");
         location1.setLatitude(50);
         location1.setLongitude(40);

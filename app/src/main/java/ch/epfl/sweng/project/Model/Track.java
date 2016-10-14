@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An ordinated sequence of checkpoints that modelizes a track
+ * An ordinated sequence of checkpoints that models a track
  *
  * @author Tobia Albergoni
  */
+@SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
 public class Track {
 
     private List<CheckPoint> checkpoints;
@@ -25,10 +26,10 @@ public class Track {
 
     // Copy constructor
     public Track(Track toCopy) {
-        this.checkpoints = new ArrayList<>(toCopy.checkpoints);
-        this.totalCheckPoints = toCopy.totalCheckPoints;
-        this.distance = toCopy.distance;
-        this.duration = toCopy.duration;
+        checkpoints = new ArrayList<>(toCopy.checkpoints);
+        totalCheckPoints = toCopy.totalCheckPoints;
+        distance = toCopy.distance;
+        duration = toCopy.duration;
     }
 
     public boolean add(CheckPoint newPoint) {

@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -36,10 +35,10 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    MapView mMapView;
-    GoogleMap mMap;
+    private MapView mMapView = null;
+    private GoogleMap mMap = null;
 
-    private RunningMapFragmentInteractionListener mListener;
+    private RunningMapFragmentInteractionListener mListener = null;
 
     //initialize points that will be drawn in the map.
     private static final LatLng EPFL = new LatLng(46.51839579373851, 6.568311452865601);
@@ -58,19 +57,12 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback {
 
     private static final LatLng LUGANO = new LatLng(46.016667, 8.95);
 
-    //the mutable polyline to be drawn
-    private Polyline mMutablePolyline;
-
     // a new camera to visualize the polyline nicely
-    public static final CameraPosition SWITZERLAND =
+    private static final CameraPosition SWITZERLAND =
             new CameraPosition.Builder()
                     .target(LUZERN)
                     .zoom(7f)
                     .build();
-
-    public RunningMapFragment() {
-        // Required empty public constructor
-    }
 
     /**
      * Use this factory method to create a new instance of
@@ -165,7 +157,7 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback {
                 .add(LUGANO);
 
         //this line represents the path on the map.
-        mMutablePolyline = mMap.addPolyline(options.color(Color.BLUE));
+        Polyline mMutablePolyline = mMap.addPolyline(options.color(Color.BLUE));
 
         //this line moves the camera so that the path can be displayed nicely.
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(SWITZERLAND));

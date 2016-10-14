@@ -8,3 +8,5 @@
 /.idea/gradle.xml
 /.idea/workspace.xml
 /.idea/libraries
+/.idea/misc.xml
+app/app.iml

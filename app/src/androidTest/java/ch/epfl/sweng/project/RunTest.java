@@ -11,10 +11,11 @@ import ch.epfl.sweng.project.Model.Track;
  *
  * @author Tobia Albergoni
  */
+@SuppressWarnings("TypeMayBeWeakened")
 public class RunTest {
 
     @Test
-    public void run_constructorsWork() {
+    public void constructorsWork() {
         Run testRun1 = new Run();
 
         Assert.assertFalse(testRun1.isRunning());
@@ -28,7 +29,7 @@ public class RunTest {
     }
 
     @Test
-    public void run_cannotStopOrUpdateNotStartedRun() {
+    public void cannotStopOrUpdateNotStartedRun() {
         Run testRun1 = new Run();
 
         Assert.assertFalse(testRun1.stop());
@@ -37,7 +38,7 @@ public class RunTest {
     }
 
     @Test
-    public void run_correctlyUpdatesStartedRun() {
+    public void correctlyUpdatesStartedRun() {
         Run testRun1 = new Run();
 
         Assert.assertTrue(testRun1.start(TrackTest.buildCheckPoint(1, 1, 1)));
@@ -55,7 +56,7 @@ public class RunTest {
     }
 
     @Test
-    public void run_stopWorks() {
+    public void stopWorks() {
         Run testRun1 = new Run();
 
         Assert.assertTrue(testRun1.start(TrackTest.buildCheckPoint(1, 1, 1)));

@@ -23,13 +23,13 @@ import com.google.android.gms.common.api.Status;
 /**
  * Launch activity which implements google authentication
  */
-public final class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+public final class LoginActivity extends AppCompatActivity
+        implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
     private static final String TAG = "LoginActivity";
     private static final int RC_SIGN_IN = 9001;
 
-    private SignInButton signInButton;
-    private GoogleApiClient mGoogleApiClient;
+    private GoogleApiClient mGoogleApiClient = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,10 +52,12 @@ public final class LoginActivity extends AppCompatActivity implements GoogleApiC
         // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.sign_out_button).setOnClickListener(this);
+        findViewById(R.id.continue_button).setOnClickListener(this);
 
         // Customize sign-in button
-        signInButton = (SignInButton) findViewById(R.id.sign_in_button);
+        SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
+        //noinspection deprecation
         signInButton.setScopes(gso.getScopeArray());
     }
 
@@ -95,12 +97,11 @@ public final class LoginActivity extends AppCompatActivity implements GoogleApiC
      * @param result    the result of the signup call, a <code>GoogleSignInResult</code>
      */
     private void handleSignInResult(GoogleSignInResult result) {
-        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
 
             // Signed in successfully, show success toast
             GoogleSignInAccount acct = result.getSignInAccount();
-            Toast.makeText(getBaseContext(), "Login succesful " + acct.getId(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), "Login successful", Toast.LENGTH_LONG).show();
 
             // Start SideBarActivity
             Intent sideBarIntent = new Intent(this, SideBarActivity.class);
@@ -114,10 +115,10 @@ public final class LoginActivity extends AppCompatActivity implements GoogleApiC
 
     // TODO: implement passing account informations to the rest of the app
     /**
-     * Fetches informations from a <code>GoogleSignInAccount</code> and puts them as extras
+     * Fetches information from a <code>GoogleSignInAccount</code> and puts them as extras
      * into an <code>Intent</code>.
      *
-     * @param acct      the <code>GoogleSignInAccount</code> from which to fetch informations
+     * @param acct      the <code>GoogleSignInAccount</code> from which to fetch information
      * @param intent    <code>Intent</code> in which to put info as extras
      */
     private void fetchAccountInfo(GoogleSignInAccount acct, Intent intent) {
@@ -134,7 +135,7 @@ public final class LoginActivity extends AppCompatActivity implements GoogleApiC
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
             @Override
-            public void onResult(Status status) {
+            public void onResult(@NonNull Status status) {
             }
         });
     }
@@ -149,7 +150,6 @@ public final class LoginActivity extends AppCompatActivity implements GoogleApiC
     // TODO: handle connection failure to google services
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d(TAG, "onConnectionFailed:" + connectionResult);
     }
 
     /**
@@ -166,7 +166,16 @@ public final class LoginActivity extends AppCompatActivity implements GoogleApiC
                 break;
             case R.id.sign_out_button:
                 signOut();
+                break;
+            case R.id.continue_button:
+                continueToApp();
+                break;
         }
+    }
+
+    private void continueToApp() {
+        Intent sideBarIntent = new Intent(this, SideBarActivity.class);
+        startActivity(sideBarIntent);
     }
 }
 

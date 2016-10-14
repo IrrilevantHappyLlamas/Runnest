@@ -5,16 +5,11 @@ import android.support.multidex.MultiDexApplication;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 /**
- * Application class, temporarly only to enable multidex support
+ * Application class, temporarily only to enable multidex support
  */
 public class AppRunnest extends MultiDexApplication {
 
-    private GoogleSignInAccount currentUser;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
+    private GoogleSignInAccount currentUser = null;
 
     /**
      * Set the variable currentUser with a given <code>GoogleSignInAccount</code>, which

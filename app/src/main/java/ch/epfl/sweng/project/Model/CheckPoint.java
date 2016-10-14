@@ -3,13 +3,14 @@ package ch.epfl.sweng.project.Model;
 import android.location.Location;
 
 /**
- * An intermediate location mesured during a run.
+ * An intermediate location measured during a run.
  *
  * @author Tobia Albergoni
  */
+@SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
 public class CheckPoint {
 
-    private Location location;
+    private final Location location;
 
     // Check parameters of Location? (time greater than zero, valid coordinates,....)?
     public CheckPoint(Location location) {

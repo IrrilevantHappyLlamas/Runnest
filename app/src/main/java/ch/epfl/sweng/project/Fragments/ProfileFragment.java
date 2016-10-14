@@ -13,22 +13,11 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import ch.epfl.sweng.project.Activities.SideBarActivity;
 
 /**
- * Fragment which serves as profile tab, where profile informations are displayed
+ * Fragment which serves as profile tab, where profile information are displayed
  */
 public class ProfileFragment extends android.support.v4.app.Fragment {
 
-    private ProfileFragmentInteractionListener profileListener;
-
-    /**
-     * Empty constructor, required
-     */
-    public ProfileFragment() {
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    private ProfileFragmentInteractionListener profileListener = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,30 +53,5 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
      */
     public interface ProfileFragmentInteractionListener {
         void onProfileFragmentInteraction(Uri uri);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
     }
 }
