@@ -1,7 +1,5 @@
 package ch.epfl.sweng.project;
 
-import android.app.Fragment;
-
 import org.junit.Assert;
 import org.junit.Test;
 

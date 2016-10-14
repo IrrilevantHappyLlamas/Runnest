@@ -11,11 +11,6 @@ public class AppRunnest extends MultiDexApplication {
 
     private GoogleSignInAccount currentUser;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
-
     /**
      * Set the variable currentUser with a given <code>GoogleSignInAccount</code>, which
      * will be available to every activity of the app.

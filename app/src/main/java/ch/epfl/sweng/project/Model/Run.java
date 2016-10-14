@@ -18,7 +18,7 @@ public class Run implements Effort {
     }
 
     public Run() {
-        this.name = "temp";
+        name = "temp";
         isRunning = false;
     }
 

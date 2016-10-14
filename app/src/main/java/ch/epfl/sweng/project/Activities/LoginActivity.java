@@ -23,12 +23,12 @@ import com.google.android.gms.common.api.Status;
 /**
  * Launch activity which implements google authentication
  */
-public final class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+public final class LoginActivity extends AppCompatActivity
+        implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
     private static final String TAG = "LoginActivity";
     private static final int RC_SIGN_IN = 9001;
 
-    private SignInButton signInButton;
     private GoogleApiClient mGoogleApiClient;
 
     @Override
@@ -52,10 +52,12 @@ public final class LoginActivity extends AppCompatActivity implements GoogleApiC
         // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.sign_out_button).setOnClickListener(this);
+        findViewById(R.id.continue_button).setOnClickListener(this);
 
         // Customize sign-in button
-        signInButton = (SignInButton) findViewById(R.id.sign_in_button);
+        SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
+        //noinspection deprecation
         signInButton.setScopes(gso.getScopeArray());
     }
 
@@ -95,7 +97,6 @@ public final class LoginActivity extends AppCompatActivity implements GoogleApiC
      * @param result    the result of the signup call, a <code>GoogleSignInResult</code>
      */
     private void handleSignInResult(GoogleSignInResult result) {
-        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
 
             // Signed in successfully, show success toast
@@ -149,7 +150,6 @@ public final class LoginActivity extends AppCompatActivity implements GoogleApiC
     // TODO: handle connection failure to google services
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d(TAG, "onConnectionFailed:" + connectionResult);
     }
 
     /**
@@ -166,7 +166,16 @@ public final class LoginActivity extends AppCompatActivity implements GoogleApiC
                 break;
             case R.id.sign_out_button:
                 signOut();
+                break;
+            case R.id.continue_button:
+                continueToApp();
+                break;
         }
+    }
+
+    private void continueToApp() {
+        Intent sideBarIntent = new Intent(this, SideBarActivity.class);
+        startActivity(sideBarIntent);
     }
 }
 

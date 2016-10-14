@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -37,6 +38,7 @@ import ch.epfl.sweng.project.Model.Run;
 
 
 
+@SuppressWarnings("CastToConcreteClass")
 public class LocationDemo extends Fragment implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -64,7 +66,7 @@ public class LocationDemo extends Fragment implements
     // Location update
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
-    protected LocationSettingsRequest mLocationSettingsRequest;
+    private LocationSettingsRequest mLocationSettingsRequest;
     private boolean mRequestingLocationUpdates;
 
     // Data storage
@@ -250,7 +252,7 @@ public class LocationDemo extends Fragment implements
     /**
      * Check whether gps is turned on or not.
      */
-    protected void checkLocationSettings() {
+    private void checkLocationSettings() {
 
         PendingResult<LocationSettingsResult> result =
                 LocationServices.SettingsApi.checkLocationSettings(
@@ -321,13 +323,15 @@ public class LocationDemo extends Fragment implements
      * Check <code>ACCESS_FINE_LOCATION</code> permission, if necessary request it.
      * This check is necessary only with Android 6.0+ and/or SDK 22+
      */
-    public void checkPermission() {
+    private void checkPermission() {
 
         int fineLocation = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
 
         if (fineLocation != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, SideBarActivity.PERMISSION_REQUEST_CODE_FINE_LOCATION);
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        SideBarActivity.PERMISSION_REQUEST_CODE_FINE_LOCATION);
             }
 
         } else {
@@ -342,7 +346,8 @@ public class LocationDemo extends Fragment implements
      */
     private void startLocationUpdates() {
 
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             checkPermission();
             setButtonsEnabledState();
@@ -364,7 +369,7 @@ public class LocationDemo extends Fragment implements
     /**
      * Stop location updates, update buttons state and end the current run.
      */
-    protected void stopLocationUpdates() {
+    private void stopLocationUpdates() {
 
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 mGoogleApiClient,
@@ -390,7 +395,8 @@ public class LocationDemo extends Fragment implements
         // We don't store data yet, we wait that user start the run
         if (mLastCheckPoint == null) {
 
-            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(getContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
                 checkPermission();
                 setButtonsEnabledState();
@@ -494,6 +500,6 @@ public class LocationDemo extends Fragment implements
     }
 
     public interface OnFragmentInteractionListener {
-
+        void onProfileFragmentInteraction(Uri uri);
     }
 }

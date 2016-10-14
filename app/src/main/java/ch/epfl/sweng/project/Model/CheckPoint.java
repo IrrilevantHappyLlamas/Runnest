@@ -7,9 +7,10 @@ import android.location.Location;
  *
  * @author Tobia Albergoni
  */
+@SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
 public class CheckPoint {
 
-    private Location location;
+    private final Location location;
 
     // Check parameters of Location? (time greater than zero, valid coordinates,....)?
     public CheckPoint(Location location) {

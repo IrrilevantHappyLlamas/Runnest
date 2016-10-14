@@ -1,18 +1,25 @@
 <resources>
     <string name="app_name">Project</string>
-    <string name="location_demo">Location Demo</string>
     <string name="title_activity_side_bar">SideBarActivity</string>
     <string name="checkpoint_number">CheckPoints saved:</string>
     <string name="none">None</string>
+    <string name="desc">Default Description</string>
+
+    <string name="profile_tab">Profile</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
     <string name="stop">Stop</string>
     <string name="start">Start</string>
+    <string name="tbd_tab">TBD</string>
+    <string name="runnest">Runnest</string>
+    <string name="share_tab">Share</string>
+    <string name="send_tab">Send</string>
+    <string name="irrilevant_happy_llamas">Irrilevant Happy Llamas</string>
+    <string name="temp">temp</string>
 </resources>

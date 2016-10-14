@@ -1,7 +1,6 @@
 package ch.epfl.sweng.project.Activities;
 
 import android.content.pm.PackageManager;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,7 +24,6 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import ch.epfl.sweng.project.Fragments.LocationDemo;
 
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
-import ch.epfl.sweng.project.Fragments.RunningMapFragment;
 import ch.epfl.sweng.project.Model.Profile;
 
 
@@ -62,14 +60,18 @@ public class SideBarActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        //noinspection deprecation
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-
+        /*
         //Profile
         Intent i = getIntent();
-        profile = new Profile(i.getSerializableExtra("id").toString(), i.getSerializableExtra("id").toString(), i.getSerializableExtra("id").toString(),i.getSerializableExtra("id").toString());
-
+        profile = new Profile(i.getSerializableExtra("id").toString(),
+         i.getSerializableExtra("id").toString(),
+          i.getSerializableExtra("id").toString(),
+           i.getSerializableExtra("id").toString());
+        */
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -125,16 +127,7 @@ public class SideBarActivity extends AppCompatActivity
         if (id == R.id.nav_profile) {
             runningFragment = new ProfileFragment();
             fragmentManager.beginTransaction().replace(R.id.fragment_container, runningFragment).commit();
-
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_gallery || id == R.id.nav_slideshow) {
 
         }
 
@@ -151,7 +144,9 @@ public class SideBarActivity extends AppCompatActivity
      * @param grantResults      result of the request, a table of <code>int</code>
      */
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
 
         switch (requestCode) {
 
@@ -164,7 +159,8 @@ public class SideBarActivity extends AppCompatActivity
                 } else {
 
                     locationPermissionGranted = false;
-                    Toast.makeText(getApplicationContext(),"Permission Denied, you cannot start a Run.",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Permission Denied, you cannot start a Run.",
+                             Toast.LENGTH_LONG).show();
                 }
                 break;
 

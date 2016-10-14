@@ -12,6 +12,7 @@ import ch.epfl.sweng.project.Model.CheckPoint;
  *
  * @author Tobia Albergoni
  */
+@SuppressWarnings("MagicNumber")
 public class CheckPointTest {
 
     @Test

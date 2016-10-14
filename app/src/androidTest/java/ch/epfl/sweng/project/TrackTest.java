@@ -14,6 +14,7 @@ import ch.epfl.sweng.project.Model.Track;
  *
  * @author Tobia Albergoni
  */
+@SuppressWarnings("MagicNumber")
 public class TrackTest {
 
     public static CheckPoint buildCheckPoint(double lat, double lon, long time) {

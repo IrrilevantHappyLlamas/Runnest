@@ -5,8 +5,6 @@
     android:orientation="vertical"
     tools:context="ch.epfl.sweng.project.Fragments.LocationDemo">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">

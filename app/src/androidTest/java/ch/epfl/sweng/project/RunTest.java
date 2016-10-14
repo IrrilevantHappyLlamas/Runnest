@@ -11,6 +11,7 @@ import ch.epfl.sweng.project.Model.Track;
  *
  * @author Tobia Albergoni
  */
+@SuppressWarnings("TypeMayBeWeakened")
 public class RunTest {
 
     @Test

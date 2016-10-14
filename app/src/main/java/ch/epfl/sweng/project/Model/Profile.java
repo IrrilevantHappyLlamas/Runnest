@@ -6,10 +6,10 @@ package ch.epfl.sweng.project.Model;
  * @author Riccardo Conti
  */
 public class Profile {
-    private String id;
-    private String email;
-    private String familyName;
-    private String name;
+    private final String id;
+    private final String email;
+    private final String familyName;
+    private final String name;
 
     public Profile(String id, String email, String familyName, String name) {
         this.id = id;
