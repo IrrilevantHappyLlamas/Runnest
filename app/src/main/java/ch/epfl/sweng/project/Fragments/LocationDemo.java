@@ -68,10 +68,9 @@ public class LocationDemo extends Fragment implements
     private boolean mRequestingLocationUpdates;
 
     // Data storage
-    private int mCheckPointSaved;
+    private  int mCheckPointSaved;
     private CheckPoint mLastCheckPoint;
     private Run mRun;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -145,7 +144,7 @@ public class LocationDemo extends Fragment implements
                 mStopUpdatesButton.setVisibility(View.VISIBLE);
                 mRun = new Run();
 
-                if (mLastCheckPoint != null) {
+                if(mLastCheckPoint != null) {
                     mRun.start(mLastCheckPoint);
                     ++mCheckPointSaved;
                     updateGUI();
@@ -190,7 +189,6 @@ public class LocationDemo extends Fragment implements
             mStopUpdatesButton.setEnabled(false);
 
             if (((SideBarActivity) getActivity()).getLocationPermissionGranted()) {
-
                 mStartUpdatesButton.setEnabled(true);
             } else {
 
@@ -265,7 +263,7 @@ public class LocationDemo extends Fragment implements
     /**
      * Handle the result of <code>LocationSettingRequest</code>
      *
-     * @param locationSettingsResult answer of the user to the request
+     * @param locationSettingsResult    answer of the user to the request
      */
     @Override
     public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
@@ -294,9 +292,9 @@ public class LocationDemo extends Fragment implements
     /**
      * Handle results sent by the running activity.
      *
-     * @param requestCode code of the request, an <code>int</code>
-     * @param resultCode  code of the result, an <code>int</code>
-     * @param data        not used here
+     * @param requestCode   code of the request, an <code>int</code>
+     * @param resultCode    code of the result, an <code>int</code>
+     * @param data          not used here
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -328,13 +326,12 @@ public class LocationDemo extends Fragment implements
         int fineLocation = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
 
         if (fineLocation != PackageManager.PERMISSION_GRANTED) {
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, SideBarActivity.PERMISSION_REQUEST_CODE_FINE_LOCATION);
             }
 
         } else {
-            ((SideBarActivity) getActivity()).setLocationPermissionGranted(true);
+            ((SideBarActivity)getActivity()).setLocationPermissionGranted(true);
         }
     }
 
@@ -385,7 +382,7 @@ public class LocationDemo extends Fragment implements
     /**
      * Called when a connect request has been successfully completed.
      *
-     * @param connectionHint not used here
+     * @param connectionHint    not used here
      */
     @Override
     public void onConnected(Bundle connectionHint) {
@@ -401,8 +398,7 @@ public class LocationDemo extends Fragment implements
 
             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
-            if (location != null) {
-
+            if(location != null) {
                 mLastCheckPoint = new CheckPoint(location);
             }
             updateGUI();
@@ -418,7 +414,7 @@ public class LocationDemo extends Fragment implements
      * Called when the client is temporarily in a disconnected state.
      * Try to reconnect.
      *
-     * @param i not used here
+     * @param i     not used here
      */
     @Override
     public void onConnectionSuspended(int i) {
@@ -428,7 +424,7 @@ public class LocationDemo extends Fragment implements
     /**
      * Called when client fails. Does nothing for now.
      *
-     * @param connectionResult not used here
+     * @param connectionResult      not used here
      */
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -439,15 +435,14 @@ public class LocationDemo extends Fragment implements
      * Handle location updates by updating all necessary fields. Then update the GUI
      * by calling <code>updateGUI()</code>
      *
-     * @param location the new <code>Location</code>
+     * @param location      the new <code>Location</code>
      */
     @Override
     public void onLocationChanged(Location location) {
 
         mLastCheckPoint = new CheckPoint(location);
 
-        if (mRun.isRunning()) {
-
+        if(mRun.isRunning()) {
             mRun.update(mLastCheckPoint);
             ++mCheckPointSaved;
         } else {

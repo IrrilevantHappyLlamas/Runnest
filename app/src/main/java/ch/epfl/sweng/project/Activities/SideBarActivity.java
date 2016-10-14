@@ -10,8 +10,6 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -25,6 +23,7 @@ import android.widget.Toast;
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
 import ch.epfl.sweng.project.Fragments.LocationDemo;
+
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RunningMapFragment;
 import ch.epfl.sweng.project.Model.Profile;
@@ -35,12 +34,12 @@ public class SideBarActivity extends AppCompatActivity
         ProfileFragment.ProfileFragmentInteractionListener,
         LocationDemo.OnFragmentInteractionListener {
 
-    private FragmentManager fragmentManager;
-    private Fragment runningFragment;
-
     // Constants
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
     private boolean locationPermissionGranted;
+
+    private Fragment runningFragment;
+    private FragmentManager fragmentManager;
 
     public static Profile profile;
 
@@ -75,12 +74,9 @@ public class SideBarActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
-
         //Initializing the fragment
         fragmentManager = getSupportFragmentManager();
         runningFragment = fragmentManager.findFragmentById(R.id.fragment_container);
-
 
         if(runningFragment == null){
             runningFragment = new LocationDemo();
@@ -155,28 +151,24 @@ public class SideBarActivity extends AppCompatActivity
      * @param grantResults      result of the request, a table of <code>int</code>
      */
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults){
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
 
-        switch(requestCode){
+        switch (requestCode) {
 
-        case PERMISSION_REQUEST_CODE_FINE_LOCATION:
-        if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
+            case PERMISSION_REQUEST_CODE_FINE_LOCATION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-        locationPermissionGranted=true;
-        Toast.makeText(getApplicationContext(),"You can now start a Run.",Toast.LENGTH_LONG).show();
+                    locationPermissionGranted = true;
+                    Toast.makeText(getApplicationContext(),"You can now start a Run.",Toast.LENGTH_LONG).show();
 
-        }else{
+                } else {
 
-        locationPermissionGranted=false;
-        Toast.makeText(getApplicationContext(),"Permission Denied, you cannot start a Run.",Toast.LENGTH_LONG).show();
+                    locationPermissionGranted = false;
+                    Toast.makeText(getApplicationContext(),"Permission Denied, you cannot start a Run.",Toast.LENGTH_LONG).show();
+                }
+                break;
+
         }
-        break;
-
-        }
-        }
-
-    @Override
-    public void onProfileFragmentInteraction(Uri uri) {
 
     }
 
@@ -196,5 +188,10 @@ public class SideBarActivity extends AppCompatActivity
      */
     public void setLocationPermissionGranted(boolean granted) {
         locationPermissionGranted = granted;
+    }
+
+    @Override
+    public void onProfileFragmentInteraction(Uri uri) {
+
     }
 }
