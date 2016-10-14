@@ -83,7 +83,7 @@ public class SideBarActivity extends AppCompatActivity
 
 
         if(runningFragment == null){
-            runningFragment = new RunningMapFragment();
+            runningFragment = new LocationDemo();
             fragmentManager.beginTransaction().add(R.id.fragment_container, runningFragment).commit();
         }
     }
