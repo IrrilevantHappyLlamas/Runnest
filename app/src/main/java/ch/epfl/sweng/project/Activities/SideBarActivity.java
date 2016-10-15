@@ -36,7 +36,6 @@ public class SideBarActivity extends AppCompatActivity
 
     // Constants
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
-    private boolean locationPermissionGranted = false;
 
     private Fragment mCurrentFragment = null;
     private FragmentManager fragmentManager = null;
@@ -160,12 +159,10 @@ public class SideBarActivity extends AppCompatActivity
             case PERMISSION_REQUEST_CODE_FINE_LOCATION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    locationPermissionGranted = true;
                     Toast.makeText(getApplicationContext(),"You can now start a Run.",Toast.LENGTH_LONG).show();
 
                 } else {
 
-                    locationPermissionGranted = false;
                     Toast.makeText(getApplicationContext(),"Permission Denied, you cannot start a Run.",
                              Toast.LENGTH_LONG).show();
                 }
@@ -173,24 +170,6 @@ public class SideBarActivity extends AppCompatActivity
 
         }
 
-    }
-
-    /**
-     * Getter for <code>locationPermissionGranted</code>.
-     *
-     * @return      value of <code>locationPermissionGranted</code>
-     */
-    public boolean getLocationPermissionGranted() {
-        return locationPermissionGranted;
-    }
-
-    /**
-     * Setter for <code>locationPermissionGranted</coder>
-     *
-     * @param granted   the value to set, a <code>Boolean</code>
-     */
-    public void setLocationPermissionGranted(boolean granted) {
-        locationPermissionGranted = granted;
     }
 
     @Override

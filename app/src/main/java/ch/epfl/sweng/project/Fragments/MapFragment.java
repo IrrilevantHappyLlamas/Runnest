@@ -89,9 +89,6 @@ public class MapFragment extends Fragment implements
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_location_demo, container, false);
 
-        // Check location permission
-        checkPermission();
-
         // Setup Graphics
         textViewSetup(view);
         buttonsSetup(view);
@@ -139,24 +136,28 @@ public class MapFragment extends Fragment implements
             @Override
             public void onClick(View v) {
 
-                mNbCheckPointLabel.setVisibility(View.VISIBLE);
-                mNbCheckPointValue.setVisibility(View.VISIBLE);
+                if(checkPermission()) {
+                    mNbCheckPointLabel.setVisibility(View.VISIBLE);
+                    mNbCheckPointValue.setVisibility(View.VISIBLE);
 
-                mStartUpdatesButton.setVisibility(View.INVISIBLE);
-                mStopUpdatesButton.setVisibility(View.VISIBLE);
-                mRun = new Run();
+                    mStartUpdatesButton.setVisibility(View.INVISIBLE);
+                    mStopUpdatesButton.setVisibility(View.VISIBLE);
+                    mRun = new Run();
 
-                if(mLastCheckPoint != null) {
-                    mRun.start(mLastCheckPoint);
-                    ++mCheckPointSaved;
-                    updateGUI();
+                    if (mLastCheckPoint != null) {
+                        mRun.start(mLastCheckPoint);
+                        ++mCheckPointSaved;
+                        updateGUI();
+                    }
+
+                    if (!mRequestingLocationUpdates) {
+                        mRequestingLocationUpdates = true;
+                        setButtonsEnabledState();
+                        startLocationUpdates();
+                    }
                 }
 
-                if (!mRequestingLocationUpdates) {
-                    mRequestingLocationUpdates = true;
-                    setButtonsEnabledState();
-                    startLocationUpdates();
-                }
+                updateGUI();
             }
         });
 
@@ -189,13 +190,7 @@ public class MapFragment extends Fragment implements
         } else {
 
             mStopUpdatesButton.setEnabled(false);
-
-            if (((SideBarActivity) getActivity()).getLocationPermissionGranted()) {
-                mStartUpdatesButton.setEnabled(true);
-            } else {
-
-                mStartUpdatesButton.setEnabled(false);
-            }
+            mStartUpdatesButton.setEnabled(true);
         }
     }
 
@@ -323,7 +318,7 @@ public class MapFragment extends Fragment implements
      * Check <code>ACCESS_FINE_LOCATION</code> permission, if necessary request it.
      * This check is necessary only with Android 6.0+ and/or SDK 22+
      */
-    private void checkPermission() {
+    private boolean checkPermission() {
 
         int fineLocation = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
 
@@ -334,8 +329,10 @@ public class MapFragment extends Fragment implements
                         SideBarActivity.PERMISSION_REQUEST_CODE_FINE_LOCATION);
             }
 
+            return false;
+
         } else {
-            ((SideBarActivity)getActivity()).setLocationPermissionGranted(true);
+            return true;
         }
     }
 
@@ -347,23 +344,29 @@ public class MapFragment extends Fragment implements
     private void startLocationUpdates() {
 
         if (ActivityCompat.checkSelfPermission(getContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-            checkPermission();
-            setButtonsEnabledState();
-        }
-
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient,
-                mLocationRequest,
-                this
-        ).setResultCallback(new ResultCallback<Status>() {
-            @Override
-            public void onResult(@NonNull Status status) {
-                mRequestingLocationUpdates = true;
-                setButtonsEnabledState();
+            if (mLastCheckPoint == null) {
+                Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                if (location != null) {
+                    mLastCheckPoint = new CheckPoint(location);
+                }
+                updateGUI();
             }
-        });
+
+
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient,
+                    mLocationRequest,
+                    this
+            ).setResultCallback(new ResultCallback<Status>() {
+                @Override
+                public void onResult(@NonNull Status status) {
+                    mRequestingLocationUpdates = true;
+                    updateGUI();
+                }
+            });
+        }
     }
 
     /**
@@ -395,14 +398,13 @@ public class MapFragment extends Fragment implements
         // We don't store data yet, we wait that user start the run
         if (mLastCheckPoint == null) {
 
+            Location location = null;
+
             if (ActivityCompat.checkSelfPermission(getContext(),
-                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-                checkPermission();
-                setButtonsEnabledState();
+                location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             }
-
-            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
             if(location != null) {
                 mLastCheckPoint = new CheckPoint(location);
