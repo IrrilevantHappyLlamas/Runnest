@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="ch.epfl.sweng.project.Fragments.LocationDemo">
+    tools:context="ch.epfl.sweng.project.Fragments.MapFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"

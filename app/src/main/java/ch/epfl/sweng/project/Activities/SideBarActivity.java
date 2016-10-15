@@ -21,7 +21,8 @@ import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
-import ch.epfl.sweng.project.Fragments.LocationDemo;
+import ch.epfl.sweng.project.Fragments.HomeFragment;
+import ch.epfl.sweng.project.Fragments.MapFragment;
 
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Model.Profile;
@@ -29,14 +30,15 @@ import ch.epfl.sweng.project.Model.Profile;
 
 public class SideBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
+        HomeFragment.OnFragmentInteractionListener,
         ProfileFragment.ProfileFragmentInteractionListener,
-        LocationDemo.OnFragmentInteractionListener {
+        MapFragment.OnFragmentInteractionListener {
 
     // Constants
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
     private boolean locationPermissionGranted = false;
 
-    private Fragment runningFragment = null;
+    private Fragment mCurrentFragment = null;
     private FragmentManager fragmentManager = null;
 
     public static Profile profile = null;
@@ -78,11 +80,11 @@ public class SideBarActivity extends AppCompatActivity
 
         //Initializing the fragment
         fragmentManager = getSupportFragmentManager();
-        runningFragment = fragmentManager.findFragmentById(R.id.fragment_container);
+        mCurrentFragment = fragmentManager.findFragmentById(R.id.fragment_container);
 
-        if(runningFragment == null){
-            runningFragment = new LocationDemo();
-            fragmentManager.beginTransaction().add(R.id.fragment_container, runningFragment).commit();
+        if(mCurrentFragment == null){
+            mCurrentFragment = new HomeFragment();
+            fragmentManager.beginTransaction().add(R.id.fragment_container, mCurrentFragment).commit();
         }
     }
 
@@ -125,11 +127,16 @@ public class SideBarActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_profile) {
-            runningFragment = new ProfileFragment();
-            fragmentManager.beginTransaction().replace(R.id.fragment_container, runningFragment).commit();
-        } else if (id == R.id.nav_gallery || id == R.id.nav_slideshow) {
+            mCurrentFragment = new ProfileFragment();
+
+        } else if (id == R.id.nav_new_run) {
+            mCurrentFragment = new MapFragment();
+
+        } else if (id == R.id.nav_slideshow) {
 
         }
+
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -188,6 +195,11 @@ public class SideBarActivity extends AppCompatActivity
 
     @Override
     public void onProfileFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
 
     }
 }

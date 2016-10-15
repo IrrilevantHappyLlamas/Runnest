@@ -39,7 +39,7 @@ import ch.epfl.sweng.project.Model.Run;
 
 
 @SuppressWarnings({"CastToConcreteClass", "MethodParameterNamingConvention"})
-public class LocationDemo extends Fragment implements
+public class MapFragment extends Fragment implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
