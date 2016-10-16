@@ -34,7 +34,6 @@ public class SideBarActivity extends AppCompatActivity
         ProfileFragment.ProfileFragmentInteractionListener,
         MapFragment.OnFragmentInteractionListener {
 
-    // Constants
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
 
     private Fragment mCurrentFragment = null;

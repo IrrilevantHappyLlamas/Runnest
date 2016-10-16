@@ -31,6 +31,12 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import ch.epfl.sweng.project.Activities.SideBarActivity;
 import ch.epfl.sweng.project.Model.CheckPoint;
@@ -42,6 +48,7 @@ import ch.epfl.sweng.project.Model.Run;
 public class MapFragment extends Fragment implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
+        OnMapReadyCallback,
         LocationListener,
         ResultCallback<LocationSettingsResult> {
 
@@ -58,10 +65,6 @@ public class MapFragment extends Fragment implements
     // Layout
     private Button mStartUpdatesButton = null;
     private Button mStopUpdatesButton = null;
-    private TextView mLatitudeText = null;
-    private TextView mLongitudeText = null;
-    private TextView mNbCheckPointLabel = null;
-    private TextView mNbCheckPointValue = null;
 
     // Location update
     private GoogleApiClient mGoogleApiClient = null;
@@ -69,8 +72,12 @@ public class MapFragment extends Fragment implements
     private LocationSettingsRequest mLocationSettingsRequest = null;
     private boolean mRequestingLocationUpdates = false;
 
+    // Map
+    private MapView mMapView = null;
+    private GoogleMap mMap = null;
+    private PolylineOptions mPolylineOptions = null;
+
     // Data storage
-    private  int mCheckPointSaved = 0;
     private CheckPoint mLastCheckPoint = null;
     private Run mRun = null;
 
@@ -87,10 +94,9 @@ public class MapFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_location_demo, container, false);
+        View view = inflater.inflate(R.layout.fragment_map, container, false);
 
         // Setup Graphics
-        textViewSetup(view);
         buttonsSetup(view);
 
         // Setup location tracking
@@ -100,27 +106,13 @@ public class MapFragment extends Fragment implements
         buildLocationSettingsRequest();
         checkLocationSettings();
 
+        // Map
+        mMapView = (MapView) view.findViewById(R.id.mapView);
+        mMapView.onCreate(savedInstanceState);
+        mMapView.getMapAsync(this);
+
         return view;
     }
-
-    /**
-     * Setup all <code>textView</code> of the fragment, linking them to their respective
-     * layout component. Also initialize their value and visibility if necessary.
-     *
-     * @param view <code>View</code> where text views must be added
-     */
-    private void textViewSetup(View view) {
-
-        mLatitudeText = (TextView) view.findViewById(R.id.latitude_text);
-        mLongitudeText = (TextView) view.findViewById(R.id.longitude_text);
-
-        mNbCheckPointLabel = (TextView) view.findViewById(R.id.nb_checkPoint_label);
-        mNbCheckPointValue = (TextView) view.findViewById(R.id.nb_checkPoint_value);
-        mNbCheckPointLabel.setVisibility(View.INVISIBLE);
-        mNbCheckPointValue.setVisibility(View.INVISIBLE);
-        mCheckPointSaved = 0;
-    }
-
 
     /**
      * Setup buttons, linking them to their respective layout components and
@@ -137,8 +129,6 @@ public class MapFragment extends Fragment implements
             public void onClick(View v) {
 
                 if(checkPermission()) {
-                    mNbCheckPointLabel.setVisibility(View.VISIBLE);
-                    mNbCheckPointValue.setVisibility(View.VISIBLE);
 
                     mStartUpdatesButton.setVisibility(View.INVISIBLE);
                     mStopUpdatesButton.setVisibility(View.VISIBLE);
@@ -146,18 +136,15 @@ public class MapFragment extends Fragment implements
 
                     if (mLastCheckPoint != null) {
                         mRun.start(mLastCheckPoint);
-                        ++mCheckPointSaved;
-                        updateGUI();
                     }
 
                     if (!mRequestingLocationUpdates) {
                         mRequestingLocationUpdates = true;
-                        setButtonsEnabledState();
                         startLocationUpdates();
                     }
-                }
 
-                updateGUI();
+                    setButtonsEnabledState();
+                }
             }
         });
 
@@ -195,20 +182,6 @@ public class MapFragment extends Fragment implements
     }
 
     /**
-     * Update the GUI in order to be coherent with the current state of the variables.
-     */
-    private void updateGUI() {
-
-        setButtonsEnabledState();
-
-        if (mLastCheckPoint != null) {
-            mLatitudeText.setText(String.valueOf(mLastCheckPoint.getLatitude()));
-            mLongitudeText.setText(String.valueOf(mLastCheckPoint.getLongitude()));
-            mNbCheckPointValue.setText(String.valueOf(mCheckPointSaved));
-        }
-    }
-
-    /**
      * Initialize the <code>GoogleApiClient</code> field of the fragment, add to it all
      * necessary parameters and finally build it.
      */
@@ -220,6 +193,39 @@ public class MapFragment extends Fragment implements
                 .build();
     }
 
+    /**
+     * this method draws an hardcoded path on the given map that connects EPFL to
+     * Lugano passing by several swiss cities.
+     *
+     * @param googleMap the map where the path will be represented.
+     */
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+        mMap = googleMap;
+
+        // Add a marker at the EPFL and move the camera.
+
+        showCurrentPosition();
+
+        //this line disables all user interaction with the map.
+        //mMap.getUiSettings().setAllGesturesEnabled(false);
+
+
+        //this line represents the path on the map.
+        //Polyline mMutablePolyline = mMap.addPolyline(mPolylineOptions.color(Color.BLUE));
+
+        //this line moves the camera so that the path can be displayed nicely.
+        //mMap.moveCamera(CameraUpdateFactory.newCameraPosition(SWITZERLAND));
+    }
+
+    private void showCurrentPosition() {
+        if(mLastCheckPoint != null) {
+
+            LatLng currentPosition = new LatLng(mLastCheckPoint.getLatitude(), mLastCheckPoint.getLongitude());
+            mMap.addMarker(new MarkerOptions().position(currentPosition).title("You are here!"));
+        }
+    }
     /**
      * Initialize the <code>LocationRequest</code> field of the fragment and setup all
      * necessary parameters using the apposite constants.
@@ -351,7 +357,6 @@ public class MapFragment extends Fragment implements
                 if (location != null) {
                     mLastCheckPoint = new CheckPoint(location);
                 }
-                updateGUI();
             }
 
 
@@ -363,7 +368,6 @@ public class MapFragment extends Fragment implements
                 @Override
                 public void onResult(@NonNull Status status) {
                     mRequestingLocationUpdates = true;
-                    updateGUI();
                 }
             });
         }
@@ -409,7 +413,6 @@ public class MapFragment extends Fragment implements
             if(location != null) {
                 mLastCheckPoint = new CheckPoint(location);
             }
-            updateGUI();
         }
 
         if (mRequestingLocationUpdates) {
@@ -452,14 +455,10 @@ public class MapFragment extends Fragment implements
 
         if(mRun.isRunning()) {
             mRun.update(mLastCheckPoint);
-            ++mCheckPointSaved;
         } else {
 
             mRun.start(mLastCheckPoint);
-            ++mCheckPointSaved;
         }
-
-        updateGUI();
     }
 
 
