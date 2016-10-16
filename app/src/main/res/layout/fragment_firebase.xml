@@ -83,6 +83,17 @@
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
+        android:layout_alignBottom="@+id/retrieve_user"
+        android:layout_alignLeft="@+id/tot_time"
+        android:layout_alignStart="@+id/tot_time"
+        android:id="@+id/get_user"
+        android:hint="User ID"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
         android:id="@+id/run_user"
         android:hint="User ID"
         android:layout_marginTop="26dp"
@@ -90,23 +101,35 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"/>
 
+    <TextView
+        android:text="Name:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        android:id="@+id/retrieved_name"
+        android:layout_below="@+id/retrieve_user"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/add_run"
+        android:layout_toRightOf="@+id/add_run"/>
+
+    <TextView
+        android:text="Runs:"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/retrieved_name"
+        android:layout_alignLeft="@+id/retrieved_name"
+        android:layout_alignStart="@+id/retrieved_name"
+        android:layout_marginTop="46dp"
+        android:id="@+id/retrieved_runs"/>
+
     <Button
         android:text="Retrieve User"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/retrieve_user"
         android:layout_below="@+id/tot_time"
         android:layout_alignLeft="@+id/add_run"
-        android:layout_alignStart="@+id/add_run"
-        android:layout_marginTop="45dp"
-        android:id="@+id/retrieve_user"/>
-
-    <TextView
-        android:text="TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/retrieve_user"
-        android:layout_alignLeft="@+id/tot_time"
-        android:layout_alignStart="@+id/tot_time"
-        android:id="@+id/textView6"/>
+        android:layout_alignStart="@+id/add_run"/>
 
 </RelativeLayout>

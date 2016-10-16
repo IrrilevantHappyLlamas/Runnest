@@ -4,19 +4,20 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import ch.epfl.sweng.project.Model.Profile;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * Demo fragment to show transactions with firebase database
@@ -29,6 +30,7 @@ public class FirebaseFragment extends Fragment implements View.OnClickListener {
 
     private Button addUser = null;
     private Button addRun = null;
+    private Button retrieveUser = null;
 
     private EditText idText = null;
     private EditText nameText = null;
@@ -37,6 +39,11 @@ public class FirebaseFragment extends Fragment implements View.OnClickListener {
     private EditText runText = null;
     private EditText distText = null;
     private EditText timeText = null;
+
+    private EditText askId = null;
+
+    private TextView retName = null;
+    private TextView retRun = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,11 +62,19 @@ public class FirebaseFragment extends Fragment implements View.OnClickListener {
         distText = (EditText) view.findViewById((R.id.tot_dist));
         timeText = (EditText) view.findViewById((R.id.tot_time));
 
+        askId = (EditText) view.findViewById((R.id.get_user));
+
+        retName = (TextView) view.findViewById((R.id.retrieved_name));
+        retRun = (TextView) view.findViewById((R.id.retrieved_runs));
+
         addUser = (Button) view.findViewById(R.id.add_user);
         addUser.setOnClickListener(this);
 
         addRun = (Button) view.findViewById(R.id.add_run);
         addRun.setOnClickListener(this);
+
+        retrieveUser = (Button) view.findViewById(R.id.retrieve_user);
+        retrieveUser.setOnClickListener(this);
 
         return view;
     }
@@ -92,17 +107,38 @@ public class FirebaseFragment extends Fragment implements View.OnClickListener {
         String id = idText.getText().toString();
         String name = nameText.getText().toString();
 
-        if(userExists(id)) {
-            mDatabase.child("users").child(id).child("name").setValue(name);
-            Toast.makeText(getActivity().getBaseContext(), "User added", Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(getActivity().getBaseContext(), "User already exists", Toast.LENGTH_LONG).show();
-        }
+        mDatabase.child("users").child(id).child("name").setValue(name);
+        Toast.makeText(getActivity().getBaseContext(), "User added", Toast.LENGTH_LONG).show();
     }
 
-    private boolean userExists(String id) {
-        mDatabase.child(id).once('value', function(snapshot));
-        (snapshot.val() !== null);
+    private void retrieveUser() {
+        if(askId.getText().toString().isEmpty()) {
+            Toast.makeText(getActivity().getBaseContext(), "Insert something in all fields", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        String id = askId.getText().toString();
+
+        mDatabase.child("users").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    retName.setText("Name : " + dataSnapshot.child("name").getValue().toString());
+                    if (dataSnapshot.child("runs").exists()) {
+                        retRun.setText("Runs : " + dataSnapshot.child("runs").getChildren().iterator().next().getValue().toString());
+                    } else {
+                        retRun.setText("Runs : -");
+                    }
+                } else {
+                    Toast.makeText(getActivity().getBaseContext(), "No data", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
@@ -130,6 +166,9 @@ public class FirebaseFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.add_run:
                 getAndWriteRun();
+                break;
+            case R.id.retrieve_user:
+                retrieveUser();
                 break;
         }
     }
