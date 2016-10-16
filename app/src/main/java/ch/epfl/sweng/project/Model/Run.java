@@ -33,6 +33,10 @@ public class Run implements Effort {
         return new Track(track);
     }
 
+    public void setTrack(Track track) {
+        this.track = new Track(track);
+    }
+
     @Override
     public boolean start(CheckPoint startingPoint) {
         if (track == null) {
