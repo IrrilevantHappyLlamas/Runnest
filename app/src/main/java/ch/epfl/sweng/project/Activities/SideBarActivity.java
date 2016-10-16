@@ -21,16 +21,20 @@ import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
+import ch.epfl.sweng.project.Fragments.FirebaseFragment;
 import ch.epfl.sweng.project.Fragments.LocationDemo;
 
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
+import ch.epfl.sweng.project.Fragments.RunningMapFragment;
 import ch.epfl.sweng.project.Model.Profile;
 
 
 public class SideBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         ProfileFragment.ProfileFragmentInteractionListener,
-        LocationDemo.OnFragmentInteractionListener {
+        RunningMapFragment.RunningMapFragmentInteractionListener,
+        LocationDemo.OnFragmentInteractionListener,
+        FirebaseFragment.FireBaseFragmentInteractionListener {
 
     // Constants
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
@@ -81,7 +85,7 @@ public class SideBarActivity extends AppCompatActivity
         runningFragment = fragmentManager.findFragmentById(R.id.fragment_container);
 
         if(runningFragment == null){
-            runningFragment = new LocationDemo();
+            runningFragment = new RunningMapFragment();
             fragmentManager.beginTransaction().add(R.id.fragment_container, runningFragment).commit();
         }
     }
@@ -126,10 +130,11 @@ public class SideBarActivity extends AppCompatActivity
 
         if (id == R.id.nav_profile) {
             runningFragment = new ProfileFragment();
-            fragmentManager.beginTransaction().replace(R.id.fragment_container, runningFragment).commit();
-        } else if (id == R.id.nav_gallery || id == R.id.nav_slideshow) {
-
+        } else if (id == R.id.nav_firebase) {
+            runningFragment = new FirebaseFragment();
         }
+
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, runningFragment).commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -188,6 +193,16 @@ public class SideBarActivity extends AppCompatActivity
 
     @Override
     public void onProfileFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onFirebaseFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onRunningMapFragmentInteraction(Uri uri) {
 
     }
 }

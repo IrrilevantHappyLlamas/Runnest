@@ -15,9 +15,9 @@
             android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/tbd_tab" />
         <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="@string/tbd_tab" />
+            android:id="@+id/nav_firebase"
+            android:icon="@drawable/firebase_icon"
+            android:title="@string/firebase" />
     </group>
 
     <item android:title="@string/runnest">
