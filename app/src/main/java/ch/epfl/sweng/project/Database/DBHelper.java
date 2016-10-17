@@ -121,7 +121,6 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     private Track fetchTrack(long fromId, long toId) {
-        System.out.println("_____-----_____-----_____ " + fromId + " "+ toId);
         String selection = CHECKPOINTS_COLS[0] + " >= " + fromId + " AND " + CHECKPOINTS_COLS[0] + " <= " + toId;
         Cursor result = db.query(CHECKPOINTS_TABLE_NAME, CHECKPOINTS_COLS, selection, null, null, null, null);
         Track track = new Track();
@@ -134,7 +133,6 @@ public class DBHelper extends SQLiteOpenHelper {
                 location.setTime(result.getLong(4));
                 CheckPoint checkpoint = new CheckPoint(location);
                 boolean isAdded = track.add(checkpoint);
-                System.out.println(isAdded + " " + track.getTotalCheckPoints());
             }
         }
         result.close();
