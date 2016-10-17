@@ -24,13 +24,15 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import ch.epfl.sweng.project.Fragments.LocationDemo;
 
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
+import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
 import ch.epfl.sweng.project.Model.Profile;
 
 
 public class SideBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         ProfileFragment.ProfileFragmentInteractionListener,
-        LocationDemo.OnFragmentInteractionListener {
+        LocationDemo.OnFragmentInteractionListener,
+        RunHistoryFragment.RunHistoryInteractionListener {
 
     // Constants
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
@@ -127,7 +129,10 @@ public class SideBarActivity extends AppCompatActivity
         if (id == R.id.nav_profile) {
             runningFragment = new ProfileFragment();
             fragmentManager.beginTransaction().replace(R.id.fragment_container, runningFragment).commit();
-        } else if (id == R.id.nav_gallery || id == R.id.nav_slideshow) {
+        } else if(id == R.id.nav_slideshow) {
+            runningFragment = new RunHistoryFragment();
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, runningFragment).commit();
+        } else if(id == R.id.nav_gallery){
 
         }
 
@@ -188,6 +193,11 @@ public class SideBarActivity extends AppCompatActivity
 
     @Override
     public void onProfileFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onRunHistoryInteraction(Uri uri) {
 
     }
 }
