@@ -1,5 +1,7 @@
 package ch.epfl.sweng.project.Model;
 
+import java.io.Serializable;
+
 /**
  * Implementation of the run effort, which contains the track and
  * specifications of the run
@@ -7,7 +9,9 @@ package ch.epfl.sweng.project.Model;
  * @author Tobia Albergoni
  */
 @SuppressWarnings("ClassNamingConvention")
-public class Run implements Effort {
+public class Run
+        implements Effort,
+        Serializable{
 
     private String name;
     private Track track = null;

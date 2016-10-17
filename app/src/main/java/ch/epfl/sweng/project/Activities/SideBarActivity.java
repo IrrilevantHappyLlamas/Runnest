@@ -21,18 +21,21 @@ import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
+import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
 import ch.epfl.sweng.project.Fragments.LocationDemo;
 
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
 import ch.epfl.sweng.project.Model.Profile;
+import ch.epfl.sweng.project.Model.Run;
 
 
 public class SideBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         ProfileFragment.ProfileFragmentInteractionListener,
         LocationDemo.OnFragmentInteractionListener,
-        RunHistoryFragment.RunHistoryInteractionListener {
+        RunHistoryFragment.onRunHistoryInteractionListener,
+        DisplayRunFragment.OnDisplayRunInteractionListener{
 
     // Constants
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
@@ -197,7 +200,16 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onRunHistoryInteraction(Uri uri) {
+    public void onRunHistoryInteraction(Run run) {
 
+        runningFragment = DisplayRunFragment.newInstance(run);
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, runningFragment).commit();
+    }
+
+    @Override
+    public void onDisplayRunInteraction() {
+
+        runningFragment = new RunHistoryFragment();
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, runningFragment).commit();
     }
 }

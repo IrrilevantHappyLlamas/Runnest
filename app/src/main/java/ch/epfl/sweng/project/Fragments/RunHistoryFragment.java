@@ -1,5 +1,6 @@
 package ch.epfl.sweng.project.Fragments;
 
+import android.support.v4.app.ListFragment;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -8,20 +9,26 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
+import java.util.List;
+
+import ch.epfl.sweng.project.Database.DBHelper;
+import ch.epfl.sweng.project.Model.Run;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link RunHistoryFragment.RunHistoryInteractionListener} interface
+ * {@link RunHistoryFragment.onRunHistoryInteractionListener} interface
  * to handle interaction events.
- * Use the {@link RunHistoryFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
-public class RunHistoryFragment extends Fragment {
+public class RunHistoryFragment extends ListFragment {
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -31,101 +38,50 @@ public class RunHistoryFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    // cambiare nome qui
-    private RunHistoryInteractionListener mListener;
+
+    private onRunHistoryInteractionListener mListener;
+    private List<Run> runs;
 
     public RunHistoryFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment RunHistoryFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static RunHistoryFragment newInstance(String param1, String param2) {
-        RunHistoryFragment fragment = new RunHistoryFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    //@Override
-    //public void onCreate(Bundle savedInstanceState) {
-    //    super.onCreate(savedInstanceState);
-    //    if (getArguments() != null) {
-    //        mParam1 = getArguments().getString(ARG_PARAM1);
-    //        mParam2 = getArguments().getString(ARG_PARAM2);
-    //    }
-    //}
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_run_history, container, false);
 
-        //implement your code here
+        View view = inflater.inflate(R.layout.simple_listview, container, false);
 
-       // DBAdapter dbAdapter = new dbAdapter(this.getContext());
-       // Cursor cursor = dbAdapter.fetchAllContacts();
 
-      //  cursor.moveToFirst();
+        DBHelper dbHelper = new DBHelper(this.getContext());
 
-        TableLayout table = (TableLayout) view.findViewById(R.id.table);
+        runs = dbHelper.fetchAllEfforts();
 
-        TableRow firstRow = new TableRow(this.getContext());
+        String[] runNames = null;
 
-        String[] columnNames = {"rosso", "blu", "giallo"};
-                //cursor.getColumnNames();
+        if(runs.isEmpty()){
 
-        for(int i = 0; i < columnNames.length;
-                //cursor.getColumnCount();
-                 ++i){
-
-            TextView columnTitle = new TextView(this.getContext());
-            columnTitle.setText(columnNames[i]);
-            firstRow.addView(columnTitle);
+            runNames = new String[]{"No Run has been recorded yet."};
         }
-         table.addView(firstRow);
+        else {
 
+            runNames = new String[runs.size()];
 
-    //    while(!cursor.isAfterLast()){
+            for (int i = 0; i < runs.size(); ++i) {
 
-    //        TableRow nextRow = new TableRow(this.getContext());
-
-    //        for(int i = 0; i < cursor.getColumnCount(); ++i){
-
-    //            TextView nextElement = new TextView(this.getContext());
-    //            nextElement.setText(cursor.getString(i));
-    //            nextRow.addView(nextElement);
-    //        }
-
-    //        table.addView(nextRow);
-    //    }
-
-     //   dbAdapter.close();
-
-        return view;
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onRunHistoryInteraction(uri);
+                runNames[i] = runs.get(i).getName();
+            }
         }
-    }
+                this.setListAdapter(new ArrayAdapter<String>(this.getContext(), R.layout.simple_textview, runNames));
+
+                return view;
+        }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof RunHistoryInteractionListener) {
-            mListener = (RunHistoryInteractionListener) context;
+        if (context instanceof onRunHistoryInteractionListener) {
+            mListener = (onRunHistoryInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -138,6 +94,14 @@ public class RunHistoryFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id){
+
+        if(!runs.isEmpty()){
+
+            mListener.onRunHistoryInteraction(runs.get(position));
+        }
+    }
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -148,9 +112,8 @@ public class RunHistoryFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface RunHistoryInteractionListener {
-        // TODO: Update argument type and name
-        //cambiare coerentemente
-        void onRunHistoryInteraction(Uri uri);
+    public interface onRunHistoryInteractionListener {
+
+        void onRunHistoryInteraction(Run run);
     }
 }
