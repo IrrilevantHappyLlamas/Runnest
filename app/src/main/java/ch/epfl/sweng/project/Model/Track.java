@@ -16,6 +16,13 @@ public class Track {
     private float distance;
     private long duration;
 
+    public Track() {
+        checkpoints = new ArrayList<>();
+        totalCheckPoints = 0;
+        distance = 0;
+        duration = 0;
+    }
+
     public Track(CheckPoint startingPoint) {
         checkpoints = new ArrayList<>();
         checkpoints.add(startingPoint);
@@ -34,13 +41,18 @@ public class Track {
 
     public boolean add(CheckPoint newPoint) {
         // Warning if we try to add a non coherent CheckPoint to the Track?
-        if(newPoint.getTime() < checkpoints.get(totalCheckPoints-1).getTime()) {
-            return false;
-        }
-        else {
+        if (totalCheckPoints > 0) {
+            if (newPoint.getTime() < checkpoints.get(totalCheckPoints - 1).getTime()) {
+                return false;
+            } else {
+                checkpoints.add(newPoint);
+                distance += checkpoints.get(totalCheckPoints - 1).distanceTo(newPoint);
+                duration = newPoint.getTime() - checkpoints.get(0).getTime();
+                totalCheckPoints++;
+                return true;
+            }
+        } else {
             checkpoints.add(newPoint);
-            distance += checkpoints.get(totalCheckPoints -1).distanceTo(newPoint);
-            duration = newPoint.getTime() - checkpoints.get(0).getTime();
             totalCheckPoints++;
             return true;
         }
@@ -57,6 +69,8 @@ public class Track {
     public long getDuration() {
         return duration;
     }
+
+    public List<CheckPoint> getCheckpoints() { return checkpoints; }
 
     public CheckPoint getLastPoint() {
         return checkpoints.get(totalCheckPoints -1);

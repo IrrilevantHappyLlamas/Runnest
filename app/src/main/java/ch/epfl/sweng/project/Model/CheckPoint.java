@@ -29,6 +29,8 @@ public class CheckPoint {
         return location.getLongitude();
     }
 
+    public double getAltitude() { return location.getAltitude(); }
+
     public long getTime() {
         return location.getTime();
     }
