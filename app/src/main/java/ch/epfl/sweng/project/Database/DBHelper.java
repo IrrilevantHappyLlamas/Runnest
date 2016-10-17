@@ -78,7 +78,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     /**
      * Inserts a checkpoint in the checkpoints table
-     * @param checkpoint
+     * @param checkpoint the checkpoint to insert
      * @return the id of the inserted row
      */
     private long insert(CheckPoint checkpoint) {
@@ -92,22 +92,22 @@ public class DBHelper extends SQLiteOpenHelper {
 
     /**
      * Delete an effort given its id
-     * @param id
+     * @param id the id of the effort to delete
      * @return true if the deletion was succesfull
      */
-    public boolean deleteEffort(long id) {
+    private boolean deleteEffort(long id) {
         //also needs to delete checkpoints
         return db.delete(EFFORTS_TABLE_NAME, EFFORTS_COLS[0] + " = " + id, null) > 0;
     }
 
     public List<Run> fetchAllEfforts() {
         Cursor result = db.query(EFFORTS_TABLE_NAME, EFFORTS_COLS, null, null, null, null, null);
-        List<Run> efforts = new ArrayList<Run>();
+        List<Run> efforts = new ArrayList<>();
         if (result.getCount() > 0) {
             while (result.moveToNext()) {
-                long id = result.getLong(0);
+                //long id = result.getLong(0);
                 String name = result.getString(1);
-                String type = result.getString(2);
+                //String type = result.getString(2);
                 long fromId = result.getLong(3);
                 long toId = result.getLong(4);
                 Track track = fetchTrack(fromId, toId);
@@ -116,6 +116,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 efforts.add(run);
             }
         }
+        result.close();
         return efforts;
     }
 
@@ -136,6 +137,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 System.out.println(isAdded + " " + track.getTotalCheckPoints());
             }
         }
+        result.close();
         return track;
     }
 }
