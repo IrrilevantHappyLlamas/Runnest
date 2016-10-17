@@ -3,16 +3,16 @@ package ch.epfl.sweng.project;
 import org.junit.Assert;
 import org.junit.Test;
 
-import ch.epfl.sweng.project.Fragments.MapFragment;
+import ch.epfl.sweng.project.Fragments.RunningMapFragment;
 
-public class MapFragmentTest {
+public class RunningMapFragmentTest {
 
     @Test
     public void defaultConstructorWork(){
 
-        MapFragment testFragment = null;
+        RunningMapFragment testFragment = null;
 
-        testFragment = new MapFragment();
+        testFragment = new RunningMapFragment();
 
         Assert.assertNotEquals(null, testFragment);
     }

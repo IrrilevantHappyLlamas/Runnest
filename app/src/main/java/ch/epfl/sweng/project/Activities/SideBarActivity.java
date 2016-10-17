@@ -22,7 +22,7 @@ import android.widget.Toast;
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
 import ch.epfl.sweng.project.Fragments.HomeFragment;
-import ch.epfl.sweng.project.Fragments.MapFragment;
+import ch.epfl.sweng.project.Fragments.RunningMapFragment;
 
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Model.Profile;
@@ -32,7 +32,7 @@ public class SideBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         HomeFragment.OnFragmentInteractionListener,
         ProfileFragment.ProfileFragmentInteractionListener,
-        MapFragment.OnFragmentInteractionListener {
+        RunningMapFragment.RunningMapFragmentInteractionListener {
 
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
 
@@ -128,7 +128,7 @@ public class SideBarActivity extends AppCompatActivity
             mCurrentFragment = new ProfileFragment();
 
         } else if (id == R.id.nav_new_run) {
-            mCurrentFragment = new MapFragment();
+            mCurrentFragment = new RunningMapFragment();
 
         } else if (id == R.id.nav_slideshow) {
 
@@ -178,6 +178,11 @@ public class SideBarActivity extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onRunningMapFragmentInteraction(Uri uri) {
 
     }
 }
