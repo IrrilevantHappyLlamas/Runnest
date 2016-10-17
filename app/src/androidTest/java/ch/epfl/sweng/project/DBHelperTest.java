@@ -18,7 +18,7 @@ import ch.epfl.sweng.project.Model.Track;
 public class DBHelperTest {
     private DBHelper dbHelper;
 
-    public static CheckPoint buildCheckPoint(double lat, double lon, long time) {
+    private static CheckPoint buildCheckPoint(double lat, double lon, long time) {
         Location location = new Location("test");
         location.setLatitude(lat);
         location.setLongitude(lon);
@@ -36,8 +36,8 @@ public class DBHelperTest {
     public void canInsertNewEffort() {
         Track testTrack = new Track();
         testTrack.add(buildCheckPoint(2, 2, 2));
-        testTrack.add(buildCheckPoint(3, 3, 3));
-        testTrack.add(buildCheckPoint(4, 4, 4));
+        testTrack.add(buildCheckPoint(2, 3, 3));
+        testTrack.add(buildCheckPoint(2, 4, 4));
 
         Run testRun = new Run("test");
         testRun.setTrack(testTrack);
@@ -60,5 +60,6 @@ public class DBHelperTest {
         Assert.assertEquals("test", name);
         Track track = lastRun.getTrack();
         Assert.assertEquals(3, track.getTotalCheckPoints());
+        Assert.assertEquals(222504, track.getDistance(), 1);
     }
 }

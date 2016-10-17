@@ -53,6 +53,7 @@ public class Track {
             }
         } else {
             checkpoints.add(newPoint);
+            totalCheckPoints++;
             return true;
         }
     }

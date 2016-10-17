@@ -131,9 +131,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 location.setLongitude(result.getDouble(2));
                 location.setAltitude(result.getDouble(3));
                 location.setTime(result.getLong(4));
-                System.out.println(location.getLatitude());
                 CheckPoint checkpoint = new CheckPoint(location);
-                track.add(checkpoint);
+                boolean isAdded = track.add(checkpoint);
+                System.out.println(isAdded + " " + track.getTotalCheckPoints());
             }
         }
         return track;
