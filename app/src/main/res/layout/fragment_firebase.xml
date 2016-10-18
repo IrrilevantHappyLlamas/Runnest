@@ -30,64 +30,11 @@
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
-        android:id="@+id/tot_dist"
-        android:layout_below="@+id/run_name"
-        android:layout_alignLeft="@+id/run_name"
-        android:layout_alignStart="@+id/run_name"
-        android:hint="Total distance"/>
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/tot_time"
-        android:layout_below="@+id/tot_dist"
-        android:layout_alignLeft="@+id/tot_dist"
-        android:layout_alignStart="@+id/tot_dist"
-        android:hint="Total time"/>
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
         android:id="@+id/edit_user_id"
         android:hint="User ID"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"/>
-
-    <Button
-        android:text="Add Run"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/add_run"
-        android:layout_alignTop="@+id/run_user"
-        android:layout_alignRight="@+id/add_user"
-        android:layout_alignEnd="@+id/add_user"/>
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/run_name"
-        android:hint="Run Name"
-        android:layout_below="@+id/run_user"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"/>
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:layout_alignBottom="@+id/retrieve_user"
-        android:layout_alignLeft="@+id/tot_time"
-        android:layout_alignStart="@+id/tot_time"
-        android:id="@+id/get_user"
-        android:hint="User ID"/>
 
     <EditText
         android:layout_width="wrap_content"
@@ -102,18 +49,6 @@
         android:layout_alignParentEnd="true"/>
 
     <TextView
-        android:text="Name:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
-        android:id="@+id/retrieved_name"
-        android:layout_below="@+id/retrieve_user"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/add_run"
-        android:layout_toRightOf="@+id/add_run"/>
-
-    <TextView
         android:text="Runs:"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -123,13 +58,82 @@
         android:layout_marginTop="46dp"
         android:id="@+id/retrieved_runs"/>
 
+    <TextView
+        android:text="Distance: "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/effort_dist"
+        android:layout_marginTop="27dp"
+        android:layout_below="@+id/effort_name"
+        android:layout_alignLeft="@+id/effort_name"
+        android:layout_alignStart="@+id/effort_name"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"/>
+
+    <TextView
+        android:text="Duration:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/effort_time"
+        android:layout_marginTop="27dp"
+        android:layout_below="@+id/effort_dist"
+        android:layout_alignLeft="@+id/effort_dist"
+        android:layout_alignStart="@+id/effort_dist"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"/>
+
     <Button
         android:text="Retrieve User"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/retrieve_user"
-        android:layout_below="@+id/tot_time"
-        android:layout_alignLeft="@+id/add_run"
-        android:layout_alignStart="@+id/add_run"/>
+        android:layout_marginTop="17dp"
+        android:layout_below="@+id/effort_time"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <Button
+        android:text="Add Effort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/add_effort"
+        android:layout_alignTop="@+id/run_user"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <TextView
+        android:text="Effort name : demoEffort"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/effort_name"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/add_effort"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"/>
+
+    <TextView
+        android:text="Name:"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:id="@+id/retrieved_name"
+        android:layout_below="@+id/get_user"
+        android:layout_alignLeft="@+id/effort_time"
+        android:layout_alignStart="@+id/effort_time"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/get_user"
+        android:hint="User ID"
+        android:layout_alignBottom="@+id/retrieve_user"
+        android:layout_toRightOf="@+id/retrieve_user"
+        android:layout_toEndOf="@+id/retrieve_user"
+        android:layout_marginLeft="22dp"
+        android:layout_marginStart="22dp"/>
 
 </RelativeLayout>

@@ -1,6 +1,7 @@
 package ch.epfl.sweng.project.Fragments;
 
 import android.content.Context;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,11 +14,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+
+import ch.epfl.sweng.project.Model.CheckPoint;
+import ch.epfl.sweng.project.Model.Effort;
+import ch.epfl.sweng.project.Model.FirebaseHelper;
+import ch.epfl.sweng.project.Model.Run;
 
 /**
  * Demo fragment to show transactions with firebase database
@@ -26,19 +27,18 @@ public class FirebaseFragment extends Fragment implements View.OnClickListener {
 
     private FirebaseFragment.FireBaseFragmentInteractionListener firebaseListener = null;
 
-    private DatabaseReference mDatabase = null;
+    private FirebaseHelper mFirebaseHelper;
+
+    private Effort demoEffort = null;
 
     private Button addUser = null;
-    private Button addRun = null;
+    private Button addEffort = null;
     private Button retrieveUser = null;
 
     private EditText idText = null;
     private EditText nameText = null;
 
     private EditText idTextRun = null;
-    private EditText runText = null;
-    private EditText distText = null;
-    private EditText timeText = null;
 
     private EditText askId = null;
 
@@ -52,50 +52,65 @@ public class FirebaseFragment extends Fragment implements View.OnClickListener {
         View view =  inflater.inflate(R.layout.fragment_firebase, container, false);
 
         // Initialize database
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mFirebaseHelper = new FirebaseHelper();
 
+        // Add User
         idText = (EditText) view.findViewById((R.id.edit_user_id));
         nameText = (EditText) view.findViewById((R.id.edit_user_name));
-
-        idTextRun = (EditText) view.findViewById((R.id.run_user));
-        runText = (EditText) view.findViewById((R.id.run_name));
-        distText = (EditText) view.findViewById((R.id.tot_dist));
-        timeText = (EditText) view.findViewById((R.id.tot_time));
-
-        askId = (EditText) view.findViewById((R.id.get_user));
-
-        retName = (TextView) view.findViewById((R.id.retrieved_name));
-        retRun = (TextView) view.findViewById((R.id.retrieved_runs));
-
         addUser = (Button) view.findViewById(R.id.add_user);
         addUser.setOnClickListener(this);
 
-        addRun = (Button) view.findViewById(R.id.add_run);
-        addRun.setOnClickListener(this);
+        //Add Effort
+        demoEffort = new Run("demoEffort");
+        CheckPoint p1 = buildCheckPoint(1, 1, 1);
+        CheckPoint p2 = buildCheckPoint(2, 2, 2);
+        CheckPoint p3 = buildCheckPoint(3, 3, 3);
+        demoEffort.start(p1);
+        demoEffort.update(p2);
+        demoEffort.update(p3);
+        demoEffort.stop();
 
+        idTextRun = (EditText) view.findViewById((R.id.run_user));
+        ((TextView) view.findViewById((R.id.effort_name))).setText("Effort name : " + demoEffort.getName());
+        ((TextView) view.findViewById((R.id.effort_dist)))
+                .setText("Distance : " + demoEffort.getTrack().getDistance());
+        ((TextView) view.findViewById((R.id.effort_time)))
+                .setText("Duration : " + demoEffort.getTrack().getDuration());
+        addEffort = (Button) view.findViewById(R.id.add_effort);
+        addEffort.setOnClickListener(this);
+
+        // Retrieve User
+        askId = (EditText) view.findViewById((R.id.get_user));
+        retName = (TextView) view.findViewById((R.id.retrieved_name));
+        retRun = (TextView) view.findViewById((R.id.retrieved_runs));
         retrieveUser = (Button) view.findViewById(R.id.retrieve_user);
         retrieveUser.setOnClickListener(this);
 
         return view;
     }
 
-    private void getAndWriteRun() {
+    public CheckPoint buildCheckPoint(double lat, double lon, long time) {
+        Location location = new Location("test");
+        location.setLatitude(lat);
+        location.setLongitude(lon);
+        location.setTime(time);
+        return new CheckPoint(location);
+    }
 
-        if(idTextRun.getText().toString().isEmpty() || runText.getText().toString().isEmpty() ||
-                distText.getText().toString().isEmpty() || timeText.getText().toString().isEmpty()){
+    private void getAndWriteEffort(Effort effort) {
+
+        if(idTextRun.getText().toString().isEmpty()){
             Toast.makeText(getActivity().getBaseContext(), "Insert something in all fields", Toast.LENGTH_LONG).show();
             return;
         }
 
         String id = idTextRun.getText().toString();
-        String run = runText.getText().toString();
-        String dist = distText.getText().toString();
-        String time = timeText.getText().toString();
 
-        mDatabase.child("users").child(id).child("runs").child(run).child("distance").setValue(dist);
-        mDatabase.child("users").child(id).child("runs").child(run).child("time").setValue(time);
-
-        Toast.makeText(getActivity().getBaseContext(), "Run added", Toast.LENGTH_LONG).show();
+        if (mFirebaseHelper.addEffort(id, demoEffort)) {
+            Toast.makeText(getActivity().getBaseContext(), "Run added", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getActivity().getBaseContext(), "Run not added", Toast.LENGTH_LONG).show();
+        };
     }
 
     private void getAndWriteUser() {
@@ -107,8 +122,12 @@ public class FirebaseFragment extends Fragment implements View.OnClickListener {
         String id = idText.getText().toString();
         String name = nameText.getText().toString();
 
-        mDatabase.child("users").child(id).child("name").setValue(name);
-        Toast.makeText(getActivity().getBaseContext(), "User added", Toast.LENGTH_LONG).show();
+        boolean addSuccessful = mFirebaseHelper.addUser(id, name);
+        if (addSuccessful){
+            Toast.makeText(getActivity().getBaseContext(), "User added", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getActivity().getBaseContext(), "User already exists", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void retrieveUser() {
@@ -119,26 +138,7 @@ public class FirebaseFragment extends Fragment implements View.OnClickListener {
 
         String id = askId.getText().toString();
 
-        mDatabase.child("users").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    retName.setText("Name : " + dataSnapshot.child("name").getValue().toString());
-                    if (dataSnapshot.child("runs").exists()) {
-                        retRun.setText("Runs : " + dataSnapshot.child("runs").getChildren().iterator().next().getValue().toString());
-                    } else {
-                        retRun.setText("Runs : -");
-                    }
-                } else {
-                    Toast.makeText(getActivity().getBaseContext(), "No data", Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        retName.setText(mFirebaseHelper.retrieveUserString(id));
     }
 
     @Override
@@ -164,8 +164,8 @@ public class FirebaseFragment extends Fragment implements View.OnClickListener {
             case R.id.add_user:
                 getAndWriteUser();
                 break;
-            case R.id.add_run:
-                getAndWriteRun();
+            case R.id.add_effort:
+                getAndWriteEffort(demoEffort);
                 break;
             case R.id.retrieve_user:
                 retrieveUser();
