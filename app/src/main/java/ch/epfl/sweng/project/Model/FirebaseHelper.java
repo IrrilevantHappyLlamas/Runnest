@@ -26,7 +26,7 @@ public class FirebaseHelper {
      * Getter for the remote database reference
      * @return      <code>DatabaseReference</code> for the remote database
      */
-    public DatabaseReference getDatbase() {
+    public DatabaseReference getDatabase() {
         return databaseReference;
     }
 
@@ -39,11 +39,13 @@ public class FirebaseHelper {
      */
     public void addOrUpdateUser(String id, String name) throws IllegalArgumentException {
 
-        //Check valdity of arguments
+        //Check validity of arguments
         if(id == null || name == null) {
-            throw new IllegalArgumentException("Error: invalid argument, id and name have to be non-null and not empty");
-        } else if(id.isEmpty() || name.isEmpty() || name.length() > 100) {
-            throw new IllegalArgumentException("Error: invalid argument, id and name must be non empty and" +
+            throw new IllegalArgumentException("Error: invalid argument," +
+                    " id and name have to be non-null and not empty");
+        }
+        if(id.isEmpty() || name.isEmpty() || name.length() > 100) {
+            throw new IllegalArgumentException("Error: invalid argument, id and name must be non empty and " +
                     "name length has to be under 100 characters");
         }
 
@@ -62,10 +64,11 @@ public class FirebaseHelper {
      */
     public void addOrUpdateEffort(String id, Effort effort) throws IllegalArgumentException {
 
-        //Check valdity of arguments
+        //Check validity of arguments
         if(id == null || effort == null) {
             throw new IllegalArgumentException("Error: invalid argument, id and effort have to be non-null");
-        } else if(id.isEmpty()) {
+        }
+        if(id.isEmpty()) {
             throw new IllegalArgumentException("Error: invalid argument, id  must be not empty");
         }
 

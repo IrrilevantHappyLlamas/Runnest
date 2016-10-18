@@ -30,13 +30,8 @@ public class FirebaseFragment extends Fragment implements View.OnClickListener {
 
     private FirebaseFragment.FireBaseFragmentInteractionListener firebaseListener = null;
 
-    private FirebaseHelper mFirebaseHelper;
+    private FirebaseHelper mFirebaseHelper = null;
     private Effort demoEffort = null;
-
-    // Buttons
-    private Button addUser = null;
-    private Button addEffort = null;
-    private Button retrieveUser = null;
 
     // Add user
     private EditText idText = null;
@@ -62,7 +57,7 @@ public class FirebaseFragment extends Fragment implements View.OnClickListener {
         // Add User
         idText = (EditText) view.findViewById((R.id.edit_user_id));
         nameText = (EditText) view.findViewById((R.id.edit_user_name));
-        addUser = (Button) view.findViewById(R.id.add_user);
+        Button addUser = (Button) view.findViewById(R.id.add_user);
         addUser.setOnClickListener(this);
 
         //Add Effort
@@ -81,14 +76,14 @@ public class FirebaseFragment extends Fragment implements View.OnClickListener {
                 .setText("Distance : " + demoEffort.getTrack().getDistance());
         ((TextView) view.findViewById((R.id.effort_time)))
                 .setText("Duration : " + demoEffort.getTrack().getDuration());
-        addEffort = (Button) view.findViewById(R.id.add_effort);
+        Button addEffort = (Button) view.findViewById(R.id.add_effort);
         addEffort.setOnClickListener(this);
 
         // Retrieve User
         askId = (EditText) view.findViewById((R.id.get_user));
         retName = (TextView) view.findViewById((R.id.retrieved_name));
         retRun = (TextView) view.findViewById((R.id.retrieved_runs));
-        retrieveUser = (Button) view.findViewById(R.id.retrieve_user);
+        Button retrieveUser = (Button) view.findViewById(R.id.retrieve_user);
         retrieveUser.setOnClickListener(this);
 
         return view;
@@ -102,7 +97,7 @@ public class FirebaseFragment extends Fragment implements View.OnClickListener {
      * @param time  time
      * @return      the desired <code>CheckPoint</code>
      */
-    public CheckPoint buildCheckPoint(double lat, double lon, long time) {
+    private CheckPoint buildCheckPoint(double lat, double lon, long time) {
         Location location = new Location("test");
         location.setLatitude(lat);
         location.setLongitude(lon);
@@ -166,7 +161,7 @@ public class FirebaseFragment extends Fragment implements View.OnClickListener {
         String id = askId.getText().toString();
 
         // Get user information from database and display it in TextView
-        mFirebaseHelper.getDatbase().child("users").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+        mFirebaseHelper.getDatabase().child("users").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()) {
