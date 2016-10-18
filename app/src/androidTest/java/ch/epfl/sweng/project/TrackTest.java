@@ -6,6 +6,8 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import java.util.List;
+
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Track;
 
@@ -23,6 +25,15 @@ public class TrackTest {
         location.setLongitude(lon);
         location.setTime(time);
         return new CheckPoint(location);
+    }
+
+    @Test
+    public void correctEmptyConstruction() {
+        Track testTrack = new Track();
+
+        Assert.assertEquals(0, testTrack.getDistance(), 0);
+        Assert.assertEquals(0, testTrack.getTotalCheckPoints(), 0);
+        Assert.assertEquals(0, testTrack.getDuration(), 0);
     }
 
     @Test
@@ -80,6 +91,16 @@ public class TrackTest {
         Assert.assertEquals(dist, testTrack2.getDistance(), 0);
         Assert.assertEquals(3, testTrack2.getTotalCheckPoints(), 0);
         Assert.assertEquals(2, testTrack2.getDuration(), 0);
+    }
+
+    @Test
+    public void correctGetAllCheckpoints() {
+        Track testTrack = new Track(buildCheckPoint(1, 1, 1));
+        testTrack.add(buildCheckPoint(2, 2, 2));
+        testTrack.add(buildCheckPoint(3, 3, 3));
+        testTrack.add(buildCheckPoint(4, 4, 4));
+        List<CheckPoint> checkpoints = testTrack.getCheckpoints();
+        Assert.assertEquals(4, checkpoints.size(), 0);
     }
 
 }
