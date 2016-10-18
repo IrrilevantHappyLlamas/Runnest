@@ -3,7 +3,7 @@ package ch.epfl.sweng.project;
 import org.junit.Assert;
 import org.junit.Test;
 
-import ch.epfl.sweng.project.Fragments.RunningMapFragment;
+import ch.epfl.sweng.project.Fragments.RunningMap.RunningMapFragment;
 
 public class RunningMapFragmentTest {
 

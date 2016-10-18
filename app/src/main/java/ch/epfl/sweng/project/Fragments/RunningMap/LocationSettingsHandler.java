@@ -1,4 +1,4 @@
-package ch.epfl.sweng.project;
+package ch.epfl.sweng.project.Fragments.RunningMap;
 
 import android.app.Activity;
 import android.content.IntentSender;
