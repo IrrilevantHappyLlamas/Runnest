@@ -156,7 +156,6 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
                     stopLocationUpdates();
                 }
             }
-
         });
 
         setButtonsEnabledState();
@@ -315,6 +314,7 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
         mGoogleApiClient.connect();
     }
 
+    //TODO: Handle connection failure
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     }

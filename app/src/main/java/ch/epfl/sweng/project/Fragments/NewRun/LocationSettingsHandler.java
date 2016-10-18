@@ -31,7 +31,10 @@ public class LocationSettingsHandler implements
     private Activity mActivity = null;
     private boolean mGpsIsTurnedOn = false;
 
-    public LocationSettingsHandler(GoogleApiClient googleApiClient, Activity activity){
+    public LocationSettingsHandler(GoogleApiClient googleApiClient, Activity activity) throws IllegalArgumentException {
+        if(googleApiClient == null || activity == null) {
+            throw new IllegalArgumentException("LocationSettingsHandler constructor: arguments cannot be null");
+        }
 
         mGoogleApiClient = googleApiClient;
         mActivity = activity;
@@ -89,7 +92,8 @@ public class LocationSettingsHandler implements
      *
      * @return      <code>mLocationRequest</code>
      */
-    public LocationRequest getLocationRequest() {                    // SAFE OR WE NEED "DEEP COPY" ?!?
+    //TODO: evaluate whether do a deep copy or not
+    public LocationRequest getLocationRequest() {
         return mLocationRequest;
     }
 

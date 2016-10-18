@@ -20,7 +20,10 @@ public class MapHandler {
     private GoogleMap mGoogleMap = null;
     private PolylineOptions mPolylineOptions = null;
 
-    public MapHandler(GoogleMap googleMap) {
+    public MapHandler(GoogleMap googleMap)  throws IllegalArgumentException {
+        if(googleMap == null) {
+            throw new IllegalArgumentException("MapHandler constructor: argument cannot be null");
+        }
 
         mGoogleMap = googleMap;
         mGoogleMap.setLocationSource(null);
@@ -29,20 +32,22 @@ public class MapHandler {
     }
 
     /**
-     * Given a new <code>CheckPoint</code> update the map and the polyline showed on it.
+     * Given a new <code>CheckPoint</code>, if non null, update the map and the polyline showed on it.
      *
      * @param checkPoint    a new <code>CheckPoint</code>
      */
     public void updateMap(CheckPoint checkPoint) {
+        if(checkPoint != null) {
 
-        LatLng currentLatLng = new LatLng(checkPoint.getLatitude(), checkPoint.getLongitude());
-        mPolylineOptions.add(currentLatLng);
-        mGoogleMap.clear();
-        mGoogleMap.addPolyline(mPolylineOptions.color(Color.BLUE));
+            LatLng currentLatLng = new LatLng(checkPoint.getLatitude(), checkPoint.getLongitude());
+            mPolylineOptions.add(currentLatLng);
+            mGoogleMap.clear();
+            mGoogleMap.addPolyline(mPolylineOptions.color(Color.BLUE));
 
-        CameraPosition mCameraPosition = new CameraPosition.Builder().target(currentLatLng).zoom(CAMERA_ZOOM).build();
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(mCameraPosition);
-        mGoogleMap.animateCamera(cameraUpdate);
+            CameraPosition mCameraPosition = new CameraPosition.Builder().target(currentLatLng).zoom(CAMERA_ZOOM).build();
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(mCameraPosition);
+            mGoogleMap.animateCamera(cameraUpdate);
+        }
     }
 
     /**
