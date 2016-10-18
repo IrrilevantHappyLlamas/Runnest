@@ -43,6 +43,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
 import ch.epfl.sweng.project.Activities.SideBarActivity;
+import ch.epfl.sweng.project.LocationSettingsHandler;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Run;
 
@@ -57,7 +58,6 @@ import ch.epfl.sweng.project.Model.Run;
 public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        ResultCallback<LocationSettingsResult>,
         LocationListener{
 
     // TODO: Rename parameter arguments, choose names that match
@@ -65,20 +65,14 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // Constants
-    private static final int REQUEST_CHECK_SETTINGS = 0x1;
-    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
-    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 5000;
-
-    // Layout
-    private Button mStartUpdatesButton = null;
-    private Button mStopUpdatesButton = null;
-
     // Location update
     private GoogleApiClient mGoogleApiClient = null;
-    private LocationRequest mLocationRequest = null;
-    private LocationSettingsRequest mLocationSettingsRequest = null;
+    private LocationSettingsHandler mLocationSettingsHandler = null;
     private boolean mRequestingLocationUpdates = false;
+
+    // Buttons
+    private Button mStartUpdatesButton = null;
+    private Button mStopUpdatesButton = null;
 
     // Data storage
     private CheckPoint mLastCheckPoint = null;
@@ -134,9 +128,9 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
         // Setup location tracking
         mRequestingLocationUpdates = false;
         createGoogleApiClient();
-        createLocationRequest();
-        buildLocationSettingsRequest();
-        checkLocationSettings();
+
+        mLocationSettingsHandler = new LocationSettingsHandler(mGoogleApiClient, getActivity());
+        mLocationSettingsHandler.checkLocationSettings();
 
         // Set Buttons
         buttonsSetup(view);
@@ -157,25 +151,7 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
         mStartUpdatesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if(checkPermission()) {
-
-                    mStartUpdatesButton.setVisibility(View.INVISIBLE);
-                    mStopUpdatesButton.setVisibility(View.VISIBLE);
-                    mRun = new Run();
-                    mPolylineOptions = new PolylineOptions();
-
-                    if (mLastCheckPoint != null) {
-                        mRun.start(mLastCheckPoint);
-                    }
-
-                    if (!mRequestingLocationUpdates) {
-                        mRequestingLocationUpdates = true;
-                        startLocationUpdates();
-                    }
-
-                    setButtonsEnabledState();
-                }
+                startButtonPressed();
             }
         });
 
@@ -184,15 +160,48 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
         mStopUpdatesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mRequestingLocationUpdates) {
-                    mRequestingLocationUpdates = false;
-                    setButtonsEnabledState();
-                    stopLocationUpdates();
-                }
+                stopButtonPressed();
             }
         });
 
         setButtonsEnabledState();
+    }
+
+    private void startButtonPressed() {
+
+        if(checkPermission()) {
+
+            mStartUpdatesButton.setVisibility(View.INVISIBLE);
+            mStopUpdatesButton.setVisibility(View.VISIBLE);
+            mRun = new Run();
+            mPolylineOptions = new PolylineOptions();
+
+            if (mLastCheckPoint != null) {
+                mRun.start(mLastCheckPoint);
+            }
+
+            if (!mRequestingLocationUpdates) {
+                mRequestingLocationUpdates = true;
+                startLocationUpdates();
+            }
+
+            setButtonsEnabledState();
+        }
+
+    }
+
+    private void stopButtonPressed() {
+        if (mRequestingLocationUpdates) {
+            mRequestingLocationUpdates = false;
+            setButtonsEnabledState();
+            stopLocationUpdates();
+        }
+
+        if (mRequestingLocationUpdates) {
+            mRequestingLocationUpdates = false;
+            setButtonsEnabledState();
+            stopLocationUpdates();
+        }
     }
 
     /**
@@ -225,30 +234,6 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     /**
-     * Initialize the <code>LocationRequest</code> field of the fragment and setup all
-     * necessary parameters using the apposite constants.
-     */
-    private void createLocationRequest() {
-
-        mLocationRequest = new LocationRequest();
-
-        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
-        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-    }
-
-    /**
-     * Build a <code>LocationSettingRequest</code> from <code>mLocationRequest</code> and
-     * assign it to the appropriate field of the fragment.
-     */
-    private void buildLocationSettingsRequest() {
-
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
-        builder.addLocationRequest(mLocationRequest);
-        mLocationSettingsRequest = builder.build();
-    }
-
-    /**
      * Check <code>ACCESS_FINE_LOCATION</code> permission, if necessary request it.
      * This check is necessary only with Android 6.0+ and/or SDK 22+
      */
@@ -270,19 +255,6 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
-    /**
-     * Check whether gps is turned on or not.
-     */
-    private void checkLocationSettings() {
-
-        PendingResult<LocationSettingsResult> result =
-                LocationServices.SettingsApi.checkLocationSettings(
-                        mGoogleApiClient,
-                        mLocationSettingsRequest
-                );
-        result.setResultCallback(this);
-    }
-
     private void startLocationUpdates() {
 
         if (ActivityCompat.checkSelfPermission(getContext(),
@@ -300,7 +272,7 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
             // Start listening for updates
             LocationServices.FusedLocationApi.requestLocationUpdates(
                     mGoogleApiClient,
-                    mLocationRequest,
+                    mLocationSettingsHandler.getmLocationRequest(),
                     this
             ).setResultCallback(new ResultCallback<Status>() {
                 @Override
@@ -330,35 +302,6 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     /**
-     * Handle the result of <code>LocationSettingRequest</code>
-     *
-     * @param locationSettingsResult    answer of the user to the request
-     */
-    @Override
-    public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
-
-        final Status status = locationSettingsResult.getStatus();
-
-        switch (status.getStatusCode()) {
-
-            case LocationSettingsStatusCodes.SUCCESS:
-                break;
-
-            case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                try {
-                    status.startResolutionForResult(getActivity(), REQUEST_CHECK_SETTINGS);
-                } catch (IntentSender.SendIntentException ignored) {
-
-                }
-                break;
-
-            case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-
-                break;
-        }
-    }
-
-    /**
      * Handle results sent by the running activity.
      *
      * @param requestCode   code of the request, an <code>int</code>
@@ -370,7 +313,7 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
 
         switch (requestCode) {
 
-            case REQUEST_CHECK_SETTINGS:
+            case LocationSettingsHandler.REQUEST_CHECK_SETTINGS:
                 switch (resultCode) {
 
                     case Activity.RESULT_OK:
@@ -474,7 +417,6 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
         CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(mCameraPosition);
         mGoogleMap.animateCamera(cameraUpdate);
     }
-
 
     /**
      * This interface must be implemented by activities that contain this
