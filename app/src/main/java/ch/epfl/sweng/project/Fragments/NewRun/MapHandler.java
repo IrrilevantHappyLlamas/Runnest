@@ -1,4 +1,4 @@
-package ch.epfl.sweng.project.Fragments.RunningMap;
+package ch.epfl.sweng.project.Fragments.NewRun;
 
 import android.graphics.Color;
 
@@ -19,16 +19,20 @@ public class MapHandler {
 
     private GoogleMap mGoogleMap = null;
     private PolylineOptions mPolylineOptions = null;
-    private CameraPosition mCameraPosition;
 
-    public MapHandler(GoogleMap mGoogleMap) {
+    public MapHandler(GoogleMap googleMap) {
 
-        this.mGoogleMap = mGoogleMap;
-        this.mGoogleMap.setLocationSource(null);
+        mGoogleMap = googleMap;
+        mGoogleMap.setLocationSource(null);
 
         mPolylineOptions = new PolylineOptions();
     }
 
+    /**
+     * Given a new <code>CheckPoint</code> update the map and the polyline showed on it.
+     *
+     * @param checkPoint    a new <code>CheckPoint</code>
+     */
     public void updateMap(CheckPoint checkPoint) {
 
         LatLng currentLatLng = new LatLng(checkPoint.getLatitude(), checkPoint.getLongitude());
@@ -36,15 +40,25 @@ public class MapHandler {
         mGoogleMap.clear();
         mGoogleMap.addPolyline(mPolylineOptions.color(Color.BLUE));
 
-        mCameraPosition = new CameraPosition.Builder().target(currentLatLng).zoom(CAMERA_ZOOM).build();
+        CameraPosition mCameraPosition = new CameraPosition.Builder().target(currentLatLng).zoom(CAMERA_ZOOM).build();
         CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(mCameraPosition);
         mGoogleMap.animateCamera(cameraUpdate);
     }
 
+    /**
+     * Set "My Location Enabled" to true.
+     *
+     * @throws SecurityException    if app does not have the necessary permissions
+     */
     public void startShowingLocation() throws SecurityException {
             mGoogleMap.setMyLocationEnabled(true);
     }
 
+    /**
+     * Set "My Location Enabled" to false.
+     *
+     * @throws SecurityException    if app does not have the necessary permissions
+     */
     public void stopShowingLocation() throws SecurityException {
         mGoogleMap.setMyLocationEnabled(false);
     }

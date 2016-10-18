@@ -22,7 +22,7 @@ import android.widget.Toast;
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
 import ch.epfl.sweng.project.Fragments.HomeFragment;
-import ch.epfl.sweng.project.Fragments.RunningMap.RunningMapFragment;
+import ch.epfl.sweng.project.Fragments.NewRun.RunningMapFragment;
 
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Model.Profile;

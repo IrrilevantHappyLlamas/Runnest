@@ -1,4 +1,4 @@
-package ch.epfl.sweng.project.Fragments.RunningMap;
+package ch.epfl.sweng.project.Fragments.NewRun;
 
 import android.app.Activity;
 import android.content.IntentSender;
@@ -14,10 +14,6 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
-/**
- * Created by Lucio on 18.10.2016.
- */
-
 public class LocationSettingsHandler implements
         ResultCallback<LocationSettingsResult>{
 
@@ -25,19 +21,20 @@ public class LocationSettingsHandler implements
     // Constants
     public static final int REQUEST_CHECK_SETTINGS = 0x1;
 
-    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
-    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 5000;
+    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 4000;
+    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 2000;
 
     // Attributes
     private GoogleApiClient mGoogleApiClient = null;
     private LocationRequest mLocationRequest = null;
     private LocationSettingsRequest mLocationSettingsRequest = null;
-    private Activity mActvity = null;
+    private Activity mActivity = null;
+    private boolean mGpsIsTurnedOn = false;
 
-    public LocationSettingsHandler(GoogleApiClient mGoogleApiClient, Activity mActvity){
+    public LocationSettingsHandler(GoogleApiClient googleApiClient, Activity activity){
 
-        this.mGoogleApiClient = mGoogleApiClient;
-        this.mActvity = mActvity;
+        mGoogleApiClient = googleApiClient;
+        mActivity = activity;
 
         mLocationRequest = createLocationRequest();
         mLocationSettingsRequest = buildLocationSettingsRequest();
@@ -72,47 +69,62 @@ public class LocationSettingsHandler implements
     /**
      * Check whether gps is turned on or not.
      */
-    public void checkLocationSettings() {
+    public boolean checkLocationSettings() {
 
-        PendingResult<LocationSettingsResult> result =
-                LocationServices.SettingsApi.checkLocationSettings(
-                        mGoogleApiClient,
-                        mLocationSettingsRequest
-                );
-        result.setResultCallback(this);
+        if(!mGpsIsTurnedOn) {
+
+            PendingResult<LocationSettingsResult> result =
+                    LocationServices.SettingsApi.checkLocationSettings(
+                            mGoogleApiClient,
+                            mLocationSettingsRequest
+                    );
+            result.setResultCallback(this);
+        }
+
+        return mGpsIsTurnedOn;
     }
 
-    // SAFE OR WE NEED "DEEP COPY" ?!?
-    public LocationRequest getmLocationRequest() {
+    /**
+     * A getter for <code>mLocationRequest</code>.
+     *
+     * @return      <code>mLocationRequest</code>
+     */
+    public LocationRequest getLocationRequest() {                    // SAFE OR WE NEED "DEEP COPY" ?!?
         return mLocationRequest;
     }
 
+    /**
+     * A setter for <code>mGpsIsTurnedOn</code>.
+     *
+     * @param gpsIsTurnedOn     desired value for <code>mGpsIsTurnedOn</code>
+     */
+    public void setGpsIsTurnedOn(boolean gpsIsTurnedOn) {
+        mGpsIsTurnedOn = gpsIsTurnedOn;
+    }
 
     /**
      * Handle the result of <code>LocationSettingRequest</code>
      *
-     * @param locationSettingsResult    answer of the user to the request
+     * @param r    answer of the user to the request
      */
     @Override
-    public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
+    public void onResult(@NonNull LocationSettingsResult r) {
 
-        final Status status = locationSettingsResult.getStatus();
+        final Status status = r.getStatus();
 
         switch (status.getStatusCode()) {
-
             case LocationSettingsStatusCodes.SUCCESS:
+                mGpsIsTurnedOn = true;
                 break;
-
             case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                 try {
-                    status.startResolutionForResult(mActvity, REQUEST_CHECK_SETTINGS);
+                    status.startResolutionForResult(mActivity, REQUEST_CHECK_SETTINGS);
                 } catch (IntentSender.SendIntentException ignored) {
 
                 }
                 break;
-
             case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-
+                mGpsIsTurnedOn = false;
                 break;
         }
     }
