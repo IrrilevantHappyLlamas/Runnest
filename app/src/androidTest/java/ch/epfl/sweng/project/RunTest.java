@@ -41,9 +41,9 @@ public class RunTest {
     public void correctlyUpdatesStartedRun() {
         Run testRun1 = new Run();
 
-        Assert.assertTrue(testRun1.start(TrackTest.buildCheckPoint(1, 1, 1)));
+        Assert.assertTrue(testRun1.start(TrackTest.buildCheckPoint(1, 1, 1000)));
         Assert.assertTrue(testRun1.isRunning());
-        Assert.assertTrue(testRun1.update(TrackTest.buildCheckPoint(2, 2, 2)));
+        Assert.assertTrue(testRun1.update(TrackTest.buildCheckPoint(2, 2, 2000)));
 
         Track runTrack = testRun1.getTrack();
 

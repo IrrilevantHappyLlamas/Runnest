@@ -23,6 +23,7 @@ public class Run
     public Run(String name) {
         this.name = name;
         isRunning = false;
+        track = new Track();
     }
 
     /**
@@ -31,6 +32,7 @@ public class Run
     public Run() {
         name = "temp";
         isRunning = false;
+        track = new Track();
     }
 
     /**
@@ -55,13 +57,9 @@ public class Run
         return new Track(track);
     }
 
-    public void setTrack(Track track) {
-        this.track = new Track(track);
-    }
-
     @Override
     public boolean start(CheckPoint startingPoint) {
-        if (track == null) {
+        if (track.getTotalCheckPoints() == 0) {
             track = new Track(startingPoint);
             isRunning = true;
             return true;
@@ -90,5 +88,9 @@ public class Run
         else {
             return false;
         }
+    }
+
+    public void setTrack(Track track) {
+        this.track = new Track(track);
     }
 }

@@ -150,14 +150,14 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
         if (mRequestingLocationUpdates) {
             mRequestingLocationUpdates = false;
             setButtonsEnabledState();
-            mRun.stop();
             stopLocationUpdates();
+            mRun.stop();
 
             DBHelper dbHelper = new DBHelper(getContext());
             //TODO: verify that insertion has been performed correctly
-            dbHelper.insert(mRun);
+            dbHelper.insert(new Run(mRun));
 
-            mListener.onRunningMapFragmentInteraction(mRun);
+            mListener.onRunningMapFragmentInteraction(new Run(mRun));
         }
     }
 

@@ -48,12 +48,12 @@ public class CheckPoint {
     }
 
     /**
-     * Getter for the timestamp of the point, expressed in milliseconds since January 1, 1970.
+     * Getter for the timestamp of the point, expressed in seconds since January 1, 1970.
      *
      * @return  the timestamp
      */
     public long getTime() {
-        return location.getTime();
+        return location.getTime()/1000;
     }
 
 

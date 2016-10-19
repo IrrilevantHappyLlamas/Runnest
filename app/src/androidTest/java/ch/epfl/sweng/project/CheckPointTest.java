@@ -30,7 +30,7 @@ public class CheckPointTest {
 
         Assert.assertEquals(50, toTest.getLatitude(), 0);
         Assert.assertEquals(40, toTest.getLongitude(), 0);
-        Assert.assertEquals(1000, toTest.getTime(), 0);
+        Assert.assertEquals(1, toTest.getTime(), 0);
     }
 
     @Test

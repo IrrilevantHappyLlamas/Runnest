@@ -9,7 +9,7 @@ import java.util.List;
 @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
 public class Track {
 
-    private List<CheckPoint> checkpoints;
+    private List<CheckPoint> checkpoints = null;
     private int totalCheckPoints;
     private float distance;
     private long duration;
@@ -74,7 +74,7 @@ public class Track {
     }
 
     /**
-     * Getter for the total distance
+     * Getter for the total distance in meters
      *
      * @return  total distance
      */
@@ -92,7 +92,7 @@ public class Track {
     }
 
     /**
-     * Getter for the current duration of the <code>Track</code>
+     * Getter for the current duration of the <code>Track</code>, in seconds
      *
      * @return  total time between timestamps of first and last <code>CheckPoint</code>
      */
@@ -109,5 +109,10 @@ public class Track {
         return checkpoints.get(totalCheckPoints -1);
     }
 
+    /**
+     * Getter for the <code>CheckPoint</code> list
+     *
+     * @return  a list of <code>CheckPoint</code>
+     */
     public List<CheckPoint> getCheckpoints() { return new ArrayList<>(checkpoints); }
 }

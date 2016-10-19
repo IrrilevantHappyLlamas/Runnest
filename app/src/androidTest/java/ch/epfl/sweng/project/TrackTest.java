@@ -38,7 +38,7 @@ public class TrackTest {
 
     @Test
     public void correctConstruction() {
-        Track testTrack = new Track(buildCheckPoint(50, 50, 100));
+        Track testTrack = new Track(buildCheckPoint(50, 50, 1000));
 
         Assert.assertEquals(0, testTrack.getDistance(), 0);
         Assert.assertEquals(1, testTrack.getTotalCheckPoints(), 0);
@@ -46,27 +46,27 @@ public class TrackTest {
 
         Assert.assertEquals(50, testTrack.getLastPoint().getLatitude(), 0);
         Assert.assertEquals(50, testTrack.getLastPoint().getLongitude(), 0);
-        Assert.assertEquals(100, testTrack.getLastPoint().getTime(), 0);
+        Assert.assertEquals(1, testTrack.getLastPoint().getTime(), 0);
     }
 
     @Test
     public void legitAddCorrectlyUpdatesTrack() {
-        CheckPoint c1 = buildCheckPoint(50, 50, 100);
-        CheckPoint c2 = buildCheckPoint(51, 51, 110);
+        CheckPoint c1 = buildCheckPoint(50, 50, 1000);
+        CheckPoint c2 = buildCheckPoint(51, 51, 2000);
 
         Track testTrack = new Track(c1);
 
         Assert.assertTrue(testTrack.add(c2));
 
         Assert.assertEquals(2, testTrack.getTotalCheckPoints());
-        Assert.assertEquals(10, testTrack.getDuration());
+        Assert.assertEquals(1, testTrack.getDuration());
         Assert.assertEquals(c2.distanceTo(c1), testTrack.getDistance());
     }
 
     @Test
     public void incoherentAddFails() {
-        CheckPoint c1 = buildCheckPoint(50, 50, 100);
-        CheckPoint c2 = buildCheckPoint(51, 51, 90);
+        CheckPoint c1 = buildCheckPoint(50, 50, 2000);
+        CheckPoint c2 = buildCheckPoint(51, 51, 1000);
 
         Track testTrack = new Track(c1);
 
@@ -75,9 +75,9 @@ public class TrackTest {
 
     @Test
     public void correctCopyConstructor() {
-        Track testTrack1 = new Track(buildCheckPoint(1, 1, 1));
-        testTrack1.add(buildCheckPoint(2, 2, 2));
-        testTrack1.add(buildCheckPoint(3, 3, 3));
+        Track testTrack1 = new Track(buildCheckPoint(1, 1, 1000));
+        testTrack1.add(buildCheckPoint(2, 2, 2000));
+        testTrack1.add(buildCheckPoint(3, 3, 3000));
 
         Track testTrack2 = new Track(testTrack1);
         float dist = testTrack1.getDistance();
