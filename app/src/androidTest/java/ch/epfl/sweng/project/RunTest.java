@@ -29,6 +29,28 @@ public class RunTest {
     }
 
     @Test
+    public void copyConstructorWorks() {
+        Run testRun = new Run("test");
+
+        testRun.start(TrackTest.buildCheckPoint(1, 1, 1000));
+        testRun.update(TrackTest.buildCheckPoint(2, 2, 2000));
+
+        Run testRun2 = new Run(testRun);
+
+        Assert.assertEquals(testRun.getName(), testRun2.getName());
+        Assert.assertEquals(testRun.getTrack().getDistance(), testRun2.getTrack().getDistance(), 0);
+        Assert.assertEquals(testRun.getTrack().getDuration(), testRun2.getTrack().getDuration(), 0);
+        Assert.assertEquals(testRun.getTrack().getTotalCheckPoints(), testRun2.getTrack().getTotalCheckPoints());
+
+        Assert.assertFalse(testRun2.isRunning());
+
+        testRun.update(TrackTest.buildCheckPoint(3, 3, 3000));
+        testRun.stop();
+
+        Assert.assertNotEquals(testRun.getTrack().getTotalCheckPoints(), testRun2.getTrack().getTotalCheckPoints());
+    }
+
+    @Test
     public void cannotStopOrUpdateNotStartedRun() {
         Run testRun1 = new Run();
 

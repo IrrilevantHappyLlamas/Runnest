@@ -74,6 +74,16 @@ public class TrackTest {
     }
 
     @Test
+    public void correctEmptyConstructor() {
+        Track testTrack = new Track();
+
+        Assert.assertEquals(0, testTrack.getTotalCheckPoints());
+        Assert.assertEquals(0.f, testTrack.getDistance());
+        Assert.assertEquals(0, testTrack.getDuration());
+        Assert.assertEquals(null, testTrack.getLastPoint());
+    }
+
+    @Test
     public void correctCopyConstructor() {
         Track testTrack1 = new Track(buildCheckPoint(1, 1, 1000));
         testTrack1.add(buildCheckPoint(2, 2, 2000));

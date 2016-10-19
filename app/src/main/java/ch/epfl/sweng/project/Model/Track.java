@@ -105,8 +105,13 @@ public class Track {
      *
      * @return
      */
+    // TODO: handle empty track (else branch)
     public CheckPoint getLastPoint() {
-        return checkpoints.get(totalCheckPoints -1);
+        if (totalCheckPoints != 0) {
+            return checkpoints.get(totalCheckPoints - 1);
+        } else {
+            return null;
+        }
     }
 
     /**
