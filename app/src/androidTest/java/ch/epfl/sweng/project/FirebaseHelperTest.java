@@ -102,4 +102,24 @@ public class FirebaseHelperTest {
             }
         });
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void callingAddOrUpdateUserOnNullArgumentsLaunchesException() {
+        firebaseHelper.addOrUpdateUser(null, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void callingAddOrUpdateUserOnEmptyArgumentsLaunchesException() {
+        firebaseHelper.addOrUpdateUser("", "");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void callingAddOrUpdateEffortOnNullArgumentsLaunchesException() {
+        firebaseHelper.addOrUpdateEffort(null, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void callingAddOrUpdateEffortOnEmptyArgumentsLaunchesException() {
+        firebaseHelper.addOrUpdateEffort("", new Run("test"));
+    }
 }

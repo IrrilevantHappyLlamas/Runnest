@@ -14,7 +14,6 @@ import ch.epfl.sweng.project.Activities.SideBarActivity;
 /**
  * Test suite for SideBarActivity
  */
-@RunWith(AndroidJUnit4)
 @LargeTest
 public class SideBarActivityTest {
 
