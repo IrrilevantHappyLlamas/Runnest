@@ -2,8 +2,6 @@ package ch.epfl.sweng.project.Model;
 
 /**
  * Interface to implement different kinds of Efforts
- *
- * @author Tobia Albergoni
  */
 public interface Effort {
 
