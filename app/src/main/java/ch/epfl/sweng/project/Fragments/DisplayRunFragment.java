@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -38,7 +39,6 @@ public class DisplayRunFragment extends Fragment {
      * @param runToBeDisplayed The run to be displayed.
      * @return A new instance of fragment RunningMapFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static DisplayRunFragment newInstance(Run runToBeDisplayed) {
         DisplayRunFragment fragment = new DisplayRunFragment();
         Bundle args = new Bundle();
@@ -58,39 +58,58 @@ public class DisplayRunFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.simple_listview, container, false);
+        View view = inflater.inflate(R.layout.fragment_display_run, container, false);
+
 
         if (mRunToBeDisplayed != null) {
 
-            Track track = mRunToBeDisplayed.getTrack();
             TableLayout table = (TableLayout) view.findViewById(R.id.table);
 
-            TableRow row = new TableRow(this.getContext());
+            TableRow firstRow = new TableRow(this.getContext());
 
-            TextView name = new TextView(this.getContext());
-            name.setText(mRunToBeDisplayed.getName());
+            createRowElement(firstRow, "Name");
+            createRowElement(firstRow, "Distance");
+            createRowElement(firstRow, "Duration");
 
-            TextView duration = new TextView(this.getContext());
-            duration.setText(String.valueOf(track.getDuration()));
+            table.addView(firstRow);
 
-            TextView distance = new TextView(this.getContext());
-            distance.setText(String.valueOf(track.getDistance()));
+            TableRow nextRow = new TableRow(this.getContext());
+            Track track = mRunToBeDisplayed.getTrack();
 
-            row.addView(name);
-            row.addView(duration);
-            row.addView(distance);
+            createRowElement(nextRow, mRunToBeDisplayed.getName());
 
-            table.addView(row);
+            createRowElement(nextRow,String.valueOf(track.getDistance()));
+
+            createRowElement(nextRow,String.valueOf(track.getDuration()));
+
+            table.addView(nextRow);
+
+            Button button = (Button) view.findViewById(R.id.button);
+
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (mListener != null) {
+                        mListener.onDisplayRunInteraction();
+                    }
+                }
+            });
         }
 
         return view;
     }
 
-    public void onButtonPressed() {
+    private void createRowElement(TableRow row, String text){
 
-        if (mListener != null) {
-            mListener.onDisplayRunInteraction();
-        }
+        TableRow.LayoutParams layoutParams = new TableRow.LayoutParams();
+        layoutParams.setMargins(10, 10, 10, 10);
+        TextView element = new TextView(this.getContext());
+        element.setText(text);
+        element.setTextSize(30);
+        element.setLayoutParams(layoutParams);
+
+        row.addView(element);
     }
 
     @Override

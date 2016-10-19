@@ -136,7 +136,7 @@ public class SideBarActivity extends AppCompatActivity
         } else if (id == R.id.nav_new_run) {
             mCurrentFragment = new RunningMapFragment();
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_run_history) {
             mCurrentFragment = new RunHistoryFragment();
 
         }
