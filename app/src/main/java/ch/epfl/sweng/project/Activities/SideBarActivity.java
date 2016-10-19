@@ -23,16 +23,22 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
 import ch.epfl.sweng.project.Fragments.HomeFragment;
 import ch.epfl.sweng.project.Fragments.NewRun.RunningMapFragment;
+import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
 
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
+import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
 import ch.epfl.sweng.project.Model.Profile;
+import ch.epfl.sweng.project.Model.Run;
 
 
 public class SideBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         HomeFragment.OnFragmentInteractionListener,
         ProfileFragment.ProfileFragmentInteractionListener,
-        RunningMapFragment.RunningMapFragmentInteractionListener {
+        RunningMapFragment.RunningMapFragmentInteractionListener,
+        RunHistoryFragment.onRunHistoryInteractionListener,
+        DisplayRunFragment.OnDisplayRunInteractionListener
+{
 
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
 
@@ -131,6 +137,7 @@ public class SideBarActivity extends AppCompatActivity
             mCurrentFragment = new RunningMapFragment();
 
         } else if (id == R.id.nav_slideshow) {
+            mCurrentFragment = new RunHistoryFragment();
 
         }
 
@@ -184,5 +191,19 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public void onRunningMapFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void onRunHistoryInteraction(Run run) {
+
+        mCurrentFragment = DisplayRunFragment.newInstance(run);
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
+    }
+
+    @Override
+    public void onDisplayRunInteraction() {
+
+        mCurrentFragment = new RunHistoryFragment();
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
     }
 }
