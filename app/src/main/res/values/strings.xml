@@ -19,4 +19,9 @@
     <string name="irrilevant_happy_llamas">Irrilevant Happy Llamas</string>
     <string name="temp">temp</string>
     <string name="firebase">Firebase</string>
+    <string name="run_tab">New Run</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="run_history">Run History</string>
 </resources>

@@ -7,13 +7,13 @@
             android:icon="@drawable/profile_head_small"
             android:title="@string/profile_tab" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_new_run"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/tbd_tab" />
+            android:title="@string/run_tab" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_run_history"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/tbd_tab" />
+            android:title="@string/run_history" />
         <item
             android:id="@+id/nav_firebase"
             android:icon="@drawable/firebase_icon"

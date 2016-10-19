@@ -55,4 +55,7 @@ public class CheckPoint {
     public long getTime() {
         return location.getTime();
     }
+
+
+    public double getAltitude() { return location.getAltitude(); }
 }

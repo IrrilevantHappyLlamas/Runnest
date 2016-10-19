@@ -1,11 +1,15 @@
 package ch.epfl.sweng.project.Model;
 
+import java.io.Serializable;
+
 /**
  * Implementation of the run effort, which contains the track and
  * specifications of the run
  */
 @SuppressWarnings("ClassNamingConvention")
-public class Run implements Effort {
+public class Run
+        implements Effort,
+        Serializable{
 
     private String name;
     private Track track = null;
@@ -49,6 +53,10 @@ public class Run implements Effort {
     @Override
     public Track getTrack() {
         return new Track(track);
+    }
+
+    public void setTrack(Track track) {
+        this.track = new Track(track);
     }
 
     @Override
