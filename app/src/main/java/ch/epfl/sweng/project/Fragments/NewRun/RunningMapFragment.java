@@ -29,6 +29,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
+import java.text.DateFormat;
+import java.util.Date;
+
 import ch.epfl.sweng.project.Activities.SideBarActivity;
 import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Model.CheckPoint;
@@ -101,20 +104,7 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
         mStartUpdatesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(checkPermission() && mLocationSettingsHandler.checkLocationSettings()) {
-                    mStartUpdatesButton.setVisibility(View.INVISIBLE);
-                    mStopUpdatesButton.setVisibility(View.VISIBLE);
-                    mRun = new Run();
-
-                    if (mLastCheckPoint != null) {
-                        mRun.start(mLastCheckPoint);
-                    }
-                    if (!mRequestingLocationUpdates) {
-                        mRequestingLocationUpdates = true;
-                        startLocationUpdates();
-                    }
-                    setButtonsEnabledState();
-                }
+                startButtonPressed();
             }
         });
 
@@ -123,22 +113,52 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
         mStopUpdatesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mRequestingLocationUpdates) {
-                    mRequestingLocationUpdates = false;
-                    setButtonsEnabledState();
-                    mRun.stop();
-                    stopLocationUpdates();
-
-                    DBHelper dbHelper = new DBHelper(getContext());
-                    //TODO: verify that insertion has been performed correctly
-                    dbHelper.insert(mRun);
-
-                    mListener.onRunningMapFragmentInteraction(mRun);
-                }
+                stopButtonPressed();
             }
         });
 
         setButtonsEnabledState();
+    }
+
+    /**
+     * Include all actions to perfermor when the Start button is pressed
+     */
+    private void startButtonPressed() {
+
+        if(checkPermission() && mLocationSettingsHandler.checkLocationSettings()) {
+            mStartUpdatesButton.setVisibility(View.INVISIBLE);
+            mStopUpdatesButton.setVisibility(View.VISIBLE);
+
+            String runName = DateFormat.getDateTimeInstance().format(new Date());
+            mRun = new Run(runName);
+
+            if (mLastCheckPoint != null) {
+                mRun.start(mLastCheckPoint);
+            }
+            if (!mRequestingLocationUpdates) {
+                mRequestingLocationUpdates = true;
+                startLocationUpdates();
+            }
+            setButtonsEnabledState();
+        }
+    }
+
+    /**
+     * Include all actions to perfermor when the Stop button is pressed
+     */
+    private void stopButtonPressed() {
+        if (mRequestingLocationUpdates) {
+            mRequestingLocationUpdates = false;
+            setButtonsEnabledState();
+            mRun.stop();
+            stopLocationUpdates();
+
+            DBHelper dbHelper = new DBHelper(getContext());
+            //TODO: verify that insertion has been performed correctly
+            dbHelper.insert(mRun);
+
+            mListener.onRunningMapFragmentInteraction(mRun);
+        }
     }
 
     /**
