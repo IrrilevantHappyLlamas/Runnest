@@ -30,18 +30,15 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
 import ch.epfl.sweng.project.Activities.SideBarActivity;
+import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Run;
 
 public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener{
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+        LocationListener
+{
 
     // Location update
     private GoogleApiClient mGoogleApiClient = null;
@@ -62,32 +59,9 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
 
     private RunningMapFragmentInteractionListener mListener = null;
 
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment RunningMapFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static RunningMapFragment newInstance(String param1, String param2) {
-        RunningMapFragment fragment = new RunningMapFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            String mParam1 = getArguments().getString(ARG_PARAM1);
-            String mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -154,6 +128,12 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
                     setButtonsEnabledState();
                     mRun.stop();
                     stopLocationUpdates();
+
+                    DBHelper dbHelper = new DBHelper(getContext());
+                    //TODO: verify that insertion has been performed correctly
+                    dbHelper.insert(mRun);
+
+                    mListener.onRunningMapFragmentInteraction(mRun);
                 }
             }
         });
@@ -383,6 +363,6 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     public interface RunningMapFragmentInteractionListener {
-        void onRunningMapFragmentInteraction(Uri uri);
+        void onRunningMapFragmentInteraction(Run run);
     }
 }

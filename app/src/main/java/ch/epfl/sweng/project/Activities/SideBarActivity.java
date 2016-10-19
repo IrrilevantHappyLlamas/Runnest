@@ -189,8 +189,10 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onRunningMapFragmentInteraction(Uri uri) {
+    public void onRunningMapFragmentInteraction(Run run) {
 
+        mCurrentFragment = DisplayRunFragment.newInstance(run);
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
     }
 
     @Override
