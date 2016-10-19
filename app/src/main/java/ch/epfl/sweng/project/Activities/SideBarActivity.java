@@ -21,22 +21,28 @@ import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
-import ch.epfl.sweng.project.Fragments.LocationDemo;
+import ch.epfl.sweng.project.Fragments.HomeFragment;
+import ch.epfl.sweng.project.Fragments.NewRun.RunningMapFragment;
+import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
 
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
+import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
 import ch.epfl.sweng.project.Model.Profile;
+import ch.epfl.sweng.project.Model.Run;
 
 
 public class SideBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
+        HomeFragment.OnFragmentInteractionListener,
         ProfileFragment.ProfileFragmentInteractionListener,
-        LocationDemo.OnFragmentInteractionListener {
+        RunningMapFragment.RunningMapFragmentInteractionListener,
+        RunHistoryFragment.onRunHistoryInteractionListener,
+        DisplayRunFragment.OnDisplayRunInteractionListener
+{
 
-    // Constants
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
-    private boolean locationPermissionGranted = false;
 
-    private Fragment runningFragment = null;
+    private Fragment mCurrentFragment = null;
     private FragmentManager fragmentManager = null;
 
     public static Profile profile = null;
@@ -78,11 +84,11 @@ public class SideBarActivity extends AppCompatActivity
 
         //Initializing the fragment
         fragmentManager = getSupportFragmentManager();
-        runningFragment = fragmentManager.findFragmentById(R.id.fragment_container);
+        mCurrentFragment = fragmentManager.findFragmentById(R.id.fragment_container);
 
-        if(runningFragment == null){
-            runningFragment = new LocationDemo();
-            fragmentManager.beginTransaction().add(R.id.fragment_container, runningFragment).commit();
+        if(mCurrentFragment == null){
+            mCurrentFragment = new HomeFragment();
+            fragmentManager.beginTransaction().add(R.id.fragment_container, mCurrentFragment).commit();
         }
     }
 
@@ -125,11 +131,17 @@ public class SideBarActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_profile) {
-            runningFragment = new ProfileFragment();
-            fragmentManager.beginTransaction().replace(R.id.fragment_container, runningFragment).commit();
-        } else if (id == R.id.nav_gallery || id == R.id.nav_slideshow) {
+            mCurrentFragment = new ProfileFragment();
+
+        } else if (id == R.id.nav_new_run) {
+            mCurrentFragment = new RunningMapFragment();
+
+        } else if (id == R.id.nav_run_history) {
+            mCurrentFragment = new RunHistoryFragment();
 
         }
+
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -153,12 +165,10 @@ public class SideBarActivity extends AppCompatActivity
             case PERMISSION_REQUEST_CODE_FINE_LOCATION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    locationPermissionGranted = true;
                     Toast.makeText(getApplicationContext(),"You can now start a Run.",Toast.LENGTH_LONG).show();
 
                 } else {
 
-                    locationPermissionGranted = false;
                     Toast.makeText(getApplicationContext(),"Permission Denied, you cannot start a Run.",
                              Toast.LENGTH_LONG).show();
                 }
@@ -168,26 +178,34 @@ public class SideBarActivity extends AppCompatActivity
 
     }
 
-    /**
-     * Getter for <code>locationPermissionGranted</code>.
-     *
-     * @return      value of <code>locationPermissionGranted</code>
-     */
-    public boolean getLocationPermissionGranted() {
-        return locationPermissionGranted;
-    }
-
-    /**
-     * Setter for <code>locationPermissionGranted</coder>
-     *
-     * @param granted   the value to set, a <code>Boolean</code>
-     */
-    public void setLocationPermissionGranted(boolean granted) {
-        locationPermissionGranted = granted;
-    }
-
     @Override
     public void onProfileFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onRunningMapFragmentInteraction(Run run) {
+
+        mCurrentFragment = DisplayRunFragment.newInstance(run);
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
+    }
+
+    @Override
+    public void onRunHistoryInteraction(Run run) {
+
+        mCurrentFragment = DisplayRunFragment.newInstance(run);
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
+    }
+
+    @Override
+    public void onDisplayRunInteraction() {
+
+        mCurrentFragment = new RunHistoryFragment();
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
     }
 }
