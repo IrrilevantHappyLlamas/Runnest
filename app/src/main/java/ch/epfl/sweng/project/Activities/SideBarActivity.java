@@ -21,10 +21,10 @@ import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
+import ch.epfl.sweng.project.Fragments.FirebaseFragment;
 import ch.epfl.sweng.project.Fragments.HomeFragment;
 import ch.epfl.sweng.project.Fragments.NewRun.RunningMapFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
-
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
 import ch.epfl.sweng.project.Model.Profile;
@@ -36,6 +36,7 @@ public class SideBarActivity extends AppCompatActivity
         HomeFragment.OnFragmentInteractionListener,
         ProfileFragment.ProfileFragmentInteractionListener,
         RunningMapFragment.RunningMapFragmentInteractionListener,
+        FirebaseFragment.FireBaseFragmentInteractionListener,
         RunHistoryFragment.onRunHistoryInteractionListener,
         DisplayRunFragment.OnDisplayRunInteractionListener
 {
@@ -132,13 +133,12 @@ public class SideBarActivity extends AppCompatActivity
 
         if (id == R.id.nav_profile) {
             mCurrentFragment = new ProfileFragment();
-
-        } else if (id == R.id.nav_new_run) {
+        }  else if (id == R.id.nav_new_run) {
             mCurrentFragment = new RunningMapFragment();
-
         } else if (id == R.id.nav_run_history) {
             mCurrentFragment = new RunHistoryFragment();
-
+        } else if (id == R.id.nav_firebase) {
+            mCurrentFragment = new FirebaseFragment();
         }
 
         fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
@@ -207,5 +207,10 @@ public class SideBarActivity extends AppCompatActivity
 
         mCurrentFragment = new RunHistoryFragment();
         fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
+    }
+
+    @Override
+    public void onFirebaseFragmentInteraction(Uri uri) {
+
     }
 }

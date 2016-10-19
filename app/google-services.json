@@ -1,7 +1,9 @@
 {
   "project_info": {
     "project_number": "577629382915",
-    "project_id": "runnest-146309"
+    "firebase_url": "https://runnest-146309.firebaseio.com",
+    "project_id": "runnest-146309",
+    "storage_bucket": "runnest-146309.appspot.com"
   },
   "client": [
     {
@@ -13,12 +15,24 @@
       },
       "oauth_client": [
         {
+          "client_id": "577629382915-lfrci89jgf8p9sv8si3nof07fk5qu9cd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ch.epfl.sweng.project",
+            "certificate_hash": "017BD9B5BB23610CE3E026EB6821A3ECA811F022"
+          }
+        },
+        {
           "client_id": "577629382915-acl4qnjbg9u25jugfpvjtdv7qm53bb10.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "ch.epfl.sweng.project",
             "certificate_hash": "979F3E732914D3D309196F5F95B7BBF4F9EDACCD"
           }
+        },
+        {
+          "client_id": "577629382915-kiv730drkucl6c7ivmklabfmv7bairsl.apps.googleusercontent.com",
+          "client_type": 3
         },
         {
           "client_id": "577629382915-olamat6gdlfcu1epqtbon4tpnq0fmpmb.apps.googleusercontent.com",
@@ -35,11 +49,16 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "577629382915-kiv730drkucl6c7ivmklabfmv7bairsl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }

@@ -28,10 +28,6 @@ public class DisplayRunFragment extends Fragment {
     private OnDisplayRunInteractionListener mListener;
     private Run mRunToBeDisplayed;
 
-    public DisplayRunFragment() {
-        // Required empty public constructor
-    }
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -63,26 +59,29 @@ public class DisplayRunFragment extends Fragment {
 
         if (mRunToBeDisplayed != null) {
 
-            TableLayout table = (TableLayout) view.findViewById(R.id.table);
-
-            TableRow firstRow = new TableRow(this.getContext());
-
-            createRowElement(firstRow, "Name");
-            createRowElement(firstRow, "Distance");
-            createRowElement(firstRow, "Duration");
-
-            table.addView(firstRow);
-
-            TableRow nextRow = new TableRow(this.getContext());
             Track track = mRunToBeDisplayed.getTrack();
 
-            createRowElement(nextRow, mRunToBeDisplayed.getName());
+            TableLayout table = (TableLayout) view.findViewById(R.id.table);
 
-            createRowElement(nextRow,String.valueOf(track.getDistance()));
+            // Name Row
+            TableRow firstRow = new TableRow(this.getContext());
+            createRowElement(firstRow, "Name :");
+            createRowElement(firstRow, mRunToBeDisplayed.getName());
+            table.addView(firstRow);
 
-            createRowElement(nextRow,String.valueOf(track.getDuration()));
+            // Distance Row
+            TableRow secondRow = new TableRow(this.getContext());
+            createRowElement(secondRow, "Distance :");
+            createRowElement(secondRow,String.valueOf((int)track.getDistance()) + " m");
+            table.addView(secondRow);
 
-            table.addView(nextRow);
+            // Duration Row
+            TableRow thirdRow = new TableRow(this.getContext());
+            createRowElement(thirdRow, "Duration :");
+            long minutes = track.getDuration() / 60;
+            long seconds = track.getDuration() % 60;
+            createRowElement(thirdRow, minutes + "' " + seconds + "''");
+            table.addView(thirdRow);
 
             Button button = (Button) view.findViewById(R.id.button);
 
@@ -103,10 +102,10 @@ public class DisplayRunFragment extends Fragment {
     private void createRowElement(TableRow row, String text){
 
         TableRow.LayoutParams layoutParams = new TableRow.LayoutParams();
-        layoutParams.setMargins(10, 10, 10, 10);
+        layoutParams.setMargins(10, 50, 20, 10);
         TextView element = new TextView(this.getContext());
         element.setText(text);
-        element.setTextSize(30);
+        element.setTextSize(20);
         element.setLayoutParams(layoutParams);
 
         row.addView(element);

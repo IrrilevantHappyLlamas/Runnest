@@ -26,7 +26,7 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
         View view =  inflater.inflate(R.layout.fragment_profile, container, false);
 
         // Display logged profile id
-        ((TextView)view.findViewById(R.id.idTxt)).setText("id "+ SideBarActivity.profile.getId());
+        ((TextView)view.findViewById(R.id.idTxt)).setText("id");
 
         return view;
     }
