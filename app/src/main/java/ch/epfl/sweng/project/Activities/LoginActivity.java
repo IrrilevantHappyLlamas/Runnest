@@ -33,13 +33,10 @@ public final class LoginActivity extends AppCompatActivity
     private static final String TAG = "LoginActivity";
     private static final int RC_SIGN_IN = 9001;
 
-    private GoogleApiClient mGoogleApiClient = null;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
 
         // Configure sign-in to request the user's ID, email address, and basic profile.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -49,15 +46,17 @@ public final class LoginActivity extends AppCompatActivity
         // Build a GoogleApiClient with access to the Google Sign-In API and the options specified by gso.
         // ATTENTION: This "addApi(AppIndex.API)"was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
+        GoogleApiClient googleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .addApi(AppIndex.API).build();
 
+        ((AppRunnest) getApplication()).setApiClient(googleApiClient);
+
+
+
         // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);
-        findViewById(R.id.sign_out_button).setOnClickListener(this);
-        findViewById(R.id.continue_button).setOnClickListener(this);
 
         // Customize sign-in button
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
@@ -71,7 +70,7 @@ public final class LoginActivity extends AppCompatActivity
      * configuration and an activity for result with said Intent.
      */
     private void signIn() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(((AppRunnest)getApplication()).getApiClient());
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
@@ -128,13 +127,12 @@ public final class LoginActivity extends AppCompatActivity
      * Called after the Sign Out button has been pressed.
      */
     private void signOut() {
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+        Auth.GoogleSignInApi.signOut(((AppRunnest)getApplication()).getApiClient()).setResultCallback(
                 new ResultCallback<Status>() {
             @Override
             public void onResult(@NonNull Status status) {
             }
         });
-        Toast.makeText(getBaseContext(), "Logout", Toast.LENGTH_LONG).show();
     }
 
 
@@ -164,24 +162,12 @@ public final class LoginActivity extends AppCompatActivity
         switch (v.getId()) {
             case R.id.sign_in_button:
                 Log.d(TAG, "clickSignInBtn:");
-                signIn();
-                break;
-            case R.id.sign_out_button:
                 signOut();
-                break;
-            case R.id.continue_button:
-                continueToApp();
+                signIn();
                 break;
         }
     }
 
-    /**
-     * Proceed to the rest of the application skipping the login. Temporary
-     */
-    private void continueToApp() {
-        Intent sideBarIntent = new Intent(this, SideBarActivity.class);
-        startActivity(sideBarIntent);
-    }
 }
 
 

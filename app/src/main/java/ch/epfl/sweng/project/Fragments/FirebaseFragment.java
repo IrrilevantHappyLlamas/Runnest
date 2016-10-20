@@ -62,9 +62,9 @@ public class FirebaseFragment extends Fragment implements View.OnClickListener {
 
         //Add Effort
         demoEffort = new Run("demoEffort");
-        CheckPoint p1 = buildCheckPoint(1, 1, 1);
-        CheckPoint p2 = buildCheckPoint(2, 2, 2);
-        CheckPoint p3 = buildCheckPoint(3, 3, 3);
+        CheckPoint p1 = buildCheckPoint(1, 1, 1000);
+        CheckPoint p2 = buildCheckPoint(2, 2, 2000);
+        CheckPoint p3 = buildCheckPoint(3, 3, 3000);
         demoEffort.start(p1);
         demoEffort.update(p2);
         demoEffort.update(p3);

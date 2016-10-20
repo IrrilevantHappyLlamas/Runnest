@@ -51,29 +51,6 @@
                 android:visibility="visible"
                 tools:visibility="gone" />
 
-            <Button
-                android:text="Logout"
-                android:layout_width="150dp"
-                android:id="@+id/sign_out_button"
-                android:layout_height="50dp"
-                android:layout_marginBottom="20dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginRight="20dp"
-                android:layout_marginEnd="20dp"/>
-
-            <Button
-                android:text="Continue to app"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/continue_button"
-                android:layout_alignTop="@+id/sign_out_button"
-                android:layout_toLeftOf="@+id/sign_out_button"
-                android:layout_toStartOf="@+id/sign_out_button"
-                android:layout_marginRight="34dp"
-                android:layout_marginEnd="34dp"/>
-
 
         </RelativeLayout>
 

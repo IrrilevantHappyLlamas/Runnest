@@ -62,8 +62,9 @@ public class SideBarActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "RUN!!!", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
+                mCurrentFragment = new RunningMapFragment();
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
             }
         });
 
@@ -150,6 +151,7 @@ public class SideBarActivity extends AppCompatActivity
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(getBaseContext(), "Logout successful", Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+                        intent.putExtra("Source", "logout_pressed");
                         startActivity(intent);
                     }
                 })
