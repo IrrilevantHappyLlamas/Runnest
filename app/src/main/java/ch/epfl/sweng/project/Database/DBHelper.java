@@ -171,10 +171,10 @@ public class DBHelper extends SQLiteOpenHelper {
             while (result.moveToNext()) {
                 Double latitude = result.getDouble(1);
                 Double longitude = result.getDouble(2);
-                Double alttitude = result.getDouble(3);
+                Double altitude = result.getDouble(3);
                 long time = Long.parseLong(result.getString(4));
-                CheckPoint checkpoint = new CheckPoint(latitude, longitude, alttitude, time);
-                boolean isAdded = track.add(checkpoint);
+                CheckPoint checkpoint = new CheckPoint(latitude, longitude, altitude, time);
+                track.add(checkpoint);
             }
         }
         result.close();
