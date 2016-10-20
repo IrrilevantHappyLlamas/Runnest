@@ -20,6 +20,22 @@ public class CheckPoint {
     }
 
     /**
+     * Constructor that takes values for latitude, longitude and time
+     *
+     * @param latitude
+     * @param longitude
+     * @param altitude
+     * @param time in seconds
+     */
+    public CheckPoint(double latitude, double longitude, double altitude, long time) {
+        location = new Location("");
+        location.setLatitude(latitude);
+        location.setLongitude(longitude);
+        location.setAltitude(altitude);
+        location.setTime(time * 1000);
+    }
+
+    /**
      * Computes the distance in meters to a <code>CheckPoint</code> passed as argument
      *
      * @param destination   <code>CheckPoint</code> to which calculate the distance

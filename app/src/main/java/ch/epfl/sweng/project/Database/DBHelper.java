@@ -15,6 +15,10 @@ import ch.epfl.sweng.project.Model.Effort;
 import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.Track;
 
+/**
+ * This class provides methods to interact with a SQLite local database.
+ * It allows to store and retrieve Efforts.
+ */
 public class DBHelper extends SQLiteOpenHelper {
     private SQLiteDatabase db;
 
@@ -26,19 +30,43 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String[] EFFORTS_COLS = {"id", "name", "type", "checkpointsFromId", "checkpointsToId"};
     public static final String[] CHECKPOINTS_COLS = {"id", "latitude", "longitude", "altitude", "time"};
 
+    /**
+     * The constructor of the class.
+     * @param context
+     */
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
         db = this.getWritableDatabase();
     }
 
+    /**
+     * This method creates the tables.
+     * @param db
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String createEffortsTableQuery = "CREATE TABLE " + EFFORTS_TABLE_NAME + " (" + EFFORTS_COLS[0] + " INTEGER PRIMARY KEY AUTOINCREMENT, " + EFFORTS_COLS[1] + " TEXT, " + EFFORTS_COLS[2] + " TEXT, "+ EFFORTS_COLS[3] + " INTEGER, " + EFFORTS_COLS[4] + " INTEGER)";
-        String createCheckpointsTableQuery = "CREATE TABLE " + CHECKPOINTS_TABLE_NAME + " (" + CHECKPOINTS_COLS[0] + " INTEGER PRIMARY KEY AUTOINCREMENT, " + CHECKPOINTS_COLS[1] + " DOUBLE, " + CHECKPOINTS_COLS[2] + " DOUBLE, " + CHECKPOINTS_COLS[3] + " DOUBLE, " + CHECKPOINTS_COLS[4] + " INTEGER)";
+        String createEffortsTableQuery = "CREATE TABLE " + EFFORTS_TABLE_NAME + " ("
+                + EFFORTS_COLS[0] + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + EFFORTS_COLS[1] + " TEXT, "
+                + EFFORTS_COLS[2] + " TEXT, "
+                + EFFORTS_COLS[3] + " INTEGER, "
+                + EFFORTS_COLS[4] + " INTEGER)";
+        String createCheckpointsTableQuery = "CREATE TABLE " + CHECKPOINTS_TABLE_NAME + " ("
+                + CHECKPOINTS_COLS[0] + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + CHECKPOINTS_COLS[1] + " DOUBLE, "
+                + CHECKPOINTS_COLS[2] + " DOUBLE, "
+                + CHECKPOINTS_COLS[3] + " DOUBLE, "
+                + CHECKPOINTS_COLS[4] + " TEXT)";
         db.execSQL(createEffortsTableQuery);
         db.execSQL(createCheckpointsTableQuery);
     }
 
+    /**
+     * This method updates the database cleaning the tables.
+     * @param db
+     * @param oldVersion number
+     * @param newVersion number
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         String dropEffortsTableQuery = "DROP TABLE IF EXISTS " + EFFORTS_TABLE_NAME;
@@ -48,6 +76,11 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /**
+     * Inserts an Effort in the database.
+     * @param effort
+     * @return true if the insertion was successful, false otherwise
+     */
     public boolean insert(Effort effort) {
         //insert all checkpoints
         Track track = effort.getTrack();
@@ -91,7 +124,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Delete an effort given its id
+     * Deletes an effort given its id
      * @param id the id of the effort to delete
      * @return true if the deletion was succesfull
      */
@@ -100,6 +133,10 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.delete(EFFORTS_TABLE_NAME, EFFORTS_COLS[0] + " = " + id, null) > 0;
     }
 
+    /**
+     * Retrieves all efforts present in the database.
+     * @return the list of efforts present in the database
+     */
     public List<Run> fetchAllEfforts() {
         Cursor result = db.query(EFFORTS_TABLE_NAME, EFFORTS_COLS, null, null, null, null, null);
         List<Run> efforts = new ArrayList<>();
@@ -120,18 +157,23 @@ public class DBHelper extends SQLiteOpenHelper {
         return efforts;
     }
 
+    /**
+     * Retrieves a track from the database
+     * @param fromId
+     * @param toId
+     * @return the track
+     */
     private Track fetchTrack(long fromId, long toId) {
         String selection = CHECKPOINTS_COLS[0] + " >= " + fromId + " AND " + CHECKPOINTS_COLS[0] + " <= " + toId;
         Cursor result = db.query(CHECKPOINTS_TABLE_NAME, CHECKPOINTS_COLS, selection, null, null, null, null);
         Track track = new Track();
         if (result.getCount() > 0) {
             while (result.moveToNext()) {
-                Location location = new Location("");
-                location.setLatitude(result.getDouble(1));
-                location.setLongitude(result.getDouble(2));
-                location.setAltitude(result.getDouble(3));
-                location.setTime(result.getLong(4));
-                CheckPoint checkpoint = new CheckPoint(location);
+                Double latitude = result.getDouble(1);
+                Double longitude = result.getDouble(2);
+                Double alttitude = result.getDouble(3);
+                long time = Long.parseLong(result.getString(4));
+                CheckPoint checkpoint = new CheckPoint(latitude, longitude, alttitude, time);
                 boolean isAdded = track.add(checkpoint);
             }
         }
