@@ -3,13 +3,15 @@ package ch.epfl.sweng.project;
 import android.support.multidex.MultiDexApplication;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 /**
  * Application class, temporarily only to enable multidex support
  */
 public class AppRunnest extends MultiDexApplication {
 
-    private GoogleSignInAccount currentUser = null;
+    private GoogleApiClient mApiClient = null;
+    private GoogleSignInAccount mUser = null;
 
     /**
      * Set the variable currentUser with a given <code>GoogleSignInAccount</code>, which
@@ -17,8 +19,8 @@ public class AppRunnest extends MultiDexApplication {
      *
      * @param user  <code>GoogleSignInAccount</code> to store
      */
-    public void setCurrentUser(GoogleSignInAccount user) {
-        currentUser = user;
+    public void setUser(GoogleSignInAccount user) {
+        this.mUser = user;
     }
 
     /**
@@ -26,7 +28,16 @@ public class AppRunnest extends MultiDexApplication {
      *
      * @return  the current user, a <code>GoogleSignInAccount</code>
      */
-    public GoogleSignInAccount getCurrentUser() {
-        return currentUser;
+    public GoogleSignInAccount getUser() {
+        return mUser;
+    }
+
+
+    public GoogleApiClient getApiClient() {
+        return mApiClient;
+    }
+
+    public void setApiClient(GoogleApiClient apiClient) {
+        this.mApiClient = apiClient;
     }
 }
