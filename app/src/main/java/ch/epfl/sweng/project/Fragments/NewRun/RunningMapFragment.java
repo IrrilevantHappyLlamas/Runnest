@@ -132,14 +132,10 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
             String runName = DateFormat.getDateTimeInstance().format(new Date());
             mRun = new Run(runName);
 
-            if (mLastCheckPoint != null) {
-                mRun.start(mLastCheckPoint);
-            }
-            if (!mRequestingLocationUpdates) {
-                mRequestingLocationUpdates = true;
-                startLocationUpdates();
-            }
+            mRequestingLocationUpdates = true;
             setButtonsEnabledState();
+
+            startLocationUpdates();
         }
     }
 
@@ -199,12 +195,7 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
     private void startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(getContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            // Get current location and show it
-            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            if (location != null) {
-                mLastCheckPoint = new CheckPoint(location);
-                mMapHandler.startShowingLocation();
-            }
+
             // Start listening for updates
             LocationServices.FusedLocationApi.requestLocationUpdates(
                     mGoogleApiClient,
