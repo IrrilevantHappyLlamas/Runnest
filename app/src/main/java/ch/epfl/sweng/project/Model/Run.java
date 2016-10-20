@@ -1,5 +1,7 @@
 package ch.epfl.sweng.project.Model;
 
+import java.util.Date;
+
 /**
  * Implementation of the run effort, which contains the track and
  * specifications of the run
@@ -12,15 +14,22 @@ public class Run implements Effort {
     private String name;
     private Track track = null;
     private boolean isRunning;
+    private Date date;
 
     public Run(String name) {
         this.name = name;
         isRunning = false;
+        date = new Date();
     }
 
     public Run() {
         name = "temp";
         isRunning = false;
+
+    }
+
+    public Date getDate() {
+        return date;
     }
 
     @Override

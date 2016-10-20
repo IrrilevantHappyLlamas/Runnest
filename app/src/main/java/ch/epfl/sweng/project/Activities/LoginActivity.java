@@ -20,8 +20,12 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
+import ch.epfl.sweng.project.AppRunnest;
+
 /**
  * Launch activity which implements google authentication
+ *
+ * @author Tobia Albergoni, Riccardo Conti
  */
 public final class LoginActivity extends AppCompatActivity
         implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
@@ -35,6 +39,7 @@ public final class LoginActivity extends AppCompatActivity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
 
         // Configure sign-in to request the user's ID, email address, and basic profile.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -101,11 +106,15 @@ public final class LoginActivity extends AppCompatActivity
 
             // Signed in successfully, show success toast
             GoogleSignInAccount acct = result.getSignInAccount();
+            ((AppRunnest)getApplication()).setUser(acct);
+
+
             Toast.makeText(getBaseContext(), "Login successful", Toast.LENGTH_LONG).show();
+
+            //SystemClock.sleep(3000);
 
             // Start SideBarActivity
             Intent sideBarIntent = new Intent(this, SideBarActivity.class);
-            fetchAccountInfo(acct, sideBarIntent);
             startActivity(sideBarIntent);
 
         } else {
@@ -113,20 +122,7 @@ public final class LoginActivity extends AppCompatActivity
         }
     }
 
-    // TODO: implement passing account informations to the rest of the app
-    /**
-     * Fetches information from a <code>GoogleSignInAccount</code> and puts them as extras
-     * into an <code>Intent</code>.
-     *
-     * @param acct      the <code>GoogleSignInAccount</code> from which to fetch information
-     * @param intent    <code>Intent</code> in which to put info as extras
-     */
-    private void fetchAccountInfo(GoogleSignInAccount acct, Intent intent) {
-        intent.putExtra("id", acct.getId());
-        intent.putExtra("email", acct.getEmail());
-        intent.putExtra("familyName", acct.getFamilyName());
-        intent.putExtra("name", acct.getGivenName());
-    }
+
 
     /**
      * Called after the Sign Out button has been pressed.
@@ -138,18 +134,24 @@ public final class LoginActivity extends AppCompatActivity
             public void onResult(@NonNull Status status) {
             }
         });
+        Toast.makeText(getBaseContext(), "Logout", Toast.LENGTH_LONG).show();
     }
 
-    // TODO: improve the flow of transitions between activities and fragments, including back calls
+
     @Override
     public void onBackPressed() {
         // disable going back
         moveTaskToBack(true);
     }
 
-    // TODO: handle connection failure to google services
+    /**
+     * Handle connection failure
+     *
+     * @param connectionResult failing result connection
+     */
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Toast.makeText(getBaseContext(), "Check your connection and retry", Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -173,6 +175,9 @@ public final class LoginActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Proceed to the rest of the application skipping the login. Temporary
+     */
     private void continueToApp() {
         Intent sideBarIntent = new Intent(this, SideBarActivity.class);
         startActivity(sideBarIntent);

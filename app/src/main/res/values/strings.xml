@@ -18,4 +18,6 @@
     <string name="send_tab">Send</string>
     <string name="irrilevant_happy_llamas">Irrilevant Happy Llamas</string>
     <string name="temp">temp</string>
+    <string name="log_out">Logout</string>
+    <string name="email">email@gmail.com</string>
 </resources>

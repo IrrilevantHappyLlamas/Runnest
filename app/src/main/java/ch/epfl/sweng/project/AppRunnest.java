@@ -9,7 +9,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
  */
 public class AppRunnest extends MultiDexApplication {
 
-    private GoogleSignInAccount currentUser = null;
+    private GoogleSignInAccount user = null;
 
     /**
      * Set the variable currentUser with a given <code>GoogleSignInAccount</code>, which
@@ -17,8 +17,8 @@ public class AppRunnest extends MultiDexApplication {
      *
      * @param user  <code>GoogleSignInAccount</code> to store
      */
-    public void setCurrentUser(GoogleSignInAccount user) {
-        currentUser = user;
+    public void setUser(GoogleSignInAccount user) {
+        this.user = user;
     }
 
     /**
@@ -26,7 +26,7 @@ public class AppRunnest extends MultiDexApplication {
      *
      * @return  the current user, a <code>GoogleSignInAccount</code>
      */
-    public GoogleSignInAccount getCurrentUser() {
-        return currentUser;
+    public GoogleSignInAccount getUser() {
+        return user;
     }
 }
