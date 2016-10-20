@@ -1,5 +1,7 @@
 package ch.epfl.sweng.project.Activities;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,24 +14,26 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
+import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Fragments.FirebaseFragment;
 import ch.epfl.sweng.project.Fragments.HomeFragment;
 import ch.epfl.sweng.project.Fragments.NewRun.RunningMapFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
-import ch.epfl.sweng.project.Model.Profile;
 import ch.epfl.sweng.project.Model.Run;
-
 
 public class SideBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -46,7 +50,6 @@ public class SideBarActivity extends AppCompatActivity
     private Fragment mCurrentFragment = null;
     private FragmentManager fragmentManager = null;
 
-    public static Profile profile = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +62,9 @@ public class SideBarActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
+                mCurrentFragment = new RunningMapFragment();
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
             }
         });
 
@@ -71,17 +75,16 @@ public class SideBarActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        /*
-        //Profile
-        Intent i = getIntent();
-        profile = new Profile(i.getSerializableExtra("id").toString(),
-         i.getSerializableExtra("id").toString(),
-          i.getSerializableExtra("id").toString(),
-           i.getSerializableExtra("id").toString());
-        */
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View header = navigationView.getHeaderView(0);
+        TextView h1 = (TextView) header.findViewById(R.id.header1_nav_header);
+        TextView h2 = (TextView) header.findViewById(R.id.header2_nav_header);
+
+        GoogleSignInAccount account = ((AppRunnest)getApplicationContext()).getUser();
+        h1.setText(account.getDisplayName());
+        h2.setText(account.getEmail());
 
         //Initializing the fragment
         fragmentManager = getSupportFragmentManager();
@@ -98,10 +101,10 @@ public class SideBarActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
         }
+
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -139,6 +142,26 @@ public class SideBarActivity extends AppCompatActivity
             mCurrentFragment = new RunHistoryFragment();
         } else if (id == R.id.nav_firebase) {
             mCurrentFragment = new FirebaseFragment();
+        } else if (id == R.id.nav_logout) {
+
+            new AlertDialog.Builder(this)
+                .setTitle("Logout")
+                .setMessage("Are you sure you want to logout?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(getBaseContext(), "Logout successful", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+                        intent.putExtra("Source", "logout_pressed");
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
         }
 
         fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();

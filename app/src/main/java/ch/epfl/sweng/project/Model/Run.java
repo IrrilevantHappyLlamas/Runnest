@@ -1,5 +1,6 @@
 package ch.epfl.sweng.project.Model;
 
+import java.util.Date;
 import java.io.Serializable;
 
 /**

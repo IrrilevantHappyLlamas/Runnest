@@ -20,16 +20,18 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
+import ch.epfl.sweng.project.AppRunnest;
+
 /**
  * Launch activity which implements google authentication
+ *
+ * @author Tobia Albergoni, Riccardo Conti
  */
 public final class LoginActivity extends AppCompatActivity
         implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
     private static final String TAG = "LoginActivity";
     private static final int RC_SIGN_IN = 9001;
-
-    private GoogleApiClient mGoogleApiClient = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,15 +46,17 @@ public final class LoginActivity extends AppCompatActivity
         // Build a GoogleApiClient with access to the Google Sign-In API and the options specified by gso.
         // ATTENTION: This "addApi(AppIndex.API)"was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
+        GoogleApiClient googleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .addApi(AppIndex.API).build();
 
+        ((AppRunnest) getApplication()).setApiClient(googleApiClient);
+
+
+
         // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);
-        findViewById(R.id.sign_out_button).setOnClickListener(this);
-        findViewById(R.id.continue_button).setOnClickListener(this);
 
         // Customize sign-in button
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
@@ -66,7 +70,7 @@ public final class LoginActivity extends AppCompatActivity
      * configuration and an activity for result with said Intent.
      */
     private void signIn() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(((AppRunnest)getApplication()).getApiClient());
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
@@ -101,11 +105,15 @@ public final class LoginActivity extends AppCompatActivity
 
             // Signed in successfully, show success toast
             GoogleSignInAccount acct = result.getSignInAccount();
+            ((AppRunnest)getApplication()).setUser(acct);
+
+
             Toast.makeText(getBaseContext(), "Login successful", Toast.LENGTH_LONG).show();
+
+            //SystemClock.sleep(3000);
 
             // Start SideBarActivity
             Intent sideBarIntent = new Intent(this, SideBarActivity.class);
-            fetchAccountInfo(acct, sideBarIntent);
             startActivity(sideBarIntent);
 
         } else {
@@ -113,26 +121,13 @@ public final class LoginActivity extends AppCompatActivity
         }
     }
 
-    // TODO: implement passing account informations to the rest of the app
-    /**
-     * Fetches information from a <code>GoogleSignInAccount</code> and puts them as extras
-     * into an <code>Intent</code>.
-     *
-     * @param acct      the <code>GoogleSignInAccount</code> from which to fetch information
-     * @param intent    <code>Intent</code> in which to put info as extras
-     */
-    private void fetchAccountInfo(GoogleSignInAccount acct, Intent intent) {
-        intent.putExtra("id", acct.getId());
-        intent.putExtra("email", acct.getEmail());
-        intent.putExtra("familyName", acct.getFamilyName());
-        intent.putExtra("name", acct.getGivenName());
-    }
+
 
     /**
      * Called after the Sign Out button has been pressed.
      */
     private void signOut() {
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+        Auth.GoogleSignInApi.signOut(((AppRunnest)getApplication()).getApiClient()).setResultCallback(
                 new ResultCallback<Status>() {
             @Override
             public void onResult(@NonNull Status status) {
@@ -140,16 +135,21 @@ public final class LoginActivity extends AppCompatActivity
         });
     }
 
-    // TODO: improve the flow of transitions between activities and fragments, including back calls
+
     @Override
     public void onBackPressed() {
         // disable going back
         moveTaskToBack(true);
     }
 
-    // TODO: handle connection failure to google services
+    /**
+     * Handle connection failure
+     *
+     * @param connectionResult failing result connection
+     */
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Toast.makeText(getBaseContext(), "Check your connection and retry", Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -162,21 +162,12 @@ public final class LoginActivity extends AppCompatActivity
         switch (v.getId()) {
             case R.id.sign_in_button:
                 Log.d(TAG, "clickSignInBtn:");
-                signIn();
-                break;
-            case R.id.sign_out_button:
                 signOut();
-                break;
-            case R.id.continue_button:
-                continueToApp();
+                signIn();
                 break;
         }
     }
 
-    private void continueToApp() {
-        Intent sideBarIntent = new Intent(this, SideBarActivity.class);
-        startActivity(sideBarIntent);
-    }
 }
 
 

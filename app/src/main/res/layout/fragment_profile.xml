@@ -10,50 +10,145 @@
                 tools:ignore="Overdraw,UnusedIds">
 
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/profile_head_small"
-        android:id="@+id/profile_head"
-        android:layout_marginTop="55dp"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:contentDescription="@string/desc"
-        tools:ignore="UnusedIds"/>
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
 
-    <TextView
-        android:text="Email : runnest.ihl@gmail.com"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/emailTxt"
-        android:layout_marginTop="64dp"
-        android:layout_below="@+id/nameTxt"
-        android:layout_centerHorizontal="true"
-        tools:ignore="UnusedIds"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/photoImg"
+            android:contentDescription="@string/desc"
+            tools:ignore="UnusedIds"
+            app:srcCompat="@drawable/profile_head_small"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/familyTxt"
+            android:layout_toStartOf="@+id/familyTxt"
+            android:paddingBottom="10dp"/>
 
-    <TextView
-        android:text="Name : IHL"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/nameTxt"
-        android:layout_marginTop="51dp"
-        android:layout_below="@+id/familyTxt"
-        android:layout_centerHorizontal="true" />
+        <TextView
+            android:text="Email : runnest.ihl@gmail.com"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/emailTxt"
+            android:layout_below="@+id/nameTxt"
+            android:layout_centerHorizontal="true"
+            tools:ignore="UnusedIds"/>
 
-    <TextView
-        android:text="Family Name : Runnest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/familyTxt"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        <TextView
+            android:text="Name : IHL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/nameTxt"
+            android:layout_alignBottom="@+id/photoImg"
+            android:layout_alignRight="@+id/idTxt"
+            android:layout_alignEnd="@+id/idTxt"/>
 
-    <TextView
-        android:text="@string/temp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="55dp"
-        android:id="@+id/idTxt"
-        android:layout_above="@+id/familyTxt"
-        android:layout_centerHorizontal="true" />
+        <TextView
+            android:text="Family Name : Runnest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/familyTxt"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:text="id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/idTxt"
+            android:layout_above="@+id/familyTxt"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:text="Statistics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/statTxt"
+            android:paddingBottom="20dp"
+            android:paddingTop="20dp"
+            android:paddingLeft="20dp"
+            android:fontFamily="sans-serif"
+            android:textSize="25sp"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/running_man"
+                android:id="@+id/imageView"
+                android:layout_weight="1"/>
+
+            <ImageView
+                app:srcCompat="@android:drawable/ic_lock_idle_alarm"
+                android:id="@+id/imageView2"
+                android:layout_weight="1"
+                android:layout_height="30dp"
+                android:layout_width="30dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            >
+
+            <TextView
+                android:text="43.57 km"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView3"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:text="9h 53min"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView2"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:textSize="20sp"/>
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:srcCompat="@drawable/newbie_big"
+            android:id="@+id/imageView3"
+            android:layout_weight="1"
+            android:paddingBottom="0dp"
+            android:elevation="24dp"/>
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:id="@+id/progressBar2"
+            android:layout_height="50dp"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:progress="78"/>
+
+        <TextView
+            android:text="78% (6.43 km until Rookie)"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView4"
+            android:textSize="18sp"
+            android:gravity="center_horizontal"
+            android:paddingBottom="10dp"/>
+
+    </LinearLayout>
+
 </RelativeLayout>
