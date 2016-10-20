@@ -62,6 +62,7 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
         ((TextView)view.findViewById(R.id.emailTxt)).setText("Email: "+ profile.getEmail());
         ((TextView)view.findViewById(R.id.familyTxt)).setText("Family: "+ profile.getFamilyName());
 
+
         return view;
     }
 

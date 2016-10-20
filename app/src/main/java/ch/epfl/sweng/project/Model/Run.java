@@ -1,35 +1,51 @@
 package ch.epfl.sweng.project.Model;
 
 import java.util.Date;
+import java.io.Serializable;
 
 /**
  * Implementation of the run effort, which contains the track and
  * specifications of the run
- *
- * @author Tobia Albergoni
  */
 @SuppressWarnings("ClassNamingConvention")
-public class Run implements Effort {
+public class Run
+        implements Effort,
+        Serializable{
 
     private String name;
     private Track track = null;
     private boolean isRunning;
-    private Date date;
 
+    /**
+     * Constructor that instantiates a <code>Run</code> with the name passed as argument
+     *
+     * @param name  the name of the <code>Run</code>
+     */
     public Run(String name) {
         this.name = name;
         isRunning = false;
-        date = new Date();
+        track = new Track();
     }
 
+    /**
+     * Default constructor, instantiates a <code>Run</code> with default name "temp"
+     */
     public Run() {
         name = "temp";
         isRunning = false;
-
+        track = new Track();
     }
 
-    public Date getDate() {
-        return date;
+    /**
+     * Copy constructor. The resulting <code>Run</code> is not in running state, independently of the state of the
+     * copied <code>Run</code>
+     *
+     * @param toCopy    <code>Run</code> to copy
+     */
+    public Run(Run toCopy) {
+        name = toCopy.getName();
+        track = new Track(toCopy.track);
+        isRunning = false;
     }
 
     @Override
@@ -44,7 +60,7 @@ public class Run implements Effort {
 
     @Override
     public boolean start(CheckPoint startingPoint) {
-        if (track == null) {
+        if (track.getTotalCheckPoints() == 0) {
             track = new Track(startingPoint);
             isRunning = true;
             return true;
@@ -73,5 +89,9 @@ public class Run implements Effort {
         else {
             return false;
         }
+    }
+
+    public void setTrack(Track track) {
+        this.track = new Track(track);
     }
 }

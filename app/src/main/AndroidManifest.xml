@@ -39,7 +39,7 @@
 
         <activity
             android:name="ch.epfl.sweng.project.Activities.SideBarActivity"
-            android:label="@string/title_activity_side_bar"
+            android:label="@string/runnest"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <meta-data
             android:name="com.google.android.gms.version"
