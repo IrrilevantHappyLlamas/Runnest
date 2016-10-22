@@ -207,6 +207,8 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
                     mRequestingLocationUpdates = true;
                 }
             });
+
+            mMapHandler.startShowingLocation();
         }
     }
 
