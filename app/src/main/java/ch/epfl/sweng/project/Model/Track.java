@@ -15,8 +15,8 @@ public class Track {
     private long duration;
 
     // Altitude
-    private double positiveDifference;
-    private double negativeDifference;
+    private double uphill;
+    private double downhill;
 
     /**
      * Constructor that takes a starting <code>CheckPoint</code> for the <code>Track</code>
@@ -30,8 +30,8 @@ public class Track {
         distance = 0;
         duration = 0;
 
-        positiveDifference = 0;
-        negativeDifference = 0;
+        uphill = 0;
+        downhill = 0;
     }
 
     public Track() {
@@ -40,8 +40,8 @@ public class Track {
         distance = 0;
         duration = 0;
 
-        positiveDifference = 0;
-        negativeDifference = 0;
+        uphill = 0;
+        downhill = 0;
     }
 
     /**
@@ -55,8 +55,8 @@ public class Track {
         distance = toCopy.distance;
         duration = toCopy.duration;
 
-        positiveDifference = toCopy.positiveDifference;
-        negativeDifference = toCopy.negativeDifference;
+        uphill = toCopy.uphill;
+        downhill = toCopy.downhill;
     }
 
 
@@ -93,9 +93,9 @@ public class Track {
 
         double altitudeDiff = newPoint.getAltitude() - checkpoints.get(totalCheckPoints - 1).getAltitude();
         if(altitudeDiff >= 0) {
-            positiveDifference += altitudeDiff;
+            uphill += altitudeDiff;
         } else {
-            negativeDifference += altitudeDiff;
+            downhill += altitudeDiff;
         }
     }
 
@@ -117,12 +117,12 @@ public class Track {
         return duration;
     }
 
-    public double getPositiveDifference() {
-        return positiveDifference;
+    public double getUphill() {
+        return uphill;
     }
 
-    public double getNegativeDifference() {
-        return negativeDifference;
+    public double getDownhill() {
+        return downhill;
     }
 
     /**
