@@ -19,7 +19,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import ch.epfl.sweng.project.Model.CheckPoint;
-import ch.epfl.sweng.project.Model.Effort;
 import ch.epfl.sweng.project.Model.FirebaseHelper;
 import ch.epfl.sweng.project.Model.Run;
 
@@ -31,7 +30,7 @@ public class FirebaseFragment extends Fragment implements View.OnClickListener {
     private FirebaseFragment.FireBaseFragmentInteractionListener firebaseListener = null;
 
     private FirebaseHelper mFirebaseHelper = null;
-    private Effort demoEffort = null;
+    private Run demoRun = null;
 
     // Add user
     private EditText idText = null;
@@ -60,22 +59,22 @@ public class FirebaseFragment extends Fragment implements View.OnClickListener {
         Button addUser = (Button) view.findViewById(R.id.add_user);
         addUser.setOnClickListener(this);
 
-        //Add Effort
-        demoEffort = new Run("demoEffort");
+        //Add Run
+        demoRun = new Run("demoEffort");
         CheckPoint p1 = buildCheckPoint(1, 1, 1000);
         CheckPoint p2 = buildCheckPoint(2, 2, 2000);
         CheckPoint p3 = buildCheckPoint(3, 3, 3000);
-        demoEffort.start(p1);
-        demoEffort.update(p2);
-        demoEffort.update(p3);
-        demoEffort.stop();
+        demoRun.start(p1);
+        demoRun.update(p2);
+        demoRun.update(p3);
+        demoRun.stop();
 
         idTextRun = (EditText) view.findViewById((R.id.run_user));
-        ((TextView) view.findViewById((R.id.effort_name))).setText("Effort name : " + demoEffort.getName());
+        ((TextView) view.findViewById((R.id.effort_name))).setText("Run name : " + demoRun.getName());
         ((TextView) view.findViewById((R.id.effort_dist)))
-                .setText("Distance : " + demoEffort.getTrack().getDistance());
+                .setText("Distance : " + demoRun.getTrack().getDistance());
         ((TextView) view.findViewById((R.id.effort_time)))
-                .setText("Duration : " + demoEffort.getTrack().getDuration());
+                .setText("Duration : " + demoRun.getTrack().getDuration());
         Button addEffort = (Button) view.findViewById(R.id.add_effort);
         addEffort.setOnClickListener(this);
 
@@ -106,11 +105,11 @@ public class FirebaseFragment extends Fragment implements View.OnClickListener {
     }
 
     /**
-     * Writes the sample <code>Effort</code> in the database, under the specified user
+     * Writes the sample <code>Run</code> in the database, under the specified user
      *
-     * @param effort    <code>Effort</code> to store
+     * @param run    <code>Run</code> to store
      */
-    private void getAndWriteEffort(Effort effort) {
+    private void getAndWriteEffort(Run run) {
 
         // Check EditText args
         if(idTextRun.getText().toString().isEmpty()){
@@ -122,7 +121,7 @@ public class FirebaseFragment extends Fragment implements View.OnClickListener {
         String id = idTextRun.getText().toString();
 
         // Update database
-        mFirebaseHelper.addOrUpdateEffort(id, demoEffort);
+        mFirebaseHelper.addOrUpdateEffort(id, demoRun);
         Toast.makeText(getActivity().getBaseContext(), "Run added", Toast.LENGTH_LONG).show();
     }
 
@@ -212,7 +211,7 @@ public class FirebaseFragment extends Fragment implements View.OnClickListener {
                 getAndWriteUser();
                 break;
             case R.id.add_effort:
-                getAndWriteEffort(demoEffort);
+                getAndWriteEffort(demoRun);
                 break;
             case R.id.retrieve_user:
                 retrieveUser();

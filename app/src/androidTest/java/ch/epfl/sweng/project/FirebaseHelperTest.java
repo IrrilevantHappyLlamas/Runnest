@@ -7,7 +7,6 @@ import com.google.firebase.database.ValueEventListener;
 import org.junit.Assert;
 import org.junit.Test;
 
-import ch.epfl.sweng.project.Model.Effort;
 import ch.epfl.sweng.project.Model.FirebaseHelper;
 import ch.epfl.sweng.project.Model.Run;
 
@@ -79,21 +78,21 @@ public class FirebaseHelperTest {
     @Test
     public void addingNewEffortCorrectlyUpdatesDatabase() {
 
-        Effort testEffort = new Run("testEffort");
-        testEffort.start(TrackTest.buildCheckPoint(1,1,1));
-        testEffort.update(TrackTest.buildCheckPoint(2,2,2));
-        testEffort.update(TrackTest.buildCheckPoint(3,3,3));
-        testEffort.stop();
-        firebaseHelper.addOrUpdateEffort("testUser", testEffort);
+        Run testRun = new Run("testRun");
+        testRun.start(TrackTest.buildCheckPoint(1,1,1));
+        testRun.update(TrackTest.buildCheckPoint(2,2,2));
+        testRun.update(TrackTest.buildCheckPoint(3,3,3));
+        testRun.stop();
+        firebaseHelper.addOrUpdateEffort("testUser", testRun);
 
         firebaseHelper.getDatabase().child("users").child("testUser").child("efforts")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Assert.assertTrue(dataSnapshot.exists());
-                Assert.assertTrue(dataSnapshot.hasChild("testEffort"));
-                Assert.assertTrue(dataSnapshot.child("testEffort").hasChild("distance"));
-                Assert.assertTrue(dataSnapshot.child("testEffort").hasChild("duration"));
+                Assert.assertTrue(dataSnapshot.hasChild("testRun"));
+                Assert.assertTrue(dataSnapshot.child("testRun").hasChild("distance"));
+                Assert.assertTrue(dataSnapshot.child("testRun").hasChild("duration"));
             }
 
             @Override

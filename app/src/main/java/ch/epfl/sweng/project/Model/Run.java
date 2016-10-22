@@ -8,9 +8,7 @@ import java.io.Serializable;
  * specifications of the run
  */
 @SuppressWarnings("ClassNamingConvention")
-public class Run
-        implements Effort,
-        Serializable{
+public class Run implements Serializable {
 
     private String name;
     private Track track = null;
@@ -48,17 +46,14 @@ public class Run
         isRunning = false;
     }
 
-    @Override
     public String getName() {
         return name;
     }
 
-    @Override
     public Track getTrack() {
         return new Track(track);
     }
 
-    @Override
     public boolean start(CheckPoint startingPoint) {
         if (track.getTotalCheckPoints() == 0) {
             track = new Track(startingPoint);
@@ -70,17 +65,14 @@ public class Run
         }
     }
 
-    @Override
     public boolean isRunning() {
         return isRunning;
     }
 
-    @Override
     public boolean update(CheckPoint newPoint) {
         return isRunning && track.add(newPoint);
     }
 
-    @Override
     public boolean stop() {
         if (isRunning){
             isRunning = false;

@@ -5,13 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.location.Location;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ch.epfl.sweng.project.Model.CheckPoint;
-import ch.epfl.sweng.project.Model.Effort;
 import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.Track;
 
@@ -77,13 +75,13 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Inserts an Effort in the database.
-     * @param effort
+     * Inserts an Run in the database.
+     * @param run
      * @return true if the insertion was successful, false otherwise
      */
-    public boolean insert(Effort effort) {
+    public boolean insert(Run run) {
         //insert all checkpoints
-        Track track = effort.getTrack();
+        Track track = run.getTrack();
         List<CheckPoint> checkpoints = track.getCheckpoints();
         long checkpointsFromId = -1;
         long checkpointsToId = -1;
@@ -97,8 +95,8 @@ public class DBHelper extends SQLiteOpenHelper {
             }
         }
 
-        //insert Effort
-        String name = effort.getName();
+        //insert Run
+        String name = run.getName();
         String type = "run";
         ContentValues effortContentValues = new ContentValues();
         effortContentValues.put(EFFORTS_COLS[1], name);
