@@ -32,6 +32,7 @@ import ch.epfl.sweng.project.AppRunnest;
 /**
  * Launch activity which implements google authentication
  */
+@SuppressWarnings("CastToConcreteClass")
 public final class LoginActivity extends AppCompatActivity
         implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
@@ -110,7 +111,7 @@ public final class LoginActivity extends AppCompatActivity
         Auth.GoogleSignInApi.signOut(((AppRunnest)getApplication()).getApiClient()).setResultCallback(
                 new ResultCallback<Status>() {
                     @Override
-                    public void onResult(@NonNull Status status) {
+                    public void onResult(@NonNull Status r) {
                     }
                 });
     }
@@ -140,14 +141,12 @@ public final class LoginActivity extends AppCompatActivity
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mFirebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
 
                         ((AppRunnest) getApplication()).setFirebaseUser(FirebaseAuth.getInstance().getCurrentUser());
                         if (!task.isSuccessful()) {
