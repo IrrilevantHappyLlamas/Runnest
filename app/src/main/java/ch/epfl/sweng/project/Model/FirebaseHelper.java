@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.io.File;
 
@@ -35,7 +36,7 @@ public class FirebaseHelper {
 
     // TODO: comments
     public void updateStorageWithDB(File dbFile) {
-
+        FirebaseStorage storage = FirebaseStorage.getInstance();
     }
 
     /**
