@@ -6,7 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
+import android.util.Log;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,13 +32,16 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String[] EFFORTS_COLS = {"id", "name", "type", "checkpointsFromId", "checkpointsToId"};
     public static final String[] CHECKPOINTS_COLS = {"id", "latitude", "longitude", "altitude", "time"};
 
+    private Context mContext = null;
+
     /**
      * The constructor of the class.
      * @param context
      */
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
-        db = this.getWritableDatabase();
+        mContext = context;
+        db = getWritableDatabase();
     }
 
     /**
@@ -179,5 +184,9 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         result.close();
         return track;
+    }
+
+    public File getDBFile() {
+        mContext.getDatabasePath(DATABASE_NAME);
     }
 }

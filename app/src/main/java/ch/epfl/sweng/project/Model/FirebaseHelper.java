@@ -1,9 +1,12 @@
 package ch.epfl.sweng.project.Model;
 
+import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.io.File;
 
 /**
  * Helper class that provides methods to update and interact with the remote firebase database instance
@@ -28,6 +31,11 @@ public class FirebaseHelper {
      */
     public DatabaseReference getDatabase() {
         return databaseReference;
+    }
+
+    // TODO: comments
+    public void updateStorageWithDB(File dbFile) {
+
     }
 
     /**
