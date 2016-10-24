@@ -73,18 +73,21 @@ public class Track {
             if (newPoint.getTime() < checkpoints.get(totalCheckPoints - 1).getTime()) {
                 return false;
             } else {
+
+                updateAltitudeDiff(newPoint);
+
                 checkpoints.add(newPoint);
                 distance += checkpoints.get(totalCheckPoints - 1).distanceTo(newPoint);
                 duration = newPoint.getTime() - checkpoints.get(0).getTime();
                 totalCheckPoints++;
 
-                updateAltitudeDiff(newPoint);
-
                 return true;
             }
         } else {
+
             checkpoints.add(newPoint);
             totalCheckPoints++;
+
             return true;
         }
     }
