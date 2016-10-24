@@ -1,5 +1,7 @@
 package ch.epfl.sweng.project.Model;
 
+import android.app.Activity;
+import android.content.Context;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -12,11 +14,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.io.IOException;
 
 import ch.epfl.sweng.project.Database.DBHelper;
 
@@ -29,11 +33,14 @@ public class FirebaseHelper {
 
     // Remote database instance
     private DatabaseReference databaseReference = null;
+    private Context mCallerContext = null;
 
     /**
      * Constructor that initializes the database instance
      */
-    public FirebaseHelper() {
+    public FirebaseHelper(Context callerContext) {
+
+        mCallerContext = callerContext;
         databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 
@@ -43,36 +50,6 @@ public class FirebaseHelper {
      */
     public DatabaseReference getDatabase() {
         return databaseReference;
-    }
-
-    // TODO: comments
-    public void updateStorageWithDB(File dbFile) {
-
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReferenceFromUrl("gs://runnest-146309.appspot.com");
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        StorageReference usersRef = storageRef.child("users");
-        StorageReference currentUserRef = usersRef.child(user.getUid());
-        StorageReference userDbRef = currentUserRef.child("database.db");
-
-        Uri file = Uri.fromFile(dbFile);
-
-        UploadTask uploadTask = userDbRef.putFile(file);
-
-        // Register observers to listen for when the download is done or if it fails
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-            }
-        });
     }
 
     /**

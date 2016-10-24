@@ -24,9 +24,22 @@ import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import ch.epfl.sweng.project.AppRunnest;
+import ch.epfl.sweng.project.Database.DBHelper;
+import ch.epfl.sweng.project.Database.DBSync;
 import ch.epfl.sweng.project.Fragments.FirebaseFragment;
 import ch.epfl.sweng.project.Fragments.HomeFragment;
 import ch.epfl.sweng.project.Fragments.NewRun.RunningMapFragment;
@@ -42,13 +55,17 @@ public class SideBarActivity extends AppCompatActivity
         RunningMapFragment.RunningMapFragmentInteractionListener,
         FirebaseFragment.FireBaseFragmentInteractionListener,
         RunHistoryFragment.onRunHistoryInteractionListener,
-        DisplayRunFragment.OnDisplayRunInteractionListener
+        DisplayRunFragment.OnDisplayRunInteractionListener,
+        OnSuccessListener<FileDownloadTask.TaskSnapshot>,
+        OnFailureListener
 {
 
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
 
     private Fragment mCurrentFragment = null;
     private FragmentManager fragmentManager = null;
+    private DBSync databaseSynchronizer = null;
+    private DBHelper dbHelper = null;
 
 
     @Override
@@ -93,6 +110,24 @@ public class SideBarActivity extends AppCompatActivity
         if(mCurrentFragment == null){
             mCurrentFragment = new HomeFragment();
             fragmentManager.beginTransaction().add(R.id.fragment_container, mCurrentFragment).commit();
+        }
+
+        //Database sync
+        dbHelper = new DBHelper(this);
+        databaseSynchronizer = new DBSync(dbHelper);
+        try {
+            databaseSynchronizer.downloadDatabase((HomeFragment) mCurrentFragment);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (databaseSynchronizer.getUserRef() != null) {
+            outState.putString("user reference", databaseSynchronizer.getUserRef().toString());
         }
     }
 
@@ -143,6 +178,8 @@ public class SideBarActivity extends AppCompatActivity
         } else if (id == R.id.nav_firebase) {
             mCurrentFragment = new FirebaseFragment();
         } else if (id == R.id.nav_logout) {
+
+            databaseSynchronizer.uploadDatabase();
 
             new AlertDialog.Builder(this)
                 .setTitle("Logout")
@@ -236,6 +273,35 @@ public class SideBarActivity extends AppCompatActivity
 
     @Override
     public void onFirebaseFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+
+        try {
+            InputStream in = new FileInputStream(databaseSynchronizer.getDownloadedDB());
+            OutputStream out = new FileOutputStream(dbHelper.getDatabasePath());
+
+            // Transfer bytes from in to out
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            in.close();
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Toast.makeText(getBaseContext(), "Download successful", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onFailure(@NonNull Exception e) {
 
     }
 }

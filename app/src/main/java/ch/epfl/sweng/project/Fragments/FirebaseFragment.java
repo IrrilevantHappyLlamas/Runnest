@@ -1,28 +1,23 @@
 package ch.epfl.sweng.project.Fragments;
 
 import android.content.Context;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.io.IOException;
 
 import ch.epfl.sweng.project.Database.DBHelper;
-import ch.epfl.sweng.project.Model.CheckPoint;
-import ch.epfl.sweng.project.Model.Effort;
 import ch.epfl.sweng.project.Model.FirebaseHelper;
-import ch.epfl.sweng.project.Model.Run;
 
 /**
  * Demo fragment to show transactions with firebase database
@@ -34,6 +29,8 @@ public class FirebaseFragment extends Fragment implements View.OnClickListener {
     private FirebaseHelper mFirebaseHelper = null;
 
     private Button uploadDB = null;
+    private TextView firebaseUserId = null;
+    private TextView downloadState = null;
 
 
     @Override
@@ -43,17 +40,17 @@ public class FirebaseFragment extends Fragment implements View.OnClickListener {
         View view =  inflater.inflate(R.layout.fragment_firebase, container, false);
 
         // Initialize database
-        mFirebaseHelper = new FirebaseHelper();
+        mFirebaseHelper = new FirebaseHelper(getContext());
 
         uploadDB = (Button) view.findViewById(R.id.upload_db);
         uploadDB.setOnClickListener(this);
 
-        return view;
-    }
+        firebaseUserId = (TextView) view.findViewById(R.id.firebase_user);
+        firebaseUserId.setText(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-    private void uploadDB() {
-        DBHelper dbHelper = new DBHelper(getContext());
-        mFirebaseHelper.updateStorageWithDB(dbHelper.getDBFile());
+        downloadState = (TextView) view.findViewById(R.id.dw_state);
+
+        return view;
     }
 
 
@@ -74,11 +71,11 @@ public class FirebaseFragment extends Fragment implements View.OnClickListener {
         firebaseListener = null;
     }
 
+    // TODO: handle exception
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.upload_db:
-                uploadDB();
                 break;
         }
     }

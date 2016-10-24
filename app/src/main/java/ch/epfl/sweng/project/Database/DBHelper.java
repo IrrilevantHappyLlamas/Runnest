@@ -9,6 +9,9 @@ import android.location.Location;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -187,7 +190,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     // TODO: comments
-    public File getDBFile() {
+    public File getDatabasePath() {
         return mContext.getDatabasePath(DATABASE_NAME);
     }
 }

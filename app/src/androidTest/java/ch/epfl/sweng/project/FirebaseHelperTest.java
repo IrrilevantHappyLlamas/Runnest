@@ -16,7 +16,8 @@ import ch.epfl.sweng.project.Model.Run;
  */
 public class FirebaseHelperTest {
 
-    private final FirebaseHelper firebaseHelper = new FirebaseHelper();
+    // TODO: cambiare test e tutto
+    private final FirebaseHelper firebaseHelper = null;
 
     @Test
     public void DBcorrectInstantiationAndRootOrganization() {
