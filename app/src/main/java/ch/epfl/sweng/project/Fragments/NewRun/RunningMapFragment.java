@@ -33,7 +33,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 import ch.epfl.sweng.project.Activities.SideBarActivity;
 import ch.epfl.sweng.project.Database.DBHelper;
@@ -129,8 +128,10 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
         setButtonsEnabledState();
 
         // Live stats
-        mChronometer = (Chronometer) view.findViewById(R.id.chronometer);
-        mChronometer.setVisibility(View.INVISIBLE);
+        mRun = new Run();
+        mRun.setChronometer((Chronometer)view.findViewById(R.id.chronometer));
+        mRun.getChronometer().setVisibility(View.INVISIBLE);
+
         mDistance = (TextView) view.findViewById(R.id.distance);
         mDistance.setVisibility(View.INVISIBLE);
 
@@ -145,19 +146,17 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
             mStartUpdatesButton.setVisibility(View.INVISIBLE);
             mStopUpdatesButton.setVisibility(View.VISIBLE);
 
+            // initialize new Run
             String runName = DateFormat.getDateTimeInstance().format(new Date());
             mRun = new Run(runName);
+            mRun.start((Chronometer)getView().findViewById(R.id.chronometer));
 
             mRequestingLocationUpdates = true;
             setButtonsEnabledState();
-            
-            mDistance.setVisibility(View.VISIBLE);
-            mChronometer.setVisibility(View.VISIBLE);
 
+            mDistance.setVisibility(View.VISIBLE);
             double distanceInKm = (int)(mRun.getTrack().getDistance()/100.0)/10.0;
             mDistance.setText(distanceInKm + " Km");
-            mChronometer.setBase(SystemClock.elapsedRealtime());
-            mChronometer.start();
 
             startLocationUpdates();
         }
@@ -172,7 +171,6 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
             setButtonsEnabledState();
             stopLocationUpdates();
 
-            mChronometer.stop();
             mRun.stop();
 
             DBHelper dbHelper = new DBHelper(getContext());
@@ -288,9 +286,8 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
 
         if(mRun.isRunning()) {
             mRun.update(mLastCheckPoint);
-        } else {
-            mRun.start(mLastCheckPoint);
         }
+
         mMapHandler.updateMap(mLastCheckPoint);
 
         double distanceInKm = (int)(mRun.getTrack().getDistance()/100.0)/10.0;

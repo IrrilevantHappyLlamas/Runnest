@@ -117,7 +117,6 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(CHECKPOINTS_COLS[1], checkpoint.getLatitude());
         contentValues.put(CHECKPOINTS_COLS[2], checkpoint.getLongitude());
         contentValues.put(CHECKPOINTS_COLS[3], checkpoint.getAltitude());
-        contentValues.put(CHECKPOINTS_COLS[4], checkpoint.getTime());
         return db.insert(CHECKPOINTS_TABLE_NAME, null, contentValues);
     }
 
@@ -148,6 +147,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 Track track = fetchTrack(fromId, toId);
                 Run run = new Run(name);
                 run.setTrack(track);
+
+                //TODO: fetch duration
+                //run.setDuration();
+
                 efforts.add(run);
             }
         }
@@ -170,8 +173,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 Double latitude = result.getDouble(1);
                 Double longitude = result.getDouble(2);
                 Double altitude = result.getDouble(3);
-                long time = Long.parseLong(result.getString(4));
-                CheckPoint checkpoint = new CheckPoint(latitude, longitude, altitude, time);
+                CheckPoint checkpoint = new CheckPoint(latitude, longitude, altitude);
                 track.add(checkpoint);
             }
         }

@@ -27,7 +27,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.FirebaseAuth;
 
 import ch.epfl.sweng.project.AppRunnest;
-import ch.epfl.sweng.project.Fragments.FirebaseFragment;
 import ch.epfl.sweng.project.Fragments.HomeFragment;
 import ch.epfl.sweng.project.Fragments.NewRun.RunningMapFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
@@ -40,7 +39,6 @@ public class SideBarActivity extends AppCompatActivity
         HomeFragment.OnFragmentInteractionListener,
         ProfileFragment.ProfileFragmentInteractionListener,
         RunningMapFragment.RunningMapFragmentInteractionListener,
-        FirebaseFragment.FireBaseFragmentInteractionListener,
         RunHistoryFragment.onRunHistoryInteractionListener,
         DisplayRunFragment.OnDisplayRunInteractionListener
 {
@@ -141,7 +139,7 @@ public class SideBarActivity extends AppCompatActivity
         } else if (id == R.id.nav_run_history) {
             mCurrentFragment = new RunHistoryFragment();
         } else if (id == R.id.nav_firebase) {
-            mCurrentFragment = new FirebaseFragment();
+
         } else if (id == R.id.nav_logout) {
 
             new AlertDialog.Builder(this)
@@ -232,10 +230,5 @@ public class SideBarActivity extends AppCompatActivity
 
         mCurrentFragment = new RunHistoryFragment();
         fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
-    }
-
-    @Override
-    public void onFirebaseFragmentInteraction(Uri uri) {
-
     }
 }

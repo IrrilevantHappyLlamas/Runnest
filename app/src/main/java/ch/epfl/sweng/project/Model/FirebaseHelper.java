@@ -76,7 +76,7 @@ public class FirebaseHelper {
         databaseReference.child("users").child(id).child("efforts")
                 .child(run.getName()).child("distance").setValue(track.getDistance());
         databaseReference.child("users").child(id).child("efforts")
-                .child(run.getName()).child("duration").setValue(track.getDuration());
+                .child(run.getName()).child("duration").setValue(run.getDuration());
     }
 
 }

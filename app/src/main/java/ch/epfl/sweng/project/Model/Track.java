@@ -12,7 +12,6 @@ public class Track {
     private List<CheckPoint> checkpoints = null;
     private int totalCheckPoints;
     private float distance;
-    private long duration;
 
     // Altitude
     private double uphill;
@@ -28,7 +27,6 @@ public class Track {
         checkpoints.add(startingPoint);
         totalCheckPoints = 1;
         distance = 0;
-        duration = 0;
 
         uphill = 0;
         downhill = 0;
@@ -38,7 +36,6 @@ public class Track {
         checkpoints = new ArrayList<>();
         totalCheckPoints = 0;
         distance = 0;
-        duration = 0;
 
         uphill = 0;
         downhill = 0;
@@ -53,7 +50,6 @@ public class Track {
         checkpoints = new ArrayList<>(toCopy.checkpoints);
         totalCheckPoints = toCopy.totalCheckPoints;
         distance = toCopy.distance;
-        duration = toCopy.duration;
 
         uphill = toCopy.uphill;
         downhill = toCopy.downhill;
@@ -61,35 +57,29 @@ public class Track {
 
 
     /**
-     * Add a new <code>CheckPoint</code> to the <code>Track</code>. The new point must be chronologically after current
-     * last point
+     * Add a new <code>CheckPoint</code> to the <code>Track</code>. The new point must be non null
      *
      * @param newPoint  <code>CheckPoint</code> to add
      * @return          <code>true</code> if the operation succeeds, <code>false</code> otherwise
      */
     public boolean add(CheckPoint newPoint) {
-        // Warning if we try to add a non coherent CheckPoint to the Track?
+        if (newPoint == null) {
+            return false;
+        }
+
         if (totalCheckPoints > 0) {
-            if (newPoint.getTime() < checkpoints.get(totalCheckPoints - 1).getTime()) {
-                return false;
-            } else {
 
-                updateAltitudeDiff(newPoint);
-
-                checkpoints.add(newPoint);
-                distance += checkpoints.get(totalCheckPoints - 1).distanceTo(newPoint);
-                duration = newPoint.getTime() - checkpoints.get(0).getTime();
-                totalCheckPoints++;
-
-                return true;
-            }
-        } else {
+            updateAltitudeDiff(newPoint);
 
             checkpoints.add(newPoint);
+            distance += checkpoints.get(totalCheckPoints - 1).distanceTo(newPoint);
             totalCheckPoints++;
-
-            return true;
+        } else {
+            checkpoints.add(newPoint);
+            totalCheckPoints++;
         }
+
+    return true;
     }
 
     private void updateAltitudeDiff(CheckPoint newPoint) {
@@ -109,15 +99,6 @@ public class Track {
      */
     public float getDistance() {
         return distance;
-    }
-
-    /**
-     * Getter for the current duration of the <code>Track</code>, in seconds
-     *
-     * @return  total time between timestamps of first and last <code>CheckPoint</code>
-     */
-    public long getDuration() {
-        return duration;
     }
 
     public double getUphill() {

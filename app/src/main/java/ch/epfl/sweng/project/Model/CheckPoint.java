@@ -25,14 +25,12 @@ public class CheckPoint {
      * @param latitude
      * @param longitude
      * @param altitude
-     * @param time in seconds
      */
-    public CheckPoint(double latitude, double longitude, double altitude, long time) {
+    public CheckPoint(double latitude, double longitude, double altitude) {
         location = new Location("");
         location.setLatitude(latitude);
         location.setLongitude(longitude);
         location.setAltitude(altitude);
-        location.setTime(time * 1000);
     }
 
     /**
@@ -62,16 +60,6 @@ public class CheckPoint {
     public double getLongitude() {
         return location.getLongitude();
     }
-
-    /**
-     * Getter for the timestamp of the point, expressed in seconds since January 1, 1970.
-     *
-     * @return  the timestamp
-     */
-    public long getTime() {
-        return location.getTime()/1000;
-    }
-
 
     public double getAltitude() { return location.getAltitude(); }
 }
