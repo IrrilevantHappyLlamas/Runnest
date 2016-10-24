@@ -83,6 +83,18 @@ public class DisplayRunFragment extends Fragment {
             createRowElement(thirdRow, minutes + "' " + seconds + "''");
             table.addView(thirdRow);
 
+            // Uphill Row
+            TableRow fourthRow = new TableRow(this.getContext());
+            createRowElement(fourthRow, "Uphill :");
+            createRowElement( fourthRow,String.valueOf((int)track.getUphill()) + " m");
+            table.addView(fourthRow);
+
+            // Downhill Row
+            TableRow fifthRow = new TableRow(this.getContext());
+            createRowElement(fifthRow, "Downhill :");
+            createRowElement( fifthRow,String.valueOf((int)track.getDownhill()) + " m");
+            table.addView(fifthRow);
+
             Button button = (Button) view.findViewById(R.id.button);
 
             button.setOnClickListener(new View.OnClickListener() {

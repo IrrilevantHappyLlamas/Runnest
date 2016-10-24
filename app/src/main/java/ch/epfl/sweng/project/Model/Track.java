@@ -14,6 +14,10 @@ public class Track {
     private float distance;
     private long duration;
 
+    // Altitude
+    private double uphill;
+    private double downhill;
+
     /**
      * Constructor that takes a starting <code>CheckPoint</code> for the <code>Track</code>
      *
@@ -25,6 +29,9 @@ public class Track {
         totalCheckPoints = 1;
         distance = 0;
         duration = 0;
+
+        uphill = 0;
+        downhill = 0;
     }
 
     public Track() {
@@ -32,6 +39,9 @@ public class Track {
         totalCheckPoints = 0;
         distance = 0;
         duration = 0;
+
+        uphill = 0;
+        downhill = 0;
     }
 
     /**
@@ -44,6 +54,9 @@ public class Track {
         totalCheckPoints = toCopy.totalCheckPoints;
         distance = toCopy.distance;
         duration = toCopy.duration;
+
+        uphill = toCopy.uphill;
+        downhill = toCopy.downhill;
     }
 
 
@@ -60,16 +73,32 @@ public class Track {
             if (newPoint.getTime() < checkpoints.get(totalCheckPoints - 1).getTime()) {
                 return false;
             } else {
+
+                updateAltitudeDiff(newPoint);
+
                 checkpoints.add(newPoint);
                 distance += checkpoints.get(totalCheckPoints - 1).distanceTo(newPoint);
                 duration = newPoint.getTime() - checkpoints.get(0).getTime();
                 totalCheckPoints++;
+
                 return true;
             }
         } else {
+
             checkpoints.add(newPoint);
             totalCheckPoints++;
+
             return true;
+        }
+    }
+
+    private void updateAltitudeDiff(CheckPoint newPoint) {
+
+        double altitudeDiff = newPoint.getAltitude() - checkpoints.get(totalCheckPoints - 1).getAltitude();
+        if(altitudeDiff >= 0) {
+            uphill += altitudeDiff;
+        } else {
+            downhill += altitudeDiff;
         }
     }
 
@@ -83,21 +112,29 @@ public class Track {
     }
 
     /**
-     * Getter for the total number of <code>CheckPoint</code>
-     *
-     * @return  total number of points
-     */
-    public int getTotalCheckPoints() {
-        return totalCheckPoints;
-    }
-
-    /**
      * Getter for the current duration of the <code>Track</code>, in seconds
      *
      * @return  total time between timestamps of first and last <code>CheckPoint</code>
      */
     public long getDuration() {
         return duration;
+    }
+
+    public double getUphill() {
+        return uphill;
+    }
+
+    public double getDownhill() {
+        return downhill;
+    }
+
+    /**
+     * Getter for the total number of <code>CheckPoint</code>
+     *
+     * @return  total number of points
+     */
+    public int getTotalCheckPoints() {
+        return totalCheckPoints;
     }
 
     /**
