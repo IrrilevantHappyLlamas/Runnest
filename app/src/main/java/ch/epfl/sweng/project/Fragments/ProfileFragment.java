@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import java.io.InputStream;
 
@@ -38,7 +37,7 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_profile, container, false);
 
-        profile = new Profile(((AppRunnest)getActivity().getApplicationContext()).getUser());
+        profile = new Profile(((AppRunnest)getActivity().getApplicationContext()).getGoogleUser());
 
 
         ImageView profilePic = (ImageView)view.findViewById(R.id.photoImg);

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -25,6 +24,7 @@ import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.firebase.auth.FirebaseAuth;
 
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Fragments.FirebaseFragment;
@@ -82,7 +82,7 @@ public class SideBarActivity extends AppCompatActivity
         TextView h1 = (TextView) header.findViewById(R.id.header1_nav_header);
         TextView h2 = (TextView) header.findViewById(R.id.header2_nav_header);
 
-        GoogleSignInAccount account = ((AppRunnest)getApplicationContext()).getUser();
+        GoogleSignInAccount account = ((AppRunnest)getApplicationContext()).getGoogleUser();
         h1.setText(account.getDisplayName());
         h2.setText(account.getEmail());
 
@@ -162,6 +162,8 @@ public class SideBarActivity extends AppCompatActivity
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+
+            FirebaseAuth.getInstance().signOut();
         }
 
         fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
