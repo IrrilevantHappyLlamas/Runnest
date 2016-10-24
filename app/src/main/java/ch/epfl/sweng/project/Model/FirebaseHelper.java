@@ -1,13 +1,24 @@
 package ch.epfl.sweng.project.Model;
 
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+
+import ch.epfl.sweng.project.Database.DBHelper;
 
 /**
  * Helper class that provides methods to update and interact with the remote firebase database instance
@@ -36,7 +47,32 @@ public class FirebaseHelper {
 
     // TODO: comments
     public void updateStorageWithDB(File dbFile) {
+
         FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://runnest-146309.appspot.com");
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        StorageReference usersRef = storageRef.child("users");
+        StorageReference currentUserRef = usersRef.child(user.getUid());
+        StorageReference userDbRef = currentUserRef.child("database.db");
+
+        Uri file = Uri.fromFile(dbFile);
+
+        UploadTask uploadTask = userDbRef.putFile(file);
+
+        // Register observers to listen for when the download is done or if it fails
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+            }
+        });
     }
 
     /**

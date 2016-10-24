@@ -188,6 +188,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     // TODO: comments
     public File getDBFile() {
-        mContext.getDatabasePath(DATABASE_NAME);
+        return mContext.getDatabasePath(DATABASE_NAME);
     }
 }

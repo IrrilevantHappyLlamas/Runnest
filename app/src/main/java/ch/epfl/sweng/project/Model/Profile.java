@@ -25,13 +25,13 @@ public class Profile {
 
 
     public Profile(GoogleSignInAccount account) {
-        this.id = account.getId();
-        this.email = account.getEmail();
-        this.familyName = account.getFamilyName();
-        this.name = account.getDisplayName();
+        id = account.getId();
+        email = account.getEmail();
+        familyName = account.getFamilyName();
+        name = account.getDisplayName();
         Uri uri = account.getPhotoUrl();
         if(uri != null) {
-            this.photoUrl =uri.toString();
+            photoUrl =uri.toString();
         } else {
             photoUrl = "";
         }
