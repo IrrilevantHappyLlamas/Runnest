@@ -110,7 +110,6 @@ public final class LoginActivity extends AppCompatActivity
 
             Toast.makeText(getBaseContext(), "Login successful", Toast.LENGTH_LONG).show();
 
-            //SystemClock.sleep(3000);
 
             // Start SideBarActivity
             Intent sideBarIntent = new Intent(this, SideBarActivity.class);
