@@ -62,4 +62,8 @@ public class CheckPoint {
     }
 
     public double getAltitude() { return location.getAltitude(); }
+
+    public boolean hasAltitude() {
+        return location.hasAltitude();
+    }
 }

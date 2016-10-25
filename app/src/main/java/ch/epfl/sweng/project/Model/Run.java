@@ -68,7 +68,7 @@ public class Run implements Serializable {
     }
 
     public boolean start(Chronometer chronometer) {
-        if (track.getTotalCheckPoints() == 0) {
+        if(chronometer != null && track.getTotalCheckPoints() == 0) {
             isRunning = true;
             mChronometer = chronometer;
             mChronometer.setVisibility(View.VISIBLE);

@@ -14,6 +14,7 @@ public class Track {
     private float distance;
 
     // Altitude
+    private int lastAltitudeIndex;
     private double uphill;
     private double downhill;
 
@@ -28,6 +29,7 @@ public class Track {
         totalCheckPoints = 1;
         distance = 0;
 
+        lastAltitudeIndex = -1;
         uphill = 0;
         downhill = 0;
     }
@@ -37,6 +39,7 @@ public class Track {
         totalCheckPoints = 0;
         distance = 0;
 
+        lastAltitudeIndex = -1;
         uphill = 0;
         downhill = 0;
     }
@@ -51,6 +54,7 @@ public class Track {
         totalCheckPoints = toCopy.totalCheckPoints;
         distance = toCopy.distance;
 
+        lastAltitudeIndex = toCopy.lastAltitudeIndex;
         uphill = toCopy.uphill;
         downhill = toCopy.downhill;
     }
@@ -84,11 +88,17 @@ public class Track {
 
     private void updateAltitudeDiff(CheckPoint newPoint) {
 
-        double altitudeDiff = newPoint.getAltitude() - checkpoints.get(totalCheckPoints - 1).getAltitude();
-        if(altitudeDiff >= 0) {
-            uphill += altitudeDiff;
-        } else {
-            downhill += altitudeDiff;
+        if(newPoint.hasAltitude()) {
+            if(lastAltitudeIndex != -1) {
+                double altitudeDiff = newPoint.getAltitude() - checkpoints.get(lastAltitudeIndex).getAltitude();
+                if (altitudeDiff >= 0) {
+                    uphill += altitudeDiff;
+                } else {
+                    downhill += altitudeDiff;
+                }
+            }
+
+            lastAltitudeIndex = totalCheckPoints;
         }
     }
 
