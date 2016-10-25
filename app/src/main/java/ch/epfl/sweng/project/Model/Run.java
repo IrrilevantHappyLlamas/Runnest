@@ -18,15 +18,8 @@ public class Run implements Serializable {
     private Track track = null;
     private long duration;
     private boolean isRunning;
-    private Chronometer mChronometer;
 
-    public void setChronometer(Chronometer mChronometer) {
-        this.mChronometer = mChronometer;
-    }
-
-    public Chronometer getChronometer() {
-        return mChronometer;
-    }
+    private long startTime;
 
     /**
      * Constructor that instantiates a <code>Run</code> with the name passed as argument
@@ -37,7 +30,7 @@ public class Run implements Serializable {
         this.name = name;
         isRunning = false;
         track = new Track();
-        mChronometer = null;
+        startTime = -1;
     }
 
     /**
@@ -47,7 +40,7 @@ public class Run implements Serializable {
         name = "temp";
         isRunning = false;
         track = new Track();
-        mChronometer = null;
+        startTime = -1;
     }
 
     /**
@@ -61,19 +54,17 @@ public class Run implements Serializable {
         track = new Track(toCopy.track);
 
         //TODO: evaluate where to multiply and divide
+        startTime = toCopy.startTime;
         duration = toCopy.getDuration()*1000;
 
         isRunning = false;
-        mChronometer = null;
     }
 
-    public boolean start(Chronometer chronometer) {
-        if(chronometer != null && track.getTotalCheckPoints() == 0) {
+    //Passo la base del cronometro o getto qui?
+    public boolean start() {
+        if(track.getTotalCheckPoints() == 0) {
             isRunning = true;
-            mChronometer = chronometer;
-            mChronometer.setVisibility(View.VISIBLE);
-            mChronometer.setBase(SystemClock.elapsedRealtime());
-            mChronometer.start();
+            startTime = SystemClock.elapsedRealtime();
             return true;
         }
         else {
@@ -87,9 +78,7 @@ public class Run implements Serializable {
 
     public boolean stop() {
         if (isRunning){
-            mChronometer.stop();
-            duration = SystemClock.elapsedRealtime() - mChronometer.getBase();
-            mChronometer = null;
+            duration = SystemClock.elapsedRealtime() - startTime;
             isRunning = false;
 
             return true;
@@ -101,7 +90,7 @@ public class Run implements Serializable {
 
     public long getDuration() {
         if(isRunning) {
-            return (SystemClock.elapsedRealtime() - mChronometer.getBase())/1000;
+            return (SystemClock.elapsedRealtime() - startTime)/1000;
         } else {
             return duration/1000;
         }

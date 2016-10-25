@@ -129,8 +129,8 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
 
         // Live stats
         mRun = new Run();
-        mRun.setChronometer((Chronometer)view.findViewById(R.id.chronometer));
-        mRun.getChronometer().setVisibility(View.INVISIBLE);
+        mChronometer = (Chronometer)getView().findViewById(R.id.chronometer);
+        mChronometer.setVisibility(View.INVISIBLE);
 
         mDistance = (TextView) view.findViewById(R.id.distance);
         mDistance.setVisibility(View.INVISIBLE);
@@ -149,7 +149,12 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
             // initialize new Run
             String runName = DateFormat.getDateTimeInstance().format(new Date());
             mRun = new Run(runName);
-            mRun.start((Chronometer)getView().findViewById(R.id.chronometer));
+
+            mChronometer.setVisibility(View.VISIBLE);
+            mChronometer.setBase(SystemClock.elapsedRealtime());
+            mChronometer.start();
+
+            mRun.start();
 
             mRequestingLocationUpdates = true;
             setButtonsEnabledState();
@@ -171,6 +176,8 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
             setButtonsEnabledState();
             stopLocationUpdates();
 
+
+            mChronometer.stop();
             mRun.stop();
 
             DBHelper dbHelper = new DBHelper(getContext());

@@ -34,7 +34,7 @@ public class RunTest {
     public void copyConstructorWorks() {
         Run testRun = new Run("test");
 
-        testRun.start(null);
+        testRun.start();
         testRun.update(TrackTest.buildCheckPoint(1, 1));
         testRun.update(TrackTest.buildCheckPoint(2, 2));
 
@@ -66,7 +66,7 @@ public class RunTest {
     public void correctlyUpdatesStartedRun() {
         Run testRun1 = new Run();
 
-        testRun1.start(null);
+        testRun1.start();
 
         Assert.assertTrue(testRun1.update(TrackTest.buildCheckPoint(1, 1)));
         Assert.assertTrue(testRun1.isRunning());
@@ -84,7 +84,7 @@ public class RunTest {
     public void stopWorks() {
         Run testRun2 = new Run();
 
-        testRun2.start(null);
+        testRun2.start();
 
         Assert.assertTrue(testRun2.update(TrackTest.buildCheckPoint(1, 1, 1)));
         Assert.assertTrue(testRun2.isRunning());
