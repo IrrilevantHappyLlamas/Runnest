@@ -148,7 +148,6 @@ public final class LoginActivity extends AppCompatActivity
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
-                        ((AppRunnest) getApplication()).setFirebaseUser(FirebaseAuth.getInstance().getCurrentUser());
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "signInWithCredential", task.getException());
                         }
