@@ -56,7 +56,6 @@ public class DBDownloadFragment extends Fragment
         } catch (IOException e) {
             onFailure(e);
         }
-
         downloadDatabase();
 
         return view;
@@ -65,13 +64,18 @@ public class DBDownloadFragment extends Fragment
     /**
      * Issue the file request to Firebase storage, using the currently authenticated Firebase user
      */
-    public void downloadDatabase() {
+    private void downloadDatabase() {
 
         getUserRef().child(dbHelper.getDatabaseName()).getFile(downloadedDB)
                 .addOnSuccessListener(this).addOnFailureListener(this);
     }
 
-    public StorageReference getUserRef() {
+    /**
+     * Returns the reference of the user's effort database file on the remote Firebase storage
+     *
+     * @return  the Firebase storage reference of the user's efforts database
+     */
+    private StorageReference getUserRef() {
         return FirebaseStorage.getInstance()
                 .getReferenceFromUrl("gs://runnest-146309.appspot.com")
                 .child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -81,7 +85,6 @@ public class DBDownloadFragment extends Fragment
     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
 
         writeDBFile(downloadedDB);
-
         Toast.makeText(getContext(), "User Data Retrieved", Toast.LENGTH_LONG).show();
         DBDownloadListener.onDBDownloadFragmentInteraction();
 
@@ -100,6 +103,11 @@ public class DBDownloadFragment extends Fragment
         DBDownloadListener.onDBDownloadFragmentInteraction();
     }
 
+    /**
+     * Write the <code>File</code> passed as argument into the SQLite default database file, overwriting it
+     *
+     * @param newDB     the new database <code>File</code>
+     */
     private void writeDBFile(File newDB) {
         try {
             InputStream in = new FileInputStream(newDB);
