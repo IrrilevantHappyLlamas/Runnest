@@ -25,7 +25,7 @@ public class DBHelperTest {
     }
 
     @Test
-    public void canInsertNewEffort() {
+    public void canInsertNewRun() {
         Track testTrack = new Track();
         testTrack.add(new CheckPoint(2,2));
         testTrack.add(new CheckPoint(2,3));
@@ -33,6 +33,7 @@ public class DBHelperTest {
 
         Run testRun = new Run("test");
         testRun.setTrack(testTrack);
+        testRun.setDuration(10);
 
         boolean isInserted = dbHelper.insert(testRun);
         Assert.assertTrue(isInserted);
@@ -40,21 +41,19 @@ public class DBHelperTest {
 
     @Test
     public void canRetrieveData() {
-        List<Run> efforts = dbHelper.fetchAllEfforts();
-        Assert.assertTrue(!efforts.isEmpty());
+        List<Run> runs = dbHelper.fetchAllEfforts();
+        Assert.assertTrue(!runs.isEmpty());
     }
 
     @Test
     public void lastAddedIsLastRetrieved() {
-        List<Run> efforts = dbHelper.fetchAllEfforts();
-        Run lastRun = efforts.get(efforts.size() - 1);
+        List<Run> runs = dbHelper.fetchAllEfforts();
+        Run lastRun = runs.get(runs.size() - 1);
         String name = lastRun.getName();
         Assert.assertEquals("test", name);
         Track track = lastRun.getTrack();
         Assert.assertEquals(3, track.getTotalCheckPoints());
         Assert.assertEquals(222504, track.getDistance(), 1);
-
-        //TODO: adapt this test
-        //Assert.assertEquals(2, lastRun.getDuration(), 0);
+        Assert.assertEquals(10, lastRun.getDuration(), 0);
     }
 }

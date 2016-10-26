@@ -26,7 +26,6 @@ public class CheckPointTest {
 
         location.setLatitude(10);
         location.setLongitude(20);
-        location.setAltitude(10);
 
         Assert.assertEquals(50, toTest.getLatitude(), 0);
         Assert.assertEquals(40, toTest.getLongitude(), 0);

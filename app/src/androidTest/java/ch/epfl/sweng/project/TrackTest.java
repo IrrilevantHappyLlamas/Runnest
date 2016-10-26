@@ -40,40 +40,21 @@ public class TrackTest {
 
         Assert.assertEquals(0, testTrack.getDistance(), 0);
         Assert.assertEquals(0, testTrack.getTotalCheckPoints(), 0);
+        Assert.assertNull(testTrack.getLastPoint());
+        Assert.assertNotNull(testTrack.getCheckpoints());
     }
 
     @Test
-    public void correctConstruction() {
+    public void correctConstructionFromACheckPoint() {
         Track testTrack = new Track(buildCheckPoint(50, 50));
 
         Assert.assertEquals(0, testTrack.getDistance(), 0);
         Assert.assertEquals(1, testTrack.getTotalCheckPoints(), 0);
-
+        Assert.assertNotNull(testTrack.getCheckpoints());
         Assert.assertEquals(50, testTrack.getLastPoint().getLatitude(), 0);
         Assert.assertEquals(50, testTrack.getLastPoint().getLongitude(), 0);
     }
 
-    @Test
-    public void legitAddCorrectlyUpdatesTrack() {
-        CheckPoint c1 = buildCheckPoint(50, 50);
-        CheckPoint c2 = buildCheckPoint(51, 51);
-
-        Track testTrack = new Track(c1);
-
-        Assert.assertTrue(testTrack.add(c2));
-
-        Assert.assertEquals(2, testTrack.getTotalCheckPoints());
-        Assert.assertEquals(c2.distanceTo(c1), testTrack.getDistance());
-    }
-
-    @Test
-    public void correctEmptyConstructor() {
-        Track testTrack = new Track();
-
-        Assert.assertEquals(0, testTrack.getTotalCheckPoints());
-        Assert.assertEquals(0.f, testTrack.getDistance());
-        Assert.assertEquals(null, testTrack.getLastPoint());
-    }
 
     @Test
     public void correctCopyConstructor() {
@@ -91,6 +72,21 @@ public class TrackTest {
 
         Assert.assertEquals(dist, testTrack2.getDistance(), 0);
         Assert.assertEquals(3, testTrack2.getTotalCheckPoints(), 0);
+    }
+
+    @Test
+    public void legitAddCorrectlyUpdatesTrack() {
+        CheckPoint c1 = buildCheckPoint(50, 50);
+        CheckPoint c2 = buildCheckPoint(51, 51);
+
+        Track testTrack = new Track(c1);
+
+        Assert.assertTrue(testTrack.add(c2));
+
+        Assert.assertEquals(2, testTrack.getTotalCheckPoints());
+        Assert.assertEquals(51, testTrack.getLastPoint().getLatitude(), 0);
+        Assert.assertEquals(51, testTrack.getLastPoint().getLongitude(), 0);
+        Assert.assertEquals(c2.distanceTo(c1), testTrack.getDistance());
     }
 
     @Test

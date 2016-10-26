@@ -13,6 +13,16 @@ public class Track {
     private int totalCheckPoints;
     private float distance;
 
+
+    /**
+     * Constructor which initialize an empty <code>Tarck</code>
+     */
+    public Track() {
+        checkpoints = new ArrayList<>();
+        totalCheckPoints = 0;
+        distance = 0;
+    }
+
     /**
      * Constructor that takes a starting <code>CheckPoint</code> for the <code>Track</code>
      *
@@ -22,12 +32,6 @@ public class Track {
         checkpoints = new ArrayList<>();
         checkpoints.add(startingPoint);
         totalCheckPoints = 1;
-        distance = 0;
-    }
-
-    public Track() {
-        checkpoints = new ArrayList<>();
-        totalCheckPoints = 0;
         distance = 0;
     }
 
@@ -84,6 +88,13 @@ public class Track {
     }
 
     /**
+     * Getter for the <code>CheckPoint</code> list
+     *
+     * @return  a list of <code>CheckPoint</code>
+     */
+    public List<CheckPoint> getCheckpoints() { return new ArrayList<>(checkpoints); }
+
+    /**
      * Getter for the last registered <code>CheckPoint</code>
      *
      * @return
@@ -96,11 +107,4 @@ public class Track {
             return null;
         }
     }
-
-    /**
-     * Getter for the <code>CheckPoint</code> list
-     *
-     * @return  a list of <code>CheckPoint</code>
-     */
-    public List<CheckPoint> getCheckpoints() { return new ArrayList<>(checkpoints); }
 }

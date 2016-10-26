@@ -20,12 +20,12 @@ import ch.epfl.sweng.project.Model.Track;
 public class DBHelper extends SQLiteOpenHelper {
     private SQLiteDatabase db;
 
-    private static final String DATABASE_NAME = "efforts.db";
+    private static final String DATABASE_NAME = "runs.db";
 
-    private static final String EFFORTS_TABLE_NAME = "efforts";
+    private static final String RUNS_TABLE_NAME = "runs";
     private static final String CHECKPOINTS_TABLE_NAME = "checkpoints";
 
-    public static final String[] EFFORTS_COLS = {"id", "name", "duration", "checkpointsFromId", "checkpointsToId"};
+    public static final String[] RUNS_COLS = {"id", "name", "duration", "checkpointsFromId", "checkpointsToId"};
     public static final String[] CHECKPOINTS_COLS = {"id", "latitude", "longitude"};
 
     /**
@@ -43,12 +43,12 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String createEffortsTableQuery = "CREATE TABLE " + EFFORTS_TABLE_NAME + " ("
-                + EFFORTS_COLS[0] + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + EFFORTS_COLS[1] + " TEXT, "
-                + EFFORTS_COLS[2] + " TEXT, "
-                + EFFORTS_COLS[3] + " INTEGER, "
-                + EFFORTS_COLS[4] + " INTEGER)";
+        String createEffortsTableQuery = "CREATE TABLE " + RUNS_TABLE_NAME + " ("
+                + RUNS_COLS[0] + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + RUNS_COLS[1] + " TEXT, "
+                + RUNS_COLS[2] + " TEXT, "
+                + RUNS_COLS[3] + " INTEGER, "
+                + RUNS_COLS[4] + " INTEGER)";
         String createCheckpointsTableQuery = "CREATE TABLE " + CHECKPOINTS_TABLE_NAME + " ("
                 + CHECKPOINTS_COLS[0] + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + CHECKPOINTS_COLS[1] + " DOUBLE, "
@@ -65,7 +65,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        String dropEffortsTableQuery = "DROP TABLE IF EXISTS " + EFFORTS_TABLE_NAME;
+        String dropEffortsTableQuery = "DROP TABLE IF EXISTS " + RUNS_TABLE_NAME;
         String dropCheckpointsTableQuery = "DROP TABLE IF EXISTS " + CHECKPOINTS_TABLE_NAME;
         db.execSQL(dropEffortsTableQuery);
         db.execSQL(dropCheckpointsTableQuery);
@@ -95,14 +95,13 @@ public class DBHelper extends SQLiteOpenHelper {
 
         //insert Run
         String name = run.getName();
-        String type = "run";
-        ContentValues effortContentValues = new ContentValues();
-        effortContentValues.put(EFFORTS_COLS[1], name);
-        effortContentValues.put(EFFORTS_COLS[2], run.getDuration());
-        effortContentValues.put(EFFORTS_COLS[3], checkpointsFromId);
-        effortContentValues.put(EFFORTS_COLS[4], checkpointsToId);
-        long insertedEffort = db.insert(EFFORTS_TABLE_NAME, null, effortContentValues);
-        return insertedEffort != -1;
+        ContentValues runContentValues = new ContentValues();
+        runContentValues.put(RUNS_COLS[1], name);
+        runContentValues.put(RUNS_COLS[2], run.getDuration());
+        runContentValues.put(RUNS_COLS[3], checkpointsFromId);
+        runContentValues.put(RUNS_COLS[4], checkpointsToId);
+        long insertedRun = db.insert(RUNS_TABLE_NAME, null, runContentValues);
+        return insertedRun != -1;
     }
 
     /**
@@ -123,9 +122,9 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param id the id of the effort to delete
      * @return true if the deletion was succesfull
      */
-    private boolean deleteEffort(long id) {
+    private boolean deleteRun(long id) {
         //also needs to delete checkpoints
-        return db.delete(EFFORTS_TABLE_NAME, EFFORTS_COLS[0] + " = " + id, null) > 0;
+        return db.delete(RUNS_TABLE_NAME, RUNS_COLS[0] + " = " + id, null) > 0;
     }
 
     /**
@@ -133,8 +132,8 @@ public class DBHelper extends SQLiteOpenHelper {
      * @return the list of efforts present in the database
      */
     public List<Run> fetchAllEfforts() {
-        Cursor result = db.query(EFFORTS_TABLE_NAME, EFFORTS_COLS, null, null, null, null, null);
-        List<Run> efforts = new ArrayList<>();
+        Cursor result = db.query(RUNS_TABLE_NAME, RUNS_COLS, null, null, null, null, null);
+        List<Run> runs = new ArrayList<>();
         if (result.getCount() > 0) {
             while (result.moveToNext()) {
                 //long id = result.getLong(0);
@@ -147,11 +146,11 @@ public class DBHelper extends SQLiteOpenHelper {
                 run.setTrack(track);
                 run.setDuration(duration);
 
-                efforts.add(run);
+                runs.add(run);
             }
         }
         result.close();
-        return efforts;
+        return runs;
     }
 
     /**

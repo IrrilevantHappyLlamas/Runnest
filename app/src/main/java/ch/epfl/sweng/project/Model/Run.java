@@ -18,7 +18,6 @@ public class Run implements Serializable {
     private Track track = null;
     private long duration;
     private boolean isRunning;
-
     private long startTime;
 
     /**
@@ -60,7 +59,11 @@ public class Run implements Serializable {
         isRunning = false;
     }
 
-
+    /**
+     * Start the <code>Run</code>.
+     *
+     * @return  true if correctly started, false otherwise
+     */
     public boolean start() {
         if(track.getTotalCheckPoints() == 0) {
             isRunning = true;
@@ -72,10 +75,21 @@ public class Run implements Serializable {
         }
     }
 
+    /**
+     * Add a new <code>CheckPoint</code> to the <code>Run</code> if it's active.
+     *
+     * @param newPoint  the new <code>CheckPoint</code> to add
+     * @return  true if correctly updated, false otherwise
+     */
     public boolean update(CheckPoint newPoint) {
         return isRunning && track.add(newPoint);
     }
 
+    /**
+     * Stop a <code>Run</code>.
+     *
+     * @return  true if correctly stoped, false otherwise
+     */
     public boolean stop() {
         if (isRunning){
             duration = SystemClock.elapsedRealtime() - startTime;
@@ -88,11 +102,16 @@ public class Run implements Serializable {
         }
     }
 
+    /**
+     * Get the duration of the <code>Run</code> in seconds.
+     *
+     * @return  actual duration
+     */
     public long getDuration() {
-        if(isRunning) {
-            return (SystemClock.elapsedRealtime() - startTime)/1000;
+        if (isRunning && startTime != -1) {
+            return (SystemClock.elapsedRealtime() - startTime) / 1000;
         } else {
-            return duration/1000;
+            return duration / 1000;
         }
     }
 
@@ -109,10 +128,19 @@ public class Run implements Serializable {
     }
 
     public void setTrack(Track track) {
-        this.track = new Track(track);
+        if(track != null) {
+            this.track = new Track(track);
+        }
     }
 
+    /**
+     * Set the duration of the <code>Run</code> from a given value in seconds.
+     *
+     * @param duration  desired duration, must be positive
+     */
     public void setDuration(long duration) {
-        this.duration = duration*1000;
+        if(duration >= 0) {
+            this.duration = duration * 1000;
+        }
     }
 }
