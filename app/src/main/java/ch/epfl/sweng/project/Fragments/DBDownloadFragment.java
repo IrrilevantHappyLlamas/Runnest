@@ -31,7 +31,7 @@ import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Database.DBSync;
 
 /**
- * Demo fragment to show transactions with firebase database
+ * Fragment that manages database synchronization with the remote efforts.db file the user has on Firebase storage
  */
 public class DBDownloadFragment extends Fragment
         implements
@@ -39,7 +39,6 @@ public class DBDownloadFragment extends Fragment
         OnFailureListener {
 
     private DBDownloadFragment.DBDownloadFragmentInteractionListener DBDownloadListener = null;
-
     private DBHelper dbHelper = null;
     private File downloadedDB = null;
 
@@ -50,22 +49,23 @@ public class DBDownloadFragment extends Fragment
         View view =  inflater.inflate(R.layout.fragment_dbdownload, container, false);
 
         dbHelper = new DBHelper(getContext());
+
+        // Try to download remote user database
         try {
             downloadedDB = File.createTempFile("efforts", "db");
         } catch (IOException e) {
-            e.printStackTrace();
+            onFailure(e);
         }
 
-        try {
-            downloadDatabase();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        downloadDatabase();
 
         return view;
     }
 
-    public void downloadDatabase() throws IOException {
+    /**
+     * Issue the file request to Firebase storage, using the currently authenticated Firebase user
+     */
+    public void downloadDatabase() {
 
         getUserRef().child(dbHelper.getDatabaseName()).getFile(downloadedDB)
                 .addOnSuccessListener(this).addOnFailureListener(this);
@@ -90,7 +90,11 @@ public class DBDownloadFragment extends Fragment
     @Override
     public void onFailure(@NonNull Exception e) {
 
-        writeDBFile(File.createTempFile("efforts", "db"));
+        try {
+            writeDBFile(File.createTempFile("efforts", "db"));
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
 
         Toast.makeText(getContext(), "No remote User Data", Toast.LENGTH_LONG).show();
         DBDownloadListener.onDBDownloadFragmentInteraction();
