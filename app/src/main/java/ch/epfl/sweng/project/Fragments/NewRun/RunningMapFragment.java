@@ -127,9 +127,11 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
 
         setButtonsEnabledState();
 
+
+
         // Live stats
         mRun = new Run();
-        mChronometer = (Chronometer)getView().findViewById(R.id.chronometer);
+        mChronometer = (Chronometer) view.findViewById(R.id.chronometer);
         mChronometer.setVisibility(View.INVISIBLE);
 
         mDistance = (TextView) view.findViewById(R.id.distance);

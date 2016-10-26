@@ -27,9 +27,9 @@ public class DBHelperTest {
     @Test
     public void canInsertNewEffort() {
         Track testTrack = new Track();
-        testTrack.add(new CheckPoint(2,2,0));
-        testTrack.add(new CheckPoint(2,3,0));
-        testTrack.add(new CheckPoint(2,4,0));
+        testTrack.add(new CheckPoint(2,2));
+        testTrack.add(new CheckPoint(2,3));
+        testTrack.add(new CheckPoint(2,4));
 
         Run testRun = new Run("test");
         testRun.setTrack(testTrack);

@@ -60,7 +60,7 @@ public class Run implements Serializable {
         isRunning = false;
     }
 
-    //Passo la base del cronometro o getto qui?
+
     public boolean start() {
         if(track.getTotalCheckPoints() == 0) {
             isRunning = true;

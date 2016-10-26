@@ -13,11 +13,6 @@ public class Track {
     private int totalCheckPoints;
     private float distance;
 
-    // Altitude
-    private int lastAltitudeIndex;
-    private double uphill;
-    private double downhill;
-
     /**
      * Constructor that takes a starting <code>CheckPoint</code> for the <code>Track</code>
      *
@@ -28,20 +23,12 @@ public class Track {
         checkpoints.add(startingPoint);
         totalCheckPoints = 1;
         distance = 0;
-
-        lastAltitudeIndex = -1;
-        uphill = 0;
-        downhill = 0;
     }
 
     public Track() {
         checkpoints = new ArrayList<>();
         totalCheckPoints = 0;
         distance = 0;
-
-        lastAltitudeIndex = -1;
-        uphill = 0;
-        downhill = 0;
     }
 
     /**
@@ -53,12 +40,7 @@ public class Track {
         checkpoints = new ArrayList<>(toCopy.checkpoints);
         totalCheckPoints = toCopy.totalCheckPoints;
         distance = toCopy.distance;
-
-        lastAltitudeIndex = toCopy.lastAltitudeIndex;
-        uphill = toCopy.uphill;
-        downhill = toCopy.downhill;
     }
-
 
     /**
      * Add a new <code>CheckPoint</code> to the <code>Track</code>. The new point must be non null
@@ -72,9 +54,6 @@ public class Track {
         }
 
         if (totalCheckPoints > 0) {
-
-            updateAltitudeDiff(newPoint);
-
             checkpoints.add(newPoint);
             distance += checkpoints.get(totalCheckPoints - 1).distanceTo(newPoint);
             totalCheckPoints++;
@@ -86,22 +65,6 @@ public class Track {
     return true;
     }
 
-    private void updateAltitudeDiff(CheckPoint newPoint) {
-
-        if(newPoint.hasAltitude()) {
-            if(lastAltitudeIndex != -1) {
-                double altitudeDiff = newPoint.getAltitude() - checkpoints.get(lastAltitudeIndex).getAltitude();
-                if (altitudeDiff >= 0) {
-                    uphill += altitudeDiff;
-                } else {
-                    downhill += altitudeDiff;
-                }
-            }
-
-            lastAltitudeIndex = totalCheckPoints;
-        }
-    }
-
     /**
      * Getter for the total distance in meters
      *
@@ -109,14 +72,6 @@ public class Track {
      */
     public float getDistance() {
         return distance;
-    }
-
-    public double getUphill() {
-        return uphill;
-    }
-
-    public double getDownhill() {
-        return downhill;
     }
 
     /**

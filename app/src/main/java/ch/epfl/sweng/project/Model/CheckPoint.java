@@ -24,13 +24,11 @@ public class CheckPoint {
      *
      * @param latitude
      * @param longitude
-     * @param altitude
      */
-    public CheckPoint(double latitude, double longitude, double altitude) {
+    public CheckPoint(double latitude, double longitude) {
         location = new Location("");
         location.setLatitude(latitude);
         location.setLongitude(longitude);
-        location.setAltitude(altitude);
     }
 
     /**
@@ -61,9 +59,4 @@ public class CheckPoint {
         return location.getLongitude();
     }
 
-    public double getAltitude() { return location.getAltitude(); }
-
-    public boolean hasAltitude() {
-        return location.hasAltitude();
-    }
 }

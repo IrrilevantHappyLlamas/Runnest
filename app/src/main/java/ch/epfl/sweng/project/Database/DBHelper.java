@@ -116,7 +116,9 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(CHECKPOINTS_COLS[1], checkpoint.getLatitude());
         contentValues.put(CHECKPOINTS_COLS[2], checkpoint.getLongitude());
-        contentValues.put(CHECKPOINTS_COLS[3], checkpoint.getAltitude());
+
+        //TODO: posso semplicemente rimuovere?
+        //contentValues.put(CHECKPOINTS_COLS[3], checkpoint.getAltitude());
         return db.insert(CHECKPOINTS_TABLE_NAME, null, contentValues);
     }
 
@@ -172,8 +174,10 @@ public class DBHelper extends SQLiteOpenHelper {
             while (result.moveToNext()) {
                 Double latitude = result.getDouble(1);
                 Double longitude = result.getDouble(2);
-                Double altitude = result.getDouble(3);
-                CheckPoint checkpoint = new CheckPoint(latitude, longitude, altitude);
+
+                //TODO: Posso semplicemente rimuovere?
+                //Double altitude = result.getDouble(3);
+                CheckPoint checkpoint = new CheckPoint(latitude, longitude /*, altitude*/ );
                 track.add(checkpoint);
             }
         }
