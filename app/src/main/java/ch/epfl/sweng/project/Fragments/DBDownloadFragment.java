@@ -28,7 +28,7 @@ import java.io.OutputStream;
 import ch.epfl.sweng.project.Database.DBHelper;
 
 /**
- * Fragment that manages download of remote efforts.db file the user has on Firebase storage and substitution into
+ * Fragment that manages download of remote runs.db file the user has on Firebase storage and substitution into
  * local SQLite database.
  */
 @SuppressWarnings("MagicNumber")
@@ -53,7 +53,7 @@ public class DBDownloadFragment extends Fragment implements
 
         // Try to download remote user database
         try {
-            downloadedDB = File.createTempFile("efforts", "db");
+            downloadedDB = File.createTempFile("runs", "db");
         } catch (IOException e) {
             error(e);
         }
@@ -72,9 +72,9 @@ public class DBDownloadFragment extends Fragment implements
     }
 
     /**
-     * Returns the reference of the user's effort database file on the remote Firebase storage
+     * Returns the reference of the user's runs database file on the remote Firebase storage
      *
-     * @return  the Firebase storage reference of the user's efforts database
+     * @return  the Firebase storage reference of the user's runs database
      */
     private StorageReference getUserRef() {
         return FirebaseStorage.getInstance()
@@ -96,7 +96,7 @@ public class DBDownloadFragment extends Fragment implements
     public void onFailure(@NonNull Exception e) {
 
         try {
-            writeDBFile(File.createTempFile("efforts", "db"));
+            writeDBFile(File.createTempFile("runs", "db"));
         } catch (Exception e1) {
             error(e1);
         }

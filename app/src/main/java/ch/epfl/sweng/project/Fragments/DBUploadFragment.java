@@ -59,9 +59,9 @@ public class DBUploadFragment extends Fragment implements
     }
 
     /**
-     * Returns the reference of the user's effort database file on the remote Firebase storage
+     * Returns the reference of the user's runs database file on the remote Firebase storage
      *
-     * @return  the Firebase storage reference of the user's efforts database
+     * @return  the Firebase storage reference of the user's runs database
      */
     private StorageReference getUserRef() {
         return FirebaseStorage.getInstance()

@@ -18,13 +18,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 import ch.epfl.sweng.project.Fragments.DBUploadFragment;
+import ch.epfl.sweng.project.Fragments.NewRun.RunningMapFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
 import ch.epfl.sweng.project.Fragments.NewRun.RunningMapFragment;
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
@@ -135,7 +134,7 @@ public class SideBarActivity extends AppCompatActivity
         } else if (id == R.id.nav_run_history) {
             mCurrentFragment = new RunHistoryFragment();
         } else if (id == R.id.nav_firebase) {
-
+            //TODO: Codice di Pablo per messaggi HERE
         } else if (id == R.id.nav_logout) {
             mCurrentFragment = new DBUploadFragment();
         }

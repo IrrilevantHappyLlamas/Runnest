@@ -6,9 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -17,6 +17,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Chronometer;
+import android.widget.TextView;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -47,6 +49,10 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
     private GoogleApiClient mGoogleApiClient = null;
     private LocationSettingsHandler mLocationSettingsHandler = null;
     private boolean mRequestingLocationUpdates = false;
+
+    // Live stats
+    private Chronometer mChronometer = null;
+    private TextView mDistance = null;
 
     // Buttons
     private Button mStartUpdatesButton = null;
@@ -88,7 +94,7 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
         mLocationSettingsHandler.checkLocationSettings();
 
         // Buttons
-        buttonsSetup(view);
+        GUISetup(view);
 
         return view;
     }
@@ -98,7 +104,9 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
      *
      * @param view <code>View</code> where buttons must be added
      */
-    private void buttonsSetup(View view) {
+    private void GUISetup(View view) {
+
+        //Buttons
         mStartUpdatesButton = (Button) view.findViewById(R.id.start_run);
         mStartUpdatesButton.setVisibility(View.VISIBLE);
         mStartUpdatesButton.setOnClickListener(new View.OnClickListener() {
@@ -118,6 +126,17 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
         });
 
         setButtonsEnabledState();
+
+
+
+        // Live stats
+        mRun = new Run();
+        mChronometer = (Chronometer) view.findViewById(R.id.chronometer);
+        mChronometer.setVisibility(View.INVISIBLE);
+
+        mDistance = (TextView) view.findViewById(R.id.distance);
+        mDistance.setVisibility(View.INVISIBLE);
+
     }
 
     /**
@@ -129,11 +148,22 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
             mStartUpdatesButton.setVisibility(View.INVISIBLE);
             mStopUpdatesButton.setVisibility(View.VISIBLE);
 
+            // initialize new Run
             String runName = DateFormat.getDateTimeInstance().format(new Date());
             mRun = new Run(runName);
 
+            mChronometer.setVisibility(View.VISIBLE);
+            mChronometer.setBase(SystemClock.elapsedRealtime());
+            mChronometer.start();
+
+            mRun.start();
+
             mRequestingLocationUpdates = true;
             setButtonsEnabledState();
+
+            mDistance.setVisibility(View.VISIBLE);
+            double distanceInKm = (int)(mRun.getTrack().getDistance()/100.0)/10.0;
+            mDistance.setText(distanceInKm + " Km");
 
             startLocationUpdates();
         }
@@ -147,6 +177,9 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
             mRequestingLocationUpdates = false;
             setButtonsEnabledState();
             stopLocationUpdates();
+
+
+            mChronometer.stop();
             mRun.stop();
 
             DBHelper dbHelper = new DBHelper(getContext());
@@ -207,6 +240,8 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
                     mRequestingLocationUpdates = true;
                 }
             });
+
+            mMapHandler.startShowingLocation();
         }
     }
 
@@ -260,10 +295,12 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
 
         if(mRun.isRunning()) {
             mRun.update(mLastCheckPoint);
-        } else {
-            mRun.start(mLastCheckPoint);
         }
+
         mMapHandler.updateMap(mLastCheckPoint);
+
+        double distanceInKm = (int)(mRun.getTrack().getDistance()/100.0)/10.0;
+        mDistance.setText(distanceInKm + " Km");
     }
 
     /**

@@ -12,7 +12,16 @@ public class Track {
     private List<CheckPoint> checkpoints = null;
     private int totalCheckPoints;
     private float distance;
-    private long duration;
+
+
+    /**
+     * Constructor which initialize an empty <code>Tarck</code>
+     */
+    public Track() {
+        checkpoints = new ArrayList<>();
+        totalCheckPoints = 0;
+        distance = 0;
+    }
 
     /**
      * Constructor that takes a starting <code>CheckPoint</code> for the <code>Track</code>
@@ -24,14 +33,6 @@ public class Track {
         checkpoints.add(startingPoint);
         totalCheckPoints = 1;
         distance = 0;
-        duration = 0;
-    }
-
-    public Track() {
-        checkpoints = new ArrayList<>();
-        totalCheckPoints = 0;
-        distance = 0;
-        duration = 0;
     }
 
     /**
@@ -43,34 +44,29 @@ public class Track {
         checkpoints = new ArrayList<>(toCopy.checkpoints);
         totalCheckPoints = toCopy.totalCheckPoints;
         distance = toCopy.distance;
-        duration = toCopy.duration;
     }
 
-
     /**
-     * Add a new <code>CheckPoint</code> to the <code>Track</code>. The new point must be chronologically after current
-     * last point
+     * Add a new <code>CheckPoint</code> to the <code>Track</code>. The new point must be non null
      *
      * @param newPoint  <code>CheckPoint</code> to add
      * @return          <code>true</code> if the operation succeeds, <code>false</code> otherwise
      */
     public boolean add(CheckPoint newPoint) {
-        // Warning if we try to add a non coherent CheckPoint to the Track?
+        if (newPoint == null) {
+            return false;
+        }
+
         if (totalCheckPoints > 0) {
-            if (newPoint.getTime() < checkpoints.get(totalCheckPoints - 1).getTime()) {
-                return false;
-            } else {
-                checkpoints.add(newPoint);
-                distance += checkpoints.get(totalCheckPoints - 1).distanceTo(newPoint);
-                duration = newPoint.getTime() - checkpoints.get(0).getTime();
-                totalCheckPoints++;
-                return true;
-            }
+            checkpoints.add(newPoint);
+            distance += checkpoints.get(totalCheckPoints - 1).distanceTo(newPoint);
+            totalCheckPoints++;
         } else {
             checkpoints.add(newPoint);
             totalCheckPoints++;
-            return true;
         }
+
+    return true;
     }
 
     /**
@@ -92,13 +88,11 @@ public class Track {
     }
 
     /**
-     * Getter for the current duration of the <code>Track</code>, in seconds
+     * Getter for the <code>CheckPoint</code> list
      *
-     * @return  total time between timestamps of first and last <code>CheckPoint</code>
+     * @return  a list of <code>CheckPoint</code>
      */
-    public long getDuration() {
-        return duration;
-    }
+    public List<CheckPoint> getCheckpoints() { return new ArrayList<>(checkpoints); }
 
     /**
      * Getter for the last registered <code>CheckPoint</code>
@@ -113,11 +107,4 @@ public class Track {
             return null;
         }
     }
-
-    /**
-     * Getter for the <code>CheckPoint</code> list
-     *
-     * @return  a list of <code>CheckPoint</code>
-     */
-    public List<CheckPoint> getCheckpoints() { return new ArrayList<>(checkpoints); }
 }
