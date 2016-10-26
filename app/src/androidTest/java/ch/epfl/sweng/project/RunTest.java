@@ -1,5 +1,7 @@
 package ch.epfl.sweng.project;
 
+import android.widget.Chronometer;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,31 +22,36 @@ public class RunTest {
 
         Assert.assertFalse(testRun1.isRunning());
         Assert.assertEquals("temp", testRun1.getName());
+        Assert.assertNotNull(testRun1.getTrack());
+        Assert.assertEquals(0, testRun1.getDuration());
 
         String name = "test_name";
         Run testRun2 = new Run(name);
 
         Assert.assertFalse(testRun2.isRunning());
         Assert.assertEquals(name, testRun2.getName());
+        Assert.assertNotNull(testRun2.getTrack());
+        Assert.assertEquals(0, testRun2.getDuration());
     }
 
     @Test
     public void copyConstructorWorks() {
         Run testRun = new Run("test");
 
-        testRun.start(TrackTest.buildCheckPoint(1, 1, 1000));
-        testRun.update(TrackTest.buildCheckPoint(2, 2, 2000));
+        testRun.start();
+        testRun.update(TrackTest.buildCheckPoint(1, 1));
+        testRun.update(TrackTest.buildCheckPoint(2, 2));
 
         Run testRun2 = new Run(testRun);
 
         Assert.assertEquals(testRun.getName(), testRun2.getName());
         Assert.assertEquals(testRun.getTrack().getDistance(), testRun2.getTrack().getDistance(), 0);
-        Assert.assertEquals(testRun.getTrack().getDuration(), testRun2.getTrack().getDuration(), 0);
+        Assert.assertEquals(testRun.getDuration(), testRun2.getDuration(), 0);
         Assert.assertEquals(testRun.getTrack().getTotalCheckPoints(), testRun2.getTrack().getTotalCheckPoints());
 
         Assert.assertFalse(testRun2.isRunning());
 
-        testRun.update(TrackTest.buildCheckPoint(3, 3, 3000));
+        testRun.update(TrackTest.buildCheckPoint(3, 3));
         testRun.stop();
 
         Assert.assertNotEquals(testRun.getTrack().getTotalCheckPoints(), testRun2.getTrack().getTotalCheckPoints());
@@ -63,15 +70,15 @@ public class RunTest {
     public void correctlyUpdatesStartedRun() {
         Run testRun1 = new Run();
 
-        Assert.assertTrue(testRun1.start(TrackTest.buildCheckPoint(1, 1, 1000)));
+        testRun1.start();
+
+        Assert.assertTrue(testRun1.update(TrackTest.buildCheckPoint(1, 1)));
         Assert.assertTrue(testRun1.isRunning());
-        Assert.assertTrue(testRun1.update(TrackTest.buildCheckPoint(2, 2, 2000)));
+        Assert.assertTrue(testRun1.update(TrackTest.buildCheckPoint(2, 2)));
 
         Track runTrack = testRun1.getTrack();
 
         Assert.assertEquals(2, runTrack.getTotalCheckPoints(), 0);
-        Assert.assertEquals(1, runTrack.getDuration(), 0);
-        Assert.assertEquals(2, runTrack.getLastPoint().getTime(), 0);
         Assert.assertEquals(2, runTrack.getLastPoint().getLatitude(), 0);
         Assert.assertEquals(2, runTrack.getLastPoint().getLongitude(), 0);
 
@@ -79,12 +86,40 @@ public class RunTest {
 
     @Test
     public void stopWorks() {
+        Run testRun2 = new Run();
+
+        testRun2.start();
+
+        Assert.assertTrue(testRun2.update(TrackTest.buildCheckPoint(1, 1, 1)));
+        Assert.assertTrue(testRun2.isRunning());
+
+        Assert.assertTrue(testRun2.stop());
+        Assert.assertFalse(testRun2.isRunning());
+    }
+
+
+    @Test
+    public void setDurationIgnoreInvalidArgument() {
+        Run testRun = new Run();
+        testRun.setDuration(10);
+        Assert.assertEquals(10, testRun.getDuration());
+
+        testRun.setDuration(-1);
+        Assert.assertEquals(10, testRun.getDuration());
+    }
+
+    @Test
+    public void setTrackIgnoreInvalidArgument() {
         Run testRun1 = new Run();
-
-        Assert.assertTrue(testRun1.start(TrackTest.buildCheckPoint(1, 1, 1)));
+        testRun1.start();
+        Assert.assertTrue(testRun1.update(TrackTest.buildCheckPoint(1, 1)));
         Assert.assertTrue(testRun1.isRunning());
+        Assert.assertTrue(testRun1.update(TrackTest.buildCheckPoint(2, 2)));
 
-        Assert.assertTrue(testRun1.stop());
-        Assert.assertFalse(testRun1.isRunning());
+        Assert.assertNotNull(testRun1.getTrack());
+
+        testRun1.setTrack(null);
+
+        Assert.assertNotNull(testRun1.getTrack());
     }
 }
