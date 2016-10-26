@@ -1,5 +1,6 @@
 package ch.epfl.sweng.project.Model;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.google.firebase.database.DatabaseReference;
@@ -14,11 +15,14 @@ public class FirebaseHelper {
 
     // Remote database instance
     private DatabaseReference databaseReference = null;
+    private Context mCallerContext = null;
 
     /**
      * Constructor that initializes the database instance
      */
-    public FirebaseHelper() {
+    public FirebaseHelper(Context callerContext) {
+
+        mCallerContext = callerContext;
         databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 
