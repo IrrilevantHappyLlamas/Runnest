@@ -25,8 +25,8 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String EFFORTS_TABLE_NAME = "efforts";
     private static final String CHECKPOINTS_TABLE_NAME = "checkpoints";
 
-    public static final String[] EFFORTS_COLS = {"id", "name", "type", "checkpointsFromId", "checkpointsToId"};
-    public static final String[] CHECKPOINTS_COLS = {"id", "latitude", "longitude", "altitude", "time"};
+    public static final String[] EFFORTS_COLS = {"id", "name", "duration", "checkpointsFromId", "checkpointsToId"};
+    public static final String[] CHECKPOINTS_COLS = {"id", "latitude", "longitude"};
 
     /**
      * The constructor of the class.
@@ -52,9 +52,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String createCheckpointsTableQuery = "CREATE TABLE " + CHECKPOINTS_TABLE_NAME + " ("
                 + CHECKPOINTS_COLS[0] + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + CHECKPOINTS_COLS[1] + " DOUBLE, "
-                + CHECKPOINTS_COLS[2] + " DOUBLE, "
-                + CHECKPOINTS_COLS[3] + " DOUBLE, "
-                + CHECKPOINTS_COLS[4] + " TEXT)";
+                + CHECKPOINTS_COLS[2] + " DOUBLE )";
         db.execSQL(createEffortsTableQuery);
         db.execSQL(createCheckpointsTableQuery);
     }
@@ -100,7 +98,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String type = "run";
         ContentValues effortContentValues = new ContentValues();
         effortContentValues.put(EFFORTS_COLS[1], name);
-        effortContentValues.put(EFFORTS_COLS[2], type);
+        effortContentValues.put(EFFORTS_COLS[2], run.getDuration());
         effortContentValues.put(EFFORTS_COLS[3], checkpointsFromId);
         effortContentValues.put(EFFORTS_COLS[4], checkpointsToId);
         long insertedEffort = db.insert(EFFORTS_TABLE_NAME, null, effortContentValues);
@@ -117,8 +115,6 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(CHECKPOINTS_COLS[1], checkpoint.getLatitude());
         contentValues.put(CHECKPOINTS_COLS[2], checkpoint.getLongitude());
 
-        //TODO: posso semplicemente rimuovere?
-        //contentValues.put(CHECKPOINTS_COLS[3], checkpoint.getAltitude());
         return db.insert(CHECKPOINTS_TABLE_NAME, null, contentValues);
     }
 
@@ -143,15 +139,13 @@ public class DBHelper extends SQLiteOpenHelper {
             while (result.moveToNext()) {
                 //long id = result.getLong(0);
                 String name = result.getString(1);
-                //String type = result.getString(2);
+                long duration = Long.parseLong(result.getString(2));
                 long fromId = result.getLong(3);
                 long toId = result.getLong(4);
                 Track track = fetchTrack(fromId, toId);
                 Run run = new Run(name);
                 run.setTrack(track);
-
-                //TODO: fetch duration
-                //run.setDuration();
+                run.setDuration(duration);
 
                 efforts.add(run);
             }
@@ -175,9 +169,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 Double latitude = result.getDouble(1);
                 Double longitude = result.getDouble(2);
 
-                //TODO: Posso semplicemente rimuovere?
-                //Double altitude = result.getDouble(3);
-                CheckPoint checkpoint = new CheckPoint(latitude, longitude /*, altitude*/ );
+                CheckPoint checkpoint = new CheckPoint(latitude, longitude);
                 track.add(checkpoint);
             }
         }

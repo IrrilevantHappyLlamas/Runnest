@@ -139,7 +139,7 @@ public class SideBarActivity extends AppCompatActivity
         } else if (id == R.id.nav_run_history) {
             mCurrentFragment = new RunHistoryFragment();
         } else if (id == R.id.nav_firebase) {
-
+            //TODO: Codice di Pablo per messaggi HERE
         } else if (id == R.id.nav_logout) {
 
             new AlertDialog.Builder(this)

@@ -113,6 +113,6 @@ public class Run implements Serializable {
     }
 
     public void setDuration(long duration) {
-        this.duration = duration;
+        this.duration = duration*1000;
     }
 }
