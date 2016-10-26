@@ -2,8 +2,11 @@ package ch.epfl.sweng.project.Model;
 
 import android.util.Log;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * Helper class that provides methods to update and interact with the remote firebase database instance
@@ -11,6 +14,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class FirebaseHelper {
 
     private static final String TAG = "FirebaseHelper";
+    private String mSearchResult;
 
     // Remote database instance
     private DatabaseReference databaseReference = null;
@@ -53,6 +57,26 @@ public class FirebaseHelper {
         databaseReference.child("users").child(id).child("name").setValue(name);
     }
 
+    public String searchForUser(String id){
+
+        mSearchResult = null;
+
+        databaseReference.child("users").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+
+                    mSearchResult = dataSnapshot.child("name").getValue().toString();
+            }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+        return mSearchResult;
+    }
     /**
      * Add an <code>Run</code> to a specified user. <code>Run</code> names must be unique for a user, otherwise
      * this method updates the old run. If the operation succeeds, the name, total distance and duration of the

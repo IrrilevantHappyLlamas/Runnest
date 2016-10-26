@@ -1,5 +1,7 @@
 package ch.epfl.sweng.project.Activities;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,6 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,12 +30,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.FirebaseAuth;
 
 import ch.epfl.sweng.project.AppRunnest;
+import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
 import ch.epfl.sweng.project.Fragments.FirebaseFragment;
 import ch.epfl.sweng.project.Fragments.HomeFragment;
 import ch.epfl.sweng.project.Fragments.NewRun.RunningMapFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
+import ch.epfl.sweng.project.Model.FirebaseHelper;
 import ch.epfl.sweng.project.Model.Run;
 
 public class SideBarActivity extends AppCompatActivity
@@ -42,14 +47,16 @@ public class SideBarActivity extends AppCompatActivity
         RunningMapFragment.RunningMapFragmentInteractionListener,
         FirebaseFragment.FireBaseFragmentInteractionListener,
         RunHistoryFragment.onRunHistoryInteractionListener,
-        DisplayRunFragment.OnDisplayRunInteractionListener
+        DisplayRunFragment.OnDisplayRunInteractionListener,
+        DisplayUserFragment.OnDisplayUserFragmentInteractionListener,
+        SearchView.OnQueryTextListener
 {
 
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
 
     private Fragment mCurrentFragment = null;
     private FragmentManager fragmentManager = null;
-
+    private FirebaseHelper mFirebaseHelper = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +64,9 @@ public class SideBarActivity extends AppCompatActivity
         setContentView(R.layout.activity_side_bar);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //initialize database
+        mFirebaseHelper = new FirebaseHelper();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -110,6 +120,16 @@ public class SideBarActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.side_bar, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+
+
         return true;
     }
 
@@ -237,5 +257,34 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public void onFirebaseFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText){
+
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query){
+
+        String result = mFirebaseHelper.searchForUser(query);
+
+        if(result == null){
+
+
+        }else{
+
+            mCurrentFragment = DisplayUserFragment.newInstance(query, result);
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
+        }
+        return true;
+    }
+
+    @Override
+    public void onDisplayUserFragmentInteraction(){
+
+        mCurrentFragment = new HomeFragment();
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
     }
 }

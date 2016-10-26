@@ -9,6 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import ch.epfl.sweng.project.Model.FirebaseHelper;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +27,8 @@ public class HomeFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    private FirebaseHelper mFirebaseHelper = null;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -59,11 +65,16 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Initialize database
+        mFirebaseHelper = new FirebaseHelper();
+
+        addCurrentUserToFirebaseDatabase();
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
@@ -83,6 +94,13 @@ public class HomeFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public void addCurrentUserToFirebaseDatabase() {
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        mFirebaseHelper.addOrUpdateUser(user.getEmail(), user.getDisplayName());
     }
 
     /**

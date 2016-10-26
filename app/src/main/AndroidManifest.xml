@@ -40,7 +40,11 @@
         <activity
             android:name="ch.epfl.sweng.project.Activities.SideBarActivity"
             android:label="@string/runnest"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+
+            <meta-data android:name="android.app.searchable"
+                       android:resource="@xml/searchable" />
+        </activity>
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version"
