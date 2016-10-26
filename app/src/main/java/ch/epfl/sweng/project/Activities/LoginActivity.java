@@ -132,12 +132,15 @@ public final class LoginActivity extends AppCompatActivity
 
             Toast.makeText(getBaseContext(), "Login successful", Toast.LENGTH_LONG).show();
 
-            // Start SideBarActivity
-            Intent sideBarIntent = new Intent(this, SideBarActivity.class);
-            startActivity(sideBarIntent);
         } else {
             Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void startSideBarActivity() {
+        // Start SideBarActivity
+        Intent sideBarIntent = new Intent(this, SideBarActivity.class);
+        startActivity(sideBarIntent);
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
@@ -147,6 +150,8 @@ public final class LoginActivity extends AppCompatActivity
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+
+                        startSideBarActivity();
 
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "signInWithCredential", task.getException());

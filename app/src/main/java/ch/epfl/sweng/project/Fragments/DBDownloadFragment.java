@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -76,6 +77,52 @@ public class DBDownloadFragment extends Fragment
                 .child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
     }
 
+    @Override
+    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+
+        writeDBFile(downloadedDB);
+
+        Toast.makeText(getContext(), "User Data Retrieved", Toast.LENGTH_LONG).show();
+        DBDownloadListener.onDBDownloadFragmentInteraction();
+
+    }
+
+    @Override
+    public void onFailure(@NonNull Exception e) {
+
+        writeDBFile(File.createTempFile("efforts", "db"));
+
+        Toast.makeText(getContext(), "No remote User Data", Toast.LENGTH_LONG).show();
+        DBDownloadListener.onDBDownloadFragmentInteraction();
+    }
+
+    private void writeDBFile(File newDB) {
+        try {
+            InputStream in = new FileInputStream(newDB);
+            OutputStream out = new FileOutputStream(dbHelper.getDatabasePath());
+
+            // Transfer bytes from in to out
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            in.close();
+            out.close();
+        } catch (FileNotFoundException f) {
+            f.printStackTrace();
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+    }
+
+    /**
+     * Interface for Activities
+     */
+    public interface DBDownloadFragmentInteractionListener {
+        void onDBDownloadFragmentInteraction();
+    }
+
 
     @Override
     public void onAttach(Context context) {
@@ -92,44 +139,5 @@ public class DBDownloadFragment extends Fragment
     public void onDetach() {
         super.onDetach();
         DBDownloadListener = null;
-    }
-
-    @Override
-    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-
-        ((TextView) getActivity().findViewById(R.id.download_text)).setText("File downloaded");
-
-        try {
-            InputStream in = new FileInputStream(downloadedDB);
-            OutputStream out = new FileOutputStream(dbHelper.getDatabasePath());
-
-            // Transfer bytes from in to out
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
-            }
-            in.close();
-            out.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        getActivity().findViewById(R.id.wait_for_up).setVisibility(View.GONE);
-        // TODO: start profile fragment
-    }
-
-    @Override
-    public void onFailure(@NonNull Exception e) {
-        ((TextView) getActivity().findViewById(R.id.download_text)).setText("No remote DB");
-    }
-
-    /**
-     * Interface for SideBarActivity
-     */
-    public interface DBDownloadFragmentInteractionListener {
-        void onDBDownloadFragmentInteraction(Uri uri);
     }
 }

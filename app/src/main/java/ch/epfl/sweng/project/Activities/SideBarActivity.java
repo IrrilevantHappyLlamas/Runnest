@@ -206,8 +206,9 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDBDownloadFragmentInteraction(Uri uri) {
-
+    public void onDBDownloadFragmentInteraction() {
+        mCurrentFragment = new ProfileFragment();
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
     }
 
     @Override
