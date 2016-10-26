@@ -23,21 +23,18 @@ import com.google.firebase.storage.UploadTask;
 
 import ch.epfl.sweng.project.Activities.LoginActivity;
 import ch.epfl.sweng.project.Database.DBHelper;
-import ch.epfl.sweng.project.Database.DBSync;
 
 /**
- * Demo fragment to show transactions with firebase database
+ * Fragment that manages upload of local SQLite database to the remote Firebase storage of user
  */
-public class DBUploadFragment extends Fragment
-        implements
+public class DBUploadFragment extends Fragment implements
         OnSuccessListener<UploadTask.TaskSnapshot>,
         OnFailureListener
 {
-
+    @SuppressWarnings("unused")
     private DBUploadFragment.DBUploadFragmentInteractionListener DBUploadListener = null;
 
     private DBHelper dbHelper = null;
-    private DBSync databaseSynchronizer = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,28 +43,35 @@ public class DBUploadFragment extends Fragment
         View view =  inflater.inflate(R.layout.fragment_dbupload, container, false);
 
         dbHelper = new DBHelper(getContext());
-        databaseSynchronizer = new DBSync(dbHelper);
-
         uploadDatabase();
 
         return view;
     }
 
-    public void uploadDatabase() {
+    /**
+     * Start the upload task that puts the local SQLite database file into the remote Firebase storage
+     */
+    private void uploadDatabase() {
 
         Uri file = Uri.fromFile(dbHelper.getDatabasePath());
         UploadTask uploadTask = getUserRef().child(dbHelper.getDatabaseName()).putFile(file);
-
-        // Register observers to listen for when the download is done or if it fails
         uploadTask.addOnFailureListener(this).addOnSuccessListener(this);
     }
 
-    public StorageReference getUserRef() {
+    /**
+     * Returns the reference of the user's effort database file on the remote Firebase storage
+     *
+     * @return  the Firebase storage reference of the user's efforts database
+     */
+    private StorageReference getUserRef() {
         return FirebaseStorage.getInstance()
                 .getReferenceFromUrl("gs://runnest-146309.appspot.com")
                 .child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
     }
 
+    /**
+     * Ask the user for confirmation and then bring them back to the login screen. Sign out from Firebase.
+     */
     private void logout() {
         new AlertDialog.Builder(getActivity())
                 .setTitle("Logout")
@@ -91,7 +95,28 @@ public class DBUploadFragment extends Fragment
         FirebaseAuth.getInstance().signOut();
     }
 
+    // TODO: catch other Firebase exceptions and handle them properly
+    @Override
+    public void onFailure(@NonNull Exception e) {
+        Toast.makeText(getContext(), "Upload failed", Toast.LENGTH_LONG).show();
+    }
 
+    @Override
+    public void onSuccess(UploadTask.TaskSnapshot tResult) {
+        Toast.makeText(getContext(), "Upload successful", Toast.LENGTH_LONG).show();
+        logout();
+
+    }
+
+    /**
+     * Interface for SideBarActivity
+     */
+    public interface DBUploadFragmentInteractionListener {
+        @SuppressWarnings("unused")
+        void onDBUploadFragmentInteraction(Uri uri);
+    }
+
+    @SuppressWarnings("ProhibitedExceptionThrown")
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -107,24 +132,5 @@ public class DBUploadFragment extends Fragment
     public void onDetach() {
         super.onDetach();
         DBUploadListener = null;
-    }
-
-    @Override
-    public void onFailure(@NonNull Exception e) {
-        Toast.makeText(getContext(), "Upload failed", Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-        Toast.makeText(getContext(), "Upload succeeded", Toast.LENGTH_LONG).show();
-        logout();
-
-    }
-
-    /**
-     * Interface for SideBarActivity
-     */
-    public interface DBUploadFragmentInteractionListener {
-        void onDBUploadFragmentInteraction(Uri uri);
     }
 }

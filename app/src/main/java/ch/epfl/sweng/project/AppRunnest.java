@@ -4,10 +4,6 @@ import android.support.multidex.MultiDexApplication;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.firebase.auth.FirebaseUser;
-
-import ch.epfl.sweng.project.Database.DBHelper;
-import ch.epfl.sweng.project.Database.DBSync;
 
 /**
  * Application class

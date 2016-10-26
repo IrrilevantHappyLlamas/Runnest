@@ -189,7 +189,11 @@ public class DBHelper extends SQLiteOpenHelper {
         return track;
     }
 
-    // TODO: comments
+    /**
+     * Getter for the path of the database <code>File</code>
+     *
+     * @return  database <code>File</code> path
+     */
     public File getDatabasePath() {
         return mContext.getDatabasePath(DATABASE_NAME);
     }

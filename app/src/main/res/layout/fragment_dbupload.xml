@@ -9,18 +9,9 @@
         android:text="Uploading user data ..."
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/wait_for_up"
+        android:id="@+id/upload_text"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="19dp"
-        android:id="@+id/upload_text"/>
-
-    <ProgressBar
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/wait_for_up"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="211dp"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Large"/>
 
 </RelativeLayout>

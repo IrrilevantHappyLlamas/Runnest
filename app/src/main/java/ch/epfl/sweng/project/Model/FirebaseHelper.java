@@ -1,28 +1,10 @@
 package ch.epfl.sweng.project.Model;
 
-import android.app.Activity;
 import android.content.Context;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FileDownloadTask;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-
-import java.io.File;
-import java.io.IOException;
-
-import ch.epfl.sweng.project.Database.DBHelper;
 
 /**
  * Helper class that provides methods to update and interact with the remote firebase database instance

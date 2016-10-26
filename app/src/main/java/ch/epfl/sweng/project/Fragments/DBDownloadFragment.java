@@ -1,14 +1,13 @@
 package ch.epfl.sweng.project.Fragments;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
@@ -21,24 +20,26 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 import ch.epfl.sweng.project.Database.DBHelper;
-import ch.epfl.sweng.project.Database.DBSync;
 
 /**
- * Fragment that manages database synchronization with the remote efforts.db file the user has on Firebase storage
+ * Fragment that manages download of remote efforts.db file the user has on Firebase storage and substitution into
+ * local SQLite database.
  */
-public class DBDownloadFragment extends Fragment
-        implements
+@SuppressWarnings("MagicNumber")
+public class DBDownloadFragment extends Fragment implements
         OnSuccessListener<FileDownloadTask.TaskSnapshot>,
-        OnFailureListener {
-
+        OnFailureListener
+{
+    @SuppressWarnings("FieldCanBeLocal")
+    private final String TAG = "Database Downloader";
     private DBDownloadFragment.DBDownloadFragmentInteractionListener DBDownloadListener = null;
+
     private DBHelper dbHelper = null;
     private File downloadedDB = null;
 
@@ -54,7 +55,7 @@ public class DBDownloadFragment extends Fragment
         try {
             downloadedDB = File.createTempFile("efforts", "db");
         } catch (IOException e) {
-            onFailure(e);
+            error(e);
         }
         downloadDatabase();
 
@@ -82,21 +83,22 @@ public class DBDownloadFragment extends Fragment
     }
 
     @Override
-    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+    public void onSuccess(FileDownloadTask.TaskSnapshot tResult) {
 
         writeDBFile(downloadedDB);
         Toast.makeText(getContext(), "User Data Retrieved", Toast.LENGTH_LONG).show();
         DBDownloadListener.onDBDownloadFragmentInteraction();
-
     }
 
+    // TODO: catch other Firebase exceptions and handle them properly
+    @SuppressWarnings("OverlyBroadCatchBlock")
     @Override
     public void onFailure(@NonNull Exception e) {
 
         try {
             writeDBFile(File.createTempFile("efforts", "db"));
-        } catch (IOException e1) {
-            e1.printStackTrace();
+        } catch (Exception e1) {
+            error(e1);
         }
 
         Toast.makeText(getContext(), "No remote User Data", Toast.LENGTH_LONG).show();
@@ -107,25 +109,43 @@ public class DBDownloadFragment extends Fragment
      * Write the <code>File</code> passed as argument into the SQLite default database file, overwriting it
      *
      * @param newDB     the new database <code>File</code>
+     * @throws IllegalArgumentException
      */
+    @SuppressWarnings({"IOResourceOpenedButNotSafelyClosed", "resource"})
     private void writeDBFile(File newDB) {
+
+        if(newDB == null) {
+            throw new IllegalArgumentException("New database File is null");
+        }
+
+        // Not using try-with-resources here because it would break our API requirements
+        //noinspection OverlyBroadCatchBlock
         try {
             InputStream in = new FileInputStream(newDB);
             OutputStream out = new FileOutputStream(dbHelper.getDatabasePath());
 
-            // Transfer bytes from in to out
+            // Write new db to file
             byte[] buf = new byte[1024];
             int len;
+            //noinspection NestedAssignment
             while ((len = in.read(buf)) > 0) {
                 out.write(buf, 0, len);
             }
             in.close();
             out.close();
-        } catch (FileNotFoundException f) {
-            f.printStackTrace();
-        } catch (IOException i) {
-            i.printStackTrace();
+        } catch (Exception e) {
+           error(e);
         }
+    }
+
+    /**
+     *  Handles logging of <code>Exceptions</code> that break the database download and substitution process
+     *
+     * @param e     <code>Exception</code> to log
+     */
+    private void error(Exception e) {
+        Log.e(TAG, e.getMessage(), e);
+        Toast.makeText(getContext(), "Failed to retrieve user data, restart app", Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -142,6 +162,7 @@ public class DBDownloadFragment extends Fragment
         if (context instanceof DBDownloadFragment.DBDownloadFragmentInteractionListener) {
             DBDownloadListener = (DBDownloadFragment.DBDownloadFragmentInteractionListener) context;
         } else {
+            //noinspection ProhibitedExceptionThrown
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }

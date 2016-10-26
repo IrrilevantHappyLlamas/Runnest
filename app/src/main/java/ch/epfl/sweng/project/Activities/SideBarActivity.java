@@ -23,8 +23,6 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import ch.epfl.sweng.project.AppRunnest;
-import ch.epfl.sweng.project.Database.DBHelper;
-import ch.epfl.sweng.project.Database.DBSync;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 import ch.epfl.sweng.project.Fragments.DBUploadFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
@@ -137,7 +135,7 @@ public class SideBarActivity extends AppCompatActivity
         } else if (id == R.id.nav_run_history) {
             mCurrentFragment = new RunHistoryFragment();
         } else if (id == R.id.nav_firebase) {
-            mCurrentFragment = new DBDownloadFragment();
+
         } else if (id == R.id.nav_logout) {
             mCurrentFragment = new DBUploadFragment();
         }
