@@ -78,22 +78,10 @@ public class DisplayRunFragment extends Fragment {
             // Duration Row
             TableRow thirdRow = new TableRow(this.getContext());
             createRowElement(thirdRow, "Duration :");
-            long minutes = track.getDuration() / 60;
-            long seconds = track.getDuration() % 60;
+            long minutes = mRunToBeDisplayed.getDuration() / 60;
+            long seconds = mRunToBeDisplayed.getDuration() % 60;
             createRowElement(thirdRow, minutes + "' " + seconds + "''");
             table.addView(thirdRow);
-
-            // Uphill Row
-            TableRow fourthRow = new TableRow(this.getContext());
-            createRowElement(fourthRow, "Uphill :");
-            createRowElement( fourthRow,String.valueOf((int)track.getUphill()) + " m");
-            table.addView(fourthRow);
-
-            // Downhill Row
-            TableRow fifthRow = new TableRow(this.getContext());
-            createRowElement(fifthRow, "Downhill :");
-            createRowElement( fifthRow,String.valueOf((int)track.getDownhill()) + " m");
-            table.addView(fifthRow);
 
             Button button = (Button) view.findViewById(R.id.button);
 

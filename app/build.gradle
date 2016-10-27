@@ -49,6 +49,18 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
+    androidTestCompile("com.android.support.test.espresso:espresso-contrib:2.2.2") {
+        exclude group: 'com.android.support', module: 'appcompat'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'com.android.support', module: 'support-v7'
+        exclude group: 'com.android.support', module: 'design'
+        exclude module: 'support-annotations'
+        exclude module: 'recyclerview-v7'
+    }
+
+    androidTestCompile 'com.android.support.test:runner:0.5'
+    androidTestCompile "com.android.support.test.espresso:espresso-intents:2.2.2"
+
     // Added for login activity, I don't know its purpose (Toby)
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -59,6 +71,8 @@ dependencies {
     compile 'com.android.support:design:24.2.1'
     compile 'com.android.support:support-v4:24.2.1'
     compile 'com.google.firebase:firebase-database:9.6.1'
+    compile 'com.google.firebase:firebase-storage:9.6.1'
+    compile 'com.google.firebase:firebase-auth:9.6.1'
     compile 'com.android.support:recyclerview-v7:24.2.1'
     androidTestCompile 'junit:junit:4.12'
     androidTestCompile 'com.android.support:support-annotations:24.2.1'

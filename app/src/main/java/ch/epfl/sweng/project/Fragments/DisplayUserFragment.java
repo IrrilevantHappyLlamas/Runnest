@@ -93,17 +93,6 @@ public class DisplayUserFragment extends Fragment {
                 table.addView(firstRow);
             }
 
-        Button button = (Button) view.findViewById(R.id.button);
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (mListener != null) {
-                    mListener.onDisplayUserFragmentInteraction();
-                }
-            }
-        });
             return view;
         }
 

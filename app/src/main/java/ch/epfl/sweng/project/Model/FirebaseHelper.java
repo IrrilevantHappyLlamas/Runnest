@@ -1,5 +1,6 @@
 package ch.epfl.sweng.project.Model;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
@@ -25,6 +26,7 @@ public class FirebaseHelper {
      * Constructor that initializes the database instance
      */
     public FirebaseHelper() {
+
         databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 
@@ -58,31 +60,4 @@ public class FirebaseHelper {
         Log.d(TAG, "Add new user");
         databaseReference.child("users").child(id).child("name").setValue(name);
     }
-
-    /**
-     * Add an <code>Run</code> to a specified user. <code>Run</code> names must be unique for a user, otherwise
-     * this method updates the old run. If the operation succeeds, the name, total distance and duration of the
-     * <code>Run</code> are stored in the remote database
-     *
-     * @param id        user to which to add the <code>Run</code>, a id <code>String</code>
-     * @param run    <code>Run</code> to add to the database
-     * @throws IllegalArgumentException     if arguments are <code>null</code> or empty
-     */
-    public void addOrUpdateEffort(String id, Run run) throws IllegalArgumentException {
-
-        //Check validity of arguments
-        if(id == null || run == null) {
-            throw new IllegalArgumentException("Error: invalid argument, id and run have to be non-null");
-        }
-        if(id.isEmpty()) {
-            throw new IllegalArgumentException("Error: invalid argument, id  must be not empty");
-        }
-
-        Track track = run.getTrack();
-        databaseReference.child("users").child(id).child("efforts")
-                .child(run.getName()).child("distance").setValue(track.getDistance());
-        databaseReference.child("users").child(id).child("efforts")
-                .child(run.getName()).child("duration").setValue(track.getDuration());
-    }
-
 }
