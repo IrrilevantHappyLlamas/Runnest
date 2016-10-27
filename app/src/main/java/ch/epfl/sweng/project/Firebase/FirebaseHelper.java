@@ -23,6 +23,9 @@ public class FirebaseHelper {
      */
     private final DatabaseReference databaseReference;
 
+    /**
+     * Children's names in the database
+     */
     private final String MESSAGES_CHILD = "messages";
     private final String FROM_CHILD = "from";
     private final String TYPE_CHILD = "type";

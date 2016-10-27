@@ -36,6 +36,7 @@ import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
 import java.util.Stack;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 import ch.epfl.sweng.project.Fragments.DBUploadFragment;
+import ch.epfl.sweng.project.Fragments.MessagesFragment;
 import ch.epfl.sweng.project.Fragments.NewRun.RunningMapFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
@@ -261,7 +262,8 @@ public class SideBarActivity extends AppCompatActivity
             toolbar.setTitle("Run History");
             launchFragment(new RunHistoryFragment());
         } else if (id == R.id.nav_firebase) {
-            //TODO: Codice di Pablo per messaggi HERE
+            toolbar.setTitle("Messages");
+            launchFragment(new MessagesFragment());
         } else if (id == R.id.nav_logout) {
             fragmentStack.pop();
             dialogLogout();
