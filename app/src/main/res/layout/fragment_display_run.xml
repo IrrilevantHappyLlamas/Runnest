@@ -19,7 +19,7 @@
         android:text="GO TO RUN HISTORY"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/button"
+        android:id="@+id/go_to_run_history"
         android:visibility="visible"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="50dp"/>
