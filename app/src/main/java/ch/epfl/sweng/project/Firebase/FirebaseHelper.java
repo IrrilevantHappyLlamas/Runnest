@@ -21,12 +21,18 @@ public class FirebaseHelper {
     /**
      * Remote database instance
      */
-    private DatabaseReference databaseReference = null;
+    private final DatabaseReference databaseReference;
+
+    private final String MESSAGES_CHILD = "messages";
+    private final String FROM_CHILD = "from";
+    private final String TYPE_CHILD = "type";
+    private final String MESSAGE_CHILD = "message";
+    private final String TIME_CHILD = "time";
 
     /**
      * Interface that allows to handle message fetching asynchronously from the server
      */
-    public interface FirebaseHandler {
+    public interface Handler {
         void handleRetrievedMessages(List<Message> messages);
     }
 
@@ -54,11 +60,11 @@ public class FirebaseHelper {
     public void send(Message message) {
         Date time = message.getTime();
         String messageId = message.getUid();
-        DatabaseReference messageChild = databaseReference.child("messages").child(message.getTo()).child(messageId);
-        messageChild.child("from").setValue(message.getFrom());
-        messageChild.child("type").setValue(message.getType());
-        messageChild.child("message").setValue(message.getMessage());
-        messageChild.child("time").setValue(time);
+        DatabaseReference messageChild = databaseReference.child(MESSAGES_CHILD).child(message.getTo()).child(messageId);
+        messageChild.child(FROM_CHILD).setValue(message.getFrom());
+        messageChild.child(TYPE_CHILD).setValue(message.getType());
+        messageChild.child(MESSAGE_CHILD).setValue(message.getMessage());
+        messageChild.child(TIME_CHILD).setValue(time);
     }
 
     /**
@@ -67,19 +73,21 @@ public class FirebaseHelper {
      * @param forUser
      * @param handler
      */
-    public void fetchMessages(final String forUser, final FirebaseHandler handler) {
-        databaseReference.child("messages").child(forUser).addListenerForSingleValueEvent(new ValueEventListener() {
+    public void fetchMessages(final String forUser, final Handler handler) {
+        databaseReference.child(MESSAGES_CHILD).child(forUser).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<Message> messages = new ArrayList<>();
-                for (DataSnapshot children : dataSnapshot.getChildren()) {
-                    String from = children.child("from").getValue(String.class);
-                    Message.MessageType type = children.child("type").getValue(Message.MessageType.class);
-                    String messageText = children.child("message").getValue(String.class);
-                    Date time = children.child("time").getValue(Date.class);
-                    Message message = new Message(from, forUser, type, messageText, time);
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot children : dataSnapshot.getChildren()) {
+                        String from = children.child(FROM_CHILD).getValue(String.class);
+                        Message.MessageType type = children.child(TYPE_CHILD).getValue(Message.MessageType.class);
+                        String messageText = children.child(MESSAGE_CHILD).getValue(String.class);
+                        Date time = children.child(TIME_CHILD).getValue(Date.class);
+                        Message message = new Message(from, forUser, type, messageText, time);
 
-                    messages.add(message);
+                        messages.add(message);
+                    }
                 }
                 handler.handleRetrievedMessages(messages);
             }
@@ -98,6 +106,6 @@ public class FirebaseHelper {
      */
     public void delete(Message message) {
         String messageId = message.getUid();
-        databaseReference.child("messages").child(message.getTo()).child(messageId).removeValue();
+        databaseReference.child(MESSAGES_CHILD).child(message.getTo()).child(messageId).removeValue();
     }
 }
