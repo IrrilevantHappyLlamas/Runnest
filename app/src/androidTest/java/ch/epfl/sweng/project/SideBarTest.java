@@ -106,9 +106,6 @@ public class SideBarTest {
                 .perform(click());
 
         SystemClock.sleep(3000);
-
-        onView(withId(R.id.sign_in_button))
-                .check(matches(isDisplayed()));
     }
 
 
