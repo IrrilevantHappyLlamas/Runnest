@@ -25,20 +25,28 @@ public class Profile {
 
 
     public Profile(GoogleSignInAccount account) {
-        id = account.getId();
-        email = account.getEmail();
-        familyName = account.getFamilyName();
-        name = account.getDisplayName();
-        Uri uri = account.getPhotoUrl();
-        if(uri != null) {
-            photoUrl =uri.toString();
-        } else {
+
+        if (account == null) {
+            id = "No User";
+            email = "No User";
+            familyName = "No User";
+            name = "No User";
             photoUrl = "";
+        } else {
+            id = account.getId();
+            email = account.getEmail();
+            familyName = account.getFamilyName();
+            name = account.getDisplayName();
+            Uri uri = account.getPhotoUrl();
+            if (uri != null) {
+                photoUrl = uri.toString();
+            } else {
+                photoUrl = "";
+            }
         }
 
         runs = new ArrayList<Run>();
     }
-
 
     public String getId() {
         return id;

@@ -88,9 +88,18 @@ public class DBDownloadFragment extends Fragment implements
      * @return  the Firebase storage reference of the user's runs database
      */
     private StorageReference getUserRef() {
-        return FirebaseStorage.getInstance()
+
+        StorageReference usersRef =  FirebaseStorage.getInstance()
                 .getReferenceFromUrl("gs://runnest-146309.appspot.com")
-                .child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                .child("users");
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (currentUser == null) {
+            return usersRef.child("6VauzC82b6YoNfRSo2ft4WFqoCu1");
+        } else {
+            return usersRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        }
     }
 
     @Override

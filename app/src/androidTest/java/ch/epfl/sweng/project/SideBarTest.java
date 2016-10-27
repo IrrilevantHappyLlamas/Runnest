@@ -1,5 +1,6 @@
 package ch.epfl.sweng.project;
 
+import android.os.SystemClock;
 import android.support.test.espresso.contrib.DrawerActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -42,6 +43,9 @@ public class SideBarTest {
     public void testDrawerLayout() {
         onView(withId(R.id.drawer_layout))
                 .perform(DrawerActions.open());
+
+        SystemClock.sleep(3000);
+
         onView(withId(R.id.drawer_layout)).check(matches(isOpen()));
     }
 }
