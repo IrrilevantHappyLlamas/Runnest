@@ -54,7 +54,7 @@ public class SideBarTest {
     }
 
     @Test
-    public void BnavigateToRunningMap() {
+    public void navigateToRunningMap() {
         onView(withId(R.id.drawer_layout))
                 .perform(DrawerActions.open());
 
@@ -64,7 +64,7 @@ public class SideBarTest {
     }
 
     @Test
-    public void CnavigateToRunHistory() {
+    public void navigateToRunHistory() {
         onView(withId(R.id.drawer_layout))
                 .perform(DrawerActions.open());
 
@@ -72,4 +72,44 @@ public class SideBarTest {
 
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run_history));
     }
+
+    @Test
+    public void navigateToFireBase() {
+        onView(withId(R.id.drawer_layout))
+                .perform(DrawerActions.open());
+
+        SystemClock.sleep(3000);
+
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_firebase));
+    }
+
+    @Test
+    public void navigateToProfile() {
+        onView(withId(R.id.drawer_layout))
+                .perform(DrawerActions.open());
+
+        SystemClock.sleep(3000);
+
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_profile));
+    }
+
+    @Test
+    public void navigateToLogout() {
+        onView(withId(R.id.drawer_layout))
+                .perform(DrawerActions.open());
+
+        SystemClock.sleep(3000);
+
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_logout));
+
+        onView(withText("OK"))
+                .perform(click());
+
+        SystemClock.sleep(3000);
+
+        onView(withId(R.id.sign_in_button))
+                .check(matches(isDisplayed()));
+    }
+
+
 }
