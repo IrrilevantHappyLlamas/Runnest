@@ -37,7 +37,7 @@ public class FirebaseHelperTest {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Assert.assertTrue(false);
+
             }
         });
     }
@@ -54,14 +54,13 @@ public class FirebaseHelperTest {
                         dataSnapshot = dataSnapshot.getChildren().iterator().next();
                         Assert.assertTrue(dataSnapshot.exists());
                         Assert.assertTrue(dataSnapshot.hasChild("from"));
-                        Assert.assertTrue(dataSnapshot.hasChild("to"));
                         Assert.assertTrue(dataSnapshot.hasChild("type"));
                         Assert.assertTrue(dataSnapshot.hasChild("message"));
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        Assert.assertTrue(false);
+
                     }
                 });
     }
