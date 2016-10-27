@@ -2,6 +2,7 @@ package ch.epfl.sweng.project;
 
 import android.os.SystemClock;
 import android.support.test.espresso.contrib.DrawerActions;
+import android.support.test.espresso.contrib.NavigationViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -9,9 +10,11 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 
 import ch.epfl.sweng.project.Activities.SideBarActivity;
 
@@ -28,6 +31,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
  * Created by Tobia Albergoni on 27.10.2016.
  */
 @RunWith(AndroidJUnit4.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SideBarTest {
 
     @Rule
@@ -40,12 +44,32 @@ public class SideBarTest {
     }
 
     @Test
-    public void testDrawerLayout() {
+    public void ADrawerLayout() {
         onView(withId(R.id.drawer_layout))
                 .perform(DrawerActions.open());
 
         SystemClock.sleep(3000);
 
         onView(withId(R.id.drawer_layout)).check(matches(isOpen()));
+    }
+
+    @Test
+    public void BnavigateToRunningMap() {
+        onView(withId(R.id.drawer_layout))
+                .perform(DrawerActions.open());
+
+        SystemClock.sleep(3000);
+
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_new_run));
+    }
+
+    @Test
+    public void CnavigateToRunHistory() {
+        onView(withId(R.id.drawer_layout))
+                .perform(DrawerActions.open());
+
+        SystemClock.sleep(3000);
+
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run_history));
     }
 }
