@@ -1,5 +1,6 @@
 package ch.epfl.sweng.project.Activities;
 
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -20,12 +22,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+
+import java.util.Stack;
+
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 import ch.epfl.sweng.project.Fragments.DBUploadFragment;
+
 import ch.epfl.sweng.project.Fragments.NewRun.RunningMapFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
-import ch.epfl.sweng.project.Fragments.NewRun.RunningMapFragment;
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
 import ch.epfl.sweng.project.Model.Run;
@@ -41,25 +46,29 @@ public class SideBarActivity extends AppCompatActivity
 
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
 
+    //Fragment stack(LIFO)
+    private Stack<MenuItem> fragmentStack = new Stack<>();
+    private MenuItem profileItem;
+    private MenuItem runItem;
+
     private Fragment mCurrentFragment = null;
     private FragmentManager fragmentManager = null;
+
+    private FloatingActionButton fab;
+
+    private NavigationView navigationView;
+
+    private Boolean isRunning = false;
+
+    private Toolbar toolbar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_side_bar);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                mCurrentFragment = new RunningMapFragment();
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -69,11 +78,23 @@ public class SideBarActivity extends AppCompatActivity
         toggle.syncState();
 
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View header = navigationView.getHeaderView(0);
         TextView h1 = (TextView) header.findViewById(R.id.header1_nav_header);
         TextView h2 = (TextView) header.findViewById(R.id.header2_nav_header);
+
+
+        runItem = navigationView.getMenu().getItem(1);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                runItem.setChecked(true);
+                onNavigationItemSelected(runItem);
+            }
+        });
+
 
         GoogleSignInAccount account = ((AppRunnest)getApplicationContext()).getGoogleUser();
         h1.setText(account.getDisplayName());
@@ -83,6 +104,10 @@ public class SideBarActivity extends AppCompatActivity
         fragmentManager = getSupportFragmentManager();
         mCurrentFragment = fragmentManager.findFragmentById(R.id.fragment_container);
 
+        profileItem = navigationView.getMenu().getItem(0);
+        profileItem.setChecked(true);
+        fragmentStack.push(profileItem);
+        
         if(mCurrentFragment == null){
             mCurrentFragment = new DBDownloadFragment();
             fragmentManager.beginTransaction().add(R.id.fragment_container, mCurrentFragment).commit();
@@ -94,8 +119,16 @@ public class SideBarActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else {
+            fragmentStack.pop();
+            if(!fragmentStack.isEmpty()){
+                fragmentStack.peek().setChecked(true);
+                onNavigationItemSelected(fragmentStack.peek());
+            } else {
+                profileItem.setChecked(true);
+                onNavigationItemSelected(profileItem);
+            }
         }
-
     }
 
 
@@ -124,27 +157,64 @@ public class SideBarActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        if(isRunning && !item.equals(runItem)){
+            dialogQuitRun(item);
+            return false;
+            /*if(hasQuit) {
+                return false;
+            } else {
+                setRunning(false);
+                return onNavigationItemSelected(item);
+            }
+            */
+        }
+
+        fab.show();
+
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        if(fragmentStack.isEmpty()){
+           fragmentStack.push(item);
+        }
+
+        if(!fragmentStack.peek().equals(item)) {
+            fragmentStack.push(item);
+        }
+
+        fragmentManager.beginTransaction().remove(mCurrentFragment);
+
         if (id == R.id.nav_profile) {
-            mCurrentFragment = new ProfileFragment();
+            toolbar.setTitle("Profile");
+            launchFragment(new ProfileFragment());
         }  else if (id == R.id.nav_new_run) {
-            mCurrentFragment = new RunningMapFragment();
+            toolbar.setTitle("New Run");
+            fab.hide();
+            launchFragment(new RunningMapFragment());
         } else if (id == R.id.nav_run_history) {
-            mCurrentFragment = new RunHistoryFragment();
+            toolbar.setTitle("Run History");
+            launchFragment(new RunHistoryFragment());
         } else if (id == R.id.nav_firebase) {
             //TODO: Codice di Pablo per messaggi HERE
         } else if (id == R.id.nav_logout) {
-            mCurrentFragment = new DBUploadFragment();
+            fragmentStack.pop();
+            dialogLogout();
         }
 
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    //TODO:comment
+    private void launchFragment(Fragment toLaunch){
+        mCurrentFragment = toLaunch;
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
+    }
+
+
 
     /**
      * Handle request permissions result. Update what needed and give a feedback to the user.
@@ -212,4 +282,50 @@ public class SideBarActivity extends AppCompatActivity
     public void onDBUploadFragmentInteraction(Uri uri) {
 
     }
+
+    private void dialogLogout(){
+        new AlertDialog.Builder(this)
+                .setTitle("Logout")
+                .setMessage("Are you sure you want to logout?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        launchFragment(new DBUploadFragment());
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    private void dialogQuitRun(final MenuItem item){
+        new AlertDialog.Builder(this)
+                .setTitle("Quit Run")
+                .setMessage("Are you sure you want to to quit your current run?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        setRunning(false);
+                        item.setChecked(true);
+                        onNavigationItemSelected(item);
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        //do nothing
+                        runItem.setChecked(true);
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+
+    }
+
+
+    public void setRunning(Boolean running) {
+        isRunning = running;
+    }
+
 }

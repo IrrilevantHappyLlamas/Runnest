@@ -227,5 +227,3 @@ public final class LoginActivity extends AppCompatActivity
     }
 
 }
-
-
