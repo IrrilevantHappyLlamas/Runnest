@@ -52,7 +52,8 @@ public class SideBarActivity extends AppCompatActivity
         DBUploadFragment.DBUploadFragmentInteractionListener,
         RunHistoryFragment.onRunHistoryInteractionListener,
         DisplayRunFragment.OnDisplayRunInteractionListener,
-        DisplayUserFragment.OnDisplayUserFragmentInteractionListener
+        DisplayUserFragment.OnDisplayUserFragmentInteractionListener,
+        MessagesFragment.MessagesFragmentInteractionListener
 {
 
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
@@ -399,5 +400,10 @@ public class SideBarActivity extends AppCompatActivity
 
     @Override
     public void onDisplayUserFragmentInteraction(){
+    }
+
+    @Override
+    public void onMessagesFragmentInteraction(Uri uri) {
+
     }
 }

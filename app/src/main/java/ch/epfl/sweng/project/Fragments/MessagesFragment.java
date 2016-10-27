@@ -38,13 +38,18 @@ public class MessagesFragment extends Fragment implements View.OnClickListener {
         messageEditText = (EditText) view.findViewById(R.id.messageEditText);
         fetchedMessages = (TextView) view.findViewById(R.id.retrievedMessagesTextView);
 
+        fetchMessages();
+
         return view;
     }
 
     private void sendMessage() {
         String message = messageEditText.getText().toString();
-        Message msg = new Message("me", username, Message.MessageType.TEXT, message);
-        mFirebaseHelper.send(msg);
+        if (!message.equals("")) {
+            messageEditText.setText("");
+            Message msg = new Message("me", username, Message.MessageType.TEXT, message);
+            mFirebaseHelper.send(msg);
+        }
     }
 
     private void fetchMessages() {
@@ -53,8 +58,8 @@ public class MessagesFragment extends Fragment implements View.OnClickListener {
             public void handleRetrievedMessages(List<Message> messages) {
                 String str = messages.size() + " messages recieved \n";
                 for (Message m : messages) {
-                    str += "FROM: " + m.getFrom() + " RECIVED: " + m.getTime() + "\n";
-                    str += "\t" + m.getMessage() + "\n\n";
+                    str += "FROM: " + m.getFrom() + "\nRECIVED: " + m.getTime() + "\n";
+                    str += "MSG: " + m.getMessage() + "\n\n";
                 }
 
                 fetchedMessages.setText(str);
