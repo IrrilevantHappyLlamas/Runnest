@@ -266,6 +266,7 @@ public class SideBarActivity extends AppCompatActivity
             toolbar.setTitle("Run History");
             launchFragment(new RunHistoryFragment());
         } else if (id == R.id.nav_firebase) {
+            //TODO: ecco
             toolbar.setTitle("Messages");
             launchFragment(new MessagesFragment());
         } else if (id == R.id.nav_logout) {

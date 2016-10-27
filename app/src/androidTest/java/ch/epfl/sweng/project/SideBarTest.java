@@ -45,6 +45,8 @@ public class SideBarTest {
 
     @Test
     public void ADrawerLayout() {
+        SystemClock.sleep(3000);
+
         onView(withId(R.id.drawer_layout))
                 .perform(DrawerActions.open());
 
