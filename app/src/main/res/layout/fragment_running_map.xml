@@ -13,7 +13,8 @@
         android:text="@string/start"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/start_run"/>
+        android:id="@+id/start_run"
+        android:layout_gravity="bottom"/>
 
     <Button
         android:text="@string/stop"
@@ -21,5 +22,26 @@
         android:layout_height="wrap_content"
         android:visibility="invisible"
         android:id="@+id/stop_run"
-        />
+        android:layout_gravity="bottom"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="87dp">
+
+        <Chronometer
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/chronometer"
+            android:textAlignment="center"
+            android:textSize="30sp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/distance"
+            android:textSize="30sp"
+            android:textAlignment="center"
+            />
+    </LinearLayout>
 </FrameLayout>

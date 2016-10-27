@@ -1,7 +1,6 @@
 package ch.epfl.sweng.project.Activities;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,14 +20,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import java.util.Stack;
 
 import ch.epfl.sweng.project.AppRunnest;
-import ch.epfl.sweng.project.Fragments.FirebaseFragment;
+import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
+import ch.epfl.sweng.project.Fragments.DBUploadFragment;
+
 import ch.epfl.sweng.project.Fragments.NewRun.RunningMapFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
@@ -39,10 +39,10 @@ public class SideBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         ProfileFragment.ProfileFragmentInteractionListener,
         RunningMapFragment.RunningMapFragmentInteractionListener,
-        FirebaseFragment.FireBaseFragmentInteractionListener,
+        DBDownloadFragment.DBDownloadFragmentInteractionListener,
+        DBUploadFragment.DBUploadFragmentInteractionListener,
         RunHistoryFragment.onRunHistoryInteractionListener,
-        DisplayRunFragment.OnDisplayRunInteractionListener
-{
+        DisplayRunFragment.OnDisplayRunInteractionListener {
 
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
 
@@ -60,7 +60,7 @@ public class SideBarActivity extends AppCompatActivity
 
     private Boolean isRunning = false;
 
-    Toolbar toolbar;
+    private Toolbar toolbar;
 
 
     @Override
@@ -96,7 +96,7 @@ public class SideBarActivity extends AppCompatActivity
         });
 
 
-        GoogleSignInAccount account = ((AppRunnest)getApplicationContext()).getUser();
+        GoogleSignInAccount account = ((AppRunnest)getApplicationContext()).getGoogleUser();
         h1.setText(account.getDisplayName());
         h2.setText(account.getEmail());
 
@@ -104,10 +104,24 @@ public class SideBarActivity extends AppCompatActivity
         fragmentManager = getSupportFragmentManager();
         mCurrentFragment = fragmentManager.findFragmentById(R.id.fragment_container);
 
+
+
+        if(mCurrentFragment == null){
+            mCurrentFragment = new DBDownloadFragment();
+            fragmentManager.beginTransaction().add(R.id.fragment_container, mCurrentFragment).commit();
+        }
+
+
+
+
+//TODO: FIX
+/*
         profileItem = navigationView.getMenu().getItem(0);
         profileItem.setChecked(true);
         fragmentStack.push(profileItem);
         onNavigationItemSelected(profileItem);
+
+*/
     }
 
     @Override
@@ -183,28 +197,34 @@ public class SideBarActivity extends AppCompatActivity
 
         if (id == R.id.nav_profile) {
             toolbar.setTitle("Profile");
-            mCurrentFragment = new ProfileFragment();
+            launchFragment(new ProfileFragment());
         }  else if (id == R.id.nav_new_run) {
             toolbar.setTitle("New Run");
             fab.hide();
-            mCurrentFragment = new RunningMapFragment();
+            launchFragment(new RunningMapFragment());
         } else if (id == R.id.nav_run_history) {
             toolbar.setTitle("Run History");
-            mCurrentFragment = new RunHistoryFragment();
+            launchFragment(new RunHistoryFragment());
         } else if (id == R.id.nav_firebase) {
-            toolbar.setTitle("Firebase");
-            mCurrentFragment = new FirebaseFragment();
+            //TODO: Codice di Pablo per messaggi HERE
         } else if (id == R.id.nav_logout) {
             fragmentStack.pop();
             dialogLogout();
         }
 
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    //TODO:comment
+    private void launchFragment(Fragment toLaunch){
+        mCurrentFragment = toLaunch;
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
+    }
+
+
 
     /**
      * Handle request permissions result. Update what needed and give a feedback to the user.
@@ -241,7 +261,6 @@ public class SideBarActivity extends AppCompatActivity
 
     }
 
-
     @Override
     public void onRunningMapFragmentInteraction(Run run) {
 
@@ -264,7 +283,13 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onFirebaseFragmentInteraction(Uri uri) {
+    public void onDBDownloadFragmentInteraction() {
+        mCurrentFragment = new ProfileFragment();
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
+    }
+
+    @Override
+    public void onDBUploadFragmentInteraction(Uri uri) {
 
     }
 
@@ -274,10 +299,7 @@ public class SideBarActivity extends AppCompatActivity
                 .setMessage("Are you sure you want to logout?")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getBaseContext(), "Logout successful", Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(getBaseContext(), LoginActivity.class);
-                        intent.putExtra("Source", "logout_pressed");
-                        startActivity(intent);
+                        launchFragment(new DBUploadFragment());
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

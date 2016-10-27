@@ -1,5 +1,6 @@
 package ch.epfl.sweng.project.Model;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.google.firebase.database.DatabaseReference;
@@ -14,11 +15,14 @@ public class FirebaseHelper {
 
     // Remote database instance
     private DatabaseReference databaseReference = null;
+    private Context mCallerContext = null;
 
     /**
      * Constructor that initializes the database instance
      */
-    public FirebaseHelper() {
+    public FirebaseHelper(Context callerContext) {
+
+        mCallerContext = callerContext;
         databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 
@@ -54,29 +58,29 @@ public class FirebaseHelper {
     }
 
     /**
-     * Add an <code>Effort</code> to a specified user. <code>Effort</code> names must be unique for a user, otherwise
-     * this method updates the old effort. If the operation succeeds, the name, total distance and duration of the
-     * <code>Effort</code> are stored in the remote database
+     * Add an <code>Run</code> to a specified user. <code>Run</code> names must be unique for a user, otherwise
+     * this method updates the old run. If the operation succeeds, the name, total distance and duration of the
+     * <code>Run</code> are stored in the remote database
      *
-     * @param id        user to which to add the <code>Effort</code>, a id <code>String</code>
-     * @param effort    <code>Effort</code> to add to the database
+     * @param id        user to which to add the <code>Run</code>, a id <code>String</code>
+     * @param run    <code>Run</code> to add to the database
      * @throws IllegalArgumentException     if arguments are <code>null</code> or empty
      */
-    public void addOrUpdateEffort(String id, Effort effort) throws IllegalArgumentException {
+    public void addOrUpdateEffort(String id, Run run) throws IllegalArgumentException {
 
         //Check validity of arguments
-        if(id == null || effort == null) {
-            throw new IllegalArgumentException("Error: invalid argument, id and effort have to be non-null");
+        if(id == null || run == null) {
+            throw new IllegalArgumentException("Error: invalid argument, id and run have to be non-null");
         }
         if(id.isEmpty()) {
             throw new IllegalArgumentException("Error: invalid argument, id  must be not empty");
         }
 
-        Track track = effort.getTrack();
+        Track track = run.getTrack();
         databaseReference.child("users").child(id).child("efforts")
-                .child(effort.getName()).child("distance").setValue(track.getDistance());
+                .child(run.getName()).child("distance").setValue(track.getDistance());
         databaseReference.child("users").child(id).child("efforts")
-                .child(effort.getName()).child("duration").setValue(track.getDuration());
+                .child(run.getName()).child("duration").setValue(run.getDuration());
     }
 
 }

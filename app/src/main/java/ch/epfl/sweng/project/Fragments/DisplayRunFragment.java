@@ -78,8 +78,8 @@ public class DisplayRunFragment extends Fragment {
             // Duration Row
             TableRow thirdRow = new TableRow(this.getContext());
             createRowElement(thirdRow, "Duration :");
-            long minutes = track.getDuration() / 60;
-            long seconds = track.getDuration() % 60;
+            long minutes = mRunToBeDisplayed.getDuration() / 60;
+            long seconds = mRunToBeDisplayed.getDuration() % 60;
             createRowElement(thirdRow, minutes + "' " + seconds + "''");
             table.addView(thirdRow);
 
