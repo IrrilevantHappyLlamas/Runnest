@@ -62,7 +62,7 @@ public class Message {
             throws IllegalArgumentException
     {
         this(from, to, type, message);
-        if (time == null) {
+        if (sentAt == null) {
             throw new IllegalArgumentException("Invalid argument: parameters can't be null nor empty");
         }
 
@@ -107,9 +107,19 @@ public class Message {
 
     /**
      * Getter for the time
+     *
      * @return the time the message was sent
      */
     public Date getTime() {
         return time;
+    }
+
+    /**
+     * Computes a message unique id
+     *
+     * @return the message's unique id
+     */
+    public String getUid() {
+        return from.hashCode() + "_" + time.hashCode();
     }
 }

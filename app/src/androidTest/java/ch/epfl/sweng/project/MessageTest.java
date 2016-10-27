@@ -74,5 +74,8 @@ public class MessageTest {
         Assert.assertTrue(type.equals(testMessage.getType()));
         Assert.assertTrue(message.equals(testMessage.getMessage()));
         Assert.assertTrue(time.equals(testMessage.getTime()));
+
+        String expectedId = from.hashCode() + "_" + time.hashCode();
+        Assert.assertTrue(expectedId.equals(testMessage.getUid()));
     }
 }
