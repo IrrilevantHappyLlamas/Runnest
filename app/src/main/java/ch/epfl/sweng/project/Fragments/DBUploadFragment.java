@@ -73,25 +73,9 @@ public class DBUploadFragment extends Fragment implements
      * Ask the user for confirmation and then bring them back to the login screen. Sign out from Firebase.
      */
     private void logout() {
-        new AlertDialog.Builder(getActivity())
-                .setTitle("Logout")
-                .setMessage("Are you sure you want to logout?")
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getContext(), "Logout successful", Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(getContext(), LoginActivity.class);
-                        intent.putExtra("Source", "logout_pressed");
-                        startActivity(intent);
-                    }
-                })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // do nothing
-                    }
-                })
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
-
+        Intent intent = new Intent(getContext(), LoginActivity.class);
+        intent.putExtra("Source", "logout_pressed");
+        startActivity(intent);
         FirebaseAuth.getInstance().signOut();
     }
 

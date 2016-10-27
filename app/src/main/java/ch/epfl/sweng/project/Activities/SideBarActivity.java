@@ -104,24 +104,14 @@ public class SideBarActivity extends AppCompatActivity
         fragmentManager = getSupportFragmentManager();
         mCurrentFragment = fragmentManager.findFragmentById(R.id.fragment_container);
 
-
-
+        profileItem = navigationView.getMenu().getItem(0);
+        profileItem.setChecked(true);
+        fragmentStack.push(profileItem);
+        
         if(mCurrentFragment == null){
             mCurrentFragment = new DBDownloadFragment();
             fragmentManager.beginTransaction().add(R.id.fragment_container, mCurrentFragment).commit();
         }
-
-
-
-
-//TODO: FIX
-/*
-        profileItem = navigationView.getMenu().getItem(0);
-        profileItem.setChecked(true);
-        fragmentStack.push(profileItem);
-        onNavigationItemSelected(profileItem);
-
-*/
     }
 
     @Override
