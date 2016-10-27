@@ -60,12 +60,14 @@ public class SideBarActivity extends AppCompatActivity
 
     private Boolean isRunning = false;
 
+    Toolbar toolbar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_side_bar);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -106,8 +108,6 @@ public class SideBarActivity extends AppCompatActivity
         profileItem.setChecked(true);
         fragmentStack.push(profileItem);
         onNavigationItemSelected(profileItem);
-
-
     }
 
     @Override
@@ -182,13 +182,17 @@ public class SideBarActivity extends AppCompatActivity
         fragmentManager.beginTransaction().remove(mCurrentFragment);
 
         if (id == R.id.nav_profile) {
+            toolbar.setTitle("Profile");
             mCurrentFragment = new ProfileFragment();
         }  else if (id == R.id.nav_new_run) {
+            toolbar.setTitle("New Run");
             fab.hide();
             mCurrentFragment = new RunningMapFragment();
         } else if (id == R.id.nav_run_history) {
+            toolbar.setTitle("Run History");
             mCurrentFragment = new RunHistoryFragment();
         } else if (id == R.id.nav_firebase) {
+            toolbar.setTitle("Firebase");
             mCurrentFragment = new FirebaseFragment();
         } else if (id == R.id.nav_logout) {
             fragmentStack.pop();

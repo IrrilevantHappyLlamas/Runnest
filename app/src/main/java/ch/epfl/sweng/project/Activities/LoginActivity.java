@@ -161,7 +161,7 @@ public final class LoginActivity extends AppCompatActivity
         switch (v.getId()) {
             case R.id.sign_in_button:
                 Log.d(TAG, "clickSignInBtn:");
-                signOut();
+                //signOut();
                 signIn();
                 break;
         }
