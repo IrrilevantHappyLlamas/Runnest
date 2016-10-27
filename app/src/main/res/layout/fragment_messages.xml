@@ -15,7 +15,8 @@
         android:layout_alignParentRight="true"
         android:layout_marginTop="10dp"
         android:layout_marginRight="2dp"
-        android:hint="Write a message" />
+        android:hint="Write a message"
+        tools:ignore="HardcodedText,ObsoleteLayoutParam,RtlHardcoded" />
 
     <Button
         android:text="Send"
@@ -24,7 +25,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="60dp"
-        android:id="@+id/sendMessageButton" />
+        android:id="@+id/sendMessageButton"
+        tools:ignore="HardcodedText,ObsoleteLayoutParam" />
 
     <Button
         android:text="Fetch messages"
@@ -33,7 +35,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="160dp"
-        android:id="@+id/fetchMessagesButton" />
+        android:id="@+id/fetchMessagesButton"
+        tools:ignore="HardcodedText,ObsoleteLayoutParam" />
 
     <TextView
         android:text="TextView"
@@ -42,6 +45,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="220dp"
-        android:id="@+id/retrievedMessagesTextView" />
+        android:id="@+id/retrievedMessagesTextView"
+        tools:ignore="HardcodedText,ObsoleteLayoutParam" />
 
 </FrameLayout>
