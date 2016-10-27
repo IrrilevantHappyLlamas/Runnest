@@ -28,6 +28,12 @@ import android.widget.Toast;
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
@@ -48,16 +54,15 @@ public class SideBarActivity extends AppCompatActivity
         FirebaseFragment.FireBaseFragmentInteractionListener,
         RunHistoryFragment.onRunHistoryInteractionListener,
         DisplayRunFragment.OnDisplayRunInteractionListener,
-        DisplayUserFragment.OnDisplayUserFragmentInteractionListener,
-        SearchView.OnQueryTextListener
+        DisplayUserFragment.OnDisplayUserFragmentInteractionListener
 {
 
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
 
     private Fragment mCurrentFragment = null;
     private FragmentManager fragmentManager = null;
+    private SearchView mSearchView = null;
     private FirebaseHelper mFirebaseHelper = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +70,8 @@ public class SideBarActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //initialize database
+
+        // Initialize database
         mFirebaseHelper = new FirebaseHelper();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -122,15 +128,56 @@ public class SideBarActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.side_bar, menu);
 
         // Associate searchable configuration with the SearchView
-        SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
-                (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getComponentName()));
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        mSearchView = (SearchView) menu.findItem(R.id.search).getActionView();
 
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+
+            @Override
+            public boolean onQueryTextSubmit(final String query){
+
+                mFirebaseHelper.getDatabase().child("users").child(query).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()) {
+
+                            switchFragment(query, dataSnapshot.child("name").getValue().toString());
+                        }
+                        else{
+
+                            switchFragment(null, null);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+
+                mSearchView.onActionViewCollapsed();
+                mSearchView.clearFocus();
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText){
+
+                return true;
+            }
+
+
+        });
 
         return true;
+    }
+
+    public void switchFragment(String query, String result){
+
+        mCurrentFragment = DisplayUserFragment.newInstance(query, result);
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
     }
 
     @Override
@@ -259,27 +306,6 @@ public class SideBarActivity extends AppCompatActivity
 
     }
 
-    @Override
-    public boolean onQueryTextChange(String newText){
-
-        return true;
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query){
-
-        String result = mFirebaseHelper.searchForUser(query);
-
-        if(result == null){
-
-
-        }else{
-
-            mCurrentFragment = DisplayUserFragment.newInstance(query, result);
-            fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
-        }
-        return true;
-    }
 
     @Override
     public void onDisplayUserFragmentInteraction(){

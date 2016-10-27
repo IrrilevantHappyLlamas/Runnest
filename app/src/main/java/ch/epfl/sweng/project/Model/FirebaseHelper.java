@@ -8,6 +8,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * Helper class that provides methods to update and interact with the remote firebase database instance
  */
@@ -57,26 +59,6 @@ public class FirebaseHelper {
         databaseReference.child("users").child(id).child("name").setValue(name);
     }
 
-    public String searchForUser(String id){
-
-        mSearchResult = null;
-
-        databaseReference.child("users").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()) {
-
-                    mSearchResult = dataSnapshot.child("name").getValue().toString();
-            }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-
-        return mSearchResult;
-    }
     /**
      * Add an <code>Run</code> to a specified user. <code>Run</code> names must be unique for a user, otherwise
      * this method updates the old run. If the operation succeeds, the name, total distance and duration of the

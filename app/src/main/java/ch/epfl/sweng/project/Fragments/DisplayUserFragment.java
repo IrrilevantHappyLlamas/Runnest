@@ -65,36 +65,45 @@ public class DisplayUserFragment extends Fragment {
 
             View view = inflater.inflate(R.layout.fragment_display_user, container, false);
 
+             TableLayout table = (TableLayout) view.findViewById(R.id.table);
 
             if (mId != null && mName != null) {
 
-                TableLayout table = (TableLayout) view.findViewById(R.id.table);
+
 
                 // Email Row
                 TableRow firstRow = new TableRow(this.getContext());
-                createRowElement(firstRow, "Email :");
+                createRowElement(firstRow, "Name :");
                 createRowElement(firstRow, mId);
                 table.addView(firstRow);
 
                 // Name Row
                 TableRow secondRow = new TableRow(this.getContext());
-                createRowElement(secondRow, "Name :");
+                createRowElement(secondRow, "Email :");
                 createRowElement(secondRow, mName);
                 table.addView(secondRow);
 
-                Button button = (Button) view.findViewById(R.id.button);
+            }
+        else{
 
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
 
-                        if (mListener != null) {
-                            mListener.onDisplayUserFragmentInteraction();
-                        }
-                    }
-                });
+                // No User found Row
+                TableRow firstRow = new TableRow(this.getContext());
+                createRowElement(firstRow, "No user found.");
+                table.addView(firstRow);
             }
 
+        Button button = (Button) view.findViewById(R.id.button);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (mListener != null) {
+                    mListener.onDisplayUserFragmentInteraction();
+                }
+            }
+        });
             return view;
         }
 

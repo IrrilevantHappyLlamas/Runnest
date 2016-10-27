@@ -29,7 +29,7 @@ public class HomeFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     private FirebaseHelper mFirebaseHelper = null;
-
+    private FirebaseUser mUser = null;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -73,7 +73,8 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Initialize database
         mFirebaseHelper = new FirebaseHelper();
-
+        // get firebase current user
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
         addCurrentUserToFirebaseDatabase();
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false);
@@ -98,9 +99,9 @@ public class HomeFragment extends Fragment {
 
     public void addCurrentUserToFirebaseDatabase() {
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        mFirebaseHelper.addOrUpdateUser(user.getEmail(), user.getDisplayName());
+           if(mUser != null) {
+               mFirebaseHelper.addOrUpdateUser(mUser.getDisplayName(), mUser.getEmail());
+           }
     }
 
     /**
