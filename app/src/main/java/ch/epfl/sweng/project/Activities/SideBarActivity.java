@@ -111,10 +111,14 @@ public class SideBarActivity extends AppCompatActivity
             }
         });
 
-
         GoogleSignInAccount account = ((AppRunnest)getApplicationContext()).getGoogleUser();
-        h1.setText(account.getDisplayName());
-        h2.setText(account.getEmail());
+        if (account != null) {
+            h1.setText(account.getDisplayName());
+            h2.setText(account.getEmail());
+        } else {
+            h1.setText("Not logged in");
+            h2.setText("Not logged in");
+        }
 
         //Initializing the fragment
         fragmentManager = getSupportFragmentManager();
