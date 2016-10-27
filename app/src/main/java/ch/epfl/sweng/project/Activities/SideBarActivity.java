@@ -1,5 +1,7 @@
 package ch.epfl.sweng.project.Activities;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -14,6 +16,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,17 +25,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-
-import java.util.Stack;
-
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import ch.epfl.sweng.project.AppRunnest;
+import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
+import java.util.Stack;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 import ch.epfl.sweng.project.Fragments.DBUploadFragment;
-
 import ch.epfl.sweng.project.Fragments.NewRun.RunningMapFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
+import ch.epfl.sweng.project.Model.FirebaseHelper;
 import ch.epfl.sweng.project.Model.Run;
 
 public class SideBarActivity extends AppCompatActivity
@@ -42,7 +50,9 @@ public class SideBarActivity extends AppCompatActivity
         DBDownloadFragment.DBDownloadFragmentInteractionListener,
         DBUploadFragment.DBUploadFragmentInteractionListener,
         RunHistoryFragment.onRunHistoryInteractionListener,
-        DisplayRunFragment.OnDisplayRunInteractionListener {
+        DisplayRunFragment.OnDisplayRunInteractionListener,
+        DisplayUserFragment.OnDisplayUserFragmentInteractionListener
+{
 
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
 
@@ -53,6 +63,8 @@ public class SideBarActivity extends AppCompatActivity
 
     private Fragment mCurrentFragment = null;
     private FragmentManager fragmentManager = null;
+    private SearchView mSearchView = null;
+    private FirebaseHelper mFirebaseHelper = null;
 
     private FloatingActionButton fab;
 
@@ -63,12 +75,16 @@ public class SideBarActivity extends AppCompatActivity
     private Toolbar toolbar;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_side_bar);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Initialize database
+        mFirebaseHelper = new FirebaseHelper();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -136,7 +152,55 @@ public class SideBarActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.side_bar, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        mSearchView = (SearchView) menu.findItem(R.id.search).getActionView();
+
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+
+            @Override
+            public boolean onQueryTextSubmit(final String query){
+
+                mFirebaseHelper.getDatabase().child("users").child(query).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()) {
+
+                            switchFragment(query, dataSnapshot.child("name").getValue().toString());
+                        }
+                        else{
+
+                            switchFragment(null, null);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText){
+
+                return true;
+            }
+
+
+        });
+
         return true;
+    }
+
+    public void switchFragment(String query, String result){
+
+        mCurrentFragment = DisplayUserFragment.newInstance(query, result);
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
     }
 
     @Override
@@ -183,6 +247,7 @@ public class SideBarActivity extends AppCompatActivity
             fragmentStack.push(item);
         }
 
+        //TODO: missing commit?
         fragmentManager.beginTransaction().remove(mCurrentFragment);
 
         if (id == R.id.nav_profile) {
@@ -328,4 +393,9 @@ public class SideBarActivity extends AppCompatActivity
         isRunning = running;
     }
 
+
+
+    @Override
+    public void onDisplayUserFragmentInteraction(){
+    }
 }

@@ -29,4 +29,6 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="run_history">Run History</string>
+    <string name="search_title">search_title</string>
+    <string name="go_to_home_page">GO TO HOME PAGE</string>
 </resources>
