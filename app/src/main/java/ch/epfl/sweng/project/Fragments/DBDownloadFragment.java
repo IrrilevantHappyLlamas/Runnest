@@ -95,6 +95,7 @@ public class DBDownloadFragment extends Fragment implements
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
+        //FIXME: hardcoded user for test
         if (currentUser == null) {
             return usersRef.child("6VauzC82b6YoNfRSo2ft4WFqoCu1");
         } else {
