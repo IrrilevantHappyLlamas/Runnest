@@ -97,7 +97,9 @@ public class FirebaseHelperTest {
                     @Override
                     public void handleRetrievedMessages(List<Message> messages2) {
                         for (Message m : messages2) {
-                            Assert.assertFalse(m.getUid().equals(messageUid));
+                            if (m.getUid().equals(messageUid)) {
+                                Assert.assertTrue(false);
+                            }
                         }
                     }
                 });
