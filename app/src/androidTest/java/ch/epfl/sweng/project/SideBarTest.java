@@ -152,4 +152,37 @@ public class SideBarTest {
         DisplayUserFragment.newInstance("testId", "testName");
     }
 
+    @Test
+    public void backButtonWorks() {
+
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+
+        SystemClock.sleep(1000);
+
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run_history));
+
+        SystemClock.sleep(1000);
+
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+
+        SystemClock.sleep(1000);
+
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_profile));
+
+        SystemClock.sleep(1000);
+
+        Espresso.pressBack();
+
+        SystemClock.sleep(1000);
+
+        onView(withId(R.id.list)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void backButtonDoesNothingIfStackEmpty() {
+        SystemClock.sleep(1000);
+
+        Espresso.pressBack();
+    }
+
 }
