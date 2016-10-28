@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
 import ch.epfl.sweng.project.Activities.SideBarActivity;
+import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
 import ch.epfl.sweng.project.Model.Run;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -144,6 +145,11 @@ public class SideBarTest {
         listenerTest.onDisplayUserFragmentInteraction();
         listenerTest.onProfileFragmentInteraction();
         listenerTest.onDBUploadFragmentInteraction();
+    }
+
+    @Test
+    public void displayUserFragmentCanBeInstanced() {
+        DisplayUserFragment.newInstance("testId", "testName");
     }
 
 }
