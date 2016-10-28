@@ -44,8 +44,8 @@ public class Profile {
                 photoUrl = "";
             }
         }
-
-        runs = new ArrayList<Run>();
+        totalDistance = 0;
+        runs = new ArrayList<>();
     }
 
     public String getId() {
