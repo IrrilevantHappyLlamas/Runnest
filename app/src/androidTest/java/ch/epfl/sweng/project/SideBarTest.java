@@ -121,12 +121,7 @@ public class SideBarTest {
 
         onView(withId(R.id.nav_view))
                 .perform(NavigationViewActions.navigateTo(R.id.nav_new_run));
-
-        SystemClock.sleep(1000);
-
-        onView(withId(R.id.start_run))
-                .check(matches(isDisplayed()));
-
+        
         SystemClock.sleep(1000);
 
         onView(withId(R.id.start_run))
