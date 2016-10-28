@@ -17,6 +17,7 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -64,9 +65,18 @@ public class DBUploadFragment extends Fragment implements
      * @return  the Firebase storage reference of the user's runs database
      */
     private StorageReference getUserRef() {
-        return FirebaseStorage.getInstance()
+
+        StorageReference usersRef =  FirebaseStorage.getInstance()
                 .getReferenceFromUrl("gs://runnest-146309.appspot.com")
-                .child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                .child("users");
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (currentUser == null) {
+            return usersRef.child("6VauzC82b6YoNfRSo2ft4WFqoCu1");
+        } else {
+            return usersRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        }
     }
 
     /**
