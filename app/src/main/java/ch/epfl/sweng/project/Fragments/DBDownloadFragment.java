@@ -14,7 +14,6 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -27,7 +26,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import ch.epfl.sweng.project.Database.DBHelper;
-import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 
 /**
  * Fragment that manages download of remote runs.db file the user has on Firebase storage and substitution into
@@ -45,9 +43,6 @@ public class DBDownloadFragment extends Fragment implements
     private DBHelper dbHelper = null;
     private File downloadedDB = null;
 
-    private FirebaseHelper mFirebaseHelper = null;
-    private FirebaseUser mUser = null;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -55,12 +50,6 @@ public class DBDownloadFragment extends Fragment implements
         View view =  inflater.inflate(R.layout.fragment_dbdownload, container, false);
 
         dbHelper = new DBHelper(getContext());
-
-        // Initialize database
-        mFirebaseHelper = new FirebaseHelper();
-        // get firebase current user
-        mUser = FirebaseAuth.getInstance().getCurrentUser();
-        addCurrentUserToFirebaseDatabase();
 
         // Try to download remote user database
         try {
@@ -88,19 +77,9 @@ public class DBDownloadFragment extends Fragment implements
      * @return  the Firebase storage reference of the user's runs database
      */
     private StorageReference getUserRef() {
-
-        StorageReference usersRef =  FirebaseStorage.getInstance()
+        return FirebaseStorage.getInstance()
                 .getReferenceFromUrl("gs://runnest-146309.appspot.com")
-                .child("users");
-
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        //FIXME: hardcoded user for test
-        if (currentUser == null) {
-            return usersRef.child("6VauzC82b6YoNfRSo2ft4WFqoCu1");
-        } else {
-            return usersRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        }
+                .child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
     }
 
     @Override
@@ -156,16 +135,6 @@ public class DBDownloadFragment extends Fragment implements
             out.close();
         } catch (Exception e) {
            error(e);
-        }
-    }
-
-    /**
-     * Add user to firebase database.
-     */
-    public void addCurrentUserToFirebaseDatabase() {
-
-        if(mUser != null) {
-            mFirebaseHelper.addOrUpdateUser(mUser.getDisplayName(), mUser.getEmail());
         }
     }
 
