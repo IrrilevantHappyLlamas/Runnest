@@ -262,7 +262,7 @@ public class SideBarActivity extends AppCompatActivity
         } else if (id == R.id.nav_run_history) {
             toolbar.setTitle("Run History");
             launchFragment(new RunHistoryFragment());
-        } else if (id == R.id.nav_firebase) {
+        } else if (id == R.id.nav_messages) {
             toolbar.setTitle("Messages");
             launchFragment(new MessagesFragment());
         } else if (id == R.id.nav_logout) {
@@ -395,8 +395,6 @@ public class SideBarActivity extends AppCompatActivity
     public void setRunning(Boolean running) {
         isRunning = running;
     }
-
-
 
     @Override
     public void onDisplayUserFragmentInteraction(){

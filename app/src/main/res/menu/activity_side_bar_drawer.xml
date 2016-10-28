@@ -15,9 +15,9 @@
             android:icon="@drawable/history_icon"
             android:title="@string/run_history" />
         <item
-            android:id="@+id/nav_firebase"
-            android:icon="@drawable/firebase_icon"
-            android:title="@string/firebase" />
+            android:id="@+id/nav_messages"
+            android:icon="@drawable/messages_icon"
+            android:title="@string/messages" />
     </group>
 
     <item android:title="@string/runnest">

@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -25,6 +26,9 @@ public class MessagesFragment extends Fragment implements View.OnClickListener {
     private EditText messageEditText = null;
     private TextView fetchedMessages = null;
 
+    private Button sendButton = null;
+    private Button fetchButton = null;
+
     private MessagesFragmentInteractionListener mListener;
 
 
@@ -37,6 +41,11 @@ public class MessagesFragment extends Fragment implements View.OnClickListener {
         mFirebaseHelper = new FirebaseHelper();
         messageEditText = (EditText) view.findViewById(R.id.messageEditText);
         fetchedMessages = (TextView) view.findViewById(R.id.retrievedMessagesTextView);
+        sendButton = (Button) view.findViewById(R.id.sendMessageButton);
+        fetchButton = (Button) view.findViewById(R.id.fetchMessagesButton);
+
+        sendButton.setOnClickListener(this);
+        fetchButton.setOnClickListener(this);
 
         fetchMessages();
 
