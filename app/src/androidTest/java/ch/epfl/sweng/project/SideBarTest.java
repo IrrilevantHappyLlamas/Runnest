@@ -118,43 +118,6 @@ public class SideBarTest {
     }
 
     @Test
-    public void startRun(){
-        SystemClock.sleep(1000);
-
-        onView(withId(R.id.drawer_layout))
-                .perform(DrawerActions.open());
-
-        SystemClock.sleep(1000);
-
-        onView(withId(R.id.nav_view))
-                .perform(NavigationViewActions.navigateTo(R.id.nav_new_run));
-
-        onView(withId(R.id.start_run))
-                .check(matches(isDisplayed()));
-
-        onView(withId(R.id.start_run))
-                .perform(click());
-
-        SystemClock.sleep(1000);
-
-        onView(withId(R.id.stop_run))
-                .check(matches(isDisplayed()));
-
-        onView(withId(R.id.stop_run))
-                .perform(click());
-
-        SystemClock.sleep(1000);
-
-        onView(withId(R.id.go_to_run_history))
-                .perform(click());
-
-        SystemClock.sleep(1000);
-
-        onView(withId(R.id.list)).check(matches(isDisplayed()));
-
-    }
-
-    @Test
     public void backButtonWorks() {
 
         onView(withId(R.id.drawer_layout))
