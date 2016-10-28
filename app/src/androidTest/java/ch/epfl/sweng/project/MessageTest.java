@@ -42,17 +42,17 @@ public class MessageTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void defaultConstructorThrowsExceptionWithIllegalMessage() {
-        Message testMessage = new Message("me", "you", null, "Hello, world!");
+        Message testMessage = new Message("me", "you", Message.MessageType.CHALLENGE_REQUEST, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void defaultConstructorThrowsExceptionWithEmptyMessage() {
-        Message testMessage = new Message("me", "you", Message.MessageType.TEXT, "");
+        Message testMessage = new Message("me", "you", Message.MessageType.CHALLENGE_RESPONSE, "");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void constructorWithTimeThrowsExceptionWithNullTime() {
-        Message testMessage = new Message("me", "you", Message.MessageType.TEXT, "Hello, world!", null);
+        Message testMessage = new Message("me", "you", Message.MessageType.MY_IP_IS, "Hello, world!", null);
     }
 
     @Test(expected = IllegalArgumentException.class)

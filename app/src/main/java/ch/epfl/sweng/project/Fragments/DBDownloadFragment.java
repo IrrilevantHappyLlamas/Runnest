@@ -27,7 +27,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import ch.epfl.sweng.project.Database.DBHelper;
-import ch.epfl.sweng.project.Model.FirebaseHelper;
+import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 
 /**
  * Fragment that manages download of remote runs.db file the user has on Firebase storage and substitution into
