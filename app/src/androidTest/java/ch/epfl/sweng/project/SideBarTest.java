@@ -110,21 +110,40 @@ public class SideBarTest {
         SystemClock.sleep(1000);
     }
 
+
     @Test
-    public void startRun(){
-        SystemClock.sleep(1000);
+    public void setRunningWorks() {
 
-        onView(withId(R.id.drawer_layout))
-                .perform(DrawerActions.open());
+        SideBarActivity listenerTest = mActivityRule.getActivity();
 
-        SystemClock.sleep(1000);
-
-        onView(withId(R.id.nav_view))
-                .perform(NavigationViewActions.navigateTo(R.id.nav_new_run));
-        
-        SystemClock.sleep(1000);
-
-        onView(withId(R.id.start_run))
-                .perform(click());
+        listenerTest.setRunning(true);
     }
+
+    @Test
+    public void nonEmptyOnFragmentListenerWork() {
+
+        SideBarActivity listenerTest = mActivityRule.getActivity();
+
+        Run listenerRun= new Run();
+        listenerRun.start();
+        SystemClock.sleep(1000);
+        listenerRun.update(TrackTest.buildCheckPoint(1, 1));
+        listenerRun.update(TrackTest.buildCheckPoint(1, 2));
+        listenerRun.stop();
+
+        listenerTest.onRunHistoryInteraction(listenerRun);
+        listenerTest.onRunningMapFragmentInteraction(listenerRun);
+    }
+
+    @Test
+    public void uselessOnFragmentListenersWork() {
+
+        SideBarActivity listenerTest = mActivityRule.getActivity();
+
+        listenerTest.onMessagesFragmentInteraction();
+        listenerTest.onDisplayUserFragmentInteraction();
+        listenerTest.onProfileFragmentInteraction();
+        listenerTest.onDBUploadFragmentInteraction();
+    }
+
 }
