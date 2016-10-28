@@ -46,13 +46,6 @@ public class SideBarTest {
     }
 
     @Test
-    public void backButtonDoesNothingIfStackEmpty() {
-        SystemClock.sleep(1000);
-
-        Espresso.pressBack();
-    }
-
-    @Test
     public void aDrawerLayout() {
         onView(withId(R.id.drawer_layout))
                 .perform(DrawerActions.open());
@@ -116,79 +109,4 @@ public class SideBarTest {
 
         SystemClock.sleep(1000);
     }
-
-    @Test
-    public void backButtonWorks() {
-
-        onView(withId(R.id.drawer_layout))
-                .perform(DrawerActions.open());
-
-        SystemClock.sleep(1000);
-
-        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run_history));
-
-        onView(withId(R.id.drawer_layout))
-                .perform(DrawerActions.open());
-
-        SystemClock.sleep(1000);
-
-        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_new_run));
-
-        SystemClock.sleep(1000);
-
-        Espresso.pressBack();
-
-        SystemClock.sleep(1000);
-
-        onView(withId(R.id.list)).check(matches(isDisplayed()));
-    }
-
-
-    @Test
-    public void uselessOnFragmentListenersWork() {
-
-        SideBarActivity listenerTest = mActivityRule.getActivity();
-
-        listenerTest.onMessagesFragmentInteraction();
-        listenerTest.onDisplayUserFragmentInteraction();
-        listenerTest.onProfileFragmentInteraction();
-        listenerTest.onDBUploadFragmentInteraction();
-    }
-
-    @Test
-    public void emptyOnFragmentListenersWork() {
-
-        //TODO: capire esattamente a cosa serve
-        Looper.prepare();
-
-        SideBarActivity listenerTest = mActivityRule.getActivity();
-
-        listenerTest.onDisplayRunInteraction();
-        listenerTest.onDBDownloadFragmentInteraction();
-    }
-
-    @Test
-    public void nonEmptyOnFragmentListenerWork() {
-
-        SideBarActivity listenerTest = mActivityRule.getActivity();
-
-        Run listenerRun= new Run();
-        listenerRun.start();
-        SystemClock.sleep(1000);
-        listenerRun.update(TrackTest.buildCheckPoint(1, 1));
-        listenerRun.update(TrackTest.buildCheckPoint(1, 2));
-        listenerRun.stop();
-
-        listenerTest.onRunHistoryInteraction(listenerRun);
-        listenerTest.onRunningMapFragmentInteraction(listenerRun);
-    }
-
-    @Test
-    public void setRunningWorks() {
-
-        SideBarActivity listenerTest = mActivityRule.getActivity();
-
-        listenerTest.setRunning(true);
-    }
-
 }
