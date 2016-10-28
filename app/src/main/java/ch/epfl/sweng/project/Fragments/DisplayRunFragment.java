@@ -83,7 +83,7 @@ public class DisplayRunFragment extends Fragment {
             createRowElement(thirdRow, minutes + "' " + seconds + "''");
             table.addView(thirdRow);
 
-            Button button = (Button) view.findViewById(R.id.button);
+            Button button = (Button) view.findViewById(R.id.go_to_run_history);
 
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
