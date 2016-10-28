@@ -79,6 +79,7 @@ public class FirebaseHelperTest {
         });
     }
 
+    /*
     @Test
     public void deletingMessageCorrectlyReadsDatabase() {
         final List<Message> msgs = new ArrayList<>();
@@ -100,5 +101,5 @@ public class FirebaseHelperTest {
             }
         });
     }
-
+*/
 }

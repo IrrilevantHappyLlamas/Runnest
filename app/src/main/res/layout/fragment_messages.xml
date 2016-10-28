@@ -4,8 +4,6 @@
     android:layout_height="match_parent"
     tools:context="ch.epfl.sweng.project.Fragments.MessagesFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -39,7 +37,6 @@
         tools:ignore="HardcodedText,ObsoleteLayoutParam" />
 
     <TextView
-        android:text="TextView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
