@@ -112,7 +112,7 @@ public class SideBarTest {
 
 
 
-    @Test
+    /*@Test
     public void startRun(){
         SystemClock.sleep(1500);
 
@@ -151,6 +151,6 @@ public class SideBarTest {
         SystemClock.sleep(1500);
 
     }
-
+*/
 
 }
