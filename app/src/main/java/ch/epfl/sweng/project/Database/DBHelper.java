@@ -126,10 +126,12 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param id the id of the effort to delete
      * @return true if the deletion was succesfull
      */
-    private boolean deleteRun(long id) {
+    /*
+    public boolean deleteRun(long id) {
         //also needs to delete checkpoints
         return db.delete(RUNS_TABLE_NAME, RUNS_COLS[0] + " = " + id, null) > 0;
     }
+    */
 
     /**
      * Retrieves all efforts present in the database.

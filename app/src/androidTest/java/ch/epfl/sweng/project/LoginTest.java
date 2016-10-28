@@ -49,8 +49,6 @@ public class LoginTest {
             LoginActivity.class);
 
 
-
-
    @Test
     public void loginAndLogout() {
        /*

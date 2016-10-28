@@ -1,5 +1,7 @@
 package ch.epfl.sweng.project;
 
+import android.os.SystemClock;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -90,11 +92,15 @@ public class FirebaseHelperTest {
                 final String messageUid = messages1.get(0).getUid();
                 firebaseHelper.delete(messages1.get(0));
 
+                SystemClock.sleep(3000);
+
                 firebaseHelper.fetchMessages("you", new FirebaseHelper.Handler() {
                     @Override
                     public void handleRetrievedMessages(List<Message> messages2) {
                         for (Message m : messages2) {
-                            Assert.assertFalse(m.getUid().equals(messageUid));
+                            if (m.getUid().equals(messageUid)) {
+                                Assert.assertTrue(false);
+                            }
                         }
                     }
                 });

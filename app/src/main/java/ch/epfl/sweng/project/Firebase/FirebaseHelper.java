@@ -111,4 +111,26 @@ public class FirebaseHelper {
         String messageId = message.getUid();
         databaseReference.child(MESSAGES_CHILD).child(message.getTo()).child(messageId).removeValue();
     }
+
+    /**
+     * Add a new user to the firebase remote database. If the user already exists on the database, update his name.
+     *
+     * @param id    the id of the user to add, a <code>String</code>
+     * @param name  name to associate to the user, a <code>String</code>
+     * @throws IllegalArgumentException     if the arguments are <code>null</code> or empty
+     */
+    public void addOrUpdateUser(String id, String name) throws IllegalArgumentException {
+
+        //Check validity of arguments
+        if(id == null || name == null) {
+            throw new IllegalArgumentException("Error: invalid argument," +
+                    " id and name have to be non-null and not empty");
+        }
+        if(id.isEmpty() || name.isEmpty() || name.length() > 100) {
+            throw new IllegalArgumentException("Error: invalid argument, id and name must be non empty and " +
+                    "name length has to be under 100 characters");
+        }
+
+        databaseReference.child("users").child(id).child("name").setValue(name);
+    }
 }

@@ -39,7 +39,6 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
 
         profile = new Profile(((AppRunnest)getActivity().getApplicationContext()).getGoogleUser());
 
-
         ImageView profilePic = (ImageView)view.findViewById(R.id.photoImg);
 
         if (!profile.getPhotoUrl().equals("")) {

@@ -41,7 +41,7 @@ import ch.epfl.sweng.project.Fragments.NewRun.RunningMapFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
-import ch.epfl.sweng.project.Model.FirebaseHelper;
+import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.Run;
 
 public class SideBarActivity extends AppCompatActivity
@@ -113,10 +113,14 @@ public class SideBarActivity extends AppCompatActivity
             }
         });
 
-
         GoogleSignInAccount account = ((AppRunnest)getApplicationContext()).getGoogleUser();
-        h1.setText(account.getDisplayName());
-        h2.setText(account.getEmail());
+        if (account != null) {
+            h1.setText(account.getDisplayName());
+            h2.setText(account.getEmail());
+        } else {
+            h1.setText("Not logged in");
+            h2.setText("Not logged in");
+        }
 
         //Initializing the fragment
         fragmentManager = getSupportFragmentManager();
