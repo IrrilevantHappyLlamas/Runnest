@@ -282,8 +282,10 @@ public class SideBarActivity extends AppCompatActivity
 
     //TODO:comment
     private void launchFragment(Fragment toLaunch){
-        mCurrentFragment = toLaunch;
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
+        if(toLaunch != null) {
+            mCurrentFragment = toLaunch;
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
+        }
     }
 
 
@@ -315,43 +317,6 @@ public class SideBarActivity extends AppCompatActivity
                 break;
 
         }
-
-    }
-
-    @Override
-    public void onProfileFragmentInteraction(Uri uri) {
-
-    }
-
-    @Override
-    public void onRunningMapFragmentInteraction(Run run) {
-
-        mCurrentFragment = DisplayRunFragment.newInstance(run);
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
-    }
-
-    @Override
-    public void onRunHistoryInteraction(Run run) {
-
-        mCurrentFragment = DisplayRunFragment.newInstance(run);
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
-    }
-
-    @Override
-    public void onDisplayRunInteraction() {
-
-        mCurrentFragment = new RunHistoryFragment();
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
-    }
-
-    @Override
-    public void onDBDownloadFragmentInteraction() {
-        mCurrentFragment = new ProfileFragment();
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
-    }
-
-    @Override
-    public void onDBUploadFragmentInteraction(Uri uri) {
 
     }
 
@@ -401,11 +366,39 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
+    public void onProfileFragmentInteraction() {
+    }
+
+    @Override
+    public void onRunningMapFragmentInteraction(Run run) {
+
+        launchFragment(DisplayRunFragment.newInstance(run));
+    }
+
+    @Override
+    public void onRunHistoryInteraction(Run run) {
+        launchFragment(DisplayRunFragment.newInstance(run));
+    }
+
+    @Override
+    public void onDisplayRunInteraction() {
+        launchFragment(new RunHistoryFragment());
+    }
+
+    @Override
+    public void onDBDownloadFragmentInteraction() {
+        launchFragment(new ProfileFragment());
+    }
+
+    @Override
+    public void onDBUploadFragmentInteraction() {
+    }
+
+    @Override
     public void onDisplayUserFragmentInteraction(){
     }
 
     @Override
-    public void onMessagesFragmentInteraction(Uri uri) {
-
+    public void onMessagesFragmentInteraction() {
     }
 }

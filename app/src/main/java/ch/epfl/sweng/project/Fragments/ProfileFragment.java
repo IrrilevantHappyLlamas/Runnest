@@ -81,14 +81,6 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
         profileListener = null;
     }
 
-    /**
-     * Interface for SideBarActivity
-     */
-    public interface ProfileFragmentInteractionListener {
-        void onProfileFragmentInteraction(Uri uri);
-    }
-
-
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
 
@@ -116,6 +108,12 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
         }
     }
 
+    /**
+     * Interface for SideBarActivity
+     */
+    public interface ProfileFragmentInteractionListener {
+        void onProfileFragmentInteraction();
+    }
 }
 
 

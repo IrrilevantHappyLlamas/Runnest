@@ -102,14 +102,6 @@ public class DBUploadFragment extends Fragment implements
 
     }
 
-    /**
-     * Interface for SideBarActivity
-     */
-    public interface DBUploadFragmentInteractionListener {
-        @SuppressWarnings("unused")
-        void onDBUploadFragmentInteraction(Uri uri);
-    }
-
     @SuppressWarnings("ProhibitedExceptionThrown")
     @Override
     public void onAttach(Context context) {
@@ -126,5 +118,13 @@ public class DBUploadFragment extends Fragment implements
     public void onDetach() {
         super.onDetach();
         DBUploadListener = null;
+    }
+
+    /**
+     * Interface for SideBarActivity
+     */
+    public interface DBUploadFragmentInteractionListener {
+        @SuppressWarnings("unused")
+        void onDBUploadFragmentInteraction( );
     }
 }
