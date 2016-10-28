@@ -98,4 +98,12 @@ public class TrackTest {
         List<CheckPoint> checkpoints = testTrack.getCheckpoints();
         Assert.assertEquals(4, checkpoints.size(), 0);
     }
+
+    @Test
+    public void addDoNothingWithNullArgument() {
+        Track addTest = new Track();
+
+        Assert.assertFalse(addTest.add(null));
+        Assert.assertEquals(0, addTest.getTotalCheckPoints());
+    }
 }

@@ -1,5 +1,6 @@
 package ch.epfl.sweng.project;
 
+import android.os.SystemClock;
 import android.widget.Chronometer;
 
 import org.junit.Assert;
@@ -121,5 +122,24 @@ public class RunTest {
         testRun1.setTrack(null);
 
         Assert.assertNotNull(testRun1.getTrack());
+    }
+
+    @Test
+    public void canNotStartRunIfAlreadyStarted() {
+        Run testRun1 = new Run();
+        testRun1.start();
+        Assert.assertTrue(testRun1.update(TrackTest.buildCheckPoint(1, 1)));
+
+        Assert.assertFalse(testRun1.start());
+    }
+
+    @Test
+    public void startedRunDurationIsNotZero(){
+        Run testRun1 = new Run();
+        testRun1.start();
+
+        SystemClock.sleep(2000);
+
+        Assert.assertNotEquals(0, testRun1.getDuration());
     }
 }
