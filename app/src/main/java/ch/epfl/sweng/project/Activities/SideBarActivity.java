@@ -52,7 +52,8 @@ public class SideBarActivity extends AppCompatActivity
         DBUploadFragment.DBUploadFragmentInteractionListener,
         RunHistoryFragment.onRunHistoryInteractionListener,
         DisplayRunFragment.OnDisplayRunInteractionListener,
-        DisplayUserFragment.OnDisplayUserFragmentInteractionListener
+        DisplayUserFragment.OnDisplayUserFragmentInteractionListener,
+        MessagesFragment.MessagesFragmentInteractionListener
 {
 
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
@@ -265,8 +266,7 @@ public class SideBarActivity extends AppCompatActivity
         } else if (id == R.id.nav_run_history) {
             toolbar.setTitle("Run History");
             launchFragment(new RunHistoryFragment());
-        } else if (id == R.id.nav_firebase) {
-            //TODO: ecco
+        } else if (id == R.id.nav_messages) {
             toolbar.setTitle("Messages");
             launchFragment(new MessagesFragment());
         } else if (id == R.id.nav_logout) {
@@ -400,9 +400,12 @@ public class SideBarActivity extends AppCompatActivity
         isRunning = running;
     }
 
-
-
     @Override
     public void onDisplayUserFragmentInteraction(){
+    }
+
+    @Override
+    public void onMessagesFragmentInteraction(Uri uri) {
+
     }
 }
