@@ -43,6 +43,7 @@ import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.Run;
+import ch.epfl.sweng.project.NetworkHandler;
 
 public class SideBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -66,6 +67,8 @@ public class SideBarActivity extends AppCompatActivity
     private Fragment mCurrentFragment = null;
     private FragmentManager fragmentManager = null;
     private SearchView mSearchView = null;
+
+    private NetworkHandler mNetworkHandler = null;
     private FirebaseHelper mFirebaseHelper = null;
 
     private FloatingActionButton fab;
@@ -84,6 +87,8 @@ public class SideBarActivity extends AppCompatActivity
         setContentView(R.layout.activity_side_bar);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mNetworkHandler = new NetworkHandler(this);
 
         // Initialize database
         mFirebaseHelper = new FirebaseHelper();
@@ -170,25 +175,28 @@ public class SideBarActivity extends AppCompatActivity
             @Override
             public boolean onQueryTextSubmit(final String query){
 
-                mFirebaseHelper.getDatabase().child("users").child(query).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()) {
+                if(mNetworkHandler.isConnected()) {
 
-                            switchFragment(query, dataSnapshot.child("name").getValue().toString());
+                    mFirebaseHelper.getDatabase().child("users").child(query).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+
+                                switchFragment(query, dataSnapshot.child("name").getValue().toString());
+                            } else {
+
+                                switchFragment(null, null);
+                            }
                         }
-                        else{
 
-                            switchFragment(null, null);
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
                         }
-                    }
+                    });
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
-
-                return true;
+                    return true;
+                }
+                return false;
             }
 
             @Override
