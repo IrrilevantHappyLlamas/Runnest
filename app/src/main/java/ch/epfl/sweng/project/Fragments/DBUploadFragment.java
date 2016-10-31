@@ -55,7 +55,6 @@ public class DBUploadFragment extends Fragment implements
      * Start the upload task that puts the local SQLite database file into the remote Firebase storage
      */
     private void uploadDatabase() {
-
         Uri file = Uri.fromFile(dbHelper.getDatabasePath());
         UploadTask uploadTask = getUserStorageRef().child(dbHelper.getDatabaseName()).putFile(file);
         uploadTask.addOnFailureListener(this).addOnSuccessListener(this);

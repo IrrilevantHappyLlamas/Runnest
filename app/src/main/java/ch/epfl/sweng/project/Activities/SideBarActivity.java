@@ -32,6 +32,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import ch.epfl.sweng.project.AppRunnest;
@@ -321,18 +323,31 @@ public class SideBarActivity extends AppCompatActivity
 
     }
 
-    /**
-     * On top of calling the default <code>onDestroy()</code>, trigger an <code>EmergencyUploadService</code> to save
-     * progresses on remote storage
-     */
     @Override
     public void onDestroy() {
         super.onDestroy();
+        launchEmergencyUpload();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        launchEmergencyUpload();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        launchEmergencyUpload();
+    }
+
+    private void launchEmergencyUpload() {
         DBHelper dbHelper = new DBHelper(this);
-        Intent mServiceIntent = new Intent(this, EmergencyUploadService.class);
-        mServiceIntent.setData(Uri.fromFile(dbHelper.getDatabasePath()));
-        mServiceIntent.putExtra("databaseName", dbHelper.getDatabaseName());
-        startService(mServiceIntent);
+        Uri file = Uri.fromFile(dbHelper.getDatabasePath());
+        StorageReference storageRef = FirebaseStorage.getInstance()
+                .getReferenceFromUrl("gs://runnest-146309.appspot.com")
+                .child("users").child(((AppRunnest) getApplication()).getUser().getFirebaseId());
+        storageRef.child(dbHelper.getDatabaseName()).putFile(file);
     }
 
     @Override
