@@ -16,7 +16,12 @@ public class AuthenticatedUser implements User {
     private String name = null;
     private String photoUrl = null;
 
-    public AuthenticatedUser(GoogleSignInAccount googleAccount) {
+    public AuthenticatedUser(GoogleSignInAccount googleAccount) throws IllegalArgumentException {
+
+        if(googleAccount == null) {
+            throw new IllegalArgumentException("You can't instantiate an authenticated user without a valid GoogleSignInAccount");
+        }
+
         id = googleAccount.getId();
         email = googleAccount.getEmail();
         familyName = googleAccount.getFamilyName();

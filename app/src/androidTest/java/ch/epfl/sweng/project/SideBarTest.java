@@ -111,7 +111,9 @@ public class SideBarTest {
         SystemClock.sleep(3000);
     }
 
-
-
-
+    @Test
+    public void lifecycleTest() {
+        mActivityRule.getActivity().finish();
+        mActivityRule.getActivity();
+    }
 }
