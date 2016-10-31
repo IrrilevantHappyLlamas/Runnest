@@ -28,7 +28,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import ch.epfl.sweng.project.AppRunnest;
-import ch.epfl.sweng.project.NetworkHandler;
 
 /**
  * Launch activity which implements google authentication
@@ -43,18 +42,16 @@ public final class LoginActivity extends AppCompatActivity
     private GoogleSignInOptions mGso = null;
     private FirebaseAuth mFirebaseAuth = null;
     private FirebaseAuth.AuthStateListener mAuthListener = null;
-    private NetworkHandler mNetworkHandler = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mNetworkHandler = new NetworkHandler(this);
-
         setUpGoogleAuth();
         setUpFirebaseAuth();
         setUpLoginUI();
+        ((AppRunnest) getApplication()).setNetworkHandler();
     }
 
     private void setUpLoginUI() {
@@ -221,7 +218,7 @@ public final class LoginActivity extends AppCompatActivity
      */
     @Override
     public void onClick(View v) {
-        if(mNetworkHandler.isConnected()) {
+        if(((AppRunnest)getApplication()).getNetworkHandler().isConnected()) {
             switch (v.getId()) {
                 case R.id.sign_in_button:
                     Log.d(TAG, "clickSignInBtn:");

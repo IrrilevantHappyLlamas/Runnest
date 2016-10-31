@@ -15,14 +15,13 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
 import java.util.List;
 
+import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.Message;
-import ch.epfl.sweng.project.NetworkHandler;
 
 
 public class MessagesFragment extends Fragment implements View.OnClickListener {
 
-    private NetworkHandler mNetworkHandler = null;
 
     private FirebaseHelper mFirebaseHelper = null;
     private String username = "you";
@@ -42,8 +41,6 @@ public class MessagesFragment extends Fragment implements View.OnClickListener {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_messages, container, false);
 
-        mNetworkHandler = new NetworkHandler(getActivity());
-
         mFirebaseHelper = new FirebaseHelper();
         messageEditText = (EditText) view.findViewById(R.id.messageEditText);
         fetchedMessages = (TextView) view.findViewById(R.id.retrievedMessagesTextView);
@@ -60,7 +57,7 @@ public class MessagesFragment extends Fragment implements View.OnClickListener {
 
     private void sendMessage() {
 
-        if(mNetworkHandler.isConnected()) {
+        if(((AppRunnest)getActivity().getApplication()).getNetworkHandler().isConnected()) {
             String message = messageEditText.getText().toString();
             if (!message.equals("")) {
                 messageEditText.setText("");
@@ -71,7 +68,7 @@ public class MessagesFragment extends Fragment implements View.OnClickListener {
     }
 
     private void fetchMessages() {
-        if(mNetworkHandler.isConnected()) {
+        if(((AppRunnest)getActivity().getApplication()).getNetworkHandler().isConnected()) {
             mFirebaseHelper.fetchMessages(username, new FirebaseHelper.Handler() {
                 @Override
                 public void handleRetrievedMessages(List<Message> messages) {

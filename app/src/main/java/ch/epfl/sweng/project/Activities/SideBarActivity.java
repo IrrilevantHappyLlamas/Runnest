@@ -23,27 +23,26 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import ch.epfl.sweng.project.AppRunnest;
-import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
+
 import java.util.Stack;
+
+import ch.epfl.sweng.project.AppRunnest;
+import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 import ch.epfl.sweng.project.Fragments.DBUploadFragment;
+import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
+import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
 import ch.epfl.sweng.project.Fragments.MessagesFragment;
 import ch.epfl.sweng.project.Fragments.NewRun.RunningMapFragment;
-import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
-import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.Run;
-import ch.epfl.sweng.project.NetworkHandler;
 
 public class SideBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -68,7 +67,6 @@ public class SideBarActivity extends AppCompatActivity
     private FragmentManager fragmentManager = null;
     private SearchView mSearchView = null;
 
-    private NetworkHandler mNetworkHandler = null;
     private FirebaseHelper mFirebaseHelper = null;
 
     private FloatingActionButton fab;
@@ -87,8 +85,6 @@ public class SideBarActivity extends AppCompatActivity
         setContentView(R.layout.activity_side_bar);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        mNetworkHandler = new NetworkHandler(this);
 
         // Initialize database
         mFirebaseHelper = new FirebaseHelper();
@@ -175,7 +171,7 @@ public class SideBarActivity extends AppCompatActivity
             @Override
             public boolean onQueryTextSubmit(final String query){
 
-                if(mNetworkHandler.isConnected()) {
+                if(((AppRunnest)getApplication()).getNetworkHandler().isConnected()) {
 
                     mFirebaseHelper.getDatabase().child("users").child(query).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override

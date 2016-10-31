@@ -12,6 +12,7 @@ public class AppRunnest extends MultiDexApplication {
 
     private GoogleApiClient mApiClient = null;
     private GoogleSignInAccount mGoogleUser = null;
+    private NetworkHandler mNetworkHandler = null;
 
     public void setGoogleUser(GoogleSignInAccount user) {
         this.mGoogleUser = user;
@@ -27,5 +28,13 @@ public class AppRunnest extends MultiDexApplication {
 
     public void setApiClient(GoogleApiClient apiClient) {
         this.mApiClient = apiClient;
+    }
+
+    public NetworkHandler getNetworkHandler() {
+        return mNetworkHandler;
+    }
+
+    public void setNetworkHandler() {
+        mNetworkHandler = new NetworkHandler(this);
     }
 }
