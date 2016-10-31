@@ -34,6 +34,11 @@ import com.google.firebase.database.ValueEventListener;
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Fragments.ChallengeFragment;
 import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 import ch.epfl.sweng.project.Fragments.DBUploadFragment;
@@ -170,18 +175,30 @@ public class SideBarActivity extends AppCompatActivity
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
 
             @Override
-            public boolean onQueryTextSubmit(final String query){
+            public boolean onQueryTextSubmit(final String query) {
 
-                mFirebaseHelper.getDatabase().child("users").child(query).addListenerForSingleValueEvent(new ValueEventListener() {
+                mFirebaseHelper.getDatabase().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if(dataSnapshot.exists()) {
+                            Map<String, String> users = new HashMap<>();
+                            for (DataSnapshot user : dataSnapshot.getChildren()) {
+                                String usersName = user.getValue().toString();
+                                String usersEmail = user.child("name").getValue().toString();
+                                String[] surnameAndFamilyName = usersName.split(" ");
+                                System.out.println("________-------________ " + usersEmail);
+                                String surname = surnameAndFamilyName[0].toLowerCase();
+                                String familyName = surnameAndFamilyName[1].toLowerCase();
 
-                            switchFragment(query, dataSnapshot.child("name").getValue().toString());
-                        }
-                        else{
-
-                            switchFragment(null, null);
+                                if (surname.startsWith(query.toLowerCase())
+                                        || familyName.startsWith(query.toLowerCase())
+                                        || usersEmail.toLowerCase().startsWith(query.toLowerCase())) {
+                                    users.put(usersName, usersEmail);
+                                }
+                            }
+                            switchFragment(users);
+                        } else {
+                            switchFragment(null);
                         }
                     }
 
@@ -195,19 +212,15 @@ public class SideBarActivity extends AppCompatActivity
 
             @Override
             public boolean onQueryTextChange(String newText){
-
                 return true;
             }
-
-
         });
 
         return true;
     }
 
-    public void switchFragment(String query, String result){
-
-        mCurrentFragment = DisplayUserFragment.newInstance(query, result);
+    public void switchFragment(Map<String, String> results){
+        mCurrentFragment = DisplayUserFragment.newInstance(results);
         fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
     }
 

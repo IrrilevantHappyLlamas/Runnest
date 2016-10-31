@@ -13,6 +13,9 @@ import android.widget.TextView;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.Message;
 
@@ -28,36 +31,23 @@ public class DisplayUserFragment extends Fragment {
 
     private static final String ARG_ID = "id";
     private static final String ARG_NAME = "name";
+    private static final String ARG_FOUND_USERS = "foundUsers";
 
+    private Map<String, String> mFoundUsers;
     private String mId;
     private String mName;
 
     private OnDisplayUserFragmentInteractionListener mListener;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param id Parameter 1.
-     * @param name Parameter 2.
-     * @return A new instance of fragment DisplayUserFragment.
-     */
-    public static DisplayUserFragment newInstance(String id, String name) {
+    public static DisplayUserFragment newInstance(Map<String, String> foundUsers) {
         DisplayUserFragment fragment = new DisplayUserFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_ID, id);
-        args.putString(ARG_NAME, name);
-        fragment.setArguments(args);
+        fragment.mFoundUsers = new HashMap<>(foundUsers);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mId = getArguments().getString(ARG_ID);
-            mName = getArguments().getString(ARG_NAME);
-        }
     }
 
     @Override
@@ -65,7 +55,13 @@ public class DisplayUserFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_display_user, container, false);
         TableLayout table = (TableLayout) view.findViewById(R.id.table);
 
-        displayFoundUser(view, mId, mName);
+        if (mFoundUsers.size() > 0) {
+            for (Map.Entry<String, String> user : mFoundUsers.entrySet()) {
+                displayFoundUser(view, user.getKey(), user.getValue());
+            }
+        } else {
+            displayFoundUser(view, null, null);
+        }
 
         return view;
     }
