@@ -60,52 +60,42 @@ public class DisplayUserFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_display_user, container, false);
+        TableLayout table = (TableLayout) view.findViewById(R.id.table);
 
-            View view = inflater.inflate(R.layout.fragment_display_user, container, false);
+        displayFoundUser(view, mId, mName);
 
-             TableLayout table = (TableLayout) view.findViewById(R.id.table);
+        return view;
+    }
 
-            if (mId != null && mName != null) {
-
-
-
-                // Email Row
-                TableRow firstRow = new TableRow(this.getContext());
-                createRowElement(firstRow, "Name :");
-                createRowElement(firstRow, mId);
-                table.addView(firstRow);
-
-                // Name Row
-                TableRow secondRow = new TableRow(this.getContext());
-                createRowElement(secondRow, "Email :");
-                createRowElement(secondRow, mName);
-                table.addView(secondRow);
-
-            }
-        else{
-
-
-                // No User found Row
-                TableRow firstRow = new TableRow(this.getContext());
-                createRowElement(firstRow, "No user found.");
-                table.addView(firstRow);
-            }
-
-            return view;
-        }
-
-    private void createRowElement(TableRow row, String text){
-
+    private void displayFoundUser(View view, String name, String email) {
+        TableLayout table = (TableLayout) view.findViewById(R.id.table);
+        TableRow tableRow = new TableRow(this.getContext());
         TableRow.LayoutParams layoutParams = new TableRow.LayoutParams();
         layoutParams.setMargins(10, 50, 20, 10);
-        TextView element = new TextView(this.getContext());
-        element.setText(text);
-        element.setTextSize(20);
-        element.setLayoutParams(layoutParams);
 
-        row.addView(element);
+        String text = "No user found.";
+        Boolean noUserFound = true;
+        if (name != null && email != null) {
+            text = name + "\n" + email;
+            noUserFound = false;
+        }
+
+        TextView nameAndEmailTextView = new TextView(this.getContext());
+        nameAndEmailTextView.setText(text);
+        nameAndEmailTextView.setTextSize(18);
+        nameAndEmailTextView.setLayoutParams(layoutParams);
+        tableRow.addView(nameAndEmailTextView);
+
+        if (!noUserFound) {
+            Button challengeButton = new Button(this.getContext());
+            challengeButton.setText("Challenge!");
+            challengeButton.setLayoutParams(layoutParams);
+            tableRow.addView(challengeButton);
+        }
+
+        table.addView(tableRow);
     }
 
     @Override
@@ -127,7 +117,6 @@ public class DisplayUserFragment extends Fragment {
 
 
     public interface OnDisplayUserFragmentInteractionListener {
-
         void onDisplayUserFragmentInteraction();
     }
 }
