@@ -96,8 +96,6 @@ public class SideBarTest {
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_profile));
     }
 
-    /*
-
     @Test
     public void navigateToLogout() {
         onView(withId(R.id.drawer_layout))
@@ -112,8 +110,6 @@ public class SideBarTest {
 
         SystemClock.sleep(1000);
     }
-
-     */
 
 
     @Test
