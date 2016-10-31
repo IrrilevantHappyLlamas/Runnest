@@ -53,7 +53,6 @@ public class DisplayUserFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_display_user, container, false);
-        TableLayout table = (TableLayout) view.findViewById(R.id.table);
 
         if (mFoundUsers.size() > 0) {
             for (Map.Entry<String, String> user : mFoundUsers.entrySet()) {
@@ -66,7 +65,7 @@ public class DisplayUserFragment extends Fragment {
         return view;
     }
 
-    private void displayFoundUser(View view, String name, String email) {
+    private void displayFoundUser(View view, final String name, final String email) {
         TableLayout table = (TableLayout) view.findViewById(R.id.table);
         TableRow tableRow = new TableRow(this.getContext());
         TableRow.LayoutParams layoutParams = new TableRow.LayoutParams();
@@ -104,7 +103,7 @@ public class DisplayUserFragment extends Fragment {
                     firebaseHelper.send(challengeRequestMessage);
 
                     // Go to ChallengeFragment
-                    mListener.onDisplayUserFragmentInteraction(mId, mName);
+                    mListener.onDisplayUserFragmentInteraction(name, email);
                 }
             });
 
