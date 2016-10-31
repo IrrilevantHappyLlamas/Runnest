@@ -23,7 +23,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import ch.epfl.sweng.project.Activities.LoginActivity;
+import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Database.DBHelper;
+import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 
 /**
  * Fragment that manages upload of local SQLite database to the remote Firebase storage of user
@@ -55,28 +57,20 @@ public class DBUploadFragment extends Fragment implements
     private void uploadDatabase() {
 
         Uri file = Uri.fromFile(dbHelper.getDatabasePath());
-        UploadTask uploadTask = getUserRef().child(dbHelper.getDatabaseName()).putFile(file);
+        UploadTask uploadTask = getUserStorageRef().child(dbHelper.getDatabaseName()).putFile(file);
         uploadTask.addOnFailureListener(this).addOnSuccessListener(this);
     }
 
     /**
-     * Returns the reference of the user's runs database file on the remote Firebase storage
+     * Returns the reference of the current user's runs database file on the remote Firebase storage
      *
      * @return  the Firebase storage reference of the user's runs database
      */
-    private StorageReference getUserRef() {
+    public StorageReference getUserStorageRef() {
 
-        StorageReference usersRef =  FirebaseStorage.getInstance()
+        return FirebaseStorage.getInstance()
                 .getReferenceFromUrl("gs://runnest-146309.appspot.com")
-                .child("users");
-
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        if (currentUser == null) {
-            return usersRef.child("6VauzC82b6YoNfRSo2ft4WFqoCu1");
-        } else {
-            return usersRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        }
+                .child("users").child(((AppRunnest) getActivity().getApplication()).getUser().getFirebaseId());
     }
 
     /**

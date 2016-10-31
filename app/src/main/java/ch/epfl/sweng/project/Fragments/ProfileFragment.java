@@ -19,16 +19,16 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import java.io.InputStream;
 
 import ch.epfl.sweng.project.AppRunnest;
-import ch.epfl.sweng.project.Model.Profile;
+import ch.epfl.sweng.project.Model.User;
 
 /**
  * Fragment which serves as profile tab, where profile information are displayed
  */
 public class ProfileFragment extends android.support.v4.app.Fragment {
 
-    private ProfileFragmentInteractionListener profileListener = null;
+    private ProfileFragmentInteractionListener mProfileListener = null;
 
-    private Profile profile;
+    private User mUser;
 
 
     @Override
@@ -37,13 +37,13 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_profile, container, false);
 
-        profile = new Profile(((AppRunnest)getActivity().getApplicationContext()).getGoogleUser());
+        mUser = ((AppRunnest)getActivity().getApplicationContext()).getUser();
 
         ImageView profilePic = (ImageView)view.findViewById(R.id.photoImg);
 
-        if (!profile.getPhotoUrl().equals("")) {
+        if (!mUser.getPhotoUrl().equals("")) {
             new DownloadImageTask(profilePic)
-                    .execute(profile.getPhotoUrl());
+                    .execute(mUser.getPhotoUrl());
         }
 
 
@@ -55,10 +55,10 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
         profilePic.requestLayout();
 
         // Display logged profile id
-        ((TextView)view.findViewById(R.id.idTxt)).setText("Id: "+ profile.getId());
-        ((TextView)view.findViewById(R.id.nameTxt)).setText("Name: "+ profile.getName());
-        ((TextView)view.findViewById(R.id.emailTxt)).setText("Email: "+ profile.getEmail());
-        ((TextView)view.findViewById(R.id.familyTxt)).setText("Family: "+ profile.getFamilyName());
+        ((TextView)view.findViewById(R.id.idTxt)).setText("Id: "+ mUser.getId());
+        ((TextView)view.findViewById(R.id.nameTxt)).setText("Name: "+ mUser.getName());
+        ((TextView)view.findViewById(R.id.emailTxt)).setText("Email: "+ mUser.getEmail());
+        ((TextView)view.findViewById(R.id.familyTxt)).setText("Family: "+ mUser.getFamilyName());
 
 
         return view;
@@ -68,7 +68,7 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof ProfileFragmentInteractionListener) {
-            profileListener = (ProfileFragmentInteractionListener) context;
+            mProfileListener = (ProfileFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -78,7 +78,7 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        profileListener = null;
+        mProfileListener = null;
     }
 
     /**

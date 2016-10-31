@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
 import ch.epfl.sweng.project.Activities.SideBarActivity;
+import ch.epfl.sweng.project.Model.TestUser;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -40,7 +41,7 @@ public class SideBarTest {
 
     @Before
     public void setUpApp() {
-        ((AppRunnest) mActivityRule.getActivity().getApplication()).setGoogleUser(null);
+        ((AppRunnest) mActivityRule.getActivity().getApplication()).setUser(new TestUser());
     }
 
     @Test
