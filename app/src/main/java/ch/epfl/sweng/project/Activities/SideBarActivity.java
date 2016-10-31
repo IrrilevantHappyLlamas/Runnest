@@ -33,6 +33,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
+
+import java.util.List;
 import java.util.Stack;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 import ch.epfl.sweng.project.Fragments.DBUploadFragment;
@@ -42,7 +44,10 @@ import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
+import ch.epfl.sweng.project.Model.Message;
 import ch.epfl.sweng.project.Model.Run;
+
+import android.os.Handler;
 
 public class SideBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -75,6 +80,16 @@ public class SideBarActivity extends AppCompatActivity
     private Boolean isRunning = false;
 
     private Toolbar toolbar;
+
+    private int nbrMessages = 0;
+    private Handler handler = new Handler();
+    private Runnable runnableCode = new Runnable() {
+        @Override
+        public void run() {
+            checkNbrMessages();
+            handler.postDelayed(runnableCode, 10000);
+        }
+    };
 
 
 
@@ -134,6 +149,8 @@ public class SideBarActivity extends AppCompatActivity
             mCurrentFragment = new DBDownloadFragment();
             fragmentManager.beginTransaction().add(R.id.fragment_container, mCurrentFragment).commit();
         }
+
+        handler.post(runnableCode);
     }
 
     @Override
@@ -231,13 +248,6 @@ public class SideBarActivity extends AppCompatActivity
         if(isRunning && !item.equals(runItem)){
             dialogQuitRun(item);
             return false;
-            /*if(hasQuit) {
-                return false;
-            } else {
-                setRunning(false);
-                return onNavigationItemSelected(item);
-            }
-            */
         }
 
         fab.show();
@@ -245,16 +255,12 @@ public class SideBarActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if(fragmentStack.isEmpty()){
-           fragmentStack.push(item);
-        }
-
-        if(!fragmentStack.peek().equals(item)) {
+        if(fragmentStack.isEmpty() || !fragmentStack.peek().equals(item)) {
             fragmentStack.push(item);
         }
 
-        //TODO: missing commit?
-        fragmentManager.beginTransaction().remove(mCurrentFragment);
+        //TODO: check commit is working
+        fragmentManager.beginTransaction().remove(mCurrentFragment).commit();
 
         if (id == R.id.nav_profile) {
             toolbar.setTitle("Profile");
@@ -280,7 +286,11 @@ public class SideBarActivity extends AppCompatActivity
         return true;
     }
 
-    //TODO:comment
+    /**
+     * Replaces the current fragment with the new one.
+     *
+     * @param toLaunch the new fragment
+     */
     private void launchFragment(Fragment toLaunch){
         mCurrentFragment = toLaunch;
         fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
@@ -318,6 +328,25 @@ public class SideBarActivity extends AppCompatActivity
 
     }
 
+    /**
+     * Checks whether there is a new message.
+     */
+    private void checkNbrMessages(){
+        mFirebaseHelper.fetchMessages(((AppRunnest)getApplicationContext()).getGoogleUser().getEmail(),
+                new FirebaseHelper.Handler() {
+            @Override
+            public void handleRetrievedMessages(List<Message> messages) {
+                if(messages.size() > nbrMessages){
+                    Toast.makeText(getApplicationContext(),"You have a new message",
+                            Toast.LENGTH_LONG).show();
+                }
+
+                nbrMessages = messages.size();
+            }
+        });
+    }
+
+
     @Override
     public void onProfileFragmentInteraction(Uri uri) {
 
@@ -339,9 +368,10 @@ public class SideBarActivity extends AppCompatActivity
 
     @Override
     public void onDisplayRunInteraction() {
-
-        mCurrentFragment = new RunHistoryFragment();
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
+        // keep using the stack
+        onNavigationItemSelected(navigationView.getMenu().getItem(2));
+        /*mCurrentFragment = new RunHistoryFragment();
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();*/
     }
 
     @Override
