@@ -32,6 +32,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import ch.epfl.sweng.project.AppRunnest;
+import ch.epfl.sweng.project.Fragments.ChallengeFragment;
 import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
 import java.util.Stack;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
@@ -53,7 +54,8 @@ public class SideBarActivity extends AppCompatActivity
         RunHistoryFragment.onRunHistoryInteractionListener,
         DisplayRunFragment.OnDisplayRunInteractionListener,
         DisplayUserFragment.OnDisplayUserFragmentInteractionListener,
-        MessagesFragment.MessagesFragmentInteractionListener
+        MessagesFragment.MessagesFragmentInteractionListener,
+        ChallengeFragment.OnChallengeFragmentInteractionListener
 {
 
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
@@ -401,11 +403,18 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDisplayUserFragmentInteraction(){
+    public void onDisplayUserFragmentInteraction(String challengedUserName, String challengedUserEmail) {
+        mCurrentFragment = ChallengeFragment.newInstance(challengedUserName, challengedUserEmail);
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
     }
 
     @Override
     public void onMessagesFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onChallengeFragmentInteraction() {
 
     }
 }

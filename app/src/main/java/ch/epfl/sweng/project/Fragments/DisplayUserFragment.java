@@ -1,7 +1,6 @@
 package ch.epfl.sweng.project.Fragments;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,9 +11,11 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import ch.epfl.sweng.project.Model.Track;
-
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
+
+import ch.epfl.sweng.project.Firebase.FirebaseHelper;
+import ch.epfl.sweng.project.Model.Message;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -92,6 +93,25 @@ public class DisplayUserFragment extends Fragment {
             Button challengeButton = new Button(this.getContext());
             challengeButton.setText("Challenge!");
             challengeButton.setLayoutParams(layoutParams);
+            challengeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Send message
+                    // TODO: make profile a SideBarActivity attribute so that it can be accessible here to set the from
+                    String from = "me";
+                    // TODO: children names in firebase can't contain . and @
+                    String to = "challengee";//mName;
+                    String message = "Run with me!";
+                    Message challengeRequestMessage = new Message(from, to, Message.MessageType.CHALLENGE_REQUEST, message);
+
+                    FirebaseHelper firebaseHelper = new FirebaseHelper();
+                    firebaseHelper.send(challengeRequestMessage);
+
+                    // Go to ChallengeFragment
+                    mListener.onDisplayUserFragmentInteraction(mId, mName);
+                }
+            });
+
             tableRow.addView(challengeButton);
         }
 
@@ -117,6 +137,6 @@ public class DisplayUserFragment extends Fragment {
 
 
     public interface OnDisplayUserFragmentInteractionListener {
-        void onDisplayUserFragmentInteraction();
+        void onDisplayUserFragmentInteraction(String challengedUserName, String challengedUserEmail);
     }
 }

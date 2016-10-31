@@ -29,16 +29,6 @@ import ch.epfl.sweng.project.Model.Run;
  */
 public class RunHistoryFragment extends ListFragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-
     private onRunHistoryInteractionListener mListener;
     private List<Run> runs;
 
@@ -47,35 +37,26 @@ public class RunHistoryFragment extends ListFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.simple_listview, container, false);
-
-
         DBHelper dbHelper = new DBHelper(this.getContext());
-
         runs = dbHelper.fetchAllEfforts();
 
-        String[] runNames = null;
+        String[] runNames;
 
-        if(runs.isEmpty()){
-
+        if (runs.isEmpty()) {
             runNames = new String[]{"No Run has been recorded yet."};
-        }
-        else {
-
+        } else {
             runNames = new String[runs.size()];
 
             for (int i = 0; i < runs.size(); ++i) {
-
                 runNames[i] = runs.get(i).getName();
             }
         }
-                this.setListAdapter(new ArrayAdapter<String>(this.getContext(), R.layout.simple_textview, runNames));
 
-                return view;
-        }
+        this.setListAdapter(new ArrayAdapter<>(this.getContext(), R.layout.simple_textview, runNames));
+        return view;
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -96,24 +77,12 @@ public class RunHistoryFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id){
-
-        if(!runs.isEmpty()){
-
+        if (!runs.isEmpty()) {
             mListener.onRunHistoryInteraction(runs.get(position));
         }
     }
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface onRunHistoryInteractionListener {
 
+    public interface onRunHistoryInteractionListener {
         void onRunHistoryInteraction(Run run);
     }
 }
