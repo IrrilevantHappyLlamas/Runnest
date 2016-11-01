@@ -158,6 +158,8 @@ public class SideBarTest {
         listenerTest.onRunningMapFragmentInteraction(listenerRun);
     }
 
+    /*
+
     @Test
     public void uselessOnFragmentListenersWork() {
 
@@ -170,6 +172,8 @@ public class SideBarTest {
         listenerTest.onProfileFragmentInteraction();
         listenerTest.onDBUploadFragmentInteraction();
     }
+
+     */
 
     @Test
     public void displayUserFragmentCanBeInstanced() {
