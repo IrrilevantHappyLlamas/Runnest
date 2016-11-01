@@ -8,10 +8,10 @@
 
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="279dp"
         android:id="@+id/table"
         android:orientation="horizontal"
-        android:layout_gravity="center_vertical">
+        android:layout_gravity="bottom|center_vertical">
 
     </TableLayout>
 
@@ -24,4 +24,17 @@
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="50dp"
         tools:ignore="HardcodedText" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.gms.maps.MapView
+            android:layout_width="wrap_content"
+            android:layout_height="250dp"
+            android:id="@+id/runMap"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
+    </RelativeLayout>
+
 </FrameLayout>

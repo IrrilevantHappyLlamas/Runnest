@@ -9,7 +9,10 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.util.List;
+
 import ch.epfl.sweng.project.Model.CheckPoint;
+import ch.epfl.sweng.project.Model.Track;
 
 
 public class MapHandler {
@@ -29,6 +32,19 @@ public class MapHandler {
         mGoogleMap.setLocationSource(null);
 
         mPolylineOptions = new PolylineOptions();
+    }
+
+    public void showTrack(Track track) {
+        PolylineOptions polylineOptions = new PolylineOptions();
+
+        List<CheckPoint> trackPoints = track.getCheckpoints();
+
+        for (CheckPoint checkPoint: trackPoints) {
+            LatLng latLng = new LatLng(checkPoint.getLatitude(), checkPoint.getLongitude());
+            polylineOptions.add(latLng);
+        }
+
+        mGoogleMap.addPolyline(mPolylineOptions.color(Color.BLUE));
     }
 
     /**
