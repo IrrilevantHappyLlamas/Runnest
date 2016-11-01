@@ -19,6 +19,7 @@ import org.junit.runners.MethodSorters;
 import ch.epfl.sweng.project.Activities.SideBarActivity;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.DrawerMatchers.isOpen;
@@ -108,6 +109,21 @@ public class SideBarTest {
                 .perform(click());
 
         SystemClock.sleep(3000);
+    }
+
+
+    @Test
+    public void backPressedForStack() {
+        onView(withId(R.id.drawer_layout))
+                .perform(DrawerActions.open());
+
+        SystemClock.sleep(3000);
+
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_new_run));
+
+        pressBack();
+
+        onView(withId(R.id.photoImg)).check(matches(isDisplayed()));
     }
 
 

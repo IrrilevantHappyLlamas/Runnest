@@ -332,7 +332,9 @@ public class SideBarActivity extends AppCompatActivity
      * Checks whether there is a new message.
      */
     private void checkNbrMessages(){
-        mFirebaseHelper.fetchMessages(((AppRunnest)getApplicationContext()).getGoogleUser().getEmail(),
+        //TODO: solve the conversion from email to parsed email
+        //((AppRunnest)getApplicationContext()).getGoogleUser().getEmail()
+        mFirebaseHelper.fetchMessages("challengee",
                 new FirebaseHelper.Handler() {
             @Override
             public void handleRetrievedMessages(List<Message> messages) {
