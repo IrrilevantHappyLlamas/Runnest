@@ -6,7 +6,7 @@
 
     <!-- TODO: Update blank fragment layout -->
     <Button
-        android:text="ACCEPT"
+        android:text="@string/accept"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/accept"
@@ -15,7 +15,7 @@
         android:layout_marginBottom="30dp"/>
 
     <Button
-        android:text="DECLINE"
+        android:text="@string/decline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/decline"

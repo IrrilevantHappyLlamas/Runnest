@@ -48,6 +48,9 @@ public class MessagesFragment extends ListFragment{
     }
 
 
+    /*
+    fetches all messages the current user received and initialize global variables.
+     */
     private void fetchMessages() {
         mFirebaseHelper.fetchMessages(mEmail, new FirebaseHelper.Handler() {
             @Override
@@ -78,6 +81,9 @@ public class MessagesFragment extends ListFragment{
         });
     }
 
+    /*
+    This method is a follow-up of OnCreateView, taking care of the last settings.
+     */
     public void onCreateFollow(){
 
         this.setListAdapter(new ArrayAdapter<String>(this.getContext(), R.layout.simple_textview, mMessageHeaders));
@@ -90,7 +96,7 @@ public class MessagesFragment extends ListFragment{
             mListener = (MessagesFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement MessagesFragmentInteractionListener");
         }
     }
 
@@ -109,9 +115,7 @@ public class MessagesFragment extends ListFragment{
             mListener.onMessagesFragmentInteraction(mMessages.get(position));
         }
     }
-    /**
-     * Interface for SideBarActivity
-     */
+
     public interface MessagesFragmentInteractionListener {
         void onMessagesFragmentInteraction(Message message);
     }
