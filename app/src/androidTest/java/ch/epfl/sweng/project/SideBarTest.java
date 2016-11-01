@@ -40,7 +40,6 @@ public class SideBarTest {
     public ActivityTestRule<SideBarActivity> mActivityRule = new ActivityTestRule<>(
             SideBarActivity.class);
 
-
     @Before
     public void setUpApp() {
         ((AppRunnest) mActivityRule.getActivity().getApplication()).setGoogleUser(null);
@@ -48,6 +47,9 @@ public class SideBarTest {
 
     @Test
     public void aDrawerLayout() {
+
+        SystemClock.sleep(1000);
+
         onView(withId(R.id.drawer_layout))
                 .perform(DrawerActions.open());
 
@@ -58,6 +60,9 @@ public class SideBarTest {
 
     @Test
     public void navigateToRunningMap() {
+
+        SystemClock.sleep(1000);
+
         onView(withId(R.id.drawer_layout))
                 .perform(DrawerActions.open());
 
@@ -68,6 +73,9 @@ public class SideBarTest {
 
     @Test
     public void navigateToRunHistory() {
+
+        SystemClock.sleep(1000);
+
         onView(withId(R.id.drawer_layout))
                 .perform(DrawerActions.open());
 
@@ -78,6 +86,9 @@ public class SideBarTest {
 
     @Test
     public void navigateToMessages() {
+
+        SystemClock.sleep(1000);
+
         onView(withId(R.id.drawer_layout))
                 .perform(DrawerActions.open());
 
@@ -88,6 +99,9 @@ public class SideBarTest {
 
     @Test
     public void navigateToProfile() {
+
+        SystemClock.sleep(1000);
+
         onView(withId(R.id.drawer_layout))
                 .perform(DrawerActions.open());
 
@@ -98,6 +112,9 @@ public class SideBarTest {
 
     @Test
     public void navigateToLogout() {
+
+        SystemClock.sleep(1000);
+
         onView(withId(R.id.drawer_layout))
                 .perform(DrawerActions.open());
 
@@ -115,6 +132,8 @@ public class SideBarTest {
     @Test
     public void setRunningWorks() {
 
+        SystemClock.sleep(1000);
+
         SideBarActivity listenerTest = mActivityRule.getActivity();
 
         listenerTest.setRunning(true);
@@ -122,6 +141,8 @@ public class SideBarTest {
 
     @Test
     public void nonEmptyOnFragmentListenerWork() {
+
+        SystemClock.sleep(1000);
 
         SideBarActivity listenerTest = mActivityRule.getActivity();
 
@@ -139,6 +160,8 @@ public class SideBarTest {
     @Test
     public void uselessOnFragmentListenersWork() {
 
+        SystemClock.sleep(1000);
+
         SideBarActivity listenerTest = mActivityRule.getActivity();
 
         listenerTest.onMessagesFragmentInteraction();
@@ -149,11 +172,15 @@ public class SideBarTest {
 
     @Test
     public void displayUserFragmentCanBeInstanced() {
+        SystemClock.sleep(1000);
+
         DisplayUserFragment.newInstance("testId", "testName");
     }
 
     @Test
     public void backButtonWorks() {
+
+        SystemClock.sleep(1000);
 
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
 
@@ -180,6 +207,7 @@ public class SideBarTest {
 
     @Test
     public void backButtonDoesNothingIfStackEmpty() {
+
         SystemClock.sleep(1000);
 
         Espresso.pressBack();
@@ -187,6 +215,7 @@ public class SideBarTest {
 
     @Test
     public void startRun(){
+
         SystemClock.sleep(1000);
 
         onView(withId(R.id.drawer_layout))
@@ -227,6 +256,4 @@ public class SideBarTest {
 
         onView(withId(R.id.list)).check(matches(isDisplayed()));
     }
-
-
 }
