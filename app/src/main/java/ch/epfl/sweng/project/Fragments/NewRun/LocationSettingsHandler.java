@@ -14,6 +14,8 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
+import ch.epfl.sweng.project.AppRunnest;
+
 public class LocationSettingsHandler implements
         ResultCallback<LocationSettingsResult>{
 
@@ -73,6 +75,10 @@ public class LocationSettingsHandler implements
      * Check whether gps is turned on or not.
      */
     public boolean checkLocationSettings() {
+
+        if( ((AppRunnest)mActivity.getApplication()).isTestSession()) {
+            return true;
+        }
 
         if(!mGpsIsTurnedOn) {
 

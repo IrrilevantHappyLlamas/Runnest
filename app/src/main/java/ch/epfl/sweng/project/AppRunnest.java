@@ -15,8 +15,10 @@ public class AppRunnest extends MultiDexApplication {
 
     private GoogleApiClient mApiClient = null;
     private User mCurrentUser = new TestUser();
+    private boolean testSession = true;
 
     public void setUser(User user) {
+        testSession = false;
         this.mCurrentUser = user;
     }
 
@@ -30,5 +32,9 @@ public class AppRunnest extends MultiDexApplication {
 
     public void setApiClient(GoogleApiClient apiClient) {
         this.mApiClient = apiClient;
+    }
+
+    public boolean isTestSession() {
+        return testSession;
     }
 }
