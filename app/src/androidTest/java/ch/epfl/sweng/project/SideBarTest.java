@@ -22,6 +22,7 @@ import org.junit.runners.MethodSorters;
 import ch.epfl.sweng.project.Activities.SideBarActivity;
 import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
 import ch.epfl.sweng.project.Model.Run;
+import ch.epfl.sweng.project.Model.TestUser;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -42,7 +43,7 @@ public class SideBarTest {
 
     @Before
     public void setUpApp() {
-        ((AppRunnest) mActivityRule.getActivity().getApplication()).setGoogleUser(null);
+        ((AppRunnest) mActivityRule.getActivity().getApplication()).setUser(new TestUser());
     }
 
     @Test
@@ -214,7 +215,7 @@ public class SideBarTest {
     }
 
     @Test
-    public void startRun(){
+    public void startRun() {
 
         SystemClock.sleep(1000);
 
@@ -255,5 +256,14 @@ public class SideBarTest {
         SystemClock.sleep(1000);
 
         onView(withId(R.id.list)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void lifecycleTest() {
+
+        SystemClock.sleep(1000);
+
+        mActivityRule.getActivity().finish();
+        mActivityRule.getActivity();
     }
 }
