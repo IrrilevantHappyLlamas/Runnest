@@ -44,6 +44,7 @@ public class SideBarTest {
     @Before
     public void setUpApp() {
         ((AppRunnest) mActivityRule.getActivity().getApplication()).setUser(new TestUser());
+        ((AppRunnest) mActivityRule.getActivity().getApplication()).setTestSession(true);
     }
 
     @Test
