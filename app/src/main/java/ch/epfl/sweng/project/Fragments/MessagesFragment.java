@@ -1,33 +1,30 @@
 package ch.epfl.sweng.project.Fragments;
 
+import android.support.v4.app.ListFragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
 import java.util.List;
 
+import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.Message;
 
 
-public class MessagesFragment extends Fragment implements View.OnClickListener {
+public class MessagesFragment extends ListFragment{
+
     private FirebaseHelper mFirebaseHelper = null;
-    private String username = "you";
-
-    private EditText messageEditText = null;
-    private TextView fetchedMessages = null;
-
-    private Button sendButton = null;
-    private Button fetchButton = null;
+    private String mEmail;
+    private List<Message> mMessages;
+    private String[] mMessageHeaders;
 
     private MessagesFragmentInteractionListener mListener;
 
@@ -35,47 +32,56 @@ public class MessagesFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_messages, container, false);
+
+        View view = inflater.inflate(R.layout.simple_listview, container, false);
 
         mFirebaseHelper = new FirebaseHelper();
-        messageEditText = (EditText) view.findViewById(R.id.messageEditText);
-        fetchedMessages = (TextView) view.findViewById(R.id.retrievedMessagesTextView);
-        sendButton = (Button) view.findViewById(R.id.sendMessageButton);
-        fetchButton = (Button) view.findViewById(R.id.fetchMessagesButton);
+        if(((AppRunnest) getActivity().getApplication()).getGoogleUser() != null){
+            mEmail = ((AppRunnest) getActivity().getApplication()).getGoogleUser().getEmail().replace('.', '_').replace('@', '-');
+        }else{
 
-        sendButton.setOnClickListener(this);
-        fetchButton.setOnClickListener(this);
-
+            mEmail = "furulu-live_com";
+        }
         fetchMessages();
 
         return view;
     }
 
-    private void sendMessage() {
-        String message = messageEditText.getText().toString();
-        if (!message.equals("")) {
-            messageEditText.setText("");
-            Message msg = new Message("me", username, Message.MessageType.TEXT, message);
-            mFirebaseHelper.send(msg);
-        }
-    }
 
     private void fetchMessages() {
-        mFirebaseHelper.fetchMessages(username, new FirebaseHelper.Handler() {
+        mFirebaseHelper.fetchMessages(mEmail, new FirebaseHelper.Handler() {
             @Override
             public void handleRetrievedMessages(List<Message> messages) {
-                String str = messages.size() + " messages recieved \n";
-                for (Message m : messages) {
-                    str += "FROM: " + m.getFrom() + "\nRECIVED: " + m.getTime() + "\n";
-                    str += "MSG: " + m.getMessage() + "\n\n";
+
+                int size = messages.size();
+                mMessages = messages;
+
+                if(size == 0){
+
+                    mMessageHeaders = new String[1];
+                    mMessageHeaders[0] = "No message has been received yet";
+                }
+                else{
+
+                mMessageHeaders = new String[size];
+
+                for (int i=0; i < size; ++i){
+
+                    Message currentMessage = messages.get(i);
+
+                    mMessageHeaders[i] = "From: " + currentMessage.getFrom() + "\n" + "Type: " + currentMessage.getType();
+                }
                 }
 
-                fetchedMessages.setText(str);
+                onCreateFollow();
             }
         });
     }
 
+    public void onCreateFollow(){
+
+        this.setListAdapter(new ArrayAdapter<String>(this.getContext(), R.layout.simple_textview, mMessageHeaders));
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -94,22 +100,19 @@ public class MessagesFragment extends Fragment implements View.OnClickListener {
         mListener = null;
     }
 
+
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.sendMessageButton:
-                    sendMessage();
-                break;
-            case R.id.fetchMessagesButton:
-                    fetchMessages();
-                break;
+    public void onListItemClick(ListView l, View v, int position, long id){
+
+        if(!mMessages.isEmpty()){
+
+            mListener.onMessagesFragmentInteraction(mMessages.get(position));
         }
     }
-
     /**
      * Interface for SideBarActivity
      */
     public interface MessagesFragmentInteractionListener {
-        void onMessagesFragmentInteraction(Uri uri);
+        void onMessagesFragmentInteraction(Message message);
     }
 }

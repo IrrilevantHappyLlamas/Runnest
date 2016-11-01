@@ -5,6 +5,8 @@ import android.support.test.espresso.contrib.DrawerActions;
 import android.support.test.espresso.contrib.NavigationViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.view.KeyEvent;
+import android.widget.EditText;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -20,6 +22,8 @@ import ch.epfl.sweng.project.Activities.SideBarActivity;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.pressKey;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.DrawerMatchers.isOpen;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
@@ -77,6 +81,9 @@ public class SideBarTest {
 
     @Test
     public void navigateToMessages() {
+
+        SystemClock.sleep(3000);
+
         onView(withId(R.id.drawer_layout))
                 .perform(DrawerActions.open());
 
@@ -108,6 +115,71 @@ public class SideBarTest {
                 .perform(click());
 
         SystemClock.sleep(3000);
+    }
+
+
+    @Test
+    public void acceptChallengeRequest() {
+
+        SystemClock.sleep(3000);
+
+        onView(withId(R.id.drawer_layout))
+                .perform(DrawerActions.open());
+
+        SystemClock.sleep(3000);
+
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
+
+        SystemClock.sleep(3000);
+
+        onView(withText("From: Pablo\nType: CHALLENGE_REQUEST")).perform(click());
+
+        onView(withText("ACCEPT")).perform(click());
+        SystemClock.sleep(3000);
+    }
+
+    @Test
+    public void declineChallengeRequest() {
+
+        SystemClock.sleep(3000);
+
+        onView(withId(R.id.drawer_layout))
+                .perform(DrawerActions.open());
+
+        SystemClock.sleep(3000);
+
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
+
+        SystemClock.sleep(3000);
+
+        onView(withText("From: Pablo\nType: CHALLENGE_REQUEST")).perform(click());
+
+        onView(withText("DECLINE")).perform(click());
+        SystemClock.sleep(3000);
+    }
+
+    @Test
+    public void searchForExistingUser() {
+
+        SystemClock.sleep(3000);
+
+        onView(withId(R.id.search)).perform(click());
+
+        SystemClock.sleep(3000);
+
+        onView(isAssignableFrom(EditText.class)).perform(typeText("Bob Scalpi"), pressKey(KeyEvent.KEYCODE_ENTER));
+    }
+
+    @Test
+    public void searchForNonExistingUser() {
+
+        SystemClock.sleep(3000);
+
+        onView(withId(R.id.search)).perform(click());
+
+        SystemClock.sleep(3000);
+
+        onView(isAssignableFrom(EditText.class)).perform(typeText("unexisting user"), pressKey(KeyEvent.KEYCODE_ENTER));
     }
 
 
