@@ -36,26 +36,6 @@ public class MapHandler {
         mPolylineOptions = new PolylineOptions();
     }
 
-    public void showTrack(Track track) {
-        PolylineOptions polylineOptions = new PolylineOptions();
-
-        List<CheckPoint> trackPoints = track.getCheckpoints();
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-
-        for (CheckPoint checkPoint: trackPoints) {
-            LatLng latLng = new LatLng(checkPoint.getLatitude(), checkPoint.getLongitude());
-            polylineOptions.add(latLng);
-            builder.include(latLng);
-        }
-
-        mGoogleMap.addPolyline(mPolylineOptions.color(Color.BLUE));
-
-        LatLngBounds bounds = builder.build();
-        int padding = 40; // offset from edges of the map in pixels
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-        mGoogleMap.animateCamera(cu);
-    }
-
     /**
      * Given a new <code>CheckPoint</code>, if non null, update the map and the polyline showed on it.
      *

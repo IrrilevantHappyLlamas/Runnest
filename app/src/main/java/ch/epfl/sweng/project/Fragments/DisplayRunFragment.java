@@ -26,15 +26,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
  * {@link DisplayRunFragment.OnDisplayRunInteractionListener} interface
  * to handle interaction events.
  */
-public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
+public class DisplayRunFragment extends Fragment {
 
     private static final String ARG_RUNTOBEDISPLAYED = "run to be displayed";
     private OnDisplayRunInteractionListener mListener;
     private Run mRunToBeDisplayed;
-
-    private MapView mMapView = null;
-    private MapHandler mMapHandler = null;
-
 
     /**
      * Use this factory method to create a new instance of
@@ -66,10 +62,6 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
 
 
         if (mRunToBeDisplayed != null) {
-
-            mMapView = (MapView) view.findViewById(R.id.runMap);
-            mMapView.onCreate(savedInstanceState);
-            mMapView.getMapAsync(this); //this is important
 
             Track track = mRunToBeDisplayed.getTrack();
 
@@ -138,13 +130,6 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMapHandler = new MapHandler(googleMap);
-
-        mMapHandler.showTrack(mRunToBeDisplayed.getTrack());
     }
 
     /**
