@@ -1,6 +1,5 @@
 package ch.epfl.sweng.project.Model;
 
-
 /**
  * Interface for a user for our application
  */

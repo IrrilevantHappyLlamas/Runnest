@@ -5,12 +5,12 @@ import org.junit.Test;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 
 /**
- * Created by Tobia Albergoni on 31.10.2016.
+ * Test suite for DBDownloadFragment and DBUploadFragment
  */
 public class DBFragmentsTest {
 
     @Test(expected = IllegalArgumentException.class)
-    public void DWcallOnSuccessAndWriteNullFile() {
+    public void callOnSuccessAndWriteNullFile() {
         DBDownloadFragment dwFrag = new DBDownloadFragment();
         dwFrag.onSuccess(null);
     }

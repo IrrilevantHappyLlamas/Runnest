@@ -203,6 +203,7 @@ public class SideBarActivity extends AppCompatActivity
         return true;
     }
 
+    //TODO: change access or comment
     public void switchFragment(String query, String result){
 
         mCurrentFragment = DisplayUserFragment.newInstance(query, result);
@@ -288,8 +289,6 @@ public class SideBarActivity extends AppCompatActivity
         }
     }
 
-
-
     /**
      * Handle request permissions result. Update what needed and give a feedback to the user.
      *
@@ -338,6 +337,11 @@ public class SideBarActivity extends AppCompatActivity
         launchEmergencyUpload();
     }
 
+    /**
+     * Called by lifecycle methods of the activity, triggers an upload of the database file to firebase.
+     * This method can't wait for success or failure, since the activity is stopping or being destroyed, so there is
+     * no guarantee the upload will be successful.
+     */
     private void launchEmergencyUpload() {
         DBHelper dbHelper = new DBHelper(this);
         Uri file = Uri.fromFile(dbHelper.getDatabasePath());
@@ -348,6 +352,14 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     private void dialogLogout(){
+
+        /*
+        String message = "Are you sure you want to logout?";
+        if(!((AppRunnest)getApplication()).getNetworkHandler().isConnected()) {
+            message = "If you logout now, your session progresses will be lost. Logout?";
+        }
+        */
+
         new AlertDialog.Builder(this)
                 .setTitle("Logout")
                 .setMessage("Are you sure you want to logout?")
@@ -366,6 +378,7 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     private void dialogQuitRun(final MenuItem item){
+
         new AlertDialog.Builder(this)
                 .setTitle("Quit Run")
                 .setMessage("Are you sure you want to to quit your current run?")

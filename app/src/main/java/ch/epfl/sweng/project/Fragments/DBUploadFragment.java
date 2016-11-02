@@ -1,13 +1,11 @@
 package ch.epfl.sweng.project.Fragments;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +15,6 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -25,7 +22,6 @@ import com.google.firebase.storage.UploadTask;
 import ch.epfl.sweng.project.Activities.LoginActivity;
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Database.DBHelper;
-import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 
 /**
  * Fragment that manages upload of local SQLite database to the remote Firebase storage of user
@@ -65,7 +61,7 @@ public class DBUploadFragment extends Fragment implements
      *
      * @return  the Firebase storage reference of the user's runs database
      */
-    public StorageReference getUserStorageRef() {
+    private StorageReference getUserStorageRef() {
 
         return FirebaseStorage.getInstance()
                 .getReferenceFromUrl("gs://runnest-146309.appspot.com")
@@ -77,12 +73,11 @@ public class DBUploadFragment extends Fragment implements
      */
     private void logout() {
         Intent intent = new Intent(getContext(), LoginActivity.class);
-        intent.putExtra("Source", "logout_pressed");
         startActivity(intent);
         FirebaseAuth.getInstance().signOut();
     }
 
-    // TODO: catch other Firebase exceptions and handle them properly
+    // TODO: eventually catch other Firebase exceptions and handle them properly
     @Override
     public void onFailure(@NonNull Exception e) {
         Toast.makeText(getContext(), "Upload failed", Toast.LENGTH_LONG).show();

@@ -1,8 +1,5 @@
 package ch.epfl.sweng.project;
 
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.os.Looper;
 import android.os.SystemClock;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.contrib.DrawerActions;

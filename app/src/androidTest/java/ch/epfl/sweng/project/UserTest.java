@@ -28,6 +28,6 @@ public class UserTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void authUserWithNullAccountThrowsException() {
-        User user = new AuthenticatedUser(null);
+        new AuthenticatedUser(null);
     }
 }

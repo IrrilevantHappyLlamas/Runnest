@@ -1,9 +1,9 @@
 package ch.epfl.sweng.project.Model;
 
 import android.net.Uri;
+
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 /**
  * Class that implements the <code>User</code> interface, used when we have an authenticated user in our app
@@ -59,6 +59,7 @@ public class AuthenticatedUser implements User {
         return photoUrl;
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public String getFirebaseId() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();

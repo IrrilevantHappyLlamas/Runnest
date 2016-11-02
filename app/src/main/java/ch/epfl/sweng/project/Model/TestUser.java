@@ -1,6 +1,5 @@
 package ch.epfl.sweng.project.Model;
 
-
 /**
  * Class that implements the <code>User</code> interface, used when we need to test the app without
  * an authenticated user in our app

@@ -2,7 +2,6 @@ package ch.epfl.sweng.project;
 
 import android.support.multidex.MultiDexApplication;
 
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import ch.epfl.sweng.project.Model.TestUser;
