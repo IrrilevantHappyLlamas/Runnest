@@ -11,10 +11,14 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import ch.epfl.sweng.project.Fragments.NewRun.MapHandler;
 import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.Track;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
 
 /**
  * A simple {@link Fragment} subclass.

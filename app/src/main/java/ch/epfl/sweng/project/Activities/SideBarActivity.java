@@ -69,6 +69,7 @@ public class SideBarActivity extends AppCompatActivity
     private Fragment mCurrentFragment = null;
     private FragmentManager fragmentManager = null;
     private SearchView mSearchView = null;
+
     private FirebaseHelper mFirebaseHelper = null;
 
     private FloatingActionButton fab;
@@ -170,25 +171,28 @@ public class SideBarActivity extends AppCompatActivity
             @Override
             public boolean onQueryTextSubmit(final String query){
 
-                mFirebaseHelper.getDatabase().child("users").child(query).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()) {
+                if(((AppRunnest)getApplication()).getNetworkHandler().isConnected()) {
 
-                            switchFragment(query, dataSnapshot.child("name").getValue().toString());
+                    mFirebaseHelper.getDatabase().child("users").child(query).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+
+                                switchFragment(query, dataSnapshot.child("name").getValue().toString());
+                            } else {
+
+                                switchFragment(null, null);
+                            }
                         }
-                        else{
 
-                            switchFragment(null, null);
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
                         }
-                    }
+                    });
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
-
-                return true;
+                    return true;
+                }
+                return false;
             }
 
             @Override
@@ -299,24 +303,18 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-
+                                           @NonNull int[] grantResults)
+    {
         switch (requestCode) {
-
             case PERMISSION_REQUEST_CODE_FINE_LOCATION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
                     Toast.makeText(getApplicationContext(),"You can now start a Run.",Toast.LENGTH_LONG).show();
-
                 } else {
-
                     Toast.makeText(getApplicationContext(),"Permission Denied, you cannot start a Run.",
                              Toast.LENGTH_LONG).show();
                 }
                 break;
-
         }
-
     }
 
     @Override
@@ -353,16 +351,14 @@ public class SideBarActivity extends AppCompatActivity
 
     private void dialogLogout(){
 
-        /*
         String message = "Are you sure you want to logout?";
         if(!((AppRunnest)getApplication()).getNetworkHandler().isConnected()) {
             message = "If you logout now, your session progresses will be lost. Logout?";
         }
-        */
 
         new AlertDialog.Builder(this)
                 .setTitle("Logout")
-                .setMessage("Are you sure you want to logout?")
+                .setMessage(message)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         launchFragment(new DBUploadFragment());
@@ -411,7 +407,6 @@ public class SideBarActivity extends AppCompatActivity
 
     @Override
     public void onRunningMapFragmentInteraction(Run run) {
-
         launchFragment(DisplayRunFragment.newInstance(run));
     }
 

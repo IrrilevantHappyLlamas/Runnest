@@ -52,6 +52,7 @@ public final class LoginActivity extends AppCompatActivity
         setUpGoogleAuth();
         setUpFirebaseAuth();
         setUpLoginUI();
+        ((AppRunnest) getApplication()).setNetworkHandler();
     }
 
     private void setUpLoginUI() {
@@ -218,12 +219,14 @@ public final class LoginActivity extends AppCompatActivity
      */
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.sign_in_button:
-                Log.d(TAG, "clickSignInBtn:");
-                signOut();
-                signIn();
-                break;
+        if(((AppRunnest)getApplication()).getNetworkHandler().isConnected()) {
+            switch (v.getId()) {
+                case R.id.sign_in_button:
+                    Log.d(TAG, "clickSignInBtn:");
+                    signOut();
+                    signIn();
+                    break;
+            }
         }
     }
 

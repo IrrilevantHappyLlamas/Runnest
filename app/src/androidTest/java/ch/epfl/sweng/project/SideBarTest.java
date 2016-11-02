@@ -29,7 +29,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
-
 @RunWith(AndroidJUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SideBarTest {
@@ -156,8 +155,6 @@ public class SideBarTest {
         listenerTest.onRunningMapFragmentInteraction(listenerRun);
     }
 
-    /*
-
     @Test
     public void uselessOnFragmentListenersWork() {
 
@@ -170,8 +167,6 @@ public class SideBarTest {
         listenerTest.onProfileFragmentInteraction();
         listenerTest.onDBUploadFragmentInteraction();
     }
-
-     */
 
     @Test
     public void displayUserFragmentCanBeInstanced() {

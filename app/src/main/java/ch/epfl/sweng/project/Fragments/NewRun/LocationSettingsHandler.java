@@ -77,7 +77,7 @@ public class LocationSettingsHandler implements
     public boolean checkLocationSettings() {
 
         // In case of a test session we don't want to check settings
-        if( ((AppRunnest)mActivity.getApplication()).isTestSession()) {
+        if(((AppRunnest)mActivity.getApplication()).isTestSession()) {
             return true;
         }
 
