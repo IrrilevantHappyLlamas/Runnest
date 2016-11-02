@@ -28,7 +28,7 @@ public class Profile {
 
         if (account == null) {
             id = "No User";
-            email = "No User";
+            email = "no.user@invalid.null";
             familyName = "No User";
             name = "No User";
             photoUrl = "";
@@ -81,6 +81,18 @@ public class Profile {
     public void addRun(Run run) {
         runs.add(run);
         totalDistance += run.getTrack().getDistance();
+    }
+
+
+    /**
+     * Converts the email to allow the firebase storage
+     *
+     * @return email for firebase
+     */
+    public String getFireBaseMail() {
+        String fireBaseMail = email.replace(".", "_dot_");
+        fireBaseMail = fireBaseMail.replace("@", "_at_");
+        return fireBaseMail;
     }
 
 }

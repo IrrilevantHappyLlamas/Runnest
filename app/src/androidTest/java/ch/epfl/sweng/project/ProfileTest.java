@@ -12,11 +12,12 @@ public class ProfileTest {
     public void getterWorks() {
         Profile profile = new Profile(null);
         Assert.assertEquals("No User", profile.getId());
-        Assert.assertEquals("No User", profile.getEmail());
+        Assert.assertEquals("no.user@invalid.null", profile.getEmail());
         Assert.assertEquals("No User", profile.getFamilyName());
         Assert.assertEquals("No User", profile.getName());
         Assert.assertEquals("", profile.getPhotoUrl());
         Assert.assertEquals(0.0f, profile.getTotalDistance());
+        Assert.assertEquals("no_dot_user_at_invalid_dot_null", profile.getFireBaseMail());
     }
 
     @Test
