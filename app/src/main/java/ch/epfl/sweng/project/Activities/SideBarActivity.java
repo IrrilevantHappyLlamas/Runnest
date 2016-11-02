@@ -176,7 +176,6 @@ public class SideBarActivity extends AppCompatActivity
 
             @Override
             public boolean onQueryTextSubmit(final String query) {
-
                 mFirebaseHelper.getDatabase().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
