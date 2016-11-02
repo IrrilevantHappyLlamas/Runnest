@@ -118,6 +118,6 @@ public class MessagesFragment extends Fragment implements View.OnClickListener {
      * Interface for SideBarActivity
      */
     public interface MessagesFragmentInteractionListener {
-        void onMessagesFragmentInteraction(Uri uri);
+        void onMessagesFragmentInteraction();
     }
 }

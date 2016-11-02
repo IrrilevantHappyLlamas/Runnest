@@ -107,7 +107,7 @@ public class DBUploadFragment extends Fragment implements
      */
     public interface DBUploadFragmentInteractionListener {
         @SuppressWarnings("unused")
-        void onDBUploadFragmentInteraction(Uri uri);
+        void onDBUploadFragmentInteraction();
     }
 
     @SuppressWarnings("ProhibitedExceptionThrown")

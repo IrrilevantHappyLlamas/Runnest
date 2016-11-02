@@ -85,7 +85,7 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
      * Interface for SideBarActivity
      */
     public interface ProfileFragmentInteractionListener {
-        void onProfileFragmentInteraction(Uri uri);
+        void onProfileFragmentInteraction();
     }
 
 

@@ -4,7 +4,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -323,7 +322,7 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onProfileFragmentInteraction(Uri uri) {
+    public void onProfileFragmentInteraction() {
 
     }
 
@@ -355,7 +354,7 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDBUploadFragmentInteraction(Uri uri) {
+    public void onDBUploadFragmentInteraction() {
 
     }
 
@@ -409,7 +408,7 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onMessagesFragmentInteraction(Uri uri) {
+    public void onMessagesFragmentInteraction() {
 
     }
 }
