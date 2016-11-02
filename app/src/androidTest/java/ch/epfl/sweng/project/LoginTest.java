@@ -36,27 +36,4 @@ public class LoginTest {
         onView(withId(R.id.sign_in_button))
                 .check(matches(isDisplayed()));
     }
-
-    /*@Test
-    public void a() {
-        onView(withId(R.id.sign_in_button))
-                .perform(click());
-        onView(withId(R.id.fragment_container))
-                .check(matches(isDisplayed()));
-    }
-
-    @Test
-    public void b() {
-        onView(withId(R.id.drawer_layout))
-                .perform(DrawerActions.open());
-
-        onView(withId(R.id.drawer_layout)).check(matches(isOpen()));
-    }*/
-
-
-
-
-
-
-
 }
