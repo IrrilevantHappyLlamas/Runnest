@@ -92,7 +92,6 @@ public class DBUploadFragment extends Fragment implements
     public void onSuccess(UploadTask.TaskSnapshot tResult) {
         Toast.makeText(getContext(), "Upload successful", Toast.LENGTH_LONG).show();
         logout();
-
     }
 
     @SuppressWarnings("ProhibitedExceptionThrown")
