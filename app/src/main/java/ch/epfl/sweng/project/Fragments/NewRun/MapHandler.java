@@ -73,6 +73,9 @@ public class MapHandler {
         mGoogleMap.setMyLocationEnabled(false);
     }
 
+    /**
+     * Define what the user can do during a run and what he can't to.
+     */
     public void setRunningGesture() {
         mGoogleMap.setBuildingsEnabled(false);
         mGoogleMap.setIndoorEnabled(false);
