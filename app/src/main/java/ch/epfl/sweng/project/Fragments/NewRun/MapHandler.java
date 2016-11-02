@@ -5,8 +5,10 @@ import android.graphics.Color;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.List;
@@ -38,13 +40,20 @@ public class MapHandler {
         PolylineOptions polylineOptions = new PolylineOptions();
 
         List<CheckPoint> trackPoints = track.getCheckpoints();
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
         for (CheckPoint checkPoint: trackPoints) {
             LatLng latLng = new LatLng(checkPoint.getLatitude(), checkPoint.getLongitude());
             polylineOptions.add(latLng);
+            builder.include(latLng);
         }
 
         mGoogleMap.addPolyline(mPolylineOptions.color(Color.BLUE));
+
+        LatLngBounds bounds = builder.build();
+        int padding = 40; // offset from edges of the map in pixels
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+        mGoogleMap.animateCamera(cu);
     }
 
     /**
@@ -60,7 +69,7 @@ public class MapHandler {
             mGoogleMap.clear();
             mGoogleMap.addPolyline(mPolylineOptions.color(Color.BLUE));
 
-            CameraPosition mCameraPosition = new CameraPosition.Builder().target(currentLatLng).zoom(CAMERA_ZOOM).build();
+            CameraPosition mCameraPosition = new CameraPosition.Builder().target(currentLatLng).build();
             CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(mCameraPosition);
             mGoogleMap.animateCamera(cameraUpdate);
         }
@@ -82,5 +91,17 @@ public class MapHandler {
      */
     public void stopShowingLocation() throws SecurityException {
         mGoogleMap.setMyLocationEnabled(false);
+    }
+
+    public void setRunningGesture() {
+        mGoogleMap.setBuildingsEnabled(false);
+        mGoogleMap.setIndoorEnabled(false);
+        mGoogleMap.setTrafficEnabled(false);
+        mGoogleMap.setMinZoomPreference(CAMERA_ZOOM);
+
+        mGoogleMap.getUiSettings().setCompassEnabled(false);
+        mGoogleMap.getUiSettings().setIndoorLevelPickerEnabled(false);
+        mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
+        mGoogleMap.getUiSettings().setScrollGesturesEnabled(false);
     }
 }
