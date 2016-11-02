@@ -46,12 +46,12 @@ public class SideBarTest {
     @Test
     public void aDrawerLayout() {
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.drawer_layout))
                 .perform(DrawerActions.open());
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.drawer_layout)).check(matches(isOpen()));
     }
@@ -59,12 +59,12 @@ public class SideBarTest {
     @Test
     public void navigateToRunningMap() {
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.drawer_layout))
                 .perform(DrawerActions.open());
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_new_run));
     }
@@ -72,12 +72,12 @@ public class SideBarTest {
     @Test
     public void navigateToRunHistory() {
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.drawer_layout))
                 .perform(DrawerActions.open());
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run_history));
     }
@@ -85,12 +85,12 @@ public class SideBarTest {
     @Test
     public void navigateToMessages() {
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.drawer_layout))
                 .perform(DrawerActions.open());
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
     }
@@ -98,12 +98,12 @@ public class SideBarTest {
     @Test
     public void navigateToProfile() {
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.drawer_layout))
                 .perform(DrawerActions.open());
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_profile));
     }
@@ -111,26 +111,26 @@ public class SideBarTest {
     @Test
     public void navigateToLogout() {
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.drawer_layout))
                 .perform(DrawerActions.open());
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_logout));
 
         onView(withText("OK"))
                 .perform(click());
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
     }
 
 
     @Test
     public void setRunningWorks() {
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         SideBarActivity listenerTest = mActivityRule.getActivity();
 
@@ -140,13 +140,13 @@ public class SideBarTest {
     @Test
     public void nonEmptyOnFragmentListenerWork() {
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         SideBarActivity listenerTest = mActivityRule.getActivity();
 
         Run listenerRun= new Run();
         listenerRun.start();
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
         listenerRun.update(TrackTest.buildCheckPoint(1, 1));
         listenerRun.update(TrackTest.buildCheckPoint(1, 2));
         listenerRun.stop();
@@ -158,7 +158,7 @@ public class SideBarTest {
     @Test
     public void uselessOnFragmentListenersWork() {
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         SideBarActivity listenerTest = mActivityRule.getActivity();
 
@@ -170,7 +170,7 @@ public class SideBarTest {
 
     @Test
     public void displayUserFragmentCanBeInstanced() {
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         DisplayUserFragment.newInstance("testId", "testName");
     }
@@ -178,27 +178,27 @@ public class SideBarTest {
     @Test
     public void backButtonWorks() {
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run_history));
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_profile));
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         Espresso.pressBack();
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.list)).check(matches(isDisplayed()));
     }
@@ -206,7 +206,7 @@ public class SideBarTest {
     @Test
     public void backButtonDoesNothingIfStackEmpty() {
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         Espresso.pressBack();
     }
@@ -214,43 +214,43 @@ public class SideBarTest {
     @Test
     public void startRun() {
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.drawer_layout))
                 .perform(DrawerActions.open());
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.nav_view))
                 .perform(NavigationViewActions.navigateTo(R.id.nav_new_run));
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.start_run))
                 .check(matches(isDisplayed()));
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.start_run))
                 .perform(click());
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.stop_run))
                 .check(matches(isDisplayed()));
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
 
         onView(withId(R.id.stop_run))
                 .perform(click());
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.go_to_run_history))
                 .perform(click());
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.list)).check(matches(isDisplayed()));
     }
@@ -258,7 +258,7 @@ public class SideBarTest {
     @Test
     public void lifecycleTest() {
 
-        SystemClock.sleep(100);
+        SystemClock.sleep(500);
 
         mActivityRule.getActivity().finish();
         mActivityRule.getActivity();
