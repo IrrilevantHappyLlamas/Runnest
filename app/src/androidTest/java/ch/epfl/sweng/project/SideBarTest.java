@@ -1,10 +1,15 @@
 package ch.epfl.sweng.project;
 
 import android.os.SystemClock;
+import android.support.test.espresso.action.EspressoKey;
 import android.support.test.espresso.contrib.DrawerActions;
 import android.support.test.espresso.contrib.NavigationViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.view.KeyEvent;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -21,6 +26,8 @@ import ch.epfl.sweng.project.Activities.SideBarActivity;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.pressKey;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.DrawerMatchers.isOpen;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
@@ -28,9 +35,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
-/**
- * Created by Tobia Albergoni on 27.10.2016.
- */
 @RunWith(AndroidJUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SideBarTest {
@@ -111,6 +115,28 @@ public class SideBarTest {
         SystemClock.sleep(3000);
     }
 
+    @Test
+    public void searchAndClickOnChallenge() {
+        onView(withId(R.id.search)).perform(click());
+        SystemClock.sleep(3000);
+
+        onView(isAssignableFrom(EditText.class)).perform(typeText("pablo"), pressKey(KeyEvent.KEYCODE_ENTER));
+        SystemClock.sleep(3000);
+        onView(withId(R.id.table)).check(matches(isDisplayed()));
+        onView(isAssignableFrom(Button.class)).perform(click());
+        onView(withId(R.id.waitChallengedUserTextView)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void searchInexistentUser() {
+        onView(withId(R.id.search)).perform(click());
+        SystemClock.sleep(3000);
+
+        onView(isAssignableFrom(EditText.class)).perform(typeText("kadfjisadsa"), pressKey(KeyEvent.KEYCODE_ENTER));
+        SystemClock.sleep(3000);
+        onView(withId(R.id.table)).check(matches(isDisplayed()));
+        onView(withText("No user found.")).check(matches(isDisplayed()));
+    }
 
     @Test
     public void backPressedForStack() {
@@ -125,8 +151,4 @@ public class SideBarTest {
 
         onView(withId(R.id.photoImg)).check(matches(isDisplayed()));
     }
-
-
-
-
 }

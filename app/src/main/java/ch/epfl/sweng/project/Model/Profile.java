@@ -6,11 +6,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import java.util.ArrayList;
 
-/**
- * Profile class, store information about the user
- *
- * @author Riccardo Conti
- */
 public class Profile {
 
     private final String id;

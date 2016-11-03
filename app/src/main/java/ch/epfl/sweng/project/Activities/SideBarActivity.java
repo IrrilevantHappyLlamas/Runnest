@@ -32,9 +32,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import ch.epfl.sweng.project.AppRunnest;
+import ch.epfl.sweng.project.Fragments.ChallengeFragment;
 import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 import ch.epfl.sweng.project.Fragments.DBUploadFragment;
@@ -58,7 +62,8 @@ public class SideBarActivity extends AppCompatActivity
         RunHistoryFragment.onRunHistoryInteractionListener,
         DisplayRunFragment.OnDisplayRunInteractionListener,
         DisplayUserFragment.OnDisplayUserFragmentInteractionListener,
-        MessagesFragment.MessagesFragmentInteractionListener
+        MessagesFragment.MessagesFragmentInteractionListener,
+        ChallengeFragment.OnChallengeFragmentInteractionListener
 {
 
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
@@ -185,18 +190,28 @@ public class SideBarActivity extends AppCompatActivity
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
 
             @Override
-            public boolean onQueryTextSubmit(final String query){
-
-                mFirebaseHelper.getDatabase().child("users").child(query).addListenerForSingleValueEvent(new ValueEventListener() {
+            public boolean onQueryTextSubmit(final String query) {
+                mFirebaseHelper.getDatabase().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if(dataSnapshot.exists()) {
+                            Map<String, String> users = new HashMap<>();
+                            for (DataSnapshot user : dataSnapshot.getChildren()) {
+                                String usersName = user.getKey().toString();
+                                String usersEmail = user.child("name").getValue().toString();
+                                String[] surnameAndFamilyName = usersName.split(" ");
+                                String surname = surnameAndFamilyName[0].toLowerCase();
+                                String familyName = surnameAndFamilyName[1].toLowerCase();
 
-                            switchFragment(query, dataSnapshot.child("name").getValue().toString());
-                        }
-                        else{
-
-                            switchFragment(null, null);
+                                if (surname.startsWith(query.toLowerCase())
+                                        || familyName.startsWith(query.toLowerCase())
+                                        || usersEmail.toLowerCase().startsWith(query.toLowerCase())) {
+                                    users.put(usersName, usersEmail);
+                                }
+                            }
+                            switchFragment(users);
+                        } else {
+                            switchFragment(null);
                         }
                     }
 
@@ -210,19 +225,15 @@ public class SideBarActivity extends AppCompatActivity
 
             @Override
             public boolean onQueryTextChange(String newText){
-
                 return true;
             }
-
-
         });
 
         return true;
     }
 
-    public void switchFragment(String query, String result){
-
-        mCurrentFragment = DisplayUserFragment.newInstance(query, result);
+    public void switchFragment(Map<String, String> results){
+        mCurrentFragment = DisplayUserFragment.newInstance(results);
         fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
     }
 
@@ -372,8 +383,6 @@ public class SideBarActivity extends AppCompatActivity
     public void onDisplayRunInteraction() {
         // keep using the stack
         onNavigationItemSelected(navigationView.getMenu().getItem(2));
-        /*mCurrentFragment = new RunHistoryFragment();
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();*/
     }
 
     @Override
@@ -433,11 +442,18 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDisplayUserFragmentInteraction(){
+    public void onDisplayUserFragmentInteraction(String challengedUserName, String challengedUserEmail) {
+        mCurrentFragment = ChallengeFragment.newInstance(challengedUserName, challengedUserEmail);
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
     }
 
     @Override
     public void onMessagesFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onChallengeFragmentInteraction() {
 
     }
 }
