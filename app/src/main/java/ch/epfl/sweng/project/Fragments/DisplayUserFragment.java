@@ -18,6 +18,7 @@ import java.util.Map;
 
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.Message;
+import ch.epfl.sweng.project.Model.Profile;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -94,8 +95,7 @@ public class DisplayUserFragment extends Fragment {
                     // Send message
                     // TODO: make profile a SideBarActivity attribute so that it can be accessible here to set the from
                     String from = "me";
-                    // TODO: children names in firebase can't contain . and @
-                    String to = "challengee";//mName;
+                    String to = Profile.getFireBaseMail(email);
                     String message = "Run with me!";
                     Message challengeRequestMessage = new Message(from, to, Message.MessageType.CHALLENGE_REQUEST, message);
 
