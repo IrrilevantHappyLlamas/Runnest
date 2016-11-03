@@ -64,4 +64,5 @@ public class AuthenticatedUser implements User {
     public String getFirebaseId() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
+
 }

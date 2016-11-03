@@ -31,4 +31,6 @@
     <string name="run_history">Run History</string>
     <string name="search_title">search_title</string>
     <string name="go_to_home_page">GO TO HOME PAGE</string>
+    <string name="decline">DECLINE</string>
+    <string name="accept">ACCEPT</string>
 </resources>

@@ -11,4 +11,5 @@ public interface User {
     String getName();
     String getPhotoUrl();
     String getFirebaseId();
+
 }

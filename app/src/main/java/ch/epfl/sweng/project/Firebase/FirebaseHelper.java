@@ -138,4 +138,15 @@ public class FirebaseHelper {
 
         databaseReference.child("users").child(id).child("name").setValue(name);
     }
+
+    /**
+     * Converts the email to allow the firebase storage
+     *
+     * @return email for firebase
+     */
+    public static String getFireBaseMail(String email) {
+        String fireBaseMail = email.replace(".", "_dot_");
+        fireBaseMail = fireBaseMail.replace("@", "_at_");
+        return fireBaseMail;
+    }
 }
