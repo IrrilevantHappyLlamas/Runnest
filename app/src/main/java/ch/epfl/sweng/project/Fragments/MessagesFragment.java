@@ -17,6 +17,7 @@ import java.util.List;
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.Message;
+import ch.epfl.sweng.project.Model.Profile;
 
 
 public class MessagesFragment extends ListFragment{
@@ -31,15 +32,16 @@ public class MessagesFragment extends ListFragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
+                             Bundle savedInstanceState)
+    {
         View view = inflater.inflate(R.layout.simple_listview, container, false);
 
         mFirebaseHelper = new FirebaseHelper();
-        if(((AppRunnest) getActivity().getApplication()).getGoogleUser() != null){
-            mEmail = ((AppRunnest) getActivity().getApplication()).getGoogleUser().getEmail().replace('.', '_').replace('@', '-');
-        }else{
-
+        if (((AppRunnest) getActivity().getApplication()).getGoogleUser() != null) {
+            //TODO: get email from profile
+            String realEmail = ((AppRunnest) getActivity().getApplication()).getGoogleUser().getEmail();
+            mEmail = Profile.getFireBaseMail(realEmail);
+        } else {
             mEmail = "furulu-live_com";
         }
         fetchMessages();
@@ -59,21 +61,18 @@ public class MessagesFragment extends ListFragment{
                 int size = messages.size();
                 mMessages = messages;
 
-                if(size == 0){
-
+                if (size == 0) {
                     mMessageHeaders = new String[1];
                     mMessageHeaders[0] = "No message has been received yet";
-                }
-                else{
+                } else {
 
-                mMessageHeaders = new String[size];
+                    mMessageHeaders = new String[size];
 
-                for (int i=0; i < size; ++i){
+                    for (int i = 0; i < size; ++i) {
+                        Message currentMessage = messages.get(i);
 
-                    Message currentMessage = messages.get(i);
-
-                    mMessageHeaders[i] = "From: " + currentMessage.getFrom() + "\n" + "Type: " + currentMessage.getType();
-                }
+                        mMessageHeaders[i] = "From: " + currentMessage.getFrom() + "\n" + "Type: " + currentMessage.getType();
+                    }
                 }
 
                 onCreateFollow();
@@ -81,12 +80,11 @@ public class MessagesFragment extends ListFragment{
         });
     }
 
-    /*
-    This method is a follow-up of OnCreateView, taking care of the last settings.
+    /**
+     * This method is a follow-up of OnCreateView, taking care of the last settings.
      */
-    public void onCreateFollow(){
-
-        this.setListAdapter(new ArrayAdapter<String>(this.getContext(), R.layout.simple_textview, mMessageHeaders));
+    public void onCreateFollow() {
+        this.setListAdapter(new ArrayAdapter<>(this.getContext(), R.layout.simple_textview, mMessageHeaders));
     }
 
     @Override
@@ -109,9 +107,7 @@ public class MessagesFragment extends ListFragment{
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id){
-
         if(!mMessages.isEmpty()){
-
             mListener.onMessagesFragmentInteraction(mMessages.get(position));
         }
     }

@@ -127,7 +127,8 @@ public class SideBarTest {
         SystemClock.sleep(3000);
         onView(withId(R.id.table)).check(matches(isDisplayed()));
         SystemClock.sleep(2000);
-        onView(withText("Challenge")).perform(click());
+        onView(isAssignableFrom(Button.class)).perform(click());
+        SystemClock.sleep(2000);
         onView(withId(R.id.waitChallengedUserTextView)).check(matches(isDisplayed()));
     }
 
