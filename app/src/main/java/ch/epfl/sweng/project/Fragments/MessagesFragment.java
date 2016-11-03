@@ -1,7 +1,6 @@
 package ch.epfl.sweng.project.Fragments;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,11 +14,14 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
 import java.util.List;
 
+import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.Message;
 
 
 public class MessagesFragment extends Fragment implements View.OnClickListener {
+
+
     private FirebaseHelper mFirebaseHelper = null;
     private String username = "you";
 
@@ -53,27 +55,32 @@ public class MessagesFragment extends Fragment implements View.OnClickListener {
     }
 
     private void sendMessage() {
-        String message = messageEditText.getText().toString();
-        if (!message.equals("")) {
-            messageEditText.setText("");
-            Message msg = new Message("me", username, Message.MessageType.TEXT, message);
-            mFirebaseHelper.send(msg);
+
+        if(((AppRunnest)getActivity().getApplication()).getNetworkHandler().isConnected()) {
+            String message = messageEditText.getText().toString();
+            if (!message.equals("")) {
+                messageEditText.setText("");
+                Message msg = new Message("me", username, Message.MessageType.TEXT, message);
+                mFirebaseHelper.send(msg);
+            }
         }
     }
 
     private void fetchMessages() {
-        mFirebaseHelper.fetchMessages(username, new FirebaseHelper.Handler() {
-            @Override
-            public void handleRetrievedMessages(List<Message> messages) {
-                String str = messages.size() + " messages recieved \n";
-                for (Message m : messages) {
-                    str += "FROM: " + m.getFrom() + "\nRECIVED: " + m.getTime() + "\n";
-                    str += "MSG: " + m.getMessage() + "\n\n";
-                }
+        if(((AppRunnest)getActivity().getApplication()).getNetworkHandler().isConnected()) {
+            mFirebaseHelper.fetchMessages(username, new FirebaseHelper.Handler() {
+                @Override
+                public void handleRetrievedMessages(List<Message> messages) {
+                    String str = messages.size() + " messages recieved \n";
+                    for (Message m : messages) {
+                        str += "FROM: " + m.getFrom() + "\nRECIVED: " + m.getTime() + "\n";
+                        str += "MSG: " + m.getMessage() + "\n\n";
+                    }
 
-                fetchedMessages.setText(str);
-            }
-        });
+                    fetchedMessages.setText(str);
+                }
+            });
+        }
     }
 
 
@@ -110,6 +117,6 @@ public class MessagesFragment extends Fragment implements View.OnClickListener {
      * Interface for SideBarActivity
      */
     public interface MessagesFragmentInteractionListener {
-        void onMessagesFragmentInteraction(Uri uri);
+        void onMessagesFragmentInteraction();
     }
 }

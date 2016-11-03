@@ -63,7 +63,7 @@ public class RunTest {
         Run testRun1 = new Run();
 
         Assert.assertFalse(testRun1.stop());
-        Assert.assertFalse(testRun1.update(TrackTest.buildCheckPoint(1, 1, 1)));
+        Assert.assertFalse(testRun1.update(TrackTest.buildCheckPoint(1, 1)));
         Assert.assertFalse(testRun1.isRunning());
     }
 
@@ -91,7 +91,7 @@ public class RunTest {
 
         testRun2.start();
 
-        Assert.assertTrue(testRun2.update(TrackTest.buildCheckPoint(1, 1, 1)));
+        Assert.assertTrue(testRun2.update(TrackTest.buildCheckPoint(1, 1)));
         Assert.assertTrue(testRun2.isRunning());
 
         Assert.assertTrue(testRun2.stop());

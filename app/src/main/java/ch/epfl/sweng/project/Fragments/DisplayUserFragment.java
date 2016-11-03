@@ -13,6 +13,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import ch.epfl.sweng.project.Model.Track;
+import ch.epfl.sweng.project.NetworkHandler;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 /**
@@ -42,6 +43,7 @@ public class DisplayUserFragment extends Fragment {
      * @return A new instance of fragment DisplayUserFragment.
      */
     public static DisplayUserFragment newInstance(String id, String name) {
+
         DisplayUserFragment fragment = new DisplayUserFragment();
         Bundle args = new Bundle();
         args.putString(ARG_ID, id);
@@ -61,40 +63,36 @@ public class DisplayUserFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle savedInstanceState)
+    {
 
-            View view = inflater.inflate(R.layout.fragment_display_user, container, false);
+        View view = inflater.inflate(R.layout.fragment_display_user, container, false);
 
-             TableLayout table = (TableLayout) view.findViewById(R.id.table);
+        TableLayout table = (TableLayout) view.findViewById(R.id.table);
 
-            if (mId != null && mName != null) {
+        if (mId != null && mName != null) {
 
+            // Email Row
+            TableRow firstRow = new TableRow(this.getContext());
+            createRowElement(firstRow, "Name :");
+            createRowElement(firstRow, mId);
+            table.addView(firstRow);
 
+            // Name Row
+            TableRow secondRow = new TableRow(this.getContext());
+            createRowElement(secondRow, "Email :");
+            createRowElement(secondRow, mName);
+            table.addView(secondRow);
 
-                // Email Row
-                TableRow firstRow = new TableRow(this.getContext());
-                createRowElement(firstRow, "Name :");
-                createRowElement(firstRow, mId);
-                table.addView(firstRow);
-
-                // Name Row
-                TableRow secondRow = new TableRow(this.getContext());
-                createRowElement(secondRow, "Email :");
-                createRowElement(secondRow, mName);
-                table.addView(secondRow);
-
-            }
-        else{
-
-
-                // No User found Row
-                TableRow firstRow = new TableRow(this.getContext());
-                createRowElement(firstRow, "No user found.");
-                table.addView(firstRow);
-            }
-
-            return view;
+        } else{
+            // No User found Row
+            TableRow firstRow = new TableRow(this.getContext());
+            createRowElement(firstRow, "No user found.");
+            table.addView(firstRow);
         }
+
+        return view;
+    }
 
     private void createRowElement(TableRow row, String text){
 
