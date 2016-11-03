@@ -33,6 +33,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Fragments.ChallengeFragment;
+import ch.epfl.sweng.project.Fragments.DisplayChallengeRequestFragment;
 import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
 
 import java.util.ArrayList;
@@ -47,6 +48,7 @@ import ch.epfl.sweng.project.Fragments.NewRun.RunningMapFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
+import ch.epfl.sweng.project.Fragments.DisplayChallengeRequestFragment;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.Message;
 import ch.epfl.sweng.project.Model.Run;
@@ -63,7 +65,8 @@ public class SideBarActivity extends AppCompatActivity
         DisplayRunFragment.OnDisplayRunInteractionListener,
         DisplayUserFragment.OnDisplayUserFragmentInteractionListener,
         MessagesFragment.MessagesFragmentInteractionListener,
-        ChallengeFragment.OnChallengeFragmentInteractionListener
+        ChallengeFragment.OnChallengeFragmentInteractionListener,
+        DisplayChallengeRequestFragment.OnDisplayChallengeRequestFragmentInteractionListener
 {
 
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
@@ -448,8 +451,23 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onMessagesFragmentInteraction(Uri uri) {
+    public void onMessagesFragmentInteraction(Message message) {
 
+        mCurrentFragment = DisplayChallengeRequestFragment.newInstance(message);
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
+    }
+
+    @Override
+    public void onDisplayChallengeRequestFragmentInteraction(boolean accepted){
+
+        if(accepted){
+            //TODO: instantiate challenge fragment here.
+            launchFragment(new ChallengeFragment());
+        }
+        else{
+
+            launchFragment(new MessagesFragment());
+        }
     }
 
     @Override

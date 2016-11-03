@@ -8,8 +8,8 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.view.KeyEvent;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.EditText;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -82,6 +82,9 @@ public class SideBarTest {
 
     @Test
     public void navigateToMessages() {
+
+        SystemClock.sleep(3000);
+
         onView(withId(R.id.drawer_layout))
                 .perform(DrawerActions.open());
 
@@ -123,7 +126,8 @@ public class SideBarTest {
         onView(isAssignableFrom(EditText.class)).perform(typeText("pablo"), pressKey(KeyEvent.KEYCODE_ENTER));
         SystemClock.sleep(3000);
         onView(withId(R.id.table)).check(matches(isDisplayed()));
-        onView(isAssignableFrom(Button.class)).perform(click());
+        SystemClock.sleep(2000);
+        onView(withText("Challenge")).perform(click());
         onView(withId(R.id.waitChallengedUserTextView)).check(matches(isDisplayed()));
     }
 
@@ -139,7 +143,51 @@ public class SideBarTest {
     }
 
     @Test
+    public void acceptChallengeRequest() {
+
+        SystemClock.sleep(3000);
+
+        onView(withId(R.id.drawer_layout))
+                .perform(DrawerActions.open());
+
+        SystemClock.sleep(3000);
+
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
+
+        SystemClock.sleep(3000);
+
+        onView(withText("From: Pablo\nType: CHALLENGE_REQUEST")).perform(click());
+
+        onView(withText("ACCEPT")).perform(click());
+        SystemClock.sleep(3000);
+    }
+
+    @Test
+    public void declineChallengeRequest() {
+
+        SystemClock.sleep(3000);
+
+        onView(withId(R.id.drawer_layout))
+                .perform(DrawerActions.open());
+
+        SystemClock.sleep(3000);
+
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
+
+        SystemClock.sleep(3000);
+
+        onView(withText("From: Pablo\nType: CHALLENGE_REQUEST")).perform(click());
+
+        onView(withText("DECLINE")).perform(click());
+        SystemClock.sleep(3000);
+    }
+
+
+
+    @Test
     public void backPressedForStack() {
+        SystemClock.sleep(3000);
+
         onView(withId(R.id.drawer_layout))
                 .perform(DrawerActions.open());
 

@@ -1,11 +1,12 @@
 package ch.epfl.sweng.project.Model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * This class represents a message that can be sent to de server and retrieved from the server
  */
-public class Message {
+public class Message implements Serializable {
     private String from;
     private String to;
     private MessageType type;

@@ -17,7 +17,7 @@ public class ProfileTest {
         Assert.assertEquals("No User", profile.getName());
         Assert.assertEquals("", profile.getPhotoUrl());
         Assert.assertEquals(0.0f, profile.getTotalDistance());
-        Assert.assertEquals("no_dot_user_at_invalid_dot_null", profile.getFireBaseMail());
+        Assert.assertEquals("no_dot_user_at_invalid_dot_null", Profile.getFireBaseMail(profile.getEmail()));
     }
 
     @Test
