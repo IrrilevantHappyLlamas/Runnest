@@ -183,21 +183,4 @@ public class SideBarTest {
         SystemClock.sleep(3000);
     }
 
-
-
-    @Test
-    public void backPressedForStack() {
-        SystemClock.sleep(3000);
-
-        onView(withId(R.id.drawer_layout))
-                .perform(DrawerActions.open());
-
-        SystemClock.sleep(3000);
-
-        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_new_run));
-
-        pressBack();
-
-        onView(withId(R.id.photoImg)).check(matches(isDisplayed()));
-    }
 }
