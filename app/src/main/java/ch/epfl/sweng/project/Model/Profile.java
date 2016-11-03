@@ -84,7 +84,7 @@ public class Profile {
      *
      * @return email for firebase
      */
-    public String getFireBaseMail() {
+    public static String getFireBaseMail(String email) {
         String fireBaseMail = email.replace(".", "_dot_");
         fireBaseMail = fireBaseMail.replace("@", "_at_");
         return fireBaseMail;
