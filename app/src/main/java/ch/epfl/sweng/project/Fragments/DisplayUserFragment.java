@@ -11,6 +11,8 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import ch.epfl.sweng.project.AppRunnest;
+
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
 import java.util.HashMap;
@@ -18,7 +20,6 @@ import java.util.Map;
 
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.Message;
-import ch.epfl.sweng.project.Model.Profile;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,14 +30,7 @@ import ch.epfl.sweng.project.Model.Profile;
  * create an instance of this fragment.
  */
 public class DisplayUserFragment extends Fragment {
-
-    private static final String ARG_ID = "id";
-    private static final String ARG_NAME = "name";
-    private static final String ARG_FOUND_USERS = "foundUsers";
-
     private Map<String, String> mFoundUsers;
-    private String mId;
-    private String mName;
 
     private OnDisplayUserFragmentInteractionListener mListener;
 
@@ -93,9 +87,8 @@ public class DisplayUserFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     // Send message
-                    // TODO: make profile a SideBarActivity attribute so that it can be accessible here to set the from
-                    String from = "me";
-                    String to = Profile.getFireBaseMail(email);
+                    String from = ((AppRunnest) getActivity().getApplication()).getUser().getEmail();
+                    String to = FirebaseHelper.getFireBaseMail(email);
                     String message = "Run with me!";
                     Message challengeRequestMessage = new Message(from, to, Message.MessageType.CHALLENGE_REQUEST, message);
 

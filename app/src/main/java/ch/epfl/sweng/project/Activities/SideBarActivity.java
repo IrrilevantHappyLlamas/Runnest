@@ -23,14 +23,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Fragments.ChallengeFragment;
 import ch.epfl.sweng.project.Fragments.DisplayChallengeRequestFragment;
@@ -40,18 +38,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import java.util.Stack;
+
+import ch.epfl.sweng.project.AppRunnest;
+import ch.epfl.sweng.project.Database.DBHelper;
+import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 import ch.epfl.sweng.project.Fragments.DBUploadFragment;
+import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
+import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
 import ch.epfl.sweng.project.Fragments.MessagesFragment;
 import ch.epfl.sweng.project.Fragments.NewRun.RunningMapFragment;
-import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
-import ch.epfl.sweng.project.Fragments.DisplayChallengeRequestFragment;
+
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.Message;
+
 import ch.epfl.sweng.project.Model.Run;
+import ch.epfl.sweng.project.Model.User;
 
 import android.os.Handler;
 
@@ -79,6 +88,7 @@ public class SideBarActivity extends AppCompatActivity
     private Fragment mCurrentFragment = null;
     private FragmentManager fragmentManager = null;
     private SearchView mSearchView = null;
+
     private FirebaseHelper mFirebaseHelper = null;
 
     private FloatingActionButton fab;
@@ -136,13 +146,10 @@ public class SideBarActivity extends AppCompatActivity
             }
         });
 
-        GoogleSignInAccount account = ((AppRunnest)getApplicationContext()).getGoogleUser();
+        User account = ((AppRunnest)getApplicationContext()).getUser();
         if (account != null) {
-            h1.setText(account.getDisplayName());
+            h1.setText(account.getName());
             h2.setText(account.getEmail());
-        } else {
-            h1.setText("Not logged in");
-            h2.setText("Not logged in");
         }
 
         //Initializing the fragment
@@ -194,36 +201,38 @@ public class SideBarActivity extends AppCompatActivity
 
             @Override
             public boolean onQueryTextSubmit(final String query) {
-                mFirebaseHelper.getDatabase().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()) {
-                            Map<String, String> users = new HashMap<>();
-                            for (DataSnapshot user : dataSnapshot.getChildren()) {
-                                String usersName = user.getKey().toString();
-                                String usersEmail = user.child("name").getValue().toString();
-                                String[] surnameAndFamilyName = usersName.split(" ");
-                                String surname = surnameAndFamilyName[0].toLowerCase();
-                                String familyName = surnameAndFamilyName[1].toLowerCase();
+                if(((AppRunnest)getApplication()).getNetworkHandler().isConnected()) {
+                    mFirebaseHelper.getDatabase().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.exists()) {
+                                Map<String, String> users = new HashMap<>();
+                                for (DataSnapshot user : dataSnapshot.getChildren()) {
+                                    String usersName = user.getKey().toString();
+                                    String usersEmail = user.child("name").getValue().toString();
+                                    String[] surnameAndFamilyName = usersName.split(" ");
+                                    String surname = surnameAndFamilyName[0].toLowerCase();
+                                    String familyName = surnameAndFamilyName[1].toLowerCase();
 
-                                if (surname.startsWith(query.toLowerCase())
-                                        || familyName.startsWith(query.toLowerCase())
-                                        || usersEmail.toLowerCase().startsWith(query.toLowerCase())) {
-                                    users.put(usersName, usersEmail);
+                                    if (surname.startsWith(query.toLowerCase())
+                                            || familyName.startsWith(query.toLowerCase())
+                                            || usersEmail.toLowerCase().startsWith(query.toLowerCase())) {
+                                        users.put(usersName, usersEmail);
+                                    }
                                 }
+                                launchFragment(DisplayUserFragment.newInstance(users));
+                            } else {
+                                launchFragment(DisplayUserFragment.newInstance(null));
                             }
-                            switchFragment(users);
-                        } else {
-                            switchFragment(null);
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
-
-                return true;
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    });
+                    return true;
+                }
+                return false;
             }
 
             @Override
@@ -233,11 +242,6 @@ public class SideBarActivity extends AppCompatActivity
         });
 
         return true;
-    }
-
-    public void switchFragment(Map<String, String> results){
-        mCurrentFragment = DisplayUserFragment.newInstance(results);
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
     }
 
     @Override
@@ -273,7 +277,6 @@ public class SideBarActivity extends AppCompatActivity
             fragmentStack.push(item);
         }
 
-        //TODO: check commit is working
         fragmentManager.beginTransaction().remove(mCurrentFragment).commit();
 
         if (id == R.id.nav_profile) {
@@ -306,11 +309,11 @@ public class SideBarActivity extends AppCompatActivity
      * @param toLaunch the new fragment
      */
     private void launchFragment(Fragment toLaunch){
-        mCurrentFragment = toLaunch;
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
+        if(toLaunch != null) {
+            mCurrentFragment = toLaunch;
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
+        }
     }
-
-
 
     /**
      * Handle request permissions result. Update what needed and give a feedback to the user.
@@ -322,24 +325,18 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-
+                                           @NonNull int[] grantResults)
+    {
         switch (requestCode) {
-
             case PERMISSION_REQUEST_CODE_FINE_LOCATION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
                     Toast.makeText(getApplicationContext(),"You can now start a Run.",Toast.LENGTH_LONG).show();
-
                 } else {
-
                     Toast.makeText(getApplicationContext(),"Permission Denied, you cannot start a Run.",
                              Toast.LENGTH_LONG).show();
                 }
                 break;
-
         }
-
     }
 
     /**
@@ -364,45 +361,47 @@ public class SideBarActivity extends AppCompatActivity
 
 
     @Override
-    public void onProfileFragmentInteraction(Uri uri) {
-
+    public void onDestroy() {
+        super.onDestroy();
+        launchEmergencyUpload();
     }
 
     @Override
-    public void onRunningMapFragmentInteraction(Run run) {
-
-        mCurrentFragment = DisplayRunFragment.newInstance(run);
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
+    public void onPause() {
+        super.onPause();
+        launchEmergencyUpload();
     }
 
     @Override
-    public void onRunHistoryInteraction(Run run) {
-
-        mCurrentFragment = DisplayRunFragment.newInstance(run);
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
+    public void onStop() {
+        super.onStop();
+        launchEmergencyUpload();
     }
 
-    @Override
-    public void onDisplayRunInteraction() {
-        // keep using the stack
-        onNavigationItemSelected(navigationView.getMenu().getItem(2));
-    }
-
-    @Override
-    public void onDBDownloadFragmentInteraction() {
-        mCurrentFragment = new ProfileFragment();
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
-    }
-
-    @Override
-    public void onDBUploadFragmentInteraction(Uri uri) {
-
+    /**
+     * Called by lifecycle methods of the activity, triggers an upload of the database file to firebase.
+     * This method can't wait for success or failure, since the activity is stopping or being destroyed, so there is
+     * no guarantee the upload will be successful.
+     */
+    private void launchEmergencyUpload() {
+        DBHelper dbHelper = new DBHelper(this);
+        Uri file = Uri.fromFile(dbHelper.getDatabasePath());
+        StorageReference storageRef = FirebaseStorage.getInstance()
+                .getReferenceFromUrl("gs://runnest-146309.appspot.com")
+                .child("users").child(((AppRunnest) getApplication()).getUser().getFirebaseId());
+        storageRef.child(dbHelper.getDatabaseName()).putFile(file);
     }
 
     private void dialogLogout(){
+
+        String message = "Are you sure you want to logout?";
+        if(!((AppRunnest)getApplication()).getNetworkHandler().isConnected()) {
+            message = "If you logout now, your session progresses will be lost. Logout?";
+        }
+
         new AlertDialog.Builder(this)
                 .setTitle("Logout")
-                .setMessage("Are you sure you want to logout?")
+                .setMessage(message)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         launchFragment(new DBUploadFragment());
@@ -418,6 +417,7 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     private void dialogQuitRun(final MenuItem item){
+
         new AlertDialog.Builder(this)
                 .setTitle("Quit Run")
                 .setMessage("Are you sure you want to to quit your current run?")
@@ -436,25 +436,11 @@ public class SideBarActivity extends AppCompatActivity
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
-
     }
 
 
     public void setRunning(Boolean running) {
         isRunning = running;
-    }
-
-    @Override
-    public void onDisplayUserFragmentInteraction(String challengedUserName, String challengedUserEmail) {
-        mCurrentFragment = ChallengeFragment.newInstance(challengedUserName, challengedUserEmail);
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
-    }
-
-    @Override
-    public void onMessagesFragmentInteraction(Message message) {
-
-        mCurrentFragment = DisplayChallengeRequestFragment.newInstance(message);
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
     }
 
     @Override
@@ -473,5 +459,42 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public void onChallengeFragmentInteraction() {
 
+    }
+    public void onProfileFragmentInteraction() {
+    }
+
+    @Override
+    public void onRunningMapFragmentInteraction(Run run) {
+        launchFragment(DisplayRunFragment.newInstance(run));
+    }
+
+    @Override
+    public void onRunHistoryInteraction(Run run) {
+        launchFragment(DisplayRunFragment.newInstance(run));
+    }
+
+    @Override
+    public void onDBDownloadFragmentInteraction() {
+        launchFragment(new ProfileFragment());
+    }
+
+    @Override
+    public void onDBUploadFragmentInteraction() {
+    }
+
+    @Override
+    public void onDisplayUserFragmentInteraction(String challengedUserName, String challengedUserEmail) {
+        launchFragment(ChallengeFragment.newInstance(challengedUserName, challengedUserEmail));
+    }
+
+    @Override
+    public void onMessagesFragmentInteraction(Message message) {
+        launchFragment(DisplayChallengeRequestFragment.newInstance(message));
+    }
+
+    @Override
+    public void onDisplayRunInteraction() {
+        // keep using the stack
+        onNavigationItemSelected(navigationView.getMenu().getItem(2));
     }
 }

@@ -13,8 +13,6 @@ import android.widget.Toast;
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -26,7 +24,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Database.DBHelper;
+import ch.epfl.sweng.project.Firebase.FirebaseHelper;
+import ch.epfl.sweng.project.Model.User;
 
 /**
  * Fragment that manages download of remote runs.db file the user has on Firebase storage and substitution into
@@ -50,7 +51,11 @@ public class DBDownloadFragment extends Fragment implements
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_dbdownload, container, false);
 
+        FirebaseHelper firebaseHelper = new FirebaseHelper();
         dbHelper = new DBHelper(getContext());
+
+        User currentUser = ((AppRunnest) getActivity().getApplication()).getUser();
+        firebaseHelper.addOrUpdateUser(currentUser.getName(), currentUser.getEmail());
 
         // Try to download remote user database
         try {
@@ -68,28 +73,20 @@ public class DBDownloadFragment extends Fragment implements
      */
     private void downloadDatabase() {
 
-        getUserRef().child(dbHelper.getDatabaseName()).getFile(downloadedDB)
+        getUserStorageRef().child(dbHelper.getDatabaseName()).getFile(downloadedDB)
                 .addOnSuccessListener(this).addOnFailureListener(this);
     }
 
     /**
-     * Returns the reference of the user's runs database file on the remote Firebase storage
+     * Returns the reference of the current user's runs database file on the remote Firebase storage
      *
      * @return  the Firebase storage reference of the user's runs database
      */
-    private StorageReference getUserRef() {
+    private StorageReference getUserStorageRef() {
 
-        StorageReference usersRef =  FirebaseStorage.getInstance()
+      return FirebaseStorage.getInstance()
                 .getReferenceFromUrl("gs://runnest-146309.appspot.com")
-                .child("users");
-
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        if (currentUser == null) {
-            return usersRef.child("6VauzC82b6YoNfRSo2ft4WFqoCu1");
-        } else {
-            return usersRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        }
+                .child("users").child(((AppRunnest) getActivity().getApplication()).getUser().getFirebaseId());
     }
 
     @Override
@@ -100,7 +97,7 @@ public class DBDownloadFragment extends Fragment implements
         DBDownloadListener.onDBDownloadFragmentInteraction();
     }
 
-    // TODO: catch other Firebase exceptions and handle them properly
+    // TODO: eventually catch other Firebase exceptions and handle them properly
     @SuppressWarnings("OverlyBroadCatchBlock")
     @Override
     public void onFailure(@NonNull Exception e) {

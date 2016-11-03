@@ -28,6 +28,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import ch.epfl.sweng.project.AppRunnest;
+import ch.epfl.sweng.project.Model.AuthenticatedUser;
 
 /**
  * Launch activity which implements google authentication
@@ -51,6 +52,7 @@ public final class LoginActivity extends AppCompatActivity
         setUpGoogleAuth();
         setUpFirebaseAuth();
         setUpLoginUI();
+        ((AppRunnest) getApplication()).setNetworkHandler();
     }
 
     private void setUpLoginUI() {
@@ -127,7 +129,7 @@ public final class LoginActivity extends AppCompatActivity
 
             // Signed in successfully, show success toast
             GoogleSignInAccount acct = result.getSignInAccount();
-            ((AppRunnest)getApplication()).setGoogleUser(acct);
+            ((AppRunnest)getApplication()).setUser(new AuthenticatedUser(acct));
             firebaseAuthWithGoogle(acct);
 
             Toast.makeText(getBaseContext(), "Login successful", Toast.LENGTH_LONG).show();
@@ -217,12 +219,14 @@ public final class LoginActivity extends AppCompatActivity
      */
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.sign_in_button:
-                Log.d(TAG, "clickSignInBtn:");
-                signOut();
-                signIn();
-                break;
+        if(((AppRunnest)getApplication()).getNetworkHandler().isConnected()) {
+            switch (v.getId()) {
+                case R.id.sign_in_button:
+                    Log.d(TAG, "clickSignInBtn:");
+                    signOut();
+                    signIn();
+                    break;
+            }
         }
     }
 

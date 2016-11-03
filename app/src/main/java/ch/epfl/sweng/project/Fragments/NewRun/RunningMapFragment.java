@@ -247,6 +247,7 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
             });
 
             mMapHandler.startShowingLocation();
+            mMapHandler.setRunningGesture();
         }
     }
 

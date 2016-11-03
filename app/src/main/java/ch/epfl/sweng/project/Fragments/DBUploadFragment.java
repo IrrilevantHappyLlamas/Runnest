@@ -1,13 +1,11 @@
 package ch.epfl.sweng.project.Fragments;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +15,12 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import ch.epfl.sweng.project.Activities.LoginActivity;
+import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Database.DBHelper;
 
 /**
@@ -53,30 +51,21 @@ public class DBUploadFragment extends Fragment implements
      * Start the upload task that puts the local SQLite database file into the remote Firebase storage
      */
     private void uploadDatabase() {
-
         Uri file = Uri.fromFile(dbHelper.getDatabasePath());
-        UploadTask uploadTask = getUserRef().child(dbHelper.getDatabaseName()).putFile(file);
+        UploadTask uploadTask = getUserStorageRef().child(dbHelper.getDatabaseName()).putFile(file);
         uploadTask.addOnFailureListener(this).addOnSuccessListener(this);
     }
 
     /**
-     * Returns the reference of the user's runs database file on the remote Firebase storage
+     * Returns the reference of the current user's runs database file on the remote Firebase storage
      *
      * @return  the Firebase storage reference of the user's runs database
      */
-    private StorageReference getUserRef() {
+    private StorageReference getUserStorageRef() {
 
-        StorageReference usersRef =  FirebaseStorage.getInstance()
+        return FirebaseStorage.getInstance()
                 .getReferenceFromUrl("gs://runnest-146309.appspot.com")
-                .child("users");
-
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        if (currentUser == null) {
-            return usersRef.child("6VauzC82b6YoNfRSo2ft4WFqoCu1");
-        } else {
-            return usersRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        }
+                .child("users").child(((AppRunnest) getActivity().getApplication()).getUser().getFirebaseId());
     }
 
     /**
@@ -84,12 +73,11 @@ public class DBUploadFragment extends Fragment implements
      */
     private void logout() {
         Intent intent = new Intent(getContext(), LoginActivity.class);
-        intent.putExtra("Source", "logout_pressed");
         startActivity(intent);
         FirebaseAuth.getInstance().signOut();
     }
 
-    // TODO: catch other Firebase exceptions and handle them properly
+    // TODO: eventually catch other Firebase exceptions and handle them properly
     @Override
     public void onFailure(@NonNull Exception e) {
         Toast.makeText(getContext(), "Upload failed", Toast.LENGTH_LONG).show();
@@ -99,15 +87,6 @@ public class DBUploadFragment extends Fragment implements
     public void onSuccess(UploadTask.TaskSnapshot tResult) {
         Toast.makeText(getContext(), "Upload successful", Toast.LENGTH_LONG).show();
         logout();
-
-    }
-
-    /**
-     * Interface for SideBarActivity
-     */
-    public interface DBUploadFragmentInteractionListener {
-        @SuppressWarnings("unused")
-        void onDBUploadFragmentInteraction(Uri uri);
     }
 
     @SuppressWarnings("ProhibitedExceptionThrown")
@@ -126,5 +105,13 @@ public class DBUploadFragment extends Fragment implements
     public void onDetach() {
         super.onDetach();
         DBUploadListener = null;
+    }
+
+    /**
+     * Interface for SideBarActivity
+     */
+    public interface DBUploadFragmentInteractionListener {
+        @SuppressWarnings("unused")
+        void onDBUploadFragmentInteraction( );
     }
 }

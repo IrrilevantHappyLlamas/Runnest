@@ -26,14 +26,6 @@ public class TrackTest {
         return new CheckPoint(location);
     }
 
-    public static CheckPoint buildCheckPoint(double lat, double lon, double altitude) {
-        Location location = new Location("test");
-        location.setLatitude(lat);
-        location.setLongitude(lon);
-        location.setAltitude(altitude);
-        return new CheckPoint(location);
-    }
-
     @Test
     public void correctEmptyConstruction() {
         Track testTrack = new Track();

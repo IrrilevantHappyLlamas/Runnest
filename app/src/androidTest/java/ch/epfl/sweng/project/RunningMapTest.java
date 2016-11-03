@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import ch.epfl.sweng.project.Fragments.NewRun.RunningMapFragment;
 
-public class RunningMapFragmentTest {
+public class RunningMapTest {
 
     @Test
     public void defaultConstructorWork(){

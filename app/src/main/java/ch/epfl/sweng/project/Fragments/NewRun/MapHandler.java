@@ -5,11 +5,16 @@ import android.graphics.Color;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.util.List;
+
 import ch.epfl.sweng.project.Model.CheckPoint;
+import ch.epfl.sweng.project.Model.Track;
 
 
 public class MapHandler {
@@ -44,7 +49,7 @@ public class MapHandler {
             mGoogleMap.clear();
             mGoogleMap.addPolyline(mPolylineOptions.color(Color.BLUE));
 
-            CameraPosition mCameraPosition = new CameraPosition.Builder().target(currentLatLng).zoom(CAMERA_ZOOM).build();
+            CameraPosition mCameraPosition = new CameraPosition.Builder().target(currentLatLng).build();
             CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(mCameraPosition);
             mGoogleMap.animateCamera(cameraUpdate);
         }
@@ -66,5 +71,20 @@ public class MapHandler {
      */
     public void stopShowingLocation() throws SecurityException {
         mGoogleMap.setMyLocationEnabled(false);
+    }
+
+    /**
+     * Define what the user can do during a run and what he can't to.
+     */
+    public void setRunningGesture() {
+        mGoogleMap.setBuildingsEnabled(false);
+        mGoogleMap.setIndoorEnabled(false);
+        mGoogleMap.setTrafficEnabled(false);
+        mGoogleMap.setMinZoomPreference(CAMERA_ZOOM);
+
+        mGoogleMap.getUiSettings().setCompassEnabled(false);
+        mGoogleMap.getUiSettings().setIndoorLevelPickerEnabled(false);
+        mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
+        mGoogleMap.getUiSettings().setScrollGesturesEnabled(false);
     }
 }

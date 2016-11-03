@@ -1,15 +1,20 @@
 package ch.epfl.sweng.project.Firebase;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Model.Message;
 
 /**
@@ -132,5 +137,16 @@ public class FirebaseHelper {
         }
 
         databaseReference.child("users").child(id).child("name").setValue(name);
+    }
+
+    /**
+     * Converts the email to allow the firebase storage
+     *
+     * @return email for firebase
+     */
+    public static String getFireBaseMail(String email) {
+        String fireBaseMail = email.replace(".", "_dot_");
+        fireBaseMail = fireBaseMail.replace("@", "_at_");
+        return fireBaseMail;
     }
 }
