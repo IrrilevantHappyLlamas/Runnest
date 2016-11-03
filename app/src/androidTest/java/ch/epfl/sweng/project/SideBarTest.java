@@ -61,9 +61,7 @@ public class SideBarTest {
 
         SystemClock.sleep(500);
 
-        onView(withId(R.id.drawer_layout))
-                .perform(DrawerActions.open());
-
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         SystemClock.sleep(500);
 
         onView(withId(R.id.drawer_layout)).check(matches(isOpen()));
@@ -74,9 +72,7 @@ public class SideBarTest {
 
         SystemClock.sleep(500);
 
-        onView(withId(R.id.drawer_layout))
-                .perform(DrawerActions.open());
-
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         SystemClock.sleep(500);
 
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_new_run));
@@ -87,9 +83,7 @@ public class SideBarTest {
 
         SystemClock.sleep(500);
 
-        onView(withId(R.id.drawer_layout))
-                .perform(DrawerActions.open());
-
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         SystemClock.sleep(500);
 
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run_history));
@@ -100,9 +94,7 @@ public class SideBarTest {
 
         SystemClock.sleep(500);
 
-        onView(withId(R.id.drawer_layout))
-                .perform(DrawerActions.open());
-
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         SystemClock.sleep(500);
 
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
@@ -113,9 +105,7 @@ public class SideBarTest {
 
         SystemClock.sleep(500);
 
-        onView(withId(R.id.drawer_layout))
-                .perform(DrawerActions.open());
-
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         SystemClock.sleep(500);
 
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_profile));
@@ -126,12 +116,12 @@ public class SideBarTest {
 
         SystemClock.sleep(500);
 
-        onView(withId(R.id.drawer_layout))
-                .perform(DrawerActions.open());
-
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         SystemClock.sleep(500);
 
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_logout));
+        SystemClock.sleep(500);
+
 
         onView(withText("OK"))
                 .perform(click());
@@ -171,24 +161,28 @@ public class SideBarTest {
     @Test
     public void searchAndClickOnChallenge() {
         onView(withId(R.id.search)).perform(click());
-        SystemClock.sleep(3000);
+        SystemClock.sleep(500);
 
         onView(isAssignableFrom(EditText.class)).perform(typeText("pablo"), pressKey(KeyEvent.KEYCODE_ENTER));
-        SystemClock.sleep(3000);
+        SystemClock.sleep(500);
+
         onView(withId(R.id.table)).check(matches(isDisplayed()));
-        SystemClock.sleep(2000);
+        SystemClock.sleep(500);
+
         onView(isAssignableFrom(Button.class)).perform(click());
-        SystemClock.sleep(2000);
+        SystemClock.sleep(500);
+
         onView(withId(R.id.waitChallengedUserTextView)).check(matches(isDisplayed()));
     }
 
     @Test
     public void searchInexistentUser() {
         onView(withId(R.id.search)).perform(click());
-        SystemClock.sleep(3000);
+        SystemClock.sleep(500);
 
         onView(isAssignableFrom(EditText.class)).perform(typeText("kadfjisadsa"), pressKey(KeyEvent.KEYCODE_ENTER));
-        SystemClock.sleep(3000);
+        SystemClock.sleep(500);
+
         onView(withId(R.id.table)).check(matches(isDisplayed()));
         onView(withText("No user found.")).check(matches(isDisplayed()));
     }
@@ -196,41 +190,37 @@ public class SideBarTest {
     @Test
     public void acceptChallengeRequest() {
 
-        SystemClock.sleep(3000);
+        SystemClock.sleep(500);
 
-        onView(withId(R.id.drawer_layout))
-                .perform(DrawerActions.open());
-
-        SystemClock.sleep(3000);
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+        SystemClock.sleep(500);
 
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
-
-        SystemClock.sleep(3000);
+        SystemClock.sleep(500);
 
         onView(withText("From: Pablo\nType: CHALLENGE_REQUEST")).perform(click());
+        SystemClock.sleep(500);
 
         onView(withText("ACCEPT")).perform(click());
-        SystemClock.sleep(3000);
+        SystemClock.sleep(500);
     }
 
     @Test
     public void declineChallengeRequest() {
 
-        SystemClock.sleep(3000);
+        SystemClock.sleep(500);
 
-        onView(withId(R.id.drawer_layout))
-                .perform(DrawerActions.open());
-
-        SystemClock.sleep(3000);
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+        SystemClock.sleep(500);
 
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
-
-        SystemClock.sleep(3000);
+        SystemClock.sleep(500);
 
         onView(withText("From: Pablo\nType: CHALLENGE_REQUEST")).perform(click());
+        SystemClock.sleep(500);
 
         onView(withText("DECLINE")).perform(click());
-        SystemClock.sleep(3000);
+        SystemClock.sleep(500);
     }
 
     @Test
@@ -246,6 +236,8 @@ public class SideBarTest {
 
     @Test
     public void messageOnFragmentListenersWork() {
+        SystemClock.sleep(500);
+
         SideBarActivity listenerTest = mActivityRule.getActivity();
         Message msg = new Message("to", "from", Message.MessageType.CHALLENGE_REQUEST, "test");
         listenerTest.onMessagesFragmentInteraction(msg);
@@ -276,23 +268,18 @@ public class SideBarTest {
         SystemClock.sleep(500);
 
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-
         SystemClock.sleep(500);
 
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run_history));
-
         SystemClock.sleep(500);
 
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-
         SystemClock.sleep(500);
 
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_profile));
-
         SystemClock.sleep(500);
 
         Espresso.pressBack();
-
         SystemClock.sleep(500);
 
         onView(withId(R.id.list)).check(matches(isDisplayed()));
@@ -311,40 +298,21 @@ public class SideBarTest {
 
         SystemClock.sleep(500);
 
-        onView(withId(R.id.drawer_layout))
-                .perform(DrawerActions.open());
-
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         SystemClock.sleep(500);
 
-        onView(withId(R.id.nav_view))
-                .perform(NavigationViewActions.navigateTo(R.id.nav_new_run));
-
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_new_run));
         SystemClock.sleep(500);
 
-        onView(withId(R.id.start_run))
-                .check(matches(isDisplayed()));
-
+        onView(withId(R.id.start_run)).check(matches(isDisplayed()));
+        onView(withId(R.id.start_run)).perform(click());
         SystemClock.sleep(500);
 
-        onView(withId(R.id.start_run))
-                .perform(click());
-
+        onView(withId(R.id.stop_run)).check(matches(isDisplayed()));
+        onView(withId(R.id.stop_run)).perform(click());
         SystemClock.sleep(500);
 
-        onView(withId(R.id.stop_run))
-                .check(matches(isDisplayed()));
-
-        SystemClock.sleep(500);
-
-
-        onView(withId(R.id.stop_run))
-                .perform(click());
-
-        SystemClock.sleep(500);
-
-        onView(withId(R.id.go_to_run_history))
-                .perform(click());
-
+        onView(withId(R.id.go_to_run_history)).perform(click());
         SystemClock.sleep(500);
 
         onView(withId(R.id.list)).check(matches(isDisplayed()));
