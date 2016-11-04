@@ -36,24 +36,27 @@ public class MapHandler {
         mPolylineOptions = new PolylineOptions();
     }
 
+    //TODO: Comment this method
     public void showTrack(Track track) {
-        PolylineOptions polylineOptions = new PolylineOptions();
+        if(track.getTotalCheckPoints() != 0) {
+            PolylineOptions polylineOptions = new PolylineOptions();
 
-        List<CheckPoint> trackPoints = track.getCheckpoints();
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            List<CheckPoint> trackPoints = track.getCheckpoints();
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
-        for (CheckPoint checkPoint: trackPoints) {
-            LatLng latLng = new LatLng(checkPoint.getLatitude(), checkPoint.getLongitude());
-            polylineOptions.add(latLng);
-            builder.include(latLng);
+            for (CheckPoint checkPoint : trackPoints) {
+                LatLng latLng = new LatLng(checkPoint.getLatitude(), checkPoint.getLongitude());
+                polylineOptions.add(latLng);
+                builder.include(latLng);
+            }
+
+            mGoogleMap.addPolyline(mPolylineOptions.color(Color.BLUE));
+
+            LatLngBounds bounds = builder.build();
+            int padding = 40; // offset from edges of the map in pixels
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+            mGoogleMap.animateCamera(cameraUpdate);
         }
-
-        mGoogleMap.addPolyline(mPolylineOptions.color(Color.BLUE));
-
-        LatLngBounds bounds = builder.build();
-        int padding = 40; // offset from edges of the map in pixels
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-        mGoogleMap.animateCamera(cu);
     }
 
     /**
@@ -69,8 +72,7 @@ public class MapHandler {
             mGoogleMap.clear();
             mGoogleMap.addPolyline(mPolylineOptions.color(Color.BLUE));
 
-            CameraPosition mCameraPosition = new CameraPosition.Builder().target(currentLatLng).build();
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(mCameraPosition);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(currentLatLng);
             mGoogleMap.animateCamera(cameraUpdate);
         }
     }
@@ -102,9 +104,14 @@ public class MapHandler {
         mGoogleMap.setTrafficEnabled(false);
         mGoogleMap.setMinZoomPreference(CAMERA_ZOOM);
 
-        mGoogleMap.getUiSettings().setCompassEnabled(false);
-        mGoogleMap.getUiSettings().setIndoorLevelPickerEnabled(false);
-        mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
-        mGoogleMap.getUiSettings().setScrollGesturesEnabled(false);
+        UiSettings uiSettings = mGoogleMap.getUiSettings();
+
+        uiSettings.setCompassEnabled(false);
+        uiSettings.setIndoorLevelPickerEnabled(false);
+        uiSettings.setMapToolbarEnabled(false);
+        uiSettings.setScrollGesturesEnabled(false);
+        uiSettings.setZoomGesturesEnabled(false);
+
+        uiSettings.setZoomControlsEnabled(true);
     }
 }
