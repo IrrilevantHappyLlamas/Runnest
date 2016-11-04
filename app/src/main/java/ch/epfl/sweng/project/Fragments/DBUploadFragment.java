@@ -40,9 +40,13 @@ public class DBUploadFragment extends Fragment implements
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_dbupload, container, false);
-
         dbHelper = new DBHelper(getContext());
-        uploadDatabase();
+
+        if(((AppRunnest)getActivity().getApplication()).getNetworkHandler().isConnected()) {
+            uploadDatabase();
+        } else {
+            logout();
+        }
 
         return view;
     }
