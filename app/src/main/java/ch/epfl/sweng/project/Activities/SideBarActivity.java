@@ -408,8 +408,6 @@ public class SideBarActivity extends AppCompatActivity
             message = "If you logout now, your session progresses will be lost. Logout?";
         }
 
-       ((AppRunnest)getApplication()).getUser().logoutStatus();
-
         new AlertDialog.Builder(this)
                 .setTitle("Logout")
                 .setMessage(message)
@@ -425,8 +423,6 @@ public class SideBarActivity extends AppCompatActivity
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
-
-        ((AppRunnest)getApplication()).getUser().loginStatus();
     }
 
     private void dialogQuitRun(final MenuItem item){
