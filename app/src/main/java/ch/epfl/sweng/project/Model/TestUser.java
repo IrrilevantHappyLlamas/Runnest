@@ -51,4 +51,19 @@ public class TestUser implements User {
     public String getFirebaseId() {
         return firebaseID;
     }
+
+    @Override
+    public boolean isLoggedIn() {
+        return false;
+    }
+
+    @Override
+    public void logoutStatus() {
+
+    }
+
+    @Override
+    public void loginStatus() {
+
+    }
 }

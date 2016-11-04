@@ -363,19 +363,28 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public void onDestroy() {
         super.onDestroy();
-        launchEmergencyUpload();
+        if(((AppRunnest)getApplication()).getUser().isLoggedIn()) {
+            launchEmergencyUpload();
+
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        launchEmergencyUpload();
+        if(((AppRunnest)getApplication()).getUser().isLoggedIn()) {
+            launchEmergencyUpload();
+
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        launchEmergencyUpload();
+        if(((AppRunnest)getApplication()).getUser().isLoggedIn()) {
+            launchEmergencyUpload();
+
+        }
     }
 
     /**

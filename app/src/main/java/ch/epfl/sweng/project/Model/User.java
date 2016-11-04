@@ -11,5 +11,7 @@ public interface User {
     String getName();
     String getPhotoUrl();
     String getFirebaseId();
-
+    boolean isLoggedIn();
+    void logoutStatus();
+    void loginStatus();
 }

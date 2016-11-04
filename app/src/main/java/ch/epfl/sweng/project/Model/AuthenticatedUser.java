@@ -15,6 +15,7 @@ public class AuthenticatedUser implements User {
     private String familyName = null;
     private String name = null;
     private String photoUrl = null;
+    private boolean isLoggedIn = false;
 
     public AuthenticatedUser(GoogleSignInAccount googleAccount) throws IllegalArgumentException {
 
@@ -22,6 +23,7 @@ public class AuthenticatedUser implements User {
             throw new IllegalArgumentException("You can't instantiate an authenticated user without a valid GoogleSignInAccount");
         }
 
+        loginStatus();
         id = googleAccount.getId();
         email = googleAccount.getEmail();
         familyName = googleAccount.getFamilyName();
@@ -63,6 +65,21 @@ public class AuthenticatedUser implements User {
     @Override
     public String getFirebaseId() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
+    }
+
+    @Override
+    public boolean isLoggedIn() {
+        return isLoggedIn;
+    }
+
+    @Override
+    public void logoutStatus() {
+        isLoggedIn = false;
+    }
+
+    @Override
+    public void loginStatus() {
+        isLoggedIn = true;
     }
 
 }
