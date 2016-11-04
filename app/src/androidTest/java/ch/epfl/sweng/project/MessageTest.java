@@ -57,7 +57,7 @@ public class MessageTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void cantSendMessageToYourself() {
-        Message _ = new Message("me", "me", Message.MessageType.TEXT, "Hello, world!");
+        Message testMessage = new Message("me", "me", Message.MessageType.TEXT, "Hello, world!");
     }
 
     @Test

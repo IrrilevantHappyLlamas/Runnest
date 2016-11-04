@@ -28,6 +28,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import ch.epfl.sweng.project.AppRunnest;
+import ch.epfl.sweng.project.Model.AuthenticatedUser;
 
 /**
  * Launch activity which implements google authentication
@@ -128,7 +129,7 @@ public final class LoginActivity extends AppCompatActivity
 
             // Signed in successfully, show success toast
             GoogleSignInAccount acct = result.getSignInAccount();
-            ((AppRunnest)getApplication()).setGoogleUser(acct);
+            ((AppRunnest)getApplication()).setUser(new AuthenticatedUser(acct));
             firebaseAuthWithGoogle(acct);
 
             Toast.makeText(getBaseContext(), "Login successful", Toast.LENGTH_LONG).show();
