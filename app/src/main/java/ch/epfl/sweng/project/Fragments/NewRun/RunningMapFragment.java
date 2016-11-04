@@ -32,6 +32,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import ch.epfl.sweng.project.Activities.SideBarActivity;
@@ -150,7 +151,8 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
 
 
             // initialize new Run
-            String runName = DateFormat.getDateTimeInstance().format(new Date());
+            SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy HH:mm:ss");
+            String runName = dateFormat.format(new Date());
             mRun = new Run(runName);
 
             mChronometer.setVisibility(View.VISIBLE);

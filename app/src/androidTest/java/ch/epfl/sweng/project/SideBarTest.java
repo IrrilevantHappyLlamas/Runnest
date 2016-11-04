@@ -46,7 +46,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SideBarTest {
 
-    private final int WAIT_DURATION = 1000;
+    private final int WAIT_DURATION = 2000;
 
     @Rule
     public ActivityTestRule<SideBarActivity> mActivityRule = new ActivityTestRule<>(
