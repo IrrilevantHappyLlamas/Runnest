@@ -201,49 +201,53 @@ public class SideBarActivity extends AppCompatActivity
 
             @Override
             public boolean onQueryTextSubmit(final String query) {
-                if(((AppRunnest)getApplication()).getNetworkHandler().isConnected()) {
-                    mFirebaseHelper.getDatabase().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if(dataSnapshot.exists()) {
-                                Map<String, String> users = new HashMap<>();
-                                for (DataSnapshot user : dataSnapshot.getChildren()) {
-                                    String usersName = user.getKey().toString();
-                                    String usersEmail = user.child("name").getValue().toString();
-                                    String[] surnameAndFamilyName = usersName.split(" ");
-                                    String surname = surnameAndFamilyName[0].toLowerCase();
-                                    String familyName = surnameAndFamilyName[1].toLowerCase();
-
-                                    String lowerCaseQuery = query.toLowerCase();
-                                    if (usersName.toLowerCase().startsWith(lowerCaseQuery)
-                                            || surname.startsWith(lowerCaseQuery)
-                                            || familyName.startsWith(lowerCaseQuery)
-                                            || usersEmail.toLowerCase().startsWith(lowerCaseQuery)) {
-                                        users.put(usersName, usersEmail);
-                                    }
-                                }
-                                launchFragment(DisplayUserFragment.newInstance(users));
-                            } else {
-                                launchFragment(DisplayUserFragment.newInstance(null));
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                        }
-                    });
-                    return true;
-                }
-                return false;
+                return findUsers(query);
             }
 
             @Override
             public boolean onQueryTextChange(String newText){
-                return true;
+                return findUsers(newText);
             }
         });
 
         return true;
+    }
+
+    private Boolean findUsers(final String query) {
+        if (((AppRunnest)getApplication()).getNetworkHandler().isConnected()) {
+            mFirebaseHelper.getDatabase().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        Map<String, String> users = new HashMap<>();
+                        for (DataSnapshot user : dataSnapshot.getChildren()) {
+                            String usersName = user.getKey().toString();
+                            String usersEmail = user.child("name").getValue().toString();
+                            String[] surnameAndFamilyName = usersName.split(" ");
+                            String surname = surnameAndFamilyName[0].toLowerCase();
+                            String familyName = surnameAndFamilyName[1].toLowerCase();
+
+                            String lowerCaseQuery = query.toLowerCase();
+                            if (usersName.toLowerCase().startsWith(lowerCaseQuery)
+                                    || surname.startsWith(lowerCaseQuery)
+                                    || familyName.startsWith(lowerCaseQuery)
+                                    || usersEmail.toLowerCase().startsWith(lowerCaseQuery)) {
+                                users.put(usersName, usersEmail);
+                            }
+                        }
+                        launchFragment(DisplayUserFragment.newInstance(users));
+                    } else {
+                        launchFragment(DisplayUserFragment.newInstance(null));
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+            return true;
+        }
+        return false;
     }
 
     @Override
