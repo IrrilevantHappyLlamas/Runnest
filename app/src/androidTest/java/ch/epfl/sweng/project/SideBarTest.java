@@ -141,7 +141,7 @@ public class SideBarTest {
     }
 
     @Test
-    public void nonEmptyOnFragmentListenerWork() {
+    public void runHistoryOnFragmentListenerWork() {
 
         SystemClock.sleep(500);
 
@@ -155,7 +155,6 @@ public class SideBarTest {
         listenerRun.stop();
 
         listenerTest.onRunHistoryInteraction(listenerRun);
-        listenerTest.onRunningMapFragmentInteraction(listenerRun);
     }
 
     @Test
