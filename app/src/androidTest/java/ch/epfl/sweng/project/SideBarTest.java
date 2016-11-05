@@ -160,16 +160,16 @@ public class SideBarTest {
     @Test
     public void searchAndClickOnChallenge() {
         onView(withId(R.id.search)).perform(click());
-        SystemClock.sleep(500);
+        SystemClock.sleep(1000);
 
         onView(isAssignableFrom(EditText.class)).perform(typeText("pablo"), pressKey(KeyEvent.KEYCODE_ENTER));
-        SystemClock.sleep(500);
+        SystemClock.sleep(1000);
 
         onView(withId(R.id.table)).check(matches(isDisplayed()));
-        SystemClock.sleep(500);
+        SystemClock.sleep(1000);
 
         onView(isAssignableFrom(Button.class)).perform(click());
-        SystemClock.sleep(500);
+        SystemClock.sleep(1000);
 
         onView(withId(R.id.waitChallengedUserTextView)).check(matches(isDisplayed()));
     }
@@ -320,35 +320,35 @@ public class SideBarTest {
     @Test
     public void stopRun() {
 
-        SystemClock.sleep(500);
+        SystemClock.sleep(1000);
 
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        SystemClock.sleep(500);
+        SystemClock.sleep(1000);
 
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
-        SystemClock.sleep(500);
+        SystemClock.sleep(1000);
 
         onView(withId(R.id.start_run)).perform(click());
-        SystemClock.sleep(500);
+        SystemClock.sleep(1000);
 
         pressBack();
-        SystemClock.sleep(500);
+        SystemClock.sleep(1000);
 
         //Press on CANCEL
         onView(withId(android.R.id.button2)).perform(click());
 
-        SystemClock.sleep(500);
+        SystemClock.sleep(1000);
 
         onView(withId(R.id.stop_run)).check(matches(isDisplayed()));
-        SystemClock.sleep(500);
+        SystemClock.sleep(1000);
 
         pressBack();
-        SystemClock.sleep(500);
+        SystemClock.sleep(1000);
 
         //Press on OK
         onView(withId(android.R.id.button1)).perform(click());
 
-        SystemClock.sleep(500);
+        SystemClock.sleep(1000);
 
         onView(withId(R.id.photoImg)).check(matches(isDisplayed()));
     }
