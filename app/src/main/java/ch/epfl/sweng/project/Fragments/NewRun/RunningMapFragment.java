@@ -338,10 +338,11 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
             location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+            mMapHandler.startShowingLocation();
         }
         if(location != null) {
             mLastCheckPoint = new CheckPoint(location);
-            mMapHandler.startShowingLocation();
         }
         if (mRequestingLocationUpdates) {
             startLocationUpdates();
