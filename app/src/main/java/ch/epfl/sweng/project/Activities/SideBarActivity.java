@@ -214,9 +214,11 @@ public class SideBarActivity extends AppCompatActivity
                                     String surname = surnameAndFamilyName[0].toLowerCase();
                                     String familyName = surnameAndFamilyName[1].toLowerCase();
 
-                                    if (surname.startsWith(query.toLowerCase())
-                                            || familyName.startsWith(query.toLowerCase())
-                                            || usersEmail.toLowerCase().startsWith(query.toLowerCase())) {
+                                    String lowerCaseQuery = query.toLowerCase();
+                                    if (usersName.toLowerCase().startsWith(lowerCaseQuery)
+                                            || surname.startsWith(lowerCaseQuery)
+                                            || familyName.startsWith(lowerCaseQuery)
+                                            || usersEmail.toLowerCase().startsWith(lowerCaseQuery)) {
                                         users.put(usersName, usersEmail);
                                     }
                                 }
