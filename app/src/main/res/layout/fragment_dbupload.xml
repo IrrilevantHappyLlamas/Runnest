@@ -6,10 +6,9 @@
                 android:layout_height="match_parent">
 
     <TextView
-        android:text="Uploading user data ..."
+        android:text="@string/uploading_user_data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/upload_text"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Large"/>

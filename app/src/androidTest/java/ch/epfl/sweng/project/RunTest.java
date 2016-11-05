@@ -1,7 +1,6 @@
 package ch.epfl.sweng.project;
 
 import android.os.SystemClock;
-import android.widget.Chronometer;
 
 import org.junit.Assert;
 import org.junit.Test;

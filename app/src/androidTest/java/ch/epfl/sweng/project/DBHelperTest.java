@@ -1,7 +1,6 @@
 package ch.epfl.sweng.project;
 
 import android.content.Context;
-import android.location.Location;
 import android.support.test.InstrumentationRegistry;
 
 import org.junit.Assert;

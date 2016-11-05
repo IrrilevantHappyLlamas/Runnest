@@ -6,15 +6,10 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.util.List;
-
 import ch.epfl.sweng.project.Model.CheckPoint;
-import ch.epfl.sweng.project.Model.Track;
 
 
 public class MapHandler {
@@ -34,44 +29,6 @@ public class MapHandler {
         mGoogleMap.setLocationSource(null);
 
         mPolylineOptions = new PolylineOptions();
-    }
-
-    //TODO: Comment this method
-    public void showTrack(Track track) {
-        if(track.getTotalCheckPoints() != 0) {
-
-            // Build polyline and LatLngBounds
-            PolylineOptions polylineOptions = new PolylineOptions();
-            List<CheckPoint> trackPoints = track.getCheckpoints();
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-
-            for (CheckPoint checkPoint : trackPoints) {
-                LatLng latLng = new LatLng(checkPoint.getLatitude(), checkPoint.getLongitude());
-                polylineOptions.add(latLng);
-                builder.include(latLng);
-            }
-
-            mGoogleMap.addPolyline(polylineOptions.color(Color.BLUE));
-
-            // Setup UI
-            mGoogleMap.setBuildingsEnabled(false);
-            mGoogleMap.setIndoorEnabled(false);
-            mGoogleMap.setTrafficEnabled(false);
-            UiSettings uiSettings = mGoogleMap.getUiSettings();
-            uiSettings.setCompassEnabled(false);
-            uiSettings.setIndoorLevelPickerEnabled(false);
-            uiSettings.setMapToolbarEnabled(false);
-            //uiSettings.setScrollGesturesEnabled(false);
-            //uiSettings.setZoomGesturesEnabled(false);
-            uiSettings.setZoomControlsEnabled(true);
-            uiSettings.setMyLocationButtonEnabled(false);
-
-            // Center camera on past run
-            LatLngBounds bounds = builder.build();
-            int padding = 40;
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-            mGoogleMap.animateCamera(cameraUpdate);
-        }
     }
 
     /**
@@ -111,9 +68,9 @@ public class MapHandler {
     }
 
     /**
-     * Define what the user can do during a run and what he can't to.
+     * Define what the user can do during a run and what he can't do.
      */
-    public void setRunningGesture() {
+    public void setupRunningMapUI() {
         mGoogleMap.setBuildingsEnabled(false);
         mGoogleMap.setIndoorEnabled(false);
         mGoogleMap.setTrafficEnabled(false);

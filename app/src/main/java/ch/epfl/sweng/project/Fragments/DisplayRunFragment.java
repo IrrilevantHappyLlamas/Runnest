@@ -1,6 +1,7 @@
 package ch.epfl.sweng.project.Fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,11 +13,19 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.PolylineOptions;
 
-import ch.epfl.sweng.project.Fragments.NewRun.MapHandler;
+import java.util.List;
+
+import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.Track;
 
@@ -28,7 +37,7 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
 
     // Map
     private MapView mMapView = null;
-    private MapHandler mMapHandler = null;
+    private GoogleMap mGoogleMap = null;
 
     public static DisplayRunFragment newInstance(Run runToBeDisplayed) {
         DisplayRunFragment fragment = new DisplayRunFragment();
@@ -117,11 +126,51 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMapHandler = new MapHandler(googleMap);
+        mGoogleMap = googleMap;
 
-        mMapHandler.showTrack(mRunToBeDisplayed.getTrack());
+        displayTrackSetupUI();
+        displayTrack();
     }
 
+    private void displayTrackSetupUI() {
+        mGoogleMap.setBuildingsEnabled(false);
+        mGoogleMap.setIndoorEnabled(false);
+        mGoogleMap.setTrafficEnabled(false);
+
+        UiSettings uiSettings = mGoogleMap.getUiSettings();
+
+        uiSettings.setCompassEnabled(false);
+        uiSettings.setIndoorLevelPickerEnabled(false);
+        uiSettings.setMapToolbarEnabled(false);
+        uiSettings.setZoomControlsEnabled(true);
+        uiSettings.setMyLocationButtonEnabled(false);
+    }
+
+    private void displayTrack() {
+
+        Track track = mRunToBeDisplayed.getTrack();
+        if(track.getTotalCheckPoints() != 0) {
+
+            // Build polyline and LatLngBounds
+            PolylineOptions polylineOptions = new PolylineOptions();
+            List<CheckPoint> trackPoints = track.getCheckpoints();
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+            for (CheckPoint checkPoint : trackPoints) {
+                LatLng latLng = new LatLng(checkPoint.getLatitude(), checkPoint.getLongitude());
+                polylineOptions.add(latLng);
+                builder.include(latLng);
+            }
+
+            mGoogleMap.addPolyline(polylineOptions.color(Color.BLUE));
+
+            // Center camera on past run
+            LatLngBounds bounds = builder.build();
+            int padding = 40;
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+            mGoogleMap.animateCamera(cameraUpdate);
+        }
+    }
 
     @Override
     public void onResume() {
