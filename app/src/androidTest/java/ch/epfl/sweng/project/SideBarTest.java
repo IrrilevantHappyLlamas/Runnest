@@ -75,7 +75,7 @@ public class SideBarTest {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         SystemClock.sleep(500);
 
-        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_new_run));
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
     }
 
     @Test
@@ -301,7 +301,7 @@ public class SideBarTest {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         SystemClock.sleep(500);
 
-        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_new_run));
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
         SystemClock.sleep(500);
 
         onView(withId(R.id.start_run)).check(matches(isDisplayed()));
@@ -319,6 +319,42 @@ public class SideBarTest {
     }
 
     @Test
+    public void stopRun() {
+
+        SystemClock.sleep(1000);
+
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+        SystemClock.sleep(1000);
+
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
+        SystemClock.sleep(1000);
+
+        onView(withId(R.id.start_run)).perform(click());
+        SystemClock.sleep(1000);
+
+        pressBack();
+        SystemClock.sleep(1000);
+
+        //Press on CANCEL
+        onView(withId(android.R.id.button2)).perform(click());
+
+        SystemClock.sleep(1000);
+
+        onView(withId(R.id.stop_run)).check(matches(isDisplayed()));
+        SystemClock.sleep(1000);
+
+        pressBack();
+        SystemClock.sleep(1000);
+
+        //Press on OK
+        onView(withId(android.R.id.button1)).perform(click());
+
+        SystemClock.sleep(1000);
+
+        onView(withId(R.id.photoImg)).check(matches(isDisplayed()));
+    }
+
+    @Test
     public void lifecycleTest() {
 
         SystemClock.sleep(500);
@@ -326,4 +362,5 @@ public class SideBarTest {
         mActivityRule.getActivity().finish();
         mActivityRule.getActivity();
     }
+
 }

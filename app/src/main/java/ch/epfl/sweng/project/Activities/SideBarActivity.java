@@ -34,7 +34,6 @@ import ch.epfl.sweng.project.Fragments.ChallengeFragment;
 import ch.epfl.sweng.project.Fragments.DisplayChallengeRequestFragment;
 import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,19 +43,16 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.Stack;
 
-import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 import ch.epfl.sweng.project.Fragments.DBUploadFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
-import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
 import ch.epfl.sweng.project.Fragments.MessagesFragment;
 import ch.epfl.sweng.project.Fragments.NewRun.RunningMapFragment;
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
 
-import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.Message;
 
 import ch.epfl.sweng.project.Model.Run;
@@ -80,10 +76,11 @@ public class SideBarActivity extends AppCompatActivity
 
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
 
-    //Fragment stack(LIFO)
-    private Stack<MenuItem> fragmentStack = new Stack<>();
+    //Item stack(LIFO)
+    private Stack<MenuItem> itemStack = new Stack<>();
     private MenuItem profileItem;
     private MenuItem runItem;
+    private MenuItem historyItem;
 
     private Fragment mCurrentFragment = null;
     private FragmentManager fragmentManager = null;
@@ -161,9 +158,10 @@ public class SideBarActivity extends AppCompatActivity
         mCurrentFragment = fragmentManager.findFragmentById(R.id.fragment_container);
 
         profileItem = navigationView.getMenu().getItem(0);
+        historyItem = navigationView.getMenu().getItem(2);
         profileItem.setChecked(true);
-        fragmentStack.push(profileItem);
-        
+        itemStack.push(profileItem);
+
         if(mCurrentFragment == null){
             mCurrentFragment = new DBDownloadFragment();
             fragmentManager.beginTransaction().add(R.id.fragment_container, mCurrentFragment).commit();
@@ -178,10 +176,10 @@ public class SideBarActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            fragmentStack.pop();
-            if(!fragmentStack.isEmpty()){
-                fragmentStack.peek().setChecked(true);
-                onNavigationItemSelected(fragmentStack.peek());
+            itemStack.pop();
+            if(!itemStack.isEmpty()){
+                itemStack.peek().setChecked(true);
+                onNavigationItemSelected(itemStack.peek());
             } else {
                 profileItem.setChecked(true);
                 onNavigationItemSelected(profileItem);
@@ -267,40 +265,40 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        if(isRunning && !item.equals(runItem)){
+        if (isRunning && !item.equals(runItem)) {
             dialogQuitRun(item);
             return false;
         }
 
-        fab.show();
+        if (!(isRunning && item.equals(runItem))) {
 
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
+            if (itemStack.isEmpty() || !itemStack.peek().equals(item)) {
+                itemStack.push(item);
+            }
 
-        if(fragmentStack.isEmpty() || !fragmentStack.peek().equals(item)) {
-            fragmentStack.push(item);
+            fab.show();
+
+            // Handle navigation view item clicks here.
+            int id = item.getItemId();
+
+            if (id == R.id.nav_profile) {
+                toolbar.setTitle("Profile");
+                launchFragment(new ProfileFragment());
+            } else if (id == R.id.nav_run) {
+                toolbar.setTitle("Run");
+                fab.hide();
+                launchFragment(new RunningMapFragment());
+            } else if (id == R.id.nav_run_history) {
+                toolbar.setTitle("Run History");
+                launchFragment(new RunHistoryFragment());
+            } else if (id == R.id.nav_messages) {
+                toolbar.setTitle("Messages");
+                launchFragment(new MessagesFragment());
+            } else if (id == R.id.nav_logout) {
+                itemStack.pop();
+                dialogLogout();
+            }
         }
-
-        fragmentManager.beginTransaction().remove(mCurrentFragment).commit();
-
-        if (id == R.id.nav_profile) {
-            toolbar.setTitle("Profile");
-            launchFragment(new ProfileFragment());
-        }  else if (id == R.id.nav_run) {
-            toolbar.setTitle("Run");
-            fab.hide();
-            launchFragment(new RunningMapFragment());
-        } else if (id == R.id.nav_run_history) {
-            toolbar.setTitle("Run History");
-            launchFragment(new RunHistoryFragment());
-        } else if (id == R.id.nav_messages) {
-            toolbar.setTitle("Messages");
-            launchFragment(new MessagesFragment());
-        } else if (id == R.id.nav_logout) {
-            fragmentStack.pop();
-            dialogLogout();
-        }
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -442,6 +440,7 @@ public class SideBarActivity extends AppCompatActivity
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         //do nothing
+                        itemStack.push(runItem);
                         runItem.setChecked(true);
                     }
                 })
@@ -476,11 +475,14 @@ public class SideBarActivity extends AppCompatActivity
 
     @Override
     public void onRunningMapFragmentInteraction(Run run) {
+        itemStack.push(runItem);
+        historyItem.setChecked(true);
         launchFragment(DisplayRunFragment.newInstance(run));
     }
 
     @Override
     public void onRunHistoryInteraction(Run run) {
+        itemStack.push(historyItem);
         launchFragment(DisplayRunFragment.newInstance(run));
     }
 
