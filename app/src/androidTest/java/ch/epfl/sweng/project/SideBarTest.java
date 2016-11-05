@@ -321,35 +321,35 @@ public class SideBarTest {
     @Test
     public void stopRun() {
 
-        SystemClock.sleep(1000);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        SystemClock.sleep(1000);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
-        SystemClock.sleep(1000);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.start_run)).perform(click());
-        SystemClock.sleep(1000);
+        SystemClock.sleep(500);
 
         pressBack();
-        SystemClock.sleep(1000);
+        SystemClock.sleep(500);
 
         //Press on CANCEL
         onView(withId(android.R.id.button2)).perform(click());
 
-        SystemClock.sleep(1000);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.stop_run)).check(matches(isDisplayed()));
-        SystemClock.sleep(1000);
+        SystemClock.sleep(500);
 
         pressBack();
-        SystemClock.sleep(1000);
+        SystemClock.sleep(500);
 
         //Press on OK
         onView(withId(android.R.id.button1)).perform(click());
 
-        SystemClock.sleep(1000);
+        SystemClock.sleep(500);
 
         onView(withId(R.id.photoImg)).check(matches(isDisplayed()));
     }
