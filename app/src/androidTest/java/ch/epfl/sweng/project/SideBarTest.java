@@ -1,5 +1,6 @@
 package ch.epfl.sweng.project;
 
+import android.app.LauncherActivity;
 import android.os.SystemClock;
 import android.support.test.espresso.action.EspressoKey;
 import android.support.test.espresso.Espresso;
@@ -7,8 +8,10 @@ import android.support.test.espresso.contrib.DrawerActions;
 import android.support.test.espresso.contrib.NavigationViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.KeyEvent;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.EditText;
 
@@ -30,6 +33,7 @@ import ch.epfl.sweng.project.Model.Message;
 import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.TestUser;
 
+import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -39,6 +43,7 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.DrawerMatchers.isOpen;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
@@ -325,5 +330,27 @@ public class SideBarTest {
 
         mActivityRule.getActivity().finish();
         mActivityRule.getActivity();
+    }
+
+    @Test
+    public void deleteRun() {
+        SystemClock.sleep(1500);
+
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+        SystemClock.sleep(1500);
+
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_new_run));
+        SystemClock.sleep(1500);
+
+        onView(withId(R.id.start_run)).check(matches(isDisplayed()));
+        onView(withId(R.id.start_run)).perform(click());
+        SystemClock.sleep(1500);
+
+        onView(withId(R.id.stop_run)).check(matches(isDisplayed()));
+        onView(withId(R.id.stop_run)).perform(click());
+        SystemClock.sleep(1500);
+
+        onView(withId(R.id.deleteRunButton)).perform(click());
+
     }
 }
