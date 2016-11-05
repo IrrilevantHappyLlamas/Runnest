@@ -29,6 +29,7 @@ public class Message implements Serializable {
      * @param message
      * @throws IllegalArgumentException
      */
+    @SuppressWarnings("all")
     public Message(String from, String to, MessageType type, String message)
             throws IllegalArgumentException
     {

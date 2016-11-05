@@ -100,11 +100,13 @@ public class SideBarActivity extends AppCompatActivity
     private Toolbar toolbar;
 
     private int nbrMessages = 0;
+    private String mEmail;
     private Handler handler = new Handler();
     private Runnable runnableCode = new Runnable() {
         @Override
         public void run() {
             checkNbrMessages();
+            System.out.println("blabla" + nbrMessages);
             handler.postDelayed(runnableCode, 10000);
         }
     };
@@ -120,6 +122,8 @@ public class SideBarActivity extends AppCompatActivity
 
         // Initialize database
         mFirebaseHelper = new FirebaseHelper();
+        String realEmail = ((AppRunnest) getApplication()).getUser().getEmail();
+        mEmail = FirebaseHelper.getFireBaseMail(realEmail);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -282,8 +286,8 @@ public class SideBarActivity extends AppCompatActivity
         if (id == R.id.nav_profile) {
             toolbar.setTitle("Profile");
             launchFragment(new ProfileFragment());
-        }  else if (id == R.id.nav_new_run) {
-            toolbar.setTitle("New Run");
+        }  else if (id == R.id.nav_run) {
+            toolbar.setTitle("Run");
             fab.hide();
             launchFragment(new RunningMapFragment());
         } else if (id == R.id.nav_run_history) {
@@ -343,9 +347,7 @@ public class SideBarActivity extends AppCompatActivity
      * Checks whether there is a new message.
      */
     private void checkNbrMessages(){
-        //TODO: solve the conversion from email to parsed email
-        //((AppRunnest)getApplicationContext()).getGoogleUser().getEmail()
-        mFirebaseHelper.fetchMessages("challengee",
+        mFirebaseHelper.fetchMessages(mEmail,
                 new FirebaseHelper.Handler() {
             @Override
             public void handleRetrievedMessages(List<Message> messages) {
