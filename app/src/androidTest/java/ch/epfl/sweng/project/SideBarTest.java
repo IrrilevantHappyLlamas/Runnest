@@ -119,13 +119,13 @@ public class SideBarTest {
     @Test
     public void navigateToLogout() {
 
-        SystemClock.sleep(500);
+        SystemClock.sleep(1000);
 
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        SystemClock.sleep(500);
+        SystemClock.sleep(1000);
 
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_logout));
-        SystemClock.sleep(500);
+        SystemClock.sleep(1000);
 
 
         onView(withText("OK"))
