@@ -248,11 +248,7 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
 
             mMapHandler.setRunningGesture();
 
-            if(mRun.isRunning()) {
-                mMapHandler.stopShowingLocation();
-            } else {
-                mMapHandler.startShowingLocation();
-            }
+            mMapHandler.startShowingLocation();
         }
     }
 

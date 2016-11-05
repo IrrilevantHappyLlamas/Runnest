@@ -64,6 +64,7 @@ public class MapHandler {
             //uiSettings.setScrollGesturesEnabled(false);
             //uiSettings.setZoomGesturesEnabled(false);
             uiSettings.setZoomControlsEnabled(true);
+            uiSettings.setMyLocationButtonEnabled(false);
 
             // Center camera on past run
             LatLngBounds bounds = builder.build();
@@ -125,6 +126,8 @@ public class MapHandler {
         uiSettings.setMapToolbarEnabled(false);
         uiSettings.setScrollGesturesEnabled(false);
         uiSettings.setZoomGesturesEnabled(false);
+        uiSettings.setMyLocationButtonEnabled(false);
+        uiSettings.setRotateGesturesEnabled(false);
 
         uiSettings.setZoomControlsEnabled(true);
     }
