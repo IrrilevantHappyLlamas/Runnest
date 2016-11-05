@@ -21,6 +21,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -206,11 +207,15 @@ public class SideBarActivity extends AppCompatActivity
 
             @Override
             public boolean onQueryTextChange(String newText){
-                return findUsers(newText);
+                if (!newText.equals("")) {
+                    return findUsers(newText);
+                }
+                return true;
             }
         });
 
         return true;
+
     }
 
     private Boolean findUsers(final String query) {
@@ -285,12 +290,15 @@ public class SideBarActivity extends AppCompatActivity
 
         fragmentManager.beginTransaction().remove(mCurrentFragment).commit();
 
+        showSearchBar();
+
         if (id == R.id.nav_profile) {
             toolbar.setTitle("Profile");
             launchFragment(new ProfileFragment());
         }  else if (id == R.id.nav_new_run) {
             toolbar.setTitle("New Run");
             fab.hide();
+            hideSearchBar();
             launchFragment(new RunningMapFragment());
         } else if (id == R.id.nav_run_history) {
             toolbar.setTitle("Run History");
@@ -307,6 +315,14 @@ public class SideBarActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void hideSearchBar() {
+        mSearchView.setVisibility(View.INVISIBLE);
+    }
+
+    private void showSearchBar() {
+        mSearchView.setVisibility(View.VISIBLE);
     }
 
     /**

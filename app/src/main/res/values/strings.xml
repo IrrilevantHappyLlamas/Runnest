@@ -33,4 +33,6 @@
     <string name="go_to_home_page">GO TO HOME PAGE</string>
     <string name="decline">DECLINE</string>
     <string name="accept">ACCEPT</string>
+    <string name="delete">Delete</string>
+    <string name="go_to_run_history">GO TO RUN HISTORY</string>
 </resources>

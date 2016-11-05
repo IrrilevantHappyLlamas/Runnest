@@ -11,6 +11,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Fragments.NewRun.MapHandler;
 import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.Track;
@@ -94,6 +95,19 @@ public class DisplayRunFragment extends Fragment {
                 public void onClick(View v) {
 
                     if (mListener != null) {
+                        mListener.onDisplayRunInteraction();
+                    }
+                }
+            });
+
+            final DBHelper dbHelper = new DBHelper(this.getContext());
+
+            Button deleteRunButton = (Button) view.findViewById(R.id.deleteRunButton);
+            deleteRunButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null) {
+                        dbHelper.delete(mRunToBeDisplayed);
                         mListener.onDisplayRunInteraction();
                     }
                 }

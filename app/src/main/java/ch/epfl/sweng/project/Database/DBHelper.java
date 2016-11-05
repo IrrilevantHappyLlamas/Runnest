@@ -122,16 +122,25 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Deletes an effort given its id
-     * @param id the id of the effort to delete
+     * Deletes a give run
+     * @param run to delete
      * @return true if the deletion was succesfull
      */
-    /*
-    public boolean deleteRun(long id) {
-        //also needs to delete checkpoints
+    public boolean delete(Run run) {
+        long id = run.getId();
+
+        String selection = RUNS_COLS[0] + " = " + id;
+        Cursor result = db.query(RUNS_TABLE_NAME, RUNS_COLS, selection, null, null, null, null);
+        if (result.getCount() == 1) {
+            result.moveToNext();
+            long checkpointsFromId = result.getLong(3);
+            long checkpointsToId = result.getLong(4);
+            String deleteCheckpointsQuery = CHECKPOINTS_COLS[0] + " >= " + checkpointsFromId + " AND "
+                    + CHECKPOINTS_COLS[0] + " <= " + checkpointsToId;
+            db.delete(CHECKPOINTS_TABLE_NAME, deleteCheckpointsQuery, null);
+        }
         return db.delete(RUNS_TABLE_NAME, RUNS_COLS[0] + " = " + id, null) > 0;
     }
-    */
 
     /**
      * Retrieves all efforts present in the database.
@@ -142,13 +151,13 @@ public class DBHelper extends SQLiteOpenHelper {
         List<Run> runs = new ArrayList<>();
         if (result.getCount() > 0) {
             while (result.moveToNext()) {
-                //long id = result.getLong(0);
+                long id = result.getLong(0);
                 String name = result.getString(1);
                 long duration = Long.parseLong(result.getString(2));
                 long fromId = result.getLong(3);
                 long toId = result.getLong(4);
                 Track track = fetchTrack(fromId, toId);
-                Run run = new Run(name);
+                Run run = new Run(name, id);
                 run.setTrack(track);
                 run.setDuration(duration);
 
