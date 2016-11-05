@@ -39,8 +39,9 @@ public class MapHandler {
     //TODO: Comment this method
     public void showTrack(Track track) {
         if(track.getTotalCheckPoints() != 0) {
-            PolylineOptions polylineOptions = new PolylineOptions();
 
+            // Build polyline and LatLngBounds
+            PolylineOptions polylineOptions = new PolylineOptions();
             List<CheckPoint> trackPoints = track.getCheckpoints();
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
@@ -50,10 +51,23 @@ public class MapHandler {
                 builder.include(latLng);
             }
 
-            mGoogleMap.addPolyline(mPolylineOptions.color(Color.BLUE));
+            mGoogleMap.addPolyline(polylineOptions.color(Color.BLUE));
 
+            // Setup UI
+            mGoogleMap.setBuildingsEnabled(false);
+            mGoogleMap.setIndoorEnabled(false);
+            mGoogleMap.setTrafficEnabled(false);
+            UiSettings uiSettings = mGoogleMap.getUiSettings();
+            uiSettings.setCompassEnabled(false);
+            uiSettings.setIndoorLevelPickerEnabled(false);
+            uiSettings.setMapToolbarEnabled(false);
+            //uiSettings.setScrollGesturesEnabled(false);
+            //uiSettings.setZoomGesturesEnabled(false);
+            uiSettings.setZoomControlsEnabled(true);
+
+            // Center camera on past run
             LatLngBounds bounds = builder.build();
-            int padding = 40; // offset from edges of the map in pixels
+            int padding = 40;
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
             mGoogleMap.animateCamera(cameraUpdate);
         }

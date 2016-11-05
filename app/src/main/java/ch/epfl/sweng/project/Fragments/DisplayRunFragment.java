@@ -11,42 +11,29 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import ch.epfl.sweng.project.Fragments.NewRun.MapHandler;
-import ch.epfl.sweng.project.Model.Run;
-import ch.epfl.sweng.project.Model.Track;
-
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link DisplayRunFragment.OnDisplayRunInteractionListener} interface
- * to handle interaction events.
- */
+import ch.epfl.sweng.project.Fragments.NewRun.MapHandler;
+import ch.epfl.sweng.project.Model.Run;
+import ch.epfl.sweng.project.Model.Track;
+
 public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
 
-    private static final String ARG_RUNTOBEDISPLAYED = "run to be displayed";
-    private OnDisplayRunInteractionListener mListener;
+    private static final String RUN_TO_BE_DISPLAYED = "run to be displayed";
+    private DisplayRunFragmentInteractionListener mListener;
     private Run mRunToBeDisplayed;
 
+    // Map
     private MapView mMapView = null;
     private MapHandler mMapHandler = null;
 
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param runToBeDisplayed The run to be displayed.
-     * @return A new instance of fragment RunningMapFragment.
-     */
     public static DisplayRunFragment newInstance(Run runToBeDisplayed) {
         DisplayRunFragment fragment = new DisplayRunFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_RUNTOBEDISPLAYED, runToBeDisplayed);
+        args.putSerializable(RUN_TO_BE_DISPLAYED, runToBeDisplayed);
         fragment.setArguments(args);
         return fragment;
     }
@@ -55,21 +42,21 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-             mRunToBeDisplayed = (Run) getArguments().getSerializable(ARG_RUNTOBEDISPLAYED);
+            mRunToBeDisplayed = (Run) getArguments().getSerializable(RUN_TO_BE_DISPLAYED);
         }
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view =  inflater.inflate(R.layout.fragment_display_run, container, false);
 
-        View view = inflater.inflate(R.layout.fragment_display_run, container, false);
-
+        mMapView = (MapView) view.findViewById(R.id.mapView);
+        mMapView.onCreate(savedInstanceState);
+        mMapView.getMapAsync(this); //this is important
 
         if (mRunToBeDisplayed != null) {
-
-            mMapView = (MapView) view.findViewById(R.id.runMap);
-            mMapView.onCreate(savedInstanceState);
-            mMapView.getMapAsync(this); //this is important
 
             Track track = mRunToBeDisplayed.getTrack();
 
@@ -102,7 +89,7 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
                 public void onClick(View v) {
 
                     if (mListener != null) {
-                        mListener.onDisplayRunInteraction();
+                        mListener.onDisplayRunFragmentInteraction();
                     }
                 }
             });
@@ -123,11 +110,42 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
         row.addView(element);
     }
 
+    /**
+     * Called when the <code>GoogleMap</code> is ready. Initialize a MapHandler.
+     *
+     * @param googleMap     the <code>GoogleMap</code>
+     */
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMapHandler = new MapHandler(googleMap);
+
+        mMapHandler.showTrack(mRunToBeDisplayed.getTrack());
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mMapView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mMapView.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mMapView.onDestroy();
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnDisplayRunInteractionListener) {
-            mListener = (OnDisplayRunInteractionListener) context;
+        if (context instanceof DisplayRunFragmentInteractionListener) {
+            mListener = (DisplayRunFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -141,24 +159,18 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMapHandler = new MapHandler(googleMap);
-
-        mMapHandler.showTrack(mRunToBeDisplayed.getTrack());
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mMapView.onSaveInstanceState(outState);
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnDisplayRunInteractionListener {
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mMapView.onLowMemory();
+    }
 
-        void onDisplayRunInteraction();
+    public interface DisplayRunFragmentInteractionListener {
+        void onDisplayRunFragmentInteraction();
     }
 }

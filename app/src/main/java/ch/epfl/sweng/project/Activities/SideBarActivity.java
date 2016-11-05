@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -28,41 +29,30 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-
-import ch.epfl.sweng.project.AppRunnest;
-import ch.epfl.sweng.project.Fragments.ChallengeFragment;
-import ch.epfl.sweng.project.Fragments.DisplayChallengeRequestFragment;
-import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
+import ch.epfl.sweng.project.Fragments.ChallengeFragment;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 import ch.epfl.sweng.project.Fragments.DBUploadFragment;
-import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
+import ch.epfl.sweng.project.Fragments.DisplayChallengeRequestFragment;
 import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
 import ch.epfl.sweng.project.Fragments.MessagesFragment;
 import ch.epfl.sweng.project.Fragments.NewRun.RunningMapFragment;
+import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
-
-import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.Message;
-
 import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.User;
-
-import android.os.Handler;
 
 public class SideBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -71,11 +61,11 @@ public class SideBarActivity extends AppCompatActivity
         DBDownloadFragment.DBDownloadFragmentInteractionListener,
         DBUploadFragment.DBUploadFragmentInteractionListener,
         RunHistoryFragment.onRunHistoryInteractionListener,
-        DisplayRunFragment.OnDisplayRunInteractionListener,
         DisplayUserFragment.OnDisplayUserFragmentInteractionListener,
         MessagesFragment.MessagesFragmentInteractionListener,
         ChallengeFragment.OnChallengeFragmentInteractionListener,
-        DisplayChallengeRequestFragment.OnDisplayChallengeRequestFragmentInteractionListener
+        DisplayChallengeRequestFragment.OnDisplayChallengeRequestFragmentInteractionListener,
+        DisplayRunFragment.DisplayRunFragmentInteractionListener
 {
 
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
@@ -502,7 +492,7 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDisplayRunInteraction() {
+    public void onDisplayRunFragmentInteraction() {
         // keep using the stack
         onNavigationItemSelected(navigationView.getMenu().getItem(2));
     }

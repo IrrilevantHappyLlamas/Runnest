@@ -22,6 +22,7 @@
     <string name="email">email@gmail.com</string>
     <string name="messages">Messages</string>
     <string name="run_tab">New Run</string>
+    <string name="go_to_run_history">Go to Run History</string>
 
 
     <string name="client_id">577629382915-kiv730drkucl6c7ivmklabfmv7bairsl.apps.googleusercontent.com</string>
