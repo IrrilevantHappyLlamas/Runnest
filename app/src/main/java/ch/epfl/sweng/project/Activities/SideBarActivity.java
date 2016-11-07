@@ -22,6 +22,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -191,47 +192,57 @@ public class SideBarActivity extends AppCompatActivity
 
             @Override
             public boolean onQueryTextSubmit(final String query) {
-                if(((AppRunnest)getApplication()).getNetworkHandler().isConnected()) {
-                    mFirebaseHelper.getDatabase().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if(dataSnapshot.exists()) {
-                                Map<String, String> users = new HashMap<>();
-                                for (DataSnapshot user : dataSnapshot.getChildren()) {
-                                    String usersName = user.getKey().toString();
-                                    String usersEmail = user.child("name").getValue().toString();
-                                    String[] surnameAndFamilyName = usersName.split(" ");
-                                    String surname = surnameAndFamilyName[0].toLowerCase();
-                                    String familyName = surnameAndFamilyName[1].toLowerCase();
-
-                                    if (surname.startsWith(query.toLowerCase())
-                                            || familyName.startsWith(query.toLowerCase())
-                                            || usersEmail.toLowerCase().startsWith(query.toLowerCase())) {
-                                        users.put(usersName, usersEmail);
-                                    }
-                                }
-                                launchFragment(DisplayUserFragment.newInstance(users));
-                            } else {
-                                launchFragment(DisplayUserFragment.newInstance(null));
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                        }
-                    });
-                    return true;
-                }
-                return false;
+                return findUsers(query);
             }
 
             @Override
             public boolean onQueryTextChange(String newText){
+                if (!newText.equals("")) {
+                    return findUsers(newText);
+                }
                 return true;
             }
         });
 
         return true;
+
+    }
+
+    private Boolean findUsers(final String query) {
+        if (((AppRunnest)getApplication()).getNetworkHandler().isConnected()) {
+            mFirebaseHelper.getDatabase().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        Map<String, String> users = new HashMap<>();
+                        for (DataSnapshot user : dataSnapshot.getChildren()) {
+                            String usersName = user.getKey().toString();
+                            String usersEmail = user.child("name").getValue().toString();
+                            String[] surnameAndFamilyName = usersName.split(" ");
+                            String surname = surnameAndFamilyName[0].toLowerCase();
+                            String familyName = surnameAndFamilyName[1].toLowerCase();
+
+                            String lowerCaseQuery = query.toLowerCase();
+                            if (usersName.toLowerCase().startsWith(lowerCaseQuery)
+                                    || surname.startsWith(lowerCaseQuery)
+                                    || familyName.startsWith(lowerCaseQuery)
+                                    || usersEmail.toLowerCase().startsWith(lowerCaseQuery)) {
+                                users.put(usersName, usersEmail);
+                            }
+                        }
+                        launchFragment(DisplayUserFragment.newInstance(users));
+                    } else {
+                        launchFragment(DisplayUserFragment.newInstance(null));
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -269,12 +280,15 @@ public class SideBarActivity extends AppCompatActivity
 
         fragmentManager.beginTransaction().remove(mCurrentFragment).commit();
 
+        showSearchBar();
+
         if (id == R.id.nav_profile) {
             toolbar.setTitle("Profile");
             launchFragment(new ProfileFragment());
         }  else if (id == R.id.nav_new_run) {
             toolbar.setTitle("New Run");
             fab.hide();
+            hideSearchBar();
             launchFragment(new RunningMapFragment());
         } else if (id == R.id.nav_run_history) {
             toolbar.setTitle("Run History");
@@ -291,6 +305,14 @@ public class SideBarActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void hideSearchBar() {
+        mSearchView.setVisibility(View.INVISIBLE);
+    }
+
+    private void showSearchBar() {
+        mSearchView.setVisibility(View.VISIBLE);
     }
 
     /**

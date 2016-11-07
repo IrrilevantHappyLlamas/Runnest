@@ -19,6 +19,7 @@ public class Run implements Serializable {
     private long duration;
     private boolean isRunning;
     private long startTime;
+    private long id;
 
     /**
      * Constructor that instantiates a <code>Run</code> with the name passed as argument
@@ -30,16 +31,25 @@ public class Run implements Serializable {
         isRunning = false;
         track = new Track();
         startTime = -1;
+        id = -1;
     }
 
     /**
-     * Default constructor, instantiates a <code>Run</code> with default name "temp"
+     * Default constructor, instantiates a <code>Run</code> with default name "tmp"
      */
     public Run() {
-        name = "temp";
-        isRunning = false;
-        track = new Track();
-        startTime = -1;
+        this("tmp");
+    }
+
+    /**
+     * Constructor that allows to set the id
+     *
+     * @param name the name of the <code>Run</code>
+     * @param id the id of the <code>Run</code>
+     */
+    public Run(String name, long id) {
+        this(name);
+        this.id = id;
     }
 
     /**
@@ -126,6 +136,8 @@ public class Run implements Serializable {
     public boolean isRunning() {
         return isRunning;
     }
+
+    public long getId() { return id; }
 
     public void setTrack(Track track) {
         if(track != null) {

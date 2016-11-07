@@ -12,6 +12,12 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import ch.epfl.sweng.project.Database.DBHelper;
+import ch.epfl.sweng.project.Model.Run;
+import ch.epfl.sweng.project.Model.Track;
+import ch.epfl.sweng.project.Model.CheckPoint;
+
+
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -24,10 +30,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.List;
-
-import ch.epfl.sweng.project.Model.CheckPoint;
-import ch.epfl.sweng.project.Model.Run;
-import ch.epfl.sweng.project.Model.Track;
 
 public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
 
@@ -102,6 +104,19 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
                     }
                 }
             });
+
+            final DBHelper dbHelper = new DBHelper(this.getContext());
+
+            Button deleteRunButton = (Button) view.findViewById(R.id.deleteRunButton);
+            deleteRunButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null) {
+                        dbHelper.delete(mRunToBeDisplayed);
+                        mListener.onDisplayRunFragmentInteraction();
+                    }
+                }
+            });
         }
 
         return view;
@@ -142,7 +157,7 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
         uiSettings.setCompassEnabled(false);
         uiSettings.setIndoorLevelPickerEnabled(false);
         uiSettings.setMapToolbarEnabled(false);
-        uiSettings.setZoomControlsEnabled(true);
+        uiSettings.setZoomControlsEnabled(false);
         uiSettings.setMyLocationButtonEnabled(false);
     }
 

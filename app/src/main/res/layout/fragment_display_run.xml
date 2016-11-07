@@ -23,8 +23,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/go_to_run_history"
-        android:visibility="visible"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="20dp"/>
+        android:layout_gravity="bottom|left|center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="20dp"
+        tools:ignore="RtlHardcoded"/>
+
+    <Button
+        android:text="@string/delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/deleteRunButton"
+        android:layout_gravity="bottom|right|center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"
+        tools:ignore="RtlHardcoded"/>
 
 </FrameLayout>

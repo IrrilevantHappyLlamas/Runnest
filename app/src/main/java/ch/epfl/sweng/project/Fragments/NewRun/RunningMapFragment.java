@@ -148,6 +148,9 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
             String runName = DateFormat.getDateTimeInstance().format(new Date());
             mRun = new Run(runName);
 
+            mDistance.setVisibility(View.VISIBLE);
+            updateDisplayedDistance();
+
             mChronometer.setVisibility(View.VISIBLE);
             mChronometer.setBase(SystemClock.elapsedRealtime());
             mChronometer.start();
@@ -158,7 +161,6 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
 
             mRequestingLocationUpdates = true;
             setButtonsEnabledState();
-            updateDisplayedDistance();
             startLocationUpdates();
         }
     }

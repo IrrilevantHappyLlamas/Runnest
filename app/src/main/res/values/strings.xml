@@ -13,7 +13,6 @@
     <string name="example_email">email@gmail.com</string>
     <string name="messages">Messages</string>
     <string name="run_tab">New Run</string>
-    <string name="go_to_run_history">Go to Run History</string>
 
 
     <string name="client_id">577629382915-kiv730drkucl6c7ivmklabfmv7bairsl.apps.googleusercontent.com</string>
@@ -33,4 +32,6 @@
     <string name="name">"Name"</string>
     <string name="email">"Email"</string>
     <string name="family">"Family"</string>
+    <string name="delete">Delete</string>
+    <string name="go_to_run_history">GO TO RUN HISTORY</string>
 </resources>
