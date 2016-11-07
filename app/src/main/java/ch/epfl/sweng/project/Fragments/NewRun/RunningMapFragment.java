@@ -186,7 +186,7 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
 
             DBHelper dbHelper = new DBHelper(getContext());
             //TODO: verify that insertion has been performed correctly
-            dbHelper.insert(new Run(mRun));
+            dbHelper.insert(mRun);
 
             mListener.onRunningMapFragmentInteraction(new Run(mRun));
         }

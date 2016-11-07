@@ -139,12 +139,21 @@ public class RunTest {
     }
 
     @Test
-    public void startedRunDurationIsNotZero(){
+    public void startedRunDurationIsNotZero() {
         Run testRun1 = new Run();
         testRun1.start();
 
         SystemClock.sleep(2000);
 
         Assert.assertNotEquals(0, testRun1.getDuration());
+    }
+
+    @Test
+    public void setIdWorks() {
+        Run run = new Run();
+        Assert.assertEquals(-1, run.getId());
+        long id = 123;
+        run.setId(id);
+        Assert.assertEquals(id, run.getId());
     }
 }

@@ -67,6 +67,7 @@ public class Run implements Serializable {
         duration = toCopy.getDuration()*1000;
 
         isRunning = false;
+        id = toCopy.id;
     }
 
     /**
@@ -154,5 +155,14 @@ public class Run implements Serializable {
         if(duration >= 0) {
             this.duration = duration * 1000;
         }
+    }
+
+    /**
+     * Set the id of the <code>Run</code>
+     *
+     * @param id
+     */
+    public void setId(long id) {
+        this.id = id;
     }
 }

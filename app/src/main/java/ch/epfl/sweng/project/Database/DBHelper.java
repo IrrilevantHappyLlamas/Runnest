@@ -105,6 +105,7 @@ public class DBHelper extends SQLiteOpenHelper {
         runContentValues.put(RUNS_COLS[3], checkpointsFromId);
         runContentValues.put(RUNS_COLS[4], checkpointsToId);
         long insertedRun = db.insert(RUNS_TABLE_NAME, null, runContentValues);
+        run.setId(insertedRun);
         return insertedRun != -1;
     }
 
