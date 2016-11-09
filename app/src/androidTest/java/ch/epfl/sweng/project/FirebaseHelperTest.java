@@ -47,7 +47,7 @@ public class FirebaseHelperTest {
     @Test
     public void sendingMessageCorrectlyUpdatesDatabase() {
         String to = "you";
-        Message msg = new Message("me", to, Message.MessageType.TEXT, "Hello, world!");
+        Message msg = new Message("me", to, "me", "you", Message.MessageType.TEXT, "Hello, world!");
         firebaseHelper.send(msg);
         firebaseHelper.getDatabase().child("messages").child(to)
                 .addListenerForSingleValueEvent(new ValueEventListener() {

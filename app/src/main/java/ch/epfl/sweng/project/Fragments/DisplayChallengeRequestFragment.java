@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.Message;
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
@@ -64,7 +65,7 @@ public class DisplayChallengeRequestFragment extends Fragment {
 
         TextView message = (TextView) view.findViewById(R.id.message);
 
-        message.setText(mMessage.getFrom() + " wants to challenge you to a race!\n\n" + "What's your answer?!");
+        message.setText(mMessage.getSender() + " wants to challenge you to a race!\n\n" + "What's your answer?!");
         message.setTextSize(30);
 
         Button accept = (Button) view.findViewById(R.id.accept);
@@ -72,11 +73,12 @@ public class DisplayChallengeRequestFragment extends Fragment {
         accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (mListener != null) {
-                    //mFirebaseHelper.delete(mMessage);
-                    mListener.onDisplayChallengeRequestFragmentInteraction(true);
-                }
+         if(((AppRunnest)getActivity().getApplication()).getNetworkHandler().isConnected()) {
+             if (mListener != null) {
+                 mFirebaseHelper.delete(mMessage);
+                 mListener.onDisplayChallengeRequestFragmentInteraction(true, mMessage.getSender(), mMessage.getFrom());
+             }
+         }
             }
         });
 
@@ -85,10 +87,11 @@ public class DisplayChallengeRequestFragment extends Fragment {
         decline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (mListener != null) {
-                    //mFirebaseHelper.delete(mMessage);
-                    mListener.onDisplayChallengeRequestFragmentInteraction(false);
+                if(((AppRunnest)getActivity().getApplication()).getNetworkHandler().isConnected()) {
+                    if (mListener != null) {
+                        mFirebaseHelper.delete(mMessage);
+                        mListener.onDisplayChallengeRequestFragmentInteraction(false, mMessage.getSender(), mMessage.getFrom());
+                    }
                 }
             }
         });
@@ -127,6 +130,6 @@ public class DisplayChallengeRequestFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnDisplayChallengeRequestFragmentInteractionListener {
-        void onDisplayChallengeRequestFragmentInteraction(boolean accepted);
+        void onDisplayChallengeRequestFragmentInteraction(boolean accepted, String name, String email);
     }
 }

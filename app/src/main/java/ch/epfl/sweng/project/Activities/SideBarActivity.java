@@ -453,11 +453,11 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDisplayChallengeRequestFragmentInteraction(boolean accepted){
+    public void onDisplayChallengeRequestFragmentInteraction(boolean accepted, String name, String email){
 
         if(accepted){
-            //TODO: instantiate challenge fragment here.
-            launchFragment(new ChallengeFragment());
+
+            launchFragment(ChallengeFragment.newInstance(name, email));
         }
         else{
 

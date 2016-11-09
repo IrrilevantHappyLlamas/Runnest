@@ -9,6 +9,8 @@ import java.util.Date;
 public class Message implements Serializable {
     private String from;
     private String to;
+    private String sender;
+    private String addressee;
     private MessageType type;
     private String message;
     private Date time;
@@ -25,15 +27,19 @@ public class Message implements Serializable {
      *
      * @param from
      * @param to
+     * @param sender
+     * @param addressee
      * @param type
      * @param message
      * @throws IllegalArgumentException
      */
-    public Message(String from, String to, MessageType type, String message)
+    public Message(String from, String to, String sender, String addressee, MessageType type, String message)
             throws IllegalArgumentException
     {
         if (from == null || from.equals("")
                 || to == null || to.equals("")
+                || sender == null || sender.equals("")
+                || addressee == null || addressee.equals("")
                 || type == null
                 || message == null || message.equals("")) {
             throw new IllegalArgumentException("Invalid argument: parameters can't be null nor empty");
@@ -44,6 +50,8 @@ public class Message implements Serializable {
 
         this.from = from;
         this.to = to;
+        this.sender = sender;
+        this.addressee = addressee;
         this.type = type;
         this.message = message;
         time = new Date();
@@ -54,15 +62,17 @@ public class Message implements Serializable {
      *
      * @param from
      * @param to
+     * @param sender
+     * @param addressee
      * @param type
      * @param message
      * @param sentAt
      * @throws IllegalArgumentException
      */
-    public Message(String from, String to, MessageType type, String message, Date sentAt)
+    public Message(String from, String to, String sender, String addressee, MessageType type, String message, Date sentAt)
             throws IllegalArgumentException
     {
-        this(from, to, type, message);
+        this(from, to, sender, addressee, type, message);
         if (sentAt == null) {
             throw new IllegalArgumentException("Invalid argument: parameters can't be null nor empty");
         }
@@ -86,6 +96,24 @@ public class Message implements Serializable {
      */
     public String getTo() {
         return to;
+    }
+
+    /**
+     * Getter for the sender attribute
+     *
+     * @return the sender attribute of the message
+     */
+    public String getSender() {
+        return sender;
+    }
+
+    /**
+     * Getter for the addressee attribute
+     *
+     * @return the addressee attribute of the message
+     */
+    public String getAddressee() {
+        return addressee;
     }
 
     /**
