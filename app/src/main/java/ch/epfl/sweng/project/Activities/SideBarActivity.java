@@ -101,7 +101,7 @@ public class SideBarActivity extends AppCompatActivity
         @Override
         public void run() {
             checkNbrMessages();
-            System.out.println("blabla" + nbrMessages);
+            System.out.println(nbrMessages);
             handler.postDelayed(runnableCode, 10000);
         }
     };
