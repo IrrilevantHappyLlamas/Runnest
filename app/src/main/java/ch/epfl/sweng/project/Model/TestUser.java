@@ -54,7 +54,7 @@ public class TestUser implements User {
 
     @Override
     public boolean isLoggedIn() {
-        return false;
+        return true;
     }
 
     @Override

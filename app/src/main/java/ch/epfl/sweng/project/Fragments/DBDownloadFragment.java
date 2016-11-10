@@ -93,7 +93,6 @@ public class DBDownloadFragment extends Fragment implements
     public void onSuccess(FileDownloadTask.TaskSnapshot tResult) {
 
         writeDBFile(downloadedDB);
-        Toast.makeText(getContext(), "User Data Retrieved", Toast.LENGTH_LONG).show();
         DBDownloadListener.onDBDownloadFragmentInteraction();
     }
 
@@ -108,7 +107,6 @@ public class DBDownloadFragment extends Fragment implements
             error(e1);
         }
 
-        Toast.makeText(getContext(), "No remote User Data", Toast.LENGTH_LONG).show();
         DBDownloadListener.onDBDownloadFragmentInteraction();
     }
 
