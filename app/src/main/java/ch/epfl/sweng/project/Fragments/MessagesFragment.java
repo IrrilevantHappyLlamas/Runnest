@@ -64,7 +64,7 @@ public class MessagesFragment extends ListFragment {
                         for (int i = 0; i < size; ++i) {
                             Message currentMessage = messages.get(i);
 
-                            mMessageHeaders[i] = "From: " + currentMessage.getFrom() + "\n" + "Type: " + currentMessage.getType();
+                            mMessageHeaders[i] = "From: " + currentMessage.getSender() + "\n" + "Type: " + currentMessage.getType();
                         }
                     }
 

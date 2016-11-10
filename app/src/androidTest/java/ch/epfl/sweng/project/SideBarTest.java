@@ -241,7 +241,7 @@ public class SideBarTest {
         SystemClock.sleep(WAIT_DURATION);
 
         SideBarActivity listenerTest = mActivityRule.getActivity();
-        Message msg = new Message("to", "from", Message.MessageType.CHALLENGE_REQUEST, "test");
+        Message msg = new Message("to", "from", "to", "from", Message.MessageType.CHALLENGE_REQUEST, "test");
         listenerTest.onMessagesFragmentInteraction(msg);
     }
 
