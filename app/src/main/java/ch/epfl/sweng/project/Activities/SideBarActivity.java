@@ -313,11 +313,11 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     private void hideSearchBar() {
-        mSearchView.setVisibility(View.INVISIBLE);
+        findViewById(R.id.search).setVisibility(View.GONE);
     }
 
     private void showSearchBar() {
-        mSearchView.setVisibility(View.VISIBLE);
+        findViewById(R.id.search).setVisibility(View.VISIBLE);
     }
 
     /**
