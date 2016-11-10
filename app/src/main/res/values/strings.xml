@@ -1,36 +1,37 @@
 <resources>
     <string name="app_name">Project</string>
-    <string name="title_activity_side_bar">SideBarActivity</string>
-    <string name="checkpoint_number">CheckPoints saved:</string>
-    <string name="none">None</string>
     <string name="desc">Default Description</string>
     <string name="profile_tab">Profile</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
-    <string name="latitude">Latitude</string>
-    <string name="longitude">Longitude</string>
     <string name="stop">Stop</string>
     <string name="start">Start</string>
-    <string name="tbd_tab">TBD</string>
     <string name="runnest">Runnest</string>
     <string name="share_tab">Share</string>
-    <string name="send_tab">Send</string>
-    <string name="irrilevant_happy_llamas">Irrilevant Happy Llamas</string>
-    <string name="temp">temp</string>
     <string name="log_out">Logout</string>
-    <string name="email">email@gmail.com</string>
+    <string name="example_email">email@gmail.com</string>
     <string name="messages">Messages</string>
-    <string name="run_tab">New Run</string>
+    <string name="run_tab">Run</string>
 
 
     <string name="client_id">577629382915-kiv730drkucl6c7ivmklabfmv7bairsl.apps.googleusercontent.com</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="run_history">Run History</string>
     <string name="search_title">search_title</string>
-    <string name="go_to_home_page">GO TO HOME PAGE</string>
     <string name="decline">DECLINE</string>
     <string name="accept">ACCEPT</string>
+    <string name="km">"Km"</string>
+    <string name="running_man">Running Man</string>
+    <string name="lock_idle_alarm">Lock Idle Alarm</string>
+    <string name="newbie">Newbie</string>
+    <string name="uploading_user_data">Uploading user data …</string>
+    <string name="challenge">Challenge!</string>
+    <string name="id">"Id"</string>
+    <string name="name">"Name"</string>
+    <string name="email">"Email"</string>
+    <string name="family">"Family"</string>
+    <string name="delete">Delete</string>
+    <string name="go_to_run_history">GO TO RUN HISTORY</string>
 </resources>

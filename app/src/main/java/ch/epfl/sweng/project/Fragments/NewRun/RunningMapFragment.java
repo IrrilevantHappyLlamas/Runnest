@@ -32,6 +32,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import ch.epfl.sweng.project.Activities.SideBarActivity;
@@ -67,11 +68,6 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
     private MapHandler mMapHandler = null;
 
     private RunningMapFragmentInteractionListener mListener = null;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -140,7 +136,7 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     /**
-     * Include all actions to perfermor when the Start button is pressed
+     * Include all actions to perform when Start button is pressed
      */
     private void startButtonPressed() {
 
@@ -150,8 +146,12 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
 
 
             // initialize new Run
-            String runName = DateFormat.getDateTimeInstance().format(new Date());
+            SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy HH:mm:ss");
+            String runName = dateFormat.format(new Date());
             mRun = new Run(runName);
+
+            mDistance.setVisibility(View.VISIBLE);
+            updateDisplayedDistance();
 
             mChronometer.setVisibility(View.VISIBLE);
             mChronometer.setBase(SystemClock.elapsedRealtime());
@@ -163,24 +163,23 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
 
             mRequestingLocationUpdates = true;
             setButtonsEnabledState();
-
-            mDistance.setVisibility(View.VISIBLE);
-            double distanceInKm = (int)(mRun.getTrack().getDistance()/100.0)/10.0;
-            mDistance.setText(distanceInKm + " Km");
-
             startLocationUpdates();
         }
     }
 
-    /**
-     * Include all actions to perfermor when the Stop button is pressed
-     */
+    private void updateDisplayedDistance() {
+        String distanceInKm = (int)(mRun.getTrack().getDistance()/100.0)/10.0
+                + " "
+                + getString(R.string.km);
+
+        mDistance.setText(distanceInKm);
+    }
+
     private void stopButtonPressed() {
         if (mRequestingLocationUpdates) {
             mRequestingLocationUpdates = false;
             setButtonsEnabledState();
             stopLocationUpdates();
-
 
             mChronometer.stop();
             mRun.stop();
@@ -189,15 +188,12 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
 
             DBHelper dbHelper = new DBHelper(getContext());
             //TODO: verify that insertion has been performed correctly
-            dbHelper.insert(new Run(mRun));
+            dbHelper.insert(mRun);
 
             mListener.onRunningMapFragmentInteraction(new Run(mRun));
         }
     }
 
-    /**
-     * Set enabled state of the buttons to be coherent with other variables values.
-     */
     private void setButtonsEnabledState() {
         if (mRequestingLocationUpdates) {
             mStartUpdatesButton.setEnabled(false);
@@ -227,9 +223,6 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
-    /**
-     * Perform all necessary action in order to start getting location updates.
-     */
     private void startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(getContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -246,13 +239,14 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
                 }
             });
 
+            mMapHandler.setupRunningMapUI();
+
             mMapHandler.startShowingLocation();
-            mMapHandler.setRunningGesture();
         }
     }
 
     /**
-     * Stop location updates, update buttons state and end the current run.
+     * Stop location updates, update buttons state and end current run.
      */
     private void stopLocationUpdates() {
         LocationServices.FusedLocationApi.removeLocationUpdates(
@@ -305,8 +299,7 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
 
         mMapHandler.updateMap(mLastCheckPoint);
 
-        double distanceInKm = (int)(mRun.getTrack().getDistance()/100.0)/10.0;
-        mDistance.setText(distanceInKm + " Km");
+        updateDisplayedDistance();
     }
 
     /**
@@ -333,10 +326,11 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
             location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+            mMapHandler.startShowingLocation();
         }
         if(location != null) {
             mLastCheckPoint = new CheckPoint(location);
-            mMapHandler.startShowingLocation();
         }
         if (mRequestingLocationUpdates) {
             startLocationUpdates();

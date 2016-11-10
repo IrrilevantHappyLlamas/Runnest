@@ -126,15 +126,12 @@ public final class LoginActivity extends AppCompatActivity
      */
     private void handleSignInResult(GoogleSignInResult result) {
         if (result.isSuccess()) {
-
             // Signed in successfully, show success toast
             GoogleSignInAccount acct = result.getSignInAccount();
             ((AppRunnest)getApplication()).setUser(new AuthenticatedUser(acct));
             firebaseAuthWithGoogle(acct);
-
-            Toast.makeText(getBaseContext(), "Login successful", Toast.LENGTH_LONG).show();
-
         } else {
+            ((SignInButton) findViewById(R.id.sign_in_button)).setEnabled(true);
             Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
         }
     }
@@ -223,6 +220,7 @@ public final class LoginActivity extends AppCompatActivity
             switch (v.getId()) {
                 case R.id.sign_in_button:
                     Log.d(TAG, "clickSignInBtn:");
+                    ((SignInButton) findViewById(R.id.sign_in_button)).setEnabled(false);
                     signOut();
                     signIn();
                     break;

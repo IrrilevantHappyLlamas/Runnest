@@ -81,7 +81,7 @@ public class DisplayUserFragment extends Fragment {
 
         if (!noUserFound) {
             Button challengeButton = new Button(this.getContext());
-            challengeButton.setText("Challenge!");
+            challengeButton.setText(R.string.challenge);
             challengeButton.setLayoutParams(layoutParams);
             challengeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -89,8 +89,9 @@ public class DisplayUserFragment extends Fragment {
                     // Send message
                     String from = ((AppRunnest) getActivity().getApplication()).getUser().getEmail();
                     String to = FirebaseHelper.getFireBaseMail(email);
+                    String sender = ((AppRunnest) getActivity().getApplication()).getUser().getName();
                     String message = "Run with me!";
-                    Message challengeRequestMessage = new Message(from, to, Message.MessageType.CHALLENGE_REQUEST, message);
+                    Message challengeRequestMessage = new Message(from, to, sender, name, Message.MessageType.CHALLENGE_REQUEST, message);
 
                     FirebaseHelper firebaseHelper = new FirebaseHelper();
                     firebaseHelper.send(challengeRequestMessage);

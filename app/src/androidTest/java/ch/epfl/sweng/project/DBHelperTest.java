@@ -1,7 +1,6 @@
 package ch.epfl.sweng.project;
 
 import android.content.Context;
-import android.location.Location;
 import android.support.test.InstrumentationRegistry;
 
 import org.junit.Assert;
@@ -18,14 +17,7 @@ import ch.epfl.sweng.project.Model.Track;
 public class DBHelperTest {
     private DBHelper dbHelper;
 
-    @Before
-    public void setUp() {
-        Context testContext = InstrumentationRegistry.getTargetContext();
-        dbHelper = new DBHelper(testContext);
-    }
-
-    @Test
-    public void canInsertNewRun() {
+    private Run createTestRun() {
         Track testTrack = new Track();
         testTrack.add(new CheckPoint(2,2));
         testTrack.add(new CheckPoint(2,3));
@@ -35,7 +27,18 @@ public class DBHelperTest {
         testRun.setTrack(testTrack);
         testRun.setDuration(10);
 
-        boolean isInserted = dbHelper.insert(testRun);
+        return testRun;
+    }
+
+    @Before
+    public void setUp() {
+        Context testContext = InstrumentationRegistry.getTargetContext();
+        dbHelper = new DBHelper(testContext);
+    }
+
+    @Test
+    public void canInsertNewRun() {
+        boolean isInserted = dbHelper.insert(createTestRun());
         Assert.assertTrue(isInserted);
     }
 
@@ -55,5 +58,23 @@ public class DBHelperTest {
         Assert.assertEquals(3, track.getTotalCheckPoints());
         Assert.assertEquals(222504, track.getDistance(), 1);
         Assert.assertEquals(10, lastRun.getDuration(), 0);
+    }
+
+    @Test
+    public void canDelete() {
+        List<Run> runs = dbHelper.fetchAllEfforts();
+        int initialNbRuns = runs.size();
+
+        boolean isInserted = dbHelper.insert(createTestRun());
+        Assert.assertTrue(isInserted);
+
+        runs = dbHelper.fetchAllEfforts();
+        Assert.assertEquals(initialNbRuns + 1, runs.size());
+
+        Run myRun = runs.get(0);
+        dbHelper.delete(myRun);
+
+        runs = dbHelper.fetchAllEfforts();
+        Assert.assertEquals(initialNbRuns, runs.size());
     }
 }

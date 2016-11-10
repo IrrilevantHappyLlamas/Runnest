@@ -7,7 +7,7 @@
             android:icon="@drawable/profile_head_small"
             android:title="@string/profile_tab" />
         <item
-            android:id="@+id/nav_new_run"
+            android:id="@+id/nav_run"
             android:icon="@drawable/running_man"
             android:title="@string/run_tab" />
         <item
@@ -23,7 +23,6 @@
     <item android:title="@string/runnest">
         <menu>
             <item
-                android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
                 android:title="@string/share_tab" />
             <item

@@ -55,10 +55,15 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
         profilePic.requestLayout();
 
         // Display logged profile id
-        ((TextView)view.findViewById(R.id.idTxt)).setText("Id: "+ mUser.getId());
-        ((TextView)view.findViewById(R.id.nameTxt)).setText("Name: "+ mUser.getName());
-        ((TextView)view.findViewById(R.id.emailTxt)).setText("Email: "+ mUser.getEmail());
-        ((TextView)view.findViewById(R.id.familyTxt)).setText("Family: "+ mUser.getFamilyName());
+        String id = getString(R.string.id) + ": " + mUser.getId();
+        String name = getString(R.string.name) + ": " + mUser.getName();
+        String email = getString(R.string.email) + ": " + mUser.getEmail();
+        String family = getString(R.string.family) + ": " + mUser.getFamilyName();
+
+        ((TextView)view.findViewById(R.id.idTxt)).setText(id);
+        ((TextView)view.findViewById(R.id.nameTxt)).setText(name);
+        ((TextView)view.findViewById(R.id.emailTxt)).setText(email);
+        ((TextView)view.findViewById(R.id.familyTxt)).setText(family);
 
 
         return view;

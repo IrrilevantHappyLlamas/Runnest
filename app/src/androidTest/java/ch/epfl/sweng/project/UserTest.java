@@ -17,12 +17,16 @@ public class UserTest {
 
         User testUser = new TestUser();
 
+        testUser.loginStatus();
+        testUser.logoutStatus();
+
         Assert.assertEquals("Test User", testUser.getId());
         Assert.assertEquals("Test User", testUser.getEmail());
         Assert.assertEquals("Test User", testUser.getFamilyName());
         Assert.assertEquals("Test User", testUser.getName());
         Assert.assertEquals("", testUser.getPhotoUrl());
         Assert.assertEquals("6VauzC82b6YoNfRSo2ft4WFqoCu1", testUser.getFirebaseId());
+        Assert.assertTrue(testUser.isLoggedIn());
 
     }
 

@@ -33,6 +33,8 @@ public class FirebaseHelper {
      */
     private final String MESSAGES_CHILD = "messages";
     private final String FROM_CHILD = "from";
+    private final String SENDER_CHILD = "sender";
+    private final String ADDRESSEE_CHILD = "addressee";
     private final String TYPE_CHILD = "type";
     private final String MESSAGE_CHILD = "message";
     private final String TIME_CHILD = "time";
@@ -70,6 +72,8 @@ public class FirebaseHelper {
         String messageId = message.getUid();
         DatabaseReference messageChild = databaseReference.child(MESSAGES_CHILD).child(message.getTo()).child(messageId);
         messageChild.child(FROM_CHILD).setValue(message.getFrom());
+        messageChild.child(SENDER_CHILD).setValue(message.getSender());
+        messageChild.child(ADDRESSEE_CHILD).setValue(message.getAddressee());
         messageChild.child(TYPE_CHILD).setValue(message.getType());
         messageChild.child(MESSAGE_CHILD).setValue(message.getMessage());
         messageChild.child(TIME_CHILD).setValue(time);
@@ -89,10 +93,12 @@ public class FirebaseHelper {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot children : dataSnapshot.getChildren()) {
                         String from = children.child(FROM_CHILD).getValue(String.class);
+                        String sender = children.child(SENDER_CHILD).getValue(String.class);
+                        String addressee = children.child(ADDRESSEE_CHILD).getValue(String.class);
                         Message.MessageType type = children.child(TYPE_CHILD).getValue(Message.MessageType.class);
                         String messageText = children.child(MESSAGE_CHILD).getValue(String.class);
                         Date time = children.child(TIME_CHILD).getValue(Date.class);
-                        Message message = new Message(from, forUser, type, messageText, time);
+                        Message message = new Message(from, forUser, sender, addressee, type, messageText, time);
 
                         messages.add(message);
                     }
