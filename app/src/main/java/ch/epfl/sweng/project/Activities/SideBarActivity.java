@@ -26,22 +26,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import ch.epfl.sweng.project.AppRunnest;
-import ch.epfl.sweng.project.Fragments.ChallengeFragment;
-import ch.epfl.sweng.project.Fragments.DisplayChallengeRequestFragment;
-import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Fragments.ChallengeFragment;
@@ -49,11 +46,11 @@ import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 import ch.epfl.sweng.project.Fragments.DBUploadFragment;
 import ch.epfl.sweng.project.Fragments.DisplayChallengeRequestFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
+import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
 import ch.epfl.sweng.project.Fragments.MessagesFragment;
 import ch.epfl.sweng.project.Fragments.NewRun.RunningMapFragment;
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
-
 import ch.epfl.sweng.project.Model.Message;
 import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.User;
@@ -65,11 +62,11 @@ public class SideBarActivity extends AppCompatActivity
         DBDownloadFragment.DBDownloadFragmentInteractionListener,
         DBUploadFragment.DBUploadFragmentInteractionListener,
         RunHistoryFragment.onRunHistoryInteractionListener,
-        DisplayRunFragment.OnDisplayRunInteractionListener,
         DisplayUserFragment.OnDisplayUserFragmentInteractionListener,
         MessagesFragment.MessagesFragmentInteractionListener,
         ChallengeFragment.OnChallengeFragmentInteractionListener,
-        DisplayChallengeRequestFragment.OnDisplayChallengeRequestFragmentInteractionListener
+        DisplayChallengeRequestFragment.OnDisplayChallengeRequestFragmentInteractionListener,
+        DisplayRunFragment.DisplayRunFragmentInteractionListener
 {
 
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
@@ -201,47 +198,57 @@ public class SideBarActivity extends AppCompatActivity
 
             @Override
             public boolean onQueryTextSubmit(final String query) {
-                if(((AppRunnest)getApplication()).getNetworkHandler().isConnected()) {
-                    mFirebaseHelper.getDatabase().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if(dataSnapshot.exists()) {
-                                Map<String, String> users = new HashMap<>();
-                                for (DataSnapshot user : dataSnapshot.getChildren()) {
-                                    String usersName = user.getKey().toString();
-                                    String usersEmail = user.child("name").getValue().toString();
-                                    String[] surnameAndFamilyName = usersName.split(" ");
-                                    String surname = surnameAndFamilyName[0].toLowerCase();
-                                    String familyName = surnameAndFamilyName[1].toLowerCase();
-
-                                    if (surname.startsWith(query.toLowerCase())
-                                            || familyName.startsWith(query.toLowerCase())
-                                            || usersEmail.toLowerCase().startsWith(query.toLowerCase())) {
-                                        users.put(usersName, usersEmail);
-                                    }
-                                }
-                                launchFragment(DisplayUserFragment.newInstance(users));
-                            } else {
-                                launchFragment(DisplayUserFragment.newInstance(null));
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                        }
-                    });
-                    return true;
-                }
-                return false;
+                return findUsers(query);
             }
 
             @Override
             public boolean onQueryTextChange(String newText){
+                if (!newText.equals("")) {
+                    return findUsers(newText);
+                }
                 return true;
             }
         });
 
         return true;
+
+    }
+
+    private Boolean findUsers(final String query) {
+        if (((AppRunnest)getApplication()).getNetworkHandler().isConnected()) {
+            mFirebaseHelper.getDatabase().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        Map<String, String> users = new HashMap<>();
+                        for (DataSnapshot user : dataSnapshot.getChildren()) {
+                            String usersName = user.getKey().toString();
+                            String usersEmail = user.child("name").getValue().toString();
+                            String[] surnameAndFamilyName = usersName.split(" ");
+                            String surname = surnameAndFamilyName[0].toLowerCase();
+                            String familyName = surnameAndFamilyName[1].toLowerCase();
+
+                            String lowerCaseQuery = query.toLowerCase();
+                            if (usersName.toLowerCase().startsWith(lowerCaseQuery)
+                                    || surname.startsWith(lowerCaseQuery)
+                                    || familyName.startsWith(lowerCaseQuery)
+                                    || usersEmail.toLowerCase().startsWith(lowerCaseQuery)) {
+                                users.put(usersName, usersEmail);
+                            }
+                        }
+                        launchFragment(DisplayUserFragment.newInstance(users));
+                    } else {
+                        launchFragment(DisplayUserFragment.newInstance(null));
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -275,6 +282,7 @@ public class SideBarActivity extends AppCompatActivity
             }
 
             fab.show();
+            showSearchBar();
 
             // Handle navigation view item clicks here.
             int id = item.getItemId();
@@ -285,6 +293,7 @@ public class SideBarActivity extends AppCompatActivity
             } else if (id == R.id.nav_run) {
                 toolbar.setTitle("Run");
                 fab.hide();
+                hideSearchBar();
                 launchFragment(new RunningMapFragment());
             } else if (id == R.id.nav_run_history) {
                 toolbar.setTitle("Run History");
@@ -301,6 +310,14 @@ public class SideBarActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void hideSearchBar() {
+        mSearchView.setVisibility(View.INVISIBLE);
+    }
+
+    private void showSearchBar() {
+        mSearchView.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -504,7 +521,7 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDisplayRunInteraction() {
+    public void onDisplayRunFragmentInteraction() {
         // keep using the stack
         onNavigationItemSelected(navigationView.getMenu().getItem(2));
     }

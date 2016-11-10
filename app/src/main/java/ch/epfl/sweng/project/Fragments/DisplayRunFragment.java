@@ -1,6 +1,7 @@
 package ch.epfl.sweng.project.Fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,38 +12,39 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import ch.epfl.sweng.project.Fragments.NewRun.MapHandler;
+import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.Track;
+import ch.epfl.sweng.project.Model.CheckPoint;
+
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.PolylineOptions;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link DisplayRunFragment.OnDisplayRunInteractionListener} interface
- * to handle interaction events.
- */
-public class DisplayRunFragment extends Fragment {
+import java.util.List;
 
-    private static final String ARG_RUNTOBEDISPLAYED = "run to be displayed";
-    private OnDisplayRunInteractionListener mListener;
+public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
+
+    private static final String RUN_TO_BE_DISPLAYED = "run to be displayed";
+    private DisplayRunFragmentInteractionListener mListener;
     private Run mRunToBeDisplayed;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param runToBeDisplayed The run to be displayed.
-     * @return A new instance of fragment RunningMapFragment.
-     */
+    // Map
+    private MapView mMapView = null;
+    private GoogleMap mGoogleMap = null;
+
     public static DisplayRunFragment newInstance(Run runToBeDisplayed) {
         DisplayRunFragment fragment = new DisplayRunFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_RUNTOBEDISPLAYED, runToBeDisplayed);
+        args.putSerializable(RUN_TO_BE_DISPLAYED, runToBeDisplayed);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,15 +53,19 @@ public class DisplayRunFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-             mRunToBeDisplayed = (Run) getArguments().getSerializable(ARG_RUNTOBEDISPLAYED);
+            mRunToBeDisplayed = (Run) getArguments().getSerializable(RUN_TO_BE_DISPLAYED);
         }
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view =  inflater.inflate(R.layout.fragment_display_run, container, false);
 
-        View view = inflater.inflate(R.layout.fragment_display_run, container, false);
-
+        mMapView = (MapView) view.findViewById(R.id.mapView);
+        mMapView.onCreate(savedInstanceState);
+        mMapView.getMapAsync(this); //this is important
 
         if (mRunToBeDisplayed != null) {
 
@@ -94,7 +100,20 @@ public class DisplayRunFragment extends Fragment {
                 public void onClick(View v) {
 
                     if (mListener != null) {
-                        mListener.onDisplayRunInteraction();
+                        mListener.onDisplayRunFragmentInteraction();
+                    }
+                }
+            });
+
+            final DBHelper dbHelper = new DBHelper(this.getContext());
+
+            Button deleteRunButton = (Button) view.findViewById(R.id.deleteRunButton);
+            deleteRunButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null) {
+                        dbHelper.delete(mRunToBeDisplayed);
+                        mListener.onDisplayRunFragmentInteraction();
                     }
                 }
             });
@@ -115,11 +134,82 @@ public class DisplayRunFragment extends Fragment {
         row.addView(element);
     }
 
+    /**
+     * Called when the <code>GoogleMap</code> is ready. Initialize a MapHandler.
+     *
+     * @param googleMap     the <code>GoogleMap</code>
+     */
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mGoogleMap = googleMap;
+
+        displayTrackSetupUI();
+        displayTrack();
+    }
+
+    private void displayTrackSetupUI() {
+        mGoogleMap.setBuildingsEnabled(false);
+        mGoogleMap.setIndoorEnabled(false);
+        mGoogleMap.setTrafficEnabled(false);
+
+        UiSettings uiSettings = mGoogleMap.getUiSettings();
+
+        uiSettings.setCompassEnabled(false);
+        uiSettings.setIndoorLevelPickerEnabled(false);
+        uiSettings.setMapToolbarEnabled(false);
+        uiSettings.setZoomControlsEnabled(false);
+        uiSettings.setMyLocationButtonEnabled(false);
+    }
+
+    private void displayTrack() {
+
+        Track track = mRunToBeDisplayed.getTrack();
+        if(track.getTotalCheckPoints() != 0) {
+
+            // Build polyline and LatLngBounds
+            PolylineOptions polylineOptions = new PolylineOptions();
+            List<CheckPoint> trackPoints = track.getCheckpoints();
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+            for (CheckPoint checkPoint : trackPoints) {
+                LatLng latLng = new LatLng(checkPoint.getLatitude(), checkPoint.getLongitude());
+                polylineOptions.add(latLng);
+                builder.include(latLng);
+            }
+
+            mGoogleMap.addPolyline(polylineOptions.color(Color.BLUE));
+
+            // Center camera on past run
+            LatLngBounds bounds = builder.build();
+            int padding = 40;
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+            mGoogleMap.animateCamera(cameraUpdate);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mMapView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mMapView.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mMapView.onDestroy();
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnDisplayRunInteractionListener) {
-            mListener = (OnDisplayRunInteractionListener) context;
+        if (context instanceof DisplayRunFragmentInteractionListener) {
+            mListener = (DisplayRunFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -132,18 +222,19 @@ public class DisplayRunFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnDisplayRunInteractionListener {
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mMapView.onSaveInstanceState(outState);
+    }
 
-        void onDisplayRunInteraction();
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mMapView.onLowMemory();
+    }
+
+    public interface DisplayRunFragmentInteractionListener {
+        void onDisplayRunFragmentInteraction();
     }
 }

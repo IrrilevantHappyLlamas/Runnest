@@ -4,11 +4,14 @@
              android:layout_height="match_parent"
              tools:context="ch.epfl.sweng.project.Fragments.DisplayRunFragment">
 
-    <!-- TODO: Update blank fragment layout -->
+    <com.google.android.gms.maps.MapView
+        android:layout_width="wrap_content"
+        android:layout_height="250dp"
+        android:id="@+id/mapView" />
 
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="230dp"
         android:id="@+id/table"
         android:orientation="horizontal"
         android:layout_gravity="bottom|center_vertical">
@@ -16,13 +19,23 @@
     </TableLayout>
 
     <Button
-        android:text="GO TO RUN HISTORY"
+        android:text="@string/go_to_run_history"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/go_to_run_history"
-        android:visibility="visible"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="50dp"
-        tools:ignore="HardcodedText" />
+        android:layout_gravity="bottom|left|center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="20dp"
+        tools:ignore="RtlHardcoded"/>
+
+    <Button
+        android:text="@string/delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/deleteRunButton"
+        android:layout_gravity="bottom|right|center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"
+        tools:ignore="RtlHardcoded"/>
 
 </FrameLayout>

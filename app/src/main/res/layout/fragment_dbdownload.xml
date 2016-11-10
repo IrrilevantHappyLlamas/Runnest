@@ -9,7 +9,6 @@
         android:text="Downloading user data ..."
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/download_text"
         android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Large"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"/>

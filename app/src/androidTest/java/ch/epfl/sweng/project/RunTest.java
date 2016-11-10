@@ -1,7 +1,6 @@
 package ch.epfl.sweng.project;
 
 import android.os.SystemClock;
-import android.widget.Chronometer;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,9 +21,10 @@ public class RunTest {
         Run testRun1 = new Run();
 
         Assert.assertFalse(testRun1.isRunning());
-        Assert.assertEquals("temp", testRun1.getName());
+        Assert.assertEquals("tmp", testRun1.getName());
         Assert.assertNotNull(testRun1.getTrack());
         Assert.assertEquals(0, testRun1.getDuration());
+        Assert.assertEquals(-1, testRun1.getId());
 
         String name = "test_name";
         Run testRun2 = new Run(name);
@@ -33,6 +33,11 @@ public class RunTest {
         Assert.assertEquals(name, testRun2.getName());
         Assert.assertNotNull(testRun2.getTrack());
         Assert.assertEquals(0, testRun2.getDuration());
+        Assert.assertEquals(-1, testRun2.getId());
+
+        long id = 1234;
+        Run testRun3 = new Run(name, id);
+        Assert.assertEquals(id, testRun3.getId());
     }
 
     @Test
@@ -134,12 +139,21 @@ public class RunTest {
     }
 
     @Test
-    public void startedRunDurationIsNotZero(){
+    public void startedRunDurationIsNotZero() {
         Run testRun1 = new Run();
         testRun1.start();
 
         SystemClock.sleep(2000);
 
         Assert.assertNotEquals(0, testRun1.getDuration());
+    }
+
+    @Test
+    public void setIdWorks() {
+        Run run = new Run();
+        Assert.assertEquals(-1, run.getId());
+        long id = 123;
+        run.setId(id);
+        Assert.assertEquals(id, run.getId());
     }
 }

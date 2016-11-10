@@ -6,15 +6,10 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.util.List;
-
 import ch.epfl.sweng.project.Model.CheckPoint;
-import ch.epfl.sweng.project.Model.Track;
 
 
 public class MapHandler {
@@ -49,8 +44,7 @@ public class MapHandler {
             mGoogleMap.clear();
             mGoogleMap.addPolyline(mPolylineOptions.color(Color.BLUE));
 
-            CameraPosition mCameraPosition = new CameraPosition.Builder().target(currentLatLng).build();
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(mCameraPosition);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(currentLatLng);
             mGoogleMap.animateCamera(cameraUpdate);
         }
     }
@@ -74,17 +68,24 @@ public class MapHandler {
     }
 
     /**
-     * Define what the user can do during a run and what he can't to.
+     * Define what the user can do during a run and what he can't do.
      */
-    public void setRunningGesture() {
+    public void setupRunningMapUI() {
         mGoogleMap.setBuildingsEnabled(false);
         mGoogleMap.setIndoorEnabled(false);
         mGoogleMap.setTrafficEnabled(false);
         mGoogleMap.setMinZoomPreference(CAMERA_ZOOM);
 
-        mGoogleMap.getUiSettings().setCompassEnabled(false);
-        mGoogleMap.getUiSettings().setIndoorLevelPickerEnabled(false);
-        mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
-        mGoogleMap.getUiSettings().setScrollGesturesEnabled(false);
+        UiSettings uiSettings = mGoogleMap.getUiSettings();
+
+        uiSettings.setCompassEnabled(false);
+        uiSettings.setIndoorLevelPickerEnabled(false);
+        uiSettings.setMapToolbarEnabled(false);
+        uiSettings.setScrollGesturesEnabled(false);
+        uiSettings.setZoomGesturesEnabled(false);
+        uiSettings.setMyLocationButtonEnabled(false);
+        uiSettings.setRotateGesturesEnabled(false);
+
+        uiSettings.setZoomControlsEnabled(true);
     }
 }
