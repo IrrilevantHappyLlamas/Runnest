@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 import ch.epfl.sweng.project.AppRunnest;
+import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Message;
 
 /**
@@ -38,6 +39,10 @@ public class FirebaseHelper {
     private final String TYPE_CHILD = "type";
     private final String MESSAGE_CHILD = "message";
     private final String TIME_CHILD = "time";
+
+    private final String CHALLENGES_CHILD = "challenges";
+    private final String USER_STATUS = "status";
+    private final String USER_CHECKPOINTS = "checkpoints";
 
     /**
      * Interface that allows to handle message fetching asynchronously from the server
@@ -155,4 +160,37 @@ public class FirebaseHelper {
         fireBaseMail = fireBaseMail.replace("@", "_at_");
         return fireBaseMail;
     }
+
+    /****************************************PROXY******************************************/
+
+    // TODO: comments, args
+    public void addChallengeNode(String user1, String user2, String challengeName) {
+
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(USER_STATUS).setValue(false);
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(USER_STATUS).setValue(false);
+    }
+
+    // TODO: comments, args
+    public void addChallengeCheckPoint(CheckPoint checkPoint, String challengeName, String user, int seqNumber) {
+        DatabaseReference checkPointRef = databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user)
+                .child(USER_CHECKPOINTS).child(Integer.toString(seqNumber));
+        checkPointRef.child("latitude").setValue(checkPoint.getLatitude());
+        checkPointRef.child("longitude").setValue(checkPoint.getLongitude());
+    }
+
+    public void setUserReady(String challengeName, String user) {
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user).child(USER_STATUS).setValue(true);
+    }
+
+    public void setUserStatusListener(String challengeName, String user, ValueEventListener listener) {
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user)
+                .child(USER_STATUS).addValueEventListener(listener);
+    }
+
+    public void setUserDataListener(String challengeName, String user, ValueEventListener listener) {
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user)
+                .child(USER_CHECKPOINTS).addValueEventListener(listener);
+    }
+
+
 }

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
@@ -44,15 +45,32 @@ public final class LoginActivity extends AppCompatActivity
     private FirebaseAuth mFirebaseAuth = null;
     private FirebaseAuth.AuthStateListener mAuthListener = null;
 
+    //TODO: remove
+    private Button launchProxy = null;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        launchProxy = (Button) findViewById(R.id.to_proxy);
+        launchProxy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchProxy();
+            }
+        });
+
         setUpGoogleAuth();
         setUpFirebaseAuth();
         setUpLoginUI();
         ((AppRunnest) getApplication()).setNetworkHandler();
+    }
+
+    // TODO: remove
+    private void launchProxy() {
+        Intent proxyIntent = new Intent(this, FirebaseProxyActivity.class);
+        startActivity(proxyIntent);
     }
 
     private void setUpLoginUI() {
