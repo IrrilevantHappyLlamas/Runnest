@@ -3,6 +3,7 @@ package ch.epfl.sweng.project.Activities;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -512,12 +513,18 @@ public class SideBarActivity extends AppCompatActivity
 
     @Override
     public void onDisplayUserFragmentInteraction(String challengedUserName, String challengedUserEmail) {
-        launchFragment(ChallengeFragment.newInstance(challengedUserName, challengedUserEmail));
+        Intent intent = new Intent(this, ChallengeActivity.class);
+        startActivity(intent);
+
+        //launchFragment(ChallengeFragment.newInstance(challengedUserName, challengedUserEmail));
     }
 
     @Override
     public void onMessagesFragmentInteraction(Message message) {
-        launchFragment(DisplayChallengeRequestFragment.newInstance(message));
+        Intent intent = new Intent(this, ChallengeActivity.class);
+        startActivity(intent);
+
+        //launchFragment(DisplayChallengeRequestFragment.newInstance(message));
     }
 
     @Override
