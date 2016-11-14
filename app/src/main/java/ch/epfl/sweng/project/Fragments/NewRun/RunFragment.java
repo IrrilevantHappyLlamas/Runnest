@@ -2,22 +2,17 @@ package ch.epfl.sweng.project.Fragments.NewRun;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Chronometer;
 import android.widget.TextView;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
@@ -45,37 +40,26 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
 {
 
     // Location update
-    private GoogleApiClient mGoogleApiClient = null;
-    private LocationSettingsHandler mLocationSettingsHandler = null;
-    private boolean mRequestingLocationUpdates = false;
+    protected GoogleApiClient mGoogleApiClient = null;
+    protected LocationSettingsHandler mLocationSettingsHandler = null;
+    protected boolean mRequestingLocationUpdates = false;
 
     // Live stats
-    private TextView mDistance = null;
+    protected TextView mDistance = null;
 
     // Buttons
-    private Button mStartUpdatesButton = null;          // Diventa Ready
+    protected Button mStartUpdatesButton = null;          // Diventa Ready
 
     // Data storage
-    private CheckPoint mLastCheckPoint = null;
-    private Run mRun = null;
+    protected CheckPoint mLastCheckPoint = null;
+    protected Run mRun = null;
 
     // Map
-    private MapView mMapView = null;
-    private MapHandler mMapHandler = null;
+    protected MapView mMapView = null;
+    protected MapHandler mMapHandler = null;
 
-    private RunFragmentInteractionListener mListener = null;
+    protected void setupLocation() {
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_running_map, container, false);
-
-        mMapView = (MapView) view.findViewById(R.id.mapView);
-        mMapView.onCreate(savedInstanceState);
-        mMapView.getMapAsync(this); //this is important
-
-        // Location
         mGoogleApiClient = new GoogleApiClient.Builder(getContext())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -84,21 +68,19 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
         mRequestingLocationUpdates = false;
         mLocationSettingsHandler = new LocationSettingsHandler(mGoogleApiClient, getActivity());
         mLocationSettingsHandler.checkLocationSettings();
-
-        return view;
     }
 
     /**
      * Include all actions to perform when Start button is pressed
      */
-    private void startUpdatesButtonPressed() {
+    protected void startUpdatesButtonPressed() {
 
         if(checkPermission() && mLocationSettingsHandler.checkLocationSettings()) {
             startRun();
         }
     }
 
-    private void startRun() {
+    protected void startRun() {
 
         mStartUpdatesButton.setVisibility(View.INVISIBLE);
 
@@ -106,11 +88,12 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
         SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy HH:mm:ss");
         String runName = dateFormat.format(new Date());
         mRun = new Run(runName);
+        mRun.start();
 
         mDistance.setVisibility(View.VISIBLE);
         updateDisplayedDistance();
 
-        mRun.start(); mRequestingLocationUpdates = true;
+        mRequestingLocationUpdates = true;
         startLocationUpdates();
     }
 
@@ -166,7 +149,7 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
     /**
      * Stop location updates, update buttons state and end current run.
      */
-    private void stopLocationUpdates() {
+    protected void stopLocationUpdates() {
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 mGoogleApiClient,
                 this
@@ -300,23 +283,6 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof RunFragmentInteractionListener) {
-            mListener = (RunFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mMapView.onSaveInstanceState(outState);
@@ -328,7 +294,4 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
         mMapView.onLowMemory();
     }
 
-    public interface RunFragmentInteractionListener {
-        void onRunFragmentInteraction(Run run);
-    }
 }
