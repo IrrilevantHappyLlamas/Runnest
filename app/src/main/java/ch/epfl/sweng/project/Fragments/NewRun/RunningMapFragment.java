@@ -1,9 +1,7 @@
 package ch.epfl.sweng.project.Fragments.NewRun;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,13 +23,23 @@ import ch.epfl.sweng.project.Activities.SideBarActivity;
 import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Model.Run;
 
+
+/**
+ * This Fragment represent our simplest kind of run. By implementing <code>RunFragment</code>
+ * it takes care of showing all necessary information about the run it represents.
+ *
+ * In particular the <code>Track</code> is shown on a map, as well as the distance the user ran
+ * right now and the elapsed time.
+ *
+ * Also it takes care that, once finished, the <code>Run</code> is stored on the local database.
+ */
 public class RunningMapFragment extends RunFragment {
 
     // Live stats
     private Chronometer mChronometer = null;
 
     // Buttons
-    protected Button mStartUpdatesButton = null;
+    private Button mStartUpdatesButton = null;
     private Button mStopUpdatesButton = null;
 
     private RunningMapFragmentInteractionListener mListener = null;
@@ -109,7 +117,7 @@ public class RunningMapFragment extends RunFragment {
     /**
      * Include all actions to perform when Start button is pressed
      */
-    protected void startButtonPressed() {
+    private void startButtonPressed() {
 
         if(checkPermission() && mLocationSettingsHandler.checkLocationSettings()) {
             super.startRun();

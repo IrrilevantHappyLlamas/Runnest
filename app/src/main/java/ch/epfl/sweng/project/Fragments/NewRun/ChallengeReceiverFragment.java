@@ -1,6 +1,5 @@
 package ch.epfl.sweng.project.Fragments.NewRun;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,7 +15,13 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Track;
 
-
+/**
+ * This Fragment represent the "receiver side" of a challenge, i.e. it handles the
+ * progress done by the opponent user.
+ *
+ * In particular his <code>Track</code> is shown on a map, as well as the distance
+ * he ran, from when challenge started until now.
+ */
 public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCallback {
 
     // Live stats
@@ -58,6 +63,11 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
         mDistance.setText(distanceInKm);
     }
 
+    /**
+     * Handle updates, through <code>CheckPoint</code> of the opponent performance.
+     *
+     * @param checkPoint    new <code>Checkpoint</code>
+     */
     public void onNewData(CheckPoint checkPoint) {
 
         mMapHandler.updateMap(checkPoint);
@@ -93,16 +103,6 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
     public void onDestroy() {
         super.onDestroy();
         mMapView.onDestroy();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
     }
 
     @Override

@@ -1,18 +1,15 @@
 package ch.epfl.sweng.project.Fragments.NewRun;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.Intent;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
@@ -29,10 +26,17 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import ch.epfl.sweng.project.Activities.SideBarActivity;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Run;
 
+/**
+ * Abstract class that represent the base skeleton for a <code>Fragment</code> handling
+ * a <code>Run</code> and showing the path done by the user thanks to gps services and
+ * <code>GoogleMap</code>.
+ *
+ * As said the path done is shown, as well as the distance that the user ran, from
+ * when challenge started until now.
+ */
 abstract class RunFragment extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -48,16 +52,17 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
     protected TextView mDistance = null;
 
     // Data storage
-    protected CheckPoint mLastCheckPoint = null;
+    private CheckPoint mLastCheckPoint = null;
     protected Run mRun = null;
 
     // Map
     protected MapView mMapView = null;
-    protected MapHandler mMapHandler = null;
+    private MapHandler mMapHandler = null;
 
     protected void startRun() {
 
         // initialize new Run
+        @SuppressLint("SimpleDateFormat")
         SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy HH:mm:ss");
         String runName = dateFormat.format(new Date());
         mRun = new Run(runName);
@@ -100,9 +105,6 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
-    /**
-     * Stop location updates, update buttons state and end current run.
-     */
     protected void stopLocationUpdates() {
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 mGoogleApiClient,
