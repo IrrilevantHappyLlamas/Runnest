@@ -1,19 +1,16 @@
 package ch.epfl.sweng.project.Firebase;
 
-import android.util.Log;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import ch.epfl.sweng.project.Model.ChallangeProxy;
 import ch.epfl.sweng.project.Model.CheckPoint;
 
 /**
- * Notes:
- * - challenge name unique between two users => max 1 challenge per pair saved on firebase for now
- * - valueEventListeners have to be removed when challenge ends: add to proxy the functionality to end the challenge
+ * Proxy class that links the challenge activity to firebase remote database. It receives data and inputs from the
+ * challenge activity and fragments and translates them into inputs for the challenge instance on firebase, which the
+ * proxy also instantiates at its creation.
  */
 public class FirebaseProxy implements ChallangeProxy, ValueEventListener {
 
@@ -29,14 +26,20 @@ public class FirebaseProxy implements ChallangeProxy, ValueEventListener {
     private int remoteOpponentSeqNum = 0;
 
     /**
-     * Public constructor that takes the two opponents and instantiates the challenge on firebase. It also takes
+     * Public constructor that takes the two opponents names and instantiates the challenge on firebase. It also takes
+     * as a parameter the <code>Handler</code> that will be used on callbacks events from the firebase remote database.
      *
-     * @param localUser
-     * @param remoteOpponent
-     * @param handler
+     * @param localUser         the challenger from the local device
+     * @param remoteOpponent    the remote challenger
+     * @param handler           an handler from the proxy's client, which will handle callbacks
      */
     public FirebaseProxy(String localUser, String remoteOpponent, final Handler handler) {
 
+        if (localUser == null || remoteOpponent == null || handler == null) {
+            throw new NullPointerException("FirebaseProxy construction parameters can't be null");
+        } else if (localUser.isEmpty() || remoteOpponent.isEmpty()) {
+            throw new IllegalArgumentException("Challenge user in firebase proxy can't be empty");
+        }
         this.localUser = localUser;
         this.remoteOpponent = remoteOpponent;
         challengeName = generateChallengeName(localUser, remoteOpponent);
@@ -46,7 +49,6 @@ public class FirebaseProxy implements ChallangeProxy, ValueEventListener {
         setOpponentStatusListener();
         setOpponentDataListener();
 
-        // Default handler that does nothing
         callbackHandler = handler;
     }
 
@@ -61,34 +63,34 @@ public class FirebaseProxy implements ChallangeProxy, ValueEventListener {
         localUserSeqNum++;
     }
 
-
+    /**
+     * This callback method is notified when the opponent's data is changed on the remote firebase database, for example
+     * when a new <code>CheckPoint</code> is available. The method then calls the corresponding handler function and in
+     * this way it provides the data to its client.
+     *
+     * @param dataSnapshot  snapshot of the modified/new data
+     */
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
-        Log.i("test", "onDataChange");
         if (dataSnapshot.exists()) {
             if (dataSnapshot.hasChild(Integer.toString(remoteOpponentSeqNum))) {
                 DataSnapshot newCheckPointData = dataSnapshot.child(Integer.toString(remoteOpponentSeqNum));
                 remoteOpponentSeqNum++;
 
                 CheckPoint newCheckPoint = new CheckPoint(
-                        ((Long)newCheckPointData.child("latitude").getValue()).doubleValue(),
-                        ((Long)newCheckPointData.child("longitude").getValue()).doubleValue());
+                        ((double)newCheckPointData.child("latitude").getValue()),
+                        ((double)newCheckPointData.child("longitude").getValue()));
 
                 callbackHandler.OnNewDataHandler(newCheckPoint);
             } else {
-                // handle sequence error
+                // TODO: handle sequence error
             }
         }
     }
 
+    // TODO: now useless method that has to be removed both from here and the interface
     @Override
     public void setHandler(Handler setHandler) {
-
-        if (setHandler == null) {
-            throw new NullPointerException("Proxy handler is null");
-        }
-
-        callbackHandler = setHandler;
     }
 
     @Override
@@ -100,15 +102,11 @@ public class FirebaseProxy implements ChallangeProxy, ValueEventListener {
         firebaseHelper.setUserDataListener(challengeName, remoteOpponent, this);
     }
 
-    /**
-     * Note: this could be triggered also when checkpoints change, so we need to make sure not to call the handler two times
-     */
     private void setOpponentStatusListener() {
         ValueEventListener onReadyListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    Log.i("test", "callback");
                     callbackHandler.isReadyHandler();
                 }
             }
@@ -122,8 +120,15 @@ public class FirebaseProxy implements ChallangeProxy, ValueEventListener {
         firebaseHelper.setUserStatusListener(challengeName, remoteOpponent, onReadyListener);
     }
 
-    // TODO: comments, args
     private String generateChallengeName(String user1, String user2) {
+
+        // Argument check
+        if (user1 == null || user2 == null) {
+            throw new NullPointerException("User names for challenge can't be null");
+        } else if (user1.isEmpty() || user2.isEmpty()) {
+            throw new IllegalArgumentException("User names for challenge can't be empty");
+        }
+
         int namesCompare = user1.compareTo(user2);
         String challengeName;
 
@@ -138,6 +143,6 @@ public class FirebaseProxy implements ChallangeProxy, ValueEventListener {
 
     @Override
     public void onCancelled(DatabaseError databaseError) {
-
+        // TODO: handle cancelled firebase operation
     }
 }

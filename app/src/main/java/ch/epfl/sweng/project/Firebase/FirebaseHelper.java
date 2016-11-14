@@ -161,33 +161,100 @@ public class FirebaseHelper {
         return fireBaseMail;
     }
 
-    /****************************************PROXY******************************************/
-
-    // TODO: comments, args
+    /**
+     * Creates a challenge under "challenges" node given the names of the opponents and
+     * the desired name of the challenge
+     *
+     * @param user1             first challenger
+     * @param user2             second challenger
+     * @param challengeName     name of the challenge
+     */
     public void addChallengeNode(String user1, String user2, String challengeName) {
+
+        if (user1 == null || user2 == null || challengeName == null) {
+            throw new NullPointerException("Challenge node parameters can't be null");
+        } else if (user1.isEmpty() || user2.isEmpty() || challengeName.isEmpty()) {
+            throw new IllegalArgumentException("Challenge node parameters can't be null");
+        }
 
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(USER_STATUS).setValue(false);
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(USER_STATUS).setValue(false);
     }
 
-    // TODO: comments, args
+    /**
+     * Given the name of a challenge and one of its two users, adds one checkpoint its list, named after its
+     * sequence number in the challenge
+     *
+     * @param checkPoint        checkpoint to add
+     * @param challengeName     challenge to modify
+     * @param user              the user of the challenge to which to add data
+     * @param seqNumber         sequence number of the checkpoint in the current challenge
+     */
     public void addChallengeCheckPoint(CheckPoint checkPoint, String challengeName, String user, int seqNumber) {
+
+        if (user == null || challengeName == null || checkPoint == null) {
+            throw new NullPointerException("Challenge node or data parameters can't be null");
+        } else if (user.isEmpty() || challengeName.isEmpty()) {
+            throw new IllegalArgumentException("Challenge node parameters can't be empty");
+        }
+
         DatabaseReference checkPointRef = databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user)
                 .child(USER_CHECKPOINTS).child(Integer.toString(seqNumber));
         checkPointRef.child("latitude").setValue(checkPoint.getLatitude());
         checkPointRef.child("longitude").setValue(checkPoint.getLongitude());
     }
 
+    /**
+     * Sets the status of an user in a given challenge as "ready"
+     *
+     * @param challengeName     challenge in which the user is participating
+     * @param user              user to set as "ready"
+     */
     public void setUserReady(String challengeName, String user) {
+
+        if (user == null || challengeName == null) {
+            throw new NullPointerException("Challenge node or user parameters can't be null");
+        } else if (user.isEmpty() || challengeName.isEmpty()) {
+            throw new IllegalArgumentException("Challenge node or user parameters can't be empty");
+        }
+
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user).child(USER_STATUS).setValue(true);
     }
 
+    /**
+     * Sets a given listener on the status node of a user participating in a run
+     *
+     * @param challengeName     challenge in which the user is participating
+     * @param user              user whose status to observe
+     * @param listener          listener to attach
+     */
     public void setUserStatusListener(String challengeName, String user, ValueEventListener listener) {
+
+        if (user == null || challengeName == null || listener == null) {
+            throw new NullPointerException("Challenge node, user or listener parameters can't be null");
+        } else if (user.isEmpty() || challengeName.isEmpty()) {
+            throw new IllegalArgumentException("Challenge node or user parameters can't be empty");
+        }
+
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user)
                 .child(USER_STATUS).addValueEventListener(listener);
     }
 
+    /**
+     * Sets a given listener on the data node of a user participating in a run
+     *
+     * @param challengeName     challenge in which the user is participating
+     * @param user              user whose data to observe
+     * @param listener          listener to attach
+     */
     public void setUserDataListener(String challengeName, String user, ValueEventListener listener) {
+
+        if (user == null || challengeName == null || listener == null) {
+            throw new NullPointerException("Challenge node, user or listener parameters can't be null");
+        } else if (user.isEmpty() || challengeName.isEmpty()) {
+            throw new IllegalArgumentException("Challenge node or user parameters can't be empty");
+        }
+
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user)
                 .child(USER_CHECKPOINTS).addValueEventListener(listener);
     }

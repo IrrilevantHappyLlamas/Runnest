@@ -3,7 +3,6 @@ package ch.epfl.sweng.project.Activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -20,6 +19,9 @@ import ch.epfl.sweng.project.Firebase.FirebaseProxy;
 import ch.epfl.sweng.project.Model.ChallangeProxy;
 import ch.epfl.sweng.project.Model.CheckPoint;
 
+/**
+ * Activity to demo the FirebaseProxy functionality, will be removed after it
+ */
 public class FirebaseProxyActivity extends AppCompatActivity {
 
     private EditText localUserTxt = null;
@@ -33,7 +35,6 @@ public class FirebaseProxyActivity extends AppCompatActivity {
     private Button putDataBtn = null;
     private Button resetBtn = null;
 
-    private TextView statusTxt = null;
     private TextView challengeStatusTxt = null;
 
     private ListView dataList = null;
@@ -50,6 +51,7 @@ public class FirebaseProxyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_firebase_proxy);
 
         setupUI();
+        listCheckPoint(null);
         attachButtonListeners();
     }
 
@@ -65,7 +67,6 @@ public class FirebaseProxyActivity extends AppCompatActivity {
                     firebaseProxy = new FirebaseProxy(localUser, remoteOpponent, createHandler());
                     setupChallengeBtn.setEnabled(false);
                     localUserIsReadyBtn.setEnabled(true);
-                    remoteUserIsReadyBtn.setEnabled(true);
                 }
             }
         });
@@ -124,14 +125,14 @@ public class FirebaseProxyActivity extends AppCompatActivity {
         putDataBtn = (Button) findViewById(R.id.put_checkpoint_btn);
         putDataBtn.setEnabled(false);
 
-        statusTxt = (TextView) findViewById(R.id.status_txt);
         challengeStatusTxt = (TextView) findViewById(R.id.challenge_status_txt);
 
         dataList = (ListView) findViewById(R.id.data_list);
     }
 
     private ChallangeProxy.Handler createHandler() {
-        ChallangeProxy.Handler activityProxyHandler = new ChallangeProxy.Handler() {
+
+        return new ChallangeProxy.Handler() {
             @Override
             public void OnNewDataHandler(CheckPoint checkPoint) {
                 listCheckPoint(checkPoint);
@@ -140,22 +141,21 @@ public class FirebaseProxyActivity extends AppCompatActivity {
             @Override
             public void isReadyHandler() {
                 remoteUserIsReady = true;
+                remoteUserIsReadyBtn.setText("He's ready!");
 
                 if(remoteUserIsReady && localUserIsReady) {
-                    Log.i("test", "isReadyHandler");
                     challengeStatusTxt.setText("Challenge started");
                     localUserIsReadyBtn.setEnabled(false);
-                    remoteUserIsReadyBtn.setEnabled(false);
                     putDataBtn.setEnabled(true);
                 }
             }
         };
-
-        return activityProxyHandler;
     }
 
     private void listCheckPoint(CheckPoint checkPoint) {
-        retrievedData.add(checkPoint);
+        if (checkPoint != null) {
+            retrievedData.add(checkPoint);
+        }
 
         ArrayList<String> checkPoints = new ArrayList<>();
         if (retrievedData.isEmpty()) {

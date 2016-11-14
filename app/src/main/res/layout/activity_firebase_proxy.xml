@@ -47,7 +47,7 @@
         android:layout_toEndOf="@+id/local_user"/>
 
     <Button
-        android:text="Ready"
+        android:text="Not Ready"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/remote_opponent_ready"
