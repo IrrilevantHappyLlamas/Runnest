@@ -103,7 +103,6 @@ public class RunningMapFragment extends RunFragment {
 
         mDistance = (TextView) view.findViewById(R.id.distance);
         mDistance.setVisibility(View.INVISIBLE);
-
     }
 
 

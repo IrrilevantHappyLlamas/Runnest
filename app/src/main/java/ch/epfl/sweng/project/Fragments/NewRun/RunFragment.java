@@ -224,5 +224,4 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
         super.onLowMemory();
         mMapView.onLowMemory();
     }
-
 }

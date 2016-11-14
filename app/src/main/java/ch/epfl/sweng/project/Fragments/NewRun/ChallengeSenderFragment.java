@@ -13,8 +13,6 @@ import com.google.android.gms.maps.MapView;
 
 public class ChallengeSenderFragment extends RunFragment {
 
-    private ChallengeSenderFragment.ChallengeSenderFragmentInteractionListener mListener = null;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -30,21 +28,9 @@ public class ChallengeSenderFragment extends RunFragment {
         //mGoogleApiClient = getActivity().getGoogleApiClient();
         //mLocationSettingsHandler = getActivity().getLocationSettingsHandler();
 
-        // Buttons
-        GUISetup(view);
+        mDistance = (TextView) view.findViewById(R.id.distance);
 
         return view;
-    }
-
-    /**
-     * Setup the two buttons of the fragment: Start and Stop.
-     *
-     * @param view <code>View</code> where buttons must be added
-     */
-    private void GUISetup(View view) {
-
-        mDistance = (TextView) view.findViewById(R.id.distance);
-        mDistance.setVisibility(View.INVISIBLE);
     }
 
     public void startChallenge() {
@@ -56,33 +42,22 @@ public class ChallengeSenderFragment extends RunFragment {
         super.onLocationChanged(location);
 
         //TODO
-        //putData(new CheckPoint(location))
+        //getActivity().getChallengeProxy.putData(new CheckPoint(location))
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof ChallengeSenderFragment.ChallengeSenderFragmentInteractionListener) {
-            mListener = (ChallengeSenderFragment.ChallengeSenderFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
-    }
-
-    public interface ChallengeSenderFragmentInteractionListener {
-        void ChallengeSenderFragmentInteraction();
     }
 }
