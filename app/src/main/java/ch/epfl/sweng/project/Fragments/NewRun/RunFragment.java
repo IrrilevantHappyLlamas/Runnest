@@ -31,16 +31,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import ch.epfl.sweng.project.Activities.SideBarActivity;
-import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Run;
 
-public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
+abstract class RunFragment extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener
@@ -52,12 +50,10 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
     private boolean mRequestingLocationUpdates = false;
 
     // Live stats
-    private Chronometer mChronometer = null;
     private TextView mDistance = null;
 
     // Buttons
-    private Button mStartUpdatesButton = null;
-    private Button mStopUpdatesButton = null;
+    private Button mStartUpdatesButton = null;          // Diventa Ready
 
     // Data storage
     private CheckPoint mLastCheckPoint = null;
@@ -67,7 +63,7 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
     private MapView mMapView = null;
     private MapHandler mMapHandler = null;
 
-    private RunningMapFragmentInteractionListener mListener = null;
+    private RunFragmentInteractionListener mListener = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -89,81 +85,33 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
         mLocationSettingsHandler = new LocationSettingsHandler(mGoogleApiClient, getActivity());
         mLocationSettingsHandler.checkLocationSettings();
 
-        // Buttons
-        GUISetup(view);
-
         return view;
-    }
-
-    /**
-     * Setup the two buttons of the fragment: Start and Stop.
-     *
-     * @param view <code>View</code> where buttons must be added
-     */
-    private void GUISetup(View view) {
-
-        //Buttons
-        mStartUpdatesButton = (Button) view.findViewById(R.id.start_run);
-        mStartUpdatesButton.setVisibility(View.VISIBLE);
-        mStartUpdatesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startButtonPressed();
-            }
-        });
-
-        mStopUpdatesButton = (Button) view.findViewById(R.id.stop_run);
-        mStopUpdatesButton.setVisibility(View.INVISIBLE);
-        mStopUpdatesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                stopButtonPressed();
-            }
-        });
-
-        setButtonsEnabledState();
-
-
-
-        // Live stats
-        mChronometer = (Chronometer) view.findViewById(R.id.chronometer);
-        mChronometer.setVisibility(View.INVISIBLE);
-
-        mDistance = (TextView) view.findViewById(R.id.distance);
-        mDistance.setVisibility(View.INVISIBLE);
-
     }
 
     /**
      * Include all actions to perform when Start button is pressed
      */
-    private void startButtonPressed() {
+    private void startUpdatesButtonPressed() {
 
         if(checkPermission() && mLocationSettingsHandler.checkLocationSettings()) {
-            mStartUpdatesButton.setVisibility(View.INVISIBLE);
-            mStopUpdatesButton.setVisibility(View.VISIBLE);
-
-
-            // initialize new Run
-            SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy HH:mm:ss");
-            String runName = dateFormat.format(new Date());
-            mRun = new Run(runName);
-
-            mDistance.setVisibility(View.VISIBLE);
-            updateDisplayedDistance();
-
-            mChronometer.setVisibility(View.VISIBLE);
-            mChronometer.setBase(SystemClock.elapsedRealtime());
-            mChronometer.start();
-
-            mRun.start();
-
-            ((SideBarActivity)getActivity()).setRunning(true);
-
-            mRequestingLocationUpdates = true;
-            setButtonsEnabledState();
-            startLocationUpdates();
+            startRun();
         }
+    }
+
+    private void startRun() {
+
+        mStartUpdatesButton.setVisibility(View.INVISIBLE);
+
+        // initialize new Run
+        SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy HH:mm:ss");
+        String runName = dateFormat.format(new Date());
+        mRun = new Run(runName);
+
+        mDistance.setVisibility(View.VISIBLE);
+        updateDisplayedDistance();
+
+        mRun.start(); mRequestingLocationUpdates = true;
+        startLocationUpdates();
     }
 
     private void updateDisplayedDistance() {
@@ -172,35 +120,6 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
                 + getString(R.string.km);
 
         mDistance.setText(distanceInKm);
-    }
-
-    private void stopButtonPressed() {
-        if (mRequestingLocationUpdates) {
-            mRequestingLocationUpdates = false;
-            setButtonsEnabledState();
-            stopLocationUpdates();
-
-            mChronometer.stop();
-            mRun.stop();
-            ((SideBarActivity)getActivity()).setRunning(false);
-
-
-            DBHelper dbHelper = new DBHelper(getContext());
-            //TODO: verify that insertion has been performed correctly
-            dbHelper.insert(mRun);
-
-            mListener.onRunningMapFragmentInteraction(new Run(mRun));
-        }
-    }
-
-    private void setButtonsEnabledState() {
-        if (mRequestingLocationUpdates) {
-            mStartUpdatesButton.setEnabled(false);
-            mStopUpdatesButton.setEnabled(true);
-        } else {
-            mStopUpdatesButton.setEnabled(false);
-            mStartUpdatesButton.setEnabled(true);
-        }
     }
 
     /**
@@ -383,8 +302,8 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof RunningMapFragmentInteractionListener) {
-            mListener = (RunningMapFragmentInteractionListener) context;
+        if (context instanceof RunFragmentInteractionListener) {
+            mListener = (RunFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -409,7 +328,7 @@ public class RunningMapFragment extends Fragment implements OnMapReadyCallback,
         mMapView.onLowMemory();
     }
 
-    public interface RunningMapFragmentInteractionListener {
-        void onRunningMapFragmentInteraction(Run run);
+    public interface RunFragmentInteractionListener {
+        void onRunFragmentInteraction(Run run);
     }
 }
