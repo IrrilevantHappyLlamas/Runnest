@@ -176,6 +176,9 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
             case PERMISSION_REQUEST_CODE_FINE_LOCATION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //TODO Q: se già accettato?
+                    //TODO A: Se già accettato non fa la richiesta..quindi non é un problema
+
+                    //TODO Q: Perché gestisci ready qui?
                     userReady = true;
                     challengeProxy.imReady();
                     Toast.makeText(getApplicationContext(),"Ready",Toast.LENGTH_LONG).show();
