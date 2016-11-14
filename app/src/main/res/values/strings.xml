@@ -7,6 +7,7 @@
     <string name="action_settings">Settings</string>
     <string name="stop">Stop</string>
     <string name="start">Start</string>
+    <string name="ready">Ready</string>
     <string name="runnest">Runnest</string>
     <string name="share_tab">Share</string>
     <string name="log_out">Logout</string>
@@ -34,4 +35,7 @@
     <string name="family">"Family"</string>
     <string name="delete">Delete</string>
     <string name="go_to_run_history">GO TO RUN HISTORY</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

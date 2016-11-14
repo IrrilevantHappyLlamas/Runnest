@@ -41,14 +41,11 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
 
     // Location update
     protected GoogleApiClient mGoogleApiClient = null;
-    protected LocationSettingsHandler mLocationSettingsHandler = null;
     protected boolean mRequestingLocationUpdates = false;
+    protected LocationSettingsHandler mLocationSettingsHandler = null;
 
     // Live stats
     protected TextView mDistance = null;
-
-    // Buttons
-    protected Button mStartUpdatesButton = null;          // Diventa Ready
 
     // Data storage
     protected CheckPoint mLastCheckPoint = null;
@@ -58,31 +55,7 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
     protected MapView mMapView = null;
     protected MapHandler mMapHandler = null;
 
-    protected void setupLocation() {
-
-        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-        mRequestingLocationUpdates = false;
-        mLocationSettingsHandler = new LocationSettingsHandler(mGoogleApiClient, getActivity());
-        mLocationSettingsHandler.checkLocationSettings();
-    }
-
-    /**
-     * Include all actions to perform when Start button is pressed
-     */
-    protected void startUpdatesButtonPressed() {
-
-        if(checkPermission() && mLocationSettingsHandler.checkLocationSettings()) {
-            startRun();
-        }
-    }
-
     protected void startRun() {
-
-        mStartUpdatesButton.setVisibility(View.INVISIBLE);
 
         // initialize new Run
         SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy HH:mm:ss");
@@ -103,25 +76,6 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
                 + getString(R.string.km);
 
         mDistance.setText(distanceInKm);
-    }
-
-    /**
-     * Check <code>ACCESS_FINE_LOCATION</code> permission, if necessary request it.
-     * This check is necessary only with Android 6.0+ and/or SDK 22+
-     */
-    private boolean checkPermission() {
-        int fineLocation = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
-
-        if (fineLocation != PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        SideBarActivity.PERMISSION_REQUEST_CODE_FINE_LOCATION);
-            }
-            return false;
-        } else {
-            return true;
-        }
     }
 
     private void startLocationUpdates() {
@@ -160,29 +114,6 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
                 mMapHandler.stopShowingLocation();
             }
         });
-    }
-
-    /**
-     * Handle results sent by the running activity.
-     *
-     * @param requestCode   code of the request, an <code>int</code>
-     * @param resultCode    code of the result, an <code>int</code>
-     * @param data          not used here
-     */
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case LocationSettingsHandler.REQUEST_CHECK_SETTINGS:
-                switch (resultCode) {
-                    case Activity.RESULT_OK:
-                        mLocationSettingsHandler.setGpsIsTurnedOn(true);
-                        break;
-                    case Activity.RESULT_CANCELED:
-                        mLocationSettingsHandler.setGpsIsTurnedOn(false);
-                        break;
-                }
-                break;
-        }
     }
 
     /**
