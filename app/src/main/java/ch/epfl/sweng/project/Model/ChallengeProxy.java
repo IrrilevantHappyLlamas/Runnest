@@ -12,5 +12,7 @@ public interface ChallengeProxy {
     //TODO remove this
     void setHandler(Handler setHandler);
 
+    void startChallenge();
+
     void imReady();
 }

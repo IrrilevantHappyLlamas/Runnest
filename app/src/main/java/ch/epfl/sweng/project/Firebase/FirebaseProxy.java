@@ -24,6 +24,7 @@ public class FirebaseProxy implements ChallengeProxy, ValueEventListener {
 
     private String remoteOpponent = null;
     private int remoteOpponentSeqNum = 0;
+    private ValueEventListener onReadyListener = null;
     private boolean firstStatusCallback = true;
 
     /**
@@ -95,6 +96,11 @@ public class FirebaseProxy implements ChallengeProxy, ValueEventListener {
     }
 
     @Override
+    public void startChallenge() {
+        firebaseHelper.removeUserStatusListener(challengeName, remoteOpponent, onReadyListener);
+    }
+
+    @Override
     public void imReady() {
         firebaseHelper.setUserReady(challengeName, localUser);
     }
@@ -104,7 +110,7 @@ public class FirebaseProxy implements ChallengeProxy, ValueEventListener {
     }
 
     private void setOpponentStatusListener() {
-        ValueEventListener onReadyListener = new ValueEventListener() {
+        onReadyListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {

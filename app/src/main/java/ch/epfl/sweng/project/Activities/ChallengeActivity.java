@@ -43,7 +43,6 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
     private Boolean opponentReady = false;
     private Boolean userReady = false;
-    private Boolean isStarted = false;
 
     private FragmentManager fragmentManager;
     private Fragment senderFragment;
@@ -147,22 +146,20 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
     public void startChallenge(){
 
-        if(!isStarted) {
-            isStarted = true;
+        challengeProxy.startChallenge();
 
-            readyBtn.setVisibility(View.GONE);
-            userWaitingTxt.setVisibility(View.GONE);
+        readyBtn.setVisibility(View.GONE);
+        userWaitingTxt.setVisibility(View.GONE);
 
-            chronometer.setVisibility(View.VISIBLE);
-            chronometer.setBase(SystemClock.elapsedRealtime());
-            chronometer.start();
+        chronometer.setVisibility(View.VISIBLE);
+        chronometer.setBase(SystemClock.elapsedRealtime());
+        chronometer.start();
 
-            senderFragment = new ChallengeSenderFragment();
-            fragmentManager.beginTransaction().add(R.id.sender_container, senderFragment).commit();
+        senderFragment = new ChallengeSenderFragment();
+        fragmentManager.beginTransaction().add(R.id.sender_container, senderFragment).commit();
 
-            receiverFragment = new ChallengeReceiverFragment();
-            fragmentManager.beginTransaction().add(R.id.receiver_container, receiverFragment).commit();
-        }
+        receiverFragment = new ChallengeReceiverFragment();
+        fragmentManager.beginTransaction().add(R.id.receiver_container, receiverFragment).commit();
     }
 
 

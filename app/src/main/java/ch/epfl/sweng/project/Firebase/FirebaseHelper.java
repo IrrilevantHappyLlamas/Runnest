@@ -268,5 +268,17 @@ public class FirebaseHelper {
                 .child(USER_CHECKPOINTS).addValueEventListener(listener);
     }
 
+    public void removeUserStatusListener(String challengeName, String user,ValueEventListener listener) {
+
+        if (user == null || challengeName == null || listener == null) {
+            throw new NullPointerException("Challenge node, user parameters can't be null");
+        } else if (user.isEmpty() || challengeName.isEmpty()) {
+            throw new IllegalArgumentException("Challenge node or user parameters can't be empty");
+        }
+
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user)
+                .child(USER_STATUS).removeEventListener(listener);
+    }
+
 
 }
