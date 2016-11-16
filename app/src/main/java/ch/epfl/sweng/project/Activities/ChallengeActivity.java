@@ -154,12 +154,12 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         chronometer.setVisibility(View.VISIBLE);
         chronometer.setBase(SystemClock.elapsedRealtime());
         chronometer.start();
+        
+        receiverFragment = new ChallengeReceiverFragment();
+        fragmentManager.beginTransaction().add(R.id.receiver_container, receiverFragment).commit();
 
         senderFragment = new ChallengeSenderFragment();
         fragmentManager.beginTransaction().add(R.id.sender_container, senderFragment).commit();
-
-        receiverFragment = new ChallengeReceiverFragment();
-        fragmentManager.beginTransaction().add(R.id.receiver_container, receiverFragment).commit();
     }
 
 
