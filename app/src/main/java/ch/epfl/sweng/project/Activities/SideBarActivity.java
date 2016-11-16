@@ -511,6 +511,7 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public void onDisplayUserFragmentInteraction(String challengedUserName, String challengedUserEmail) {
         Intent intent = new Intent(this, ChallengeActivity.class);
+        intent.putExtra("opponent", challengedUserName);
         startActivity(intent);
 
         //launchFragment(ChallengeFragment.newInstance(challengedUserName, challengedUserEmail));
@@ -519,6 +520,7 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public void onMessagesFragmentInteraction(Message message) {
         Intent intent = new Intent(this, ChallengeActivity.class);
+        intent.putExtra("opponent", message.getSender());
         startActivity(intent);
 
         //launchFragment(DisplayChallengeRequestFragment.newInstance(message));

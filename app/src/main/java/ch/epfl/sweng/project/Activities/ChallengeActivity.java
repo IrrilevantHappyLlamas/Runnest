@@ -23,6 +23,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
+import ch.epfl.sweng.project.AppRunnest;
+import ch.epfl.sweng.project.Firebase.FirebaseProxy;
 import ch.epfl.sweng.project.Fragments.NewRun.ChallengeReceiverFragment;
 import ch.epfl.sweng.project.Fragments.NewRun.ChallengeSenderFragment;
 import ch.epfl.sweng.project.Fragments.NewRun.LocationSettingsHandler;
@@ -39,8 +41,10 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private LocationSettingsHandler mLocationSettingsHandler;
     private ChallengeProxy challengeProxy;
 
-    private Boolean opponentReady = true;
-    private Boolean userReady;
+    private Boolean opponentReady = false;
+    private Boolean userReady = false;
+    private Boolean isStarted = false;
+
     private FragmentManager fragmentManager;
     private Fragment senderFragment;
     private Fragment receiverFragment;
@@ -49,10 +53,14 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private TextView userWaitingTxt;
     private Chronometer chronometer;
 
+    private String opponentName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_challenge);
+
+        opponentName = getIntent().getExtras().getString("opponent");
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -90,6 +98,9 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 }
             }
         });
+
+        opponentReady = false;
+        userReady = false;
     }
 
     /**
@@ -101,24 +112,10 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     }
 
     private void createProxy(){
-        challengeProxy = new ChallengeProxy() {
-            @Override
-            public void putData(CheckPoint checkPoint) {
 
-            }
+        String userName = ((AppRunnest)getApplication()).getUser().getName();
 
-            @Override
-            public void setHandler(Handler setHandler) {
-
-            }
-
-            @Override
-            public void imReady() {
-
-            }
-        };
-
-        challengeProxy.setHandler(new ChallengeProxy.Handler() {
+        ChallengeProxy.Handler proxyHandler = new ChallengeProxy.Handler() {
             @Override
             public void OnNewDataHandler(CheckPoint checkPoint) {
                 ((ChallengeReceiverFragment)receiverFragment).onNewData(checkPoint);
@@ -126,11 +123,15 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
             @Override
             public void isReadyHandler() {
-
+                opponentReady = true;
+                if(userReady) {
+                    startChallenge();
+                }
             }
-        });
-    }
+        };
 
+        challengeProxy = new FirebaseProxy(userName, opponentName, proxyHandler);
+    }
 
     public ChallengeProxy getChallengeProxy(){
         return challengeProxy;
@@ -146,18 +147,22 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
     public void startChallenge(){
 
-        readyBtn.setVisibility(View.GONE);
-        userWaitingTxt.setVisibility(View.GONE);
+        if(!isStarted) {
+            isStarted = true;
 
-        chronometer.setVisibility(View.VISIBLE);
-        chronometer.setBase(SystemClock.elapsedRealtime());
-        chronometer.start();
+            readyBtn.setVisibility(View.GONE);
+            userWaitingTxt.setVisibility(View.GONE);
 
-        senderFragment = new ChallengeSenderFragment();
-        fragmentManager.beginTransaction().add(R.id.sender_container, senderFragment).commit();
+            chronometer.setVisibility(View.VISIBLE);
+            chronometer.setBase(SystemClock.elapsedRealtime());
+            chronometer.start();
 
-        receiverFragment = new ChallengeReceiverFragment();
-        fragmentManager.beginTransaction().add(R.id.receiver_container, receiverFragment).commit();
+            senderFragment = new ChallengeSenderFragment();
+            fragmentManager.beginTransaction().add(R.id.sender_container, senderFragment).commit();
+
+            receiverFragment = new ChallengeReceiverFragment();
+            fragmentManager.beginTransaction().add(R.id.receiver_container, receiverFragment).commit();
+        }
     }
 
 
@@ -217,31 +222,6 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     //TODO: Handle connection failure
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     }
-
-    /**
-     * Called when <code>GoogleApiClient</code> is connected. Try to get the last known location and
-     * start location updates if necessary.
-     *
-     * @param bundle    not used here
-     */
-    /*@Override
-    public void onConnected(@Nullable Bundle bundle) {
-        Location location = null;
-
-        if (ActivityCompat.checkSelfPermission(getContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-
-            mMapHandler.startShowingLocation();
-        }
-        if(location != null) {
-            mLastCheckPoint = new CheckPoint(location);
-        }
-        if (mRequestingLocationUpdates) {
-            startLocationUpdates();
-        }
-    }*/
 
     @Override
     public void onStart() {

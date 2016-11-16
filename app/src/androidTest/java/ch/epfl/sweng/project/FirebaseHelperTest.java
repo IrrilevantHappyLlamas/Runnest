@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
+import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Message;
 
 /**
@@ -77,6 +78,162 @@ public class FirebaseHelperTest {
                 Assert.assertFalse(msgs.isEmpty());
             }
         });
+    }
+
+    @Test
+    public void correctlyAddChallengeNode() {
+        firebaseHelper.addChallengeNode("testUser1", "testUser2", "testChallenge");
+        firebaseHelper.getDatabase().child("challenges").child("testChallenge")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Assert.assertTrue(dataSnapshot.exists());
+                        Assert.assertTrue(dataSnapshot.hasChild("testUser1"));
+                        Assert.assertTrue(dataSnapshot.hasChild("testUser2"));
+                        DataSnapshot user1 = dataSnapshot.child("testUser1");
+                        DataSnapshot user2 = dataSnapshot.child("testUser2");
+                        Assert.assertTrue(user1.hasChild("status"));
+                        Assert.assertFalse((boolean)user1.child("status").getValue());
+                        Assert.assertTrue(user2.hasChild("status"));
+                        Assert.assertFalse((boolean)user2.child("status").getValue());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void addChallengeNodeThrowsNullPointer() {
+        firebaseHelper.addChallengeNode("testUser1", "testUser2", null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void addChallengeNodeThrowsIllegalArgument() {
+        firebaseHelper.addChallengeNode("testUser1", "testUser2", "");
+    }
+
+    @Test
+    public void correctlyAddChallengeCheckPoint() {
+        CheckPoint checkPoint = new CheckPoint(100, 100);
+        firebaseHelper.addChallengeCheckPoint(checkPoint, "testChallenge",  "testUser1", 0);
+        firebaseHelper.getDatabase().child("challenges").child("testChallenge").child("testUser1")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Assert.assertTrue(dataSnapshot.exists());
+                        Assert.assertTrue(dataSnapshot.hasChild("checkpoints"));
+                        DataSnapshot checkpoints = dataSnapshot.child("checkpoints");
+                        Assert.assertTrue(checkpoints.hasChild("0"));
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void addChallengeCheckPointThrowsNullPointer() {
+        CheckPoint checkPoint = new CheckPoint(100, 100);
+        firebaseHelper.addChallengeCheckPoint(null, "testChallenge",  "testUser1", 0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void addChallengeCheckPointThrowsIllegalArgument() {
+        CheckPoint checkPoint = new CheckPoint(100, 100);
+        firebaseHelper.addChallengeCheckPoint(checkPoint, "",  "testUser1", 0);
+    }
+
+    @Test
+    public void correctlySetUserReady() {
+        firebaseHelper.setUserReady("testChallenge", "testUser1");
+        firebaseHelper.getDatabase().child("challenges").child("testChallenge")
+                .child("testUser1").child("status")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Assert.assertTrue(dataSnapshot.exists());
+                        Assert.assertTrue((boolean)dataSnapshot.getValue());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void setUserReadyThrowsNullPointer() {
+        firebaseHelper.setUserReady(null,  "testUser1");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void setUserReadyThrowsIllegalArgument() {
+        firebaseHelper.setUserReady("",  "testUser1");
+    }
+
+    @Test
+    public void correctlySetUserListeners() {
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        firebaseHelper.setUserStatusListener("testChallenge", "testUser1", listener);
+        firebaseHelper.setUserDataListener("testChallenge", "testUser1", listener);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void setUserStatusListenerThrowsNullPointer() {
+        firebaseHelper.setUserStatusListener("testChallenge", "testUser1", null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void setUserStatusListenerThrowsIllegalArgument() {
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        firebaseHelper.setUserStatusListener("", "testUser1", listener);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void setUserDataListenerThrowsNullPointer() {
+        firebaseHelper.setUserDataListener("testChallenge", "testUser1", null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void setUserDataListenerThrowsIllegalArgument() {
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        firebaseHelper.setUserDataListener("", "testUser1", listener);
     }
 
     /*
