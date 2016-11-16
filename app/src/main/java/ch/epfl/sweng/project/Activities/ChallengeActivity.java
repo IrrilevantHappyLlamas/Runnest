@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -13,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +23,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
+import ch.epfl.sweng.project.Fragments.NewRun.ChallengeReceiverFragment;
+import ch.epfl.sweng.project.Fragments.NewRun.ChallengeSenderFragment;
 import ch.epfl.sweng.project.Fragments.NewRun.LocationSettingsHandler;
 import ch.epfl.sweng.project.Model.ChallengeProxy;
 import ch.epfl.sweng.project.Model.CheckPoint;
@@ -35,14 +39,15 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private LocationSettingsHandler mLocationSettingsHandler;
     private ChallengeProxy challengeProxy;
 
-    private Boolean opponentReady = false;
+    private Boolean opponentReady = true;
     private Boolean userReady;
     private FragmentManager fragmentManager;
-    private Fragment userFragment;
-    private Fragment opponentFragment;
+    private Fragment senderFragment;
+    private Fragment receiverFragment;
 
     private Button readyBtn;
     private TextView userWaitingTxt;
+    private Chronometer chronometer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +66,12 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
         //Initializing the fragment
         fragmentManager = getSupportFragmentManager();
-        userFragment = fragmentManager.findFragmentById(R.id.user_container);
-        opponentFragment = fragmentManager.findFragmentById(R.id.user_container);
+        senderFragment = fragmentManager.findFragmentById(R.id.sender_container);
+        receiverFragment = fragmentManager.findFragmentById(R.id.receiver_container);
 
+        // Setup Chronometer
+        chronometer = (Chronometer) findViewById(R.id.challenge_chronometer);
+        chronometer.setVisibility(View.INVISIBLE);
 
         userWaitingTxt = (TextView) findViewById(R.id.userWaitingTxt);
         readyBtn = (Button) findViewById(R.id.readyBtn);
@@ -71,7 +79,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
             @Override
             public void onClick(View v) {
                 //FIXME false condition
-                if(checkPermission() && mLocationSettingsHandler.checkLocationSettings()) {
+                if(checkPermission() /*&& mLocationSettingsHandler.checkLocationSettings()*/) {
                     challengeProxy.imReady();
                     userReady = true;
                     readyState();
@@ -113,7 +121,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         challengeProxy.setHandler(new ChallengeProxy.Handler() {
             @Override
             public void OnNewDataHandler(CheckPoint checkPoint) {
-                //receiverFragment.onNewData(checkPoint);
+                ((ChallengeReceiverFragment)receiverFragment).onNewData(checkPoint);
             }
 
             @Override
@@ -138,6 +146,18 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
     public void startChallenge(){
 
+        readyBtn.setVisibility(View.GONE);
+        userWaitingTxt.setVisibility(View.GONE);
+
+        chronometer.setVisibility(View.VISIBLE);
+        chronometer.setBase(SystemClock.elapsedRealtime());
+        chronometer.start();
+
+        senderFragment = new ChallengeSenderFragment();
+        fragmentManager.beginTransaction().add(R.id.sender_container, senderFragment).commit();
+
+        receiverFragment = new ChallengeReceiverFragment();
+        fragmentManager.beginTransaction().add(R.id.receiver_container, receiverFragment).commit();
     }
 
 
@@ -175,15 +195,9 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE_FINE_LOCATION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //TODO Q: se già accettato?
-                    //TODO A: Se già accettato non fa la richiesta..quindi non é un problema
-
-                    //TODO Q: Perché gestisci ready qui?
-                    userReady = true;
-                    challengeProxy.imReady();
-                    Toast.makeText(getApplicationContext(),"Ready",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Now you can start the challenge.",Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(getApplicationContext(),"Permission Denied, you cannot start a Run.",
+                    Toast.makeText(getApplicationContext(),"Permission Denied, you cannot start the challenge.",
                             Toast.LENGTH_LONG).show();
                 }
                 break;
@@ -228,4 +242,10 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
             startLocationUpdates();
         }
     }*/
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
 }

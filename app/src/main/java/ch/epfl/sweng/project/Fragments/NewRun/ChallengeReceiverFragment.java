@@ -50,7 +50,8 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
 
         mTrack = new Track();
 
-        mDistance = (TextView) view.findViewById(R.id.distance);
+        mDistance = (TextView) view.findViewById(R.id.receiver_distance);
+        updateDisplayedDistance();
 
         return view;
     }

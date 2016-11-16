@@ -104,8 +104,6 @@ public class SideBarActivity extends AppCompatActivity
         }
     };
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -182,7 +180,6 @@ public class SideBarActivity extends AppCompatActivity
             }
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

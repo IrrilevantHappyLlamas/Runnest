@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_centerHorizontal="true"
             android:layout_height="250dp"
-            android:id="@+id/user_container">
+            android:id="@+id/sender_container">
 
             <TextView
                 android:text="YOU ARE READY!"
@@ -52,14 +52,14 @@
         <Chronometer
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/chronometer2"
+            android:id="@+id/challenge_chronometer"
             android:gravity="center"
             />
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:id="@+id/opponent_container">
+            android:id="@+id/receiver_container">
 
             <TextView
                 android:text="Waiting for your opponent..."

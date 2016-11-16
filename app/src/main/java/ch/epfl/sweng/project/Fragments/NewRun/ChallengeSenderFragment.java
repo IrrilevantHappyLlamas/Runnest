@@ -8,7 +8,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+
+import ch.epfl.sweng.project.Activities.ChallengeActivity;
+import ch.epfl.sweng.project.Model.CheckPoint;
 
 /**
  * This Fragment represent the "sender side" of a challenge, i.e. it handles the
@@ -24,7 +28,7 @@ public class ChallengeSenderFragment extends RunFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_running_map, container, false);
+        View view =  inflater.inflate(R.layout.fragment_challenge_sender, container, false);
 
         mMapView = (MapView) view.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
@@ -32,20 +36,12 @@ public class ChallengeSenderFragment extends RunFragment {
 
         //TODO
         // Location
-        //mGoogleApiClient = getActivity().getGoogleApiClient();
-        //mLocationSettingsHandler = getActivity().getLocationSettingsHandler();
+        mGoogleApiClient = ((ChallengeActivity)getActivity()).getGoogleApiClient();
+        mLocationSettingsHandler = ((ChallengeActivity)getActivity()).getLocationSettingsHandler();
 
-        mDistance = (TextView) view.findViewById(R.id.distance);
+        mDistance = (TextView) view.findViewById(R.id.sender_distance);
 
         return view;
-    }
-
-    /**
-     * Perform all necessary action to properly start the run, by calling the super
-     * class <code>startRun()</code> method.
-     */
-    public void startChallenge() {
-        super.startRun();
     }
 
     /**
@@ -58,7 +54,19 @@ public class ChallengeSenderFragment extends RunFragment {
         super.onLocationChanged(location);
 
         //TODO
-        //getActivity().getChallengeProxy.putData(new CheckPoint(location))
+        ((ChallengeActivity)getActivity()).getChallengeProxy().putData(new CheckPoint(location));
+    }
+
+
+    /**
+     * Called when the <code>GoogleMap</code> is ready. Initialize a MapHandler.
+     *
+     * @param googleMap     the <code>GoogleMap</code>
+     */
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        super.onMapReady(googleMap);
+        super.startRun();
     }
 
     @Override
