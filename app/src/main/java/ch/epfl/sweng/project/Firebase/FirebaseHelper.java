@@ -1,5 +1,7 @@
 package ch.epfl.sweng.project.Firebase;
 
+import android.provider.ContactsContract;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -12,7 +14,9 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Model.Message;
@@ -38,6 +42,51 @@ public class FirebaseHelper {
     private final String TYPE_CHILD = "type";
     private final String MESSAGE_CHILD = "message";
     private final String TIME_CHILD = "time";
+    private final String USERS_CHILD = "users";
+    private final String NAME_CHILD = "name";
+    private final String STATISTICS_CHILD = "statistics";
+    private final String TOTAL_RUNNING_TIME_CHILD = "total_running_time";
+    private final String TOTAL_RUNNING_DISTANCE_CHILD = "total_running_distance";
+    private final String TOTAL_NUMBER_OF_RUNS_CHILD = "total_number_of_runs";
+    private final String TOTAL_NUMBER_OF_CHALLENGES_CHILD = "total_number_of_challenges";
+    private final String TOTAL_NUMBER_OF_WON_CHALLENGES_CHILD = "total_number_of_won_challenges";
+    private final String TOTAL_NUMBER_OF_LOST_CHALLENGES_CHILD = "total_number_of_lost_challenges";
+
+    public final int TOTAL_RUNNING_TIME_INDEX = 0;
+    public final int TOTAL_RUNNING_DISTANCE_INDEX = 1;
+    public final int TOTAL_NUMBER_OF_RUNS_INDEX = 2;
+    public final int TOTAL_NUMBER_OF_CHALLENGES_INDEX = 3;
+    public final int TOTAL_NUMBER_OF_WON_CHALLENGES_INDEX = 4;
+    public final int TOTAL_NUMBER_OF_LOST_CHALLENGES_INDEX = 5;
+
+    public final int NUMBER_OF_STATISTICS = 6;
+
+    //the two following array are useful for iterating on statistical data.
+    private final String[] statisticsChildren = {
+            TOTAL_RUNNING_TIME_CHILD,
+            TOTAL_RUNNING_DISTANCE_CHILD,
+            TOTAL_NUMBER_OF_RUNS_CHILD,
+            TOTAL_NUMBER_OF_CHALLENGES_CHILD,
+            TOTAL_NUMBER_OF_WON_CHALLENGES_CHILD,
+            TOTAL_NUMBER_OF_LOST_CHALLENGES_CHILD
+    };
+
+    private final int[] statisticsIndexes = {
+            TOTAL_RUNNING_TIME_INDEX,
+            TOTAL_RUNNING_DISTANCE_INDEX,
+            TOTAL_NUMBER_OF_RUNS_INDEX,
+            TOTAL_NUMBER_OF_CHALLENGES_INDEX,
+            TOTAL_NUMBER_OF_WON_CHALLENGES_INDEX,
+            TOTAL_NUMBER_OF_LOST_CHALLENGES_INDEX
+    };
+
+
+
+    public enum RunType {
+        SINGLE,
+        CHALLENGE_WON,
+        CHALLENGE_LOST
+    }
 
     /**
      * Interface that allows to handle message fetching asynchronously from the server
@@ -46,6 +95,13 @@ public class FirebaseHelper {
         void handleRetrievedMessages(List<Message> messages);
     }
 
+    /**
+     * Interface that allows to handle statistical data fetching asynchronously from the server
+     */
+    public interface statisticsHandler{
+
+        void handleRetrievedStatistics(String[] statistics);
+    }
     /**
      * Constructor that initializes the database instance
      */
@@ -126,23 +182,167 @@ public class FirebaseHelper {
     /**
      * Add a new user to the firebase remote database. If the user already exists on the database, update his name.
      *
-     * @param id    the id of the user to add, a <code>String</code>
-     * @param name  name to associate to the user, a <code>String</code>
+     * @param name   the name of the user.
+     * @param email  the id associated to the user.
      * @throws IllegalArgumentException     if the arguments are <code>null</code> or empty
      */
-    public void addOrUpdateUser(String id, String name) throws IllegalArgumentException {
+    public void addOrUpdateUser(String name, String email) throws IllegalArgumentException {
 
         //Check validity of arguments
-        if(id == null || name == null) {
+        if(name == null || email == null) {
             throw new IllegalArgumentException("Error: invalid argument," +
-                    " id and name have to be non-null and not empty");
+                    " name and email have to be non-null and not empty");
         }
-        if(id.isEmpty() || name.isEmpty() || name.length() > 100) {
-            throw new IllegalArgumentException("Error: invalid argument, id and name must be non empty and " +
-                    "name length has to be under 100 characters");
+        if(name.isEmpty() || email.isEmpty() || email.length() > 100) {
+            throw new IllegalArgumentException("Error: invalid argument, name and email must be non empty and " +
+                    "email length has to be under 100 characters");
         }
 
-        databaseReference.child("users").child(id).child("name").setValue(name);
+        final DatabaseReference user = databaseReference.child(USERS_CHILD).child(getFireBaseMail(email));
+        user.child(NAME_CHILD).setValue(name);
+
+        final DatabaseReference statistics = user.child(STATISTICS_CHILD);
+        statistics.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    statistics.child(TOTAL_RUNNING_TIME_CHILD).setValue(0);
+                    statistics.child(TOTAL_RUNNING_DISTANCE_CHILD).setValue(0);
+                    statistics.child(TOTAL_NUMBER_OF_RUNS_CHILD).setValue(0);
+                    statistics.child(TOTAL_NUMBER_OF_CHALLENGES_CHILD).setValue(0);
+                    statistics.child(TOTAL_NUMBER_OF_WON_CHALLENGES_CHILD).setValue(0);
+                    statistics.child(TOTAL_NUMBER_OF_LOST_CHALLENGES_CHILD).setValue(0);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void UpdateUserStatistics(String email, final long newTime, final float newDistance, final RunType runType) throws IllegalArgumentException {
+
+        //Check validity of arguments
+        if(email == null || runType == null) {
+            throw new IllegalArgumentException("Error: invalid argument," +
+                    " email and runType have to be non-null and not empty");
+        }
+        if(email.isEmpty() || email.length() > 100) {
+            throw new IllegalArgumentException("Error: invalid argument, email must be non empty and " +
+                    "email length has to be under 100 characters");
+        }
+
+        final DatabaseReference statistics = databaseReference.child(USERS_CHILD).child(getFireBaseMail(email)).child(STATISTICS_CHILD);
+
+        statistics.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    if (dataSnapshot.hasChild(TOTAL_RUNNING_TIME_CHILD)) {
+                        long time = dataSnapshot.child(TOTAL_RUNNING_TIME_CHILD).getValue(long.class);
+                        long updatedTime = time + newTime;
+                        statistics.child(TOTAL_RUNNING_TIME_CHILD).setValue(updatedTime);
+                    } else {
+                        statistics.child(TOTAL_RUNNING_TIME_CHILD).setValue(newTime);
+                    }
+
+                    if (dataSnapshot.hasChild(TOTAL_RUNNING_DISTANCE_CHILD)) {
+                        float distance = dataSnapshot.child(TOTAL_RUNNING_DISTANCE_CHILD).getValue(float.class);
+                        float updatedDistance = distance + newDistance;
+                        statistics.child(TOTAL_RUNNING_DISTANCE_CHILD).setValue(updatedDistance);
+                    } else {
+                        statistics.child(TOTAL_RUNNING_DISTANCE_CHILD).setValue(newDistance);
+                    }
+
+                    switch (runType) {
+                        case SINGLE:
+                            if (dataSnapshot.hasChild(TOTAL_NUMBER_OF_RUNS_CHILD)) {
+                                int numberRuns = dataSnapshot.child(TOTAL_NUMBER_OF_RUNS_CHILD).getValue(int.class);
+                                int updatedNumberRuns = numberRuns + 1;
+                                statistics.child(TOTAL_NUMBER_OF_RUNS_CHILD).setValue(updatedNumberRuns);
+                            } else {
+                                statistics.child(TOTAL_NUMBER_OF_RUNS_CHILD).setValue(1);
+                            }
+                            break;
+                        case CHALLENGE_WON:
+                            incrementChallenge(dataSnapshot);
+                            if (dataSnapshot.hasChild(TOTAL_NUMBER_OF_WON_CHALLENGES_CHILD)) {
+                                int numberWonChallenges = dataSnapshot.child(TOTAL_NUMBER_OF_WON_CHALLENGES_CHILD).getValue(int.class);
+                                int updatedNumberWonChallenges = numberWonChallenges + 1;
+                                statistics.child(TOTAL_NUMBER_OF_WON_CHALLENGES_CHILD).setValue(updatedNumberWonChallenges);
+                            } else {
+                                statistics.child(TOTAL_NUMBER_OF_WON_CHALLENGES_CHILD).setValue(1);
+                            }
+                            break;
+                        case CHALLENGE_LOST:
+                            incrementChallenge(dataSnapshot);
+                            if (dataSnapshot.hasChild(TOTAL_NUMBER_OF_LOST_CHALLENGES_CHILD)) {
+                                int numberLostChallenges = dataSnapshot.child(TOTAL_NUMBER_OF_LOST_CHALLENGES_CHILD).getValue(int.class);
+                                int updatedNumberWonChallenges = numberLostChallenges + 1;
+                                statistics.child(TOTAL_NUMBER_OF_LOST_CHALLENGES_CHILD).setValue(updatedNumberWonChallenges);
+                            } else {
+                                statistics.child(TOTAL_NUMBER_OF_LOST_CHALLENGES_CHILD).setValue(1);
+                            }
+                            break;
+                    }
+                }
+            }
+
+            private void incrementChallenge (DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild(TOTAL_NUMBER_OF_CHALLENGES_CHILD)) {
+                    int numberRuns = dataSnapshot.child(TOTAL_NUMBER_OF_CHALLENGES_CHILD).getValue(int.class);
+                    int updatedNumberRuns = numberRuns + 1;
+                    statistics.child(TOTAL_NUMBER_OF_CHALLENGES_CHILD).setValue(updatedNumberRuns);
+                }
+                else{
+                    statistics.child(TOTAL_NUMBER_OF_CHALLENGES_CHILD).setValue(1);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void getUserStatistics(String email, final statisticsHandler handler){
+
+        final String[] userStatistics = new String[6];
+
+        //Check validity of arguments
+        if(email == null) {
+            throw new IllegalArgumentException("Error: invalid argument," +
+                    " email has to be non-null and not empty");
+        }
+        if(email.isEmpty()) {
+            throw new IllegalArgumentException("Error: invalid argument, email must be non empty and " +
+                    "email length has to be under 100 characters");
+        }
+
+        final DatabaseReference statistics = databaseReference.child(USERS_CHILD).child(getFireBaseMail(email)).child(STATISTICS_CHILD);
+
+        statistics.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for(int i = 0; i < NUMBER_OF_STATISTICS; ++i) {
+                        if (dataSnapshot.hasChild(statisticsChildren[i])) {
+                            userStatistics[statisticsIndexes[i]] = String.valueOf(dataSnapshot.child(statisticsChildren[i]).getValue());
+                        } else {
+                            userStatistics[statisticsIndexes[i]] = null;
+                        }
+                    }
+                    handler.handleRetrievedStatistics(userStatistics);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     /**

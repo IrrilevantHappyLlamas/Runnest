@@ -12,10 +12,13 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Database.DBHelper;
+import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.Track;
 import ch.epfl.sweng.project.Model.CheckPoint;
+import ch.epfl.sweng.project.Model.User;
 
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
@@ -35,6 +38,7 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
 
     private static final String RUN_TO_BE_DISPLAYED = "run to be displayed";
     private DisplayRunFragmentInteractionListener mListener;
+    private FirebaseHelper mFirebaseHelper = null;
     private Run mRunToBeDisplayed;
 
     // Map
@@ -62,6 +66,12 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_display_run, container, false);
+
+        mFirebaseHelper = new FirebaseHelper();
+
+        //update user statistics
+        User currentUser = ((AppRunnest) getActivity().getApplication()).getUser();
+        mFirebaseHelper.UpdateUserStatistics(currentUser.getEmail(), mRunToBeDisplayed.getDuration(), mRunToBeDisplayed.getTrack().getDistance(), FirebaseHelper.RunType.SINGLE);
 
         mMapView = (MapView) view.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
