@@ -76,6 +76,9 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         senderFragment = fragmentManager.findFragmentById(R.id.sender_container);
         receiverFragment = fragmentManager.findFragmentById(R.id.receiver_container);
 
+        receiverFragment = new ChallengeReceiverFragment();
+        senderFragment = new ChallengeSenderFragment();
+
         // Setup Chronometer
         chronometer = (Chronometer) findViewById(R.id.challenge_chronometer);
         chronometer.setVisibility(View.INVISIBLE);
@@ -155,11 +158,10 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         chronometer.setBase(SystemClock.elapsedRealtime());
         chronometer.start();
 
-        senderFragment = new ChallengeSenderFragment();
+        fragmentManager.beginTransaction().add(R.id.receiver_container, receiverFragment).commit();
         fragmentManager.beginTransaction().add(R.id.sender_container, senderFragment).commit();
 
-        receiverFragment = new ChallengeReceiverFragment();
-        fragmentManager.beginTransaction().add(R.id.receiver_container, receiverFragment).commit();
+        ((ChallengeSenderFragment)senderFragment).startChallenge();
     }
 
 
