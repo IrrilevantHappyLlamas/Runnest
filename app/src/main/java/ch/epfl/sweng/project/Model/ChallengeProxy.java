@@ -1,6 +1,6 @@
 package ch.epfl.sweng.project.Model;
 
-public interface ChallangeProxy {
+public interface ChallengeProxy {
 
     interface Handler{
         void OnNewDataHandler(CheckPoint checkPoint);
