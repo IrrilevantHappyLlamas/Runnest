@@ -44,10 +44,6 @@ public class ChallengeSenderFragment extends RunFragment {
         return view;
     }
 
-    public void startChallenge() {
-        super.startRun();
-    }
-
     /**
      * Handle a location update.
      *
@@ -67,14 +63,11 @@ public class ChallengeSenderFragment extends RunFragment {
      *
      * @param googleMap     the <code>GoogleMap</code>
      */
-    /*
     @Override
-
     public void onMapReady(GoogleMap googleMap) {
         super.onMapReady(googleMap);
         super.startRun();
     }
-    */
 
     @Override
     public void onLowMemory() {
