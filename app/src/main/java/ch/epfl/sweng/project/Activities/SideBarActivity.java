@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -226,11 +227,15 @@ public class SideBarActivity extends AppCompatActivity
                             String surname = surnameAndFamilyName[0].toLowerCase();
                             String familyName = surnameAndFamilyName[1].toLowerCase();
 
+                            String myEmail = ((AppRunnest) getApplication()).getUser().getEmail();
+
                             String lowerCaseQuery = query.toLowerCase();
-                            if (usersName.toLowerCase().startsWith(lowerCaseQuery)
+                            if ((usersName.toLowerCase().startsWith(lowerCaseQuery)
                                     || surname.startsWith(lowerCaseQuery)
                                     || familyName.startsWith(lowerCaseQuery)
-                                    || usersEmail.toLowerCase().startsWith(lowerCaseQuery)) {
+                                    || usersEmail.toLowerCase().startsWith(lowerCaseQuery))
+                                    && !usersEmail.equals(myEmail))
+                            {
                                 users.put(usersName, usersEmail);
                             }
                         }
