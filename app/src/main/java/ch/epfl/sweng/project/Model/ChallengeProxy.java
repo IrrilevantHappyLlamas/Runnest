@@ -9,9 +9,6 @@ public interface ChallengeProxy {
 
     void putData(CheckPoint checkPoint);
 
-    //TODO remove this
-    void setHandler(Handler setHandler);
-
     void startChallenge();
 
     void imReady();

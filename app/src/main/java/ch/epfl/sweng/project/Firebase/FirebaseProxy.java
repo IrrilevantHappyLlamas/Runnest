@@ -90,11 +90,6 @@ public class FirebaseProxy implements ChallengeProxy, ValueEventListener {
         }
     }
 
-    // TODO: now useless method that has to be removed both from here and the interface
-    @Override
-    public void setHandler(Handler setHandler) {
-    }
-
     @Override
     public void startChallenge() {
         firebaseHelper.removeUserStatusListener(challengeName, remoteOpponent, onReadyListener);

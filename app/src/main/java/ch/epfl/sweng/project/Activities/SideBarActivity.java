@@ -43,10 +43,8 @@ import java.util.Stack;
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
-import ch.epfl.sweng.project.Fragments.ChallengeFragment;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 import ch.epfl.sweng.project.Fragments.DBUploadFragment;
-import ch.epfl.sweng.project.Fragments.DisplayChallengeRequestFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
 import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
 import ch.epfl.sweng.project.Fragments.MessagesFragment;
@@ -66,8 +64,6 @@ public class SideBarActivity extends AppCompatActivity
         RunHistoryFragment.onRunHistoryInteractionListener,
         DisplayUserFragment.OnDisplayUserFragmentInteractionListener,
         MessagesFragment.MessagesFragmentInteractionListener,
-        ChallengeFragment.OnChallengeFragmentInteractionListener,
-        DisplayChallengeRequestFragment.OnDisplayChallengeRequestFragmentInteractionListener,
         DisplayRunFragment.DisplayRunFragmentInteractionListener
 {
 
@@ -472,22 +468,6 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDisplayChallengeRequestFragmentInteraction(boolean accepted, String name, String email){
-
-        if(accepted){
-
-            launchFragment(ChallengeFragment.newInstance(name, email));
-        }
-        else{
-
-            launchFragment(new MessagesFragment());
-        }
-    }
-
-    @Override
-    public void onChallengeFragmentInteraction() {
-
-    }
     public void onProfileFragmentInteraction() {
     }
 
@@ -518,8 +498,6 @@ public class SideBarActivity extends AppCompatActivity
         Intent intent = new Intent(this, ChallengeActivity.class);
         intent.putExtra("opponent", challengedUserName);
         startActivity(intent);
-
-        //launchFragment(ChallengeFragment.newInstance(challengedUserName, challengedUserEmail));
     }
 
     @Override
@@ -527,8 +505,6 @@ public class SideBarActivity extends AppCompatActivity
         Intent intent = new Intent(this, ChallengeActivity.class);
         intent.putExtra("opponent", message.getSender());
         startActivity(intent);
-
-        //launchFragment(DisplayChallengeRequestFragment.newInstance(message));
     }
 
     @Override

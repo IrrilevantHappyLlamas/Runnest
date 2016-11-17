@@ -98,7 +98,6 @@ public class DisplayUserFragment extends Fragment {
                     FirebaseHelper firebaseHelper = new FirebaseHelper();
                     firebaseHelper.send(challengeRequestMessage);
 
-                    // Go to ChallengeFragment
                     mListener.onDisplayUserFragmentInteraction(name, email);
                 }
             });
