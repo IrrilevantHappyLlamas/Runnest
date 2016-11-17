@@ -3,6 +3,7 @@ package ch.epfl.sweng.project.Activities;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -41,14 +42,12 @@ import java.util.Stack;
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
-import ch.epfl.sweng.project.Fragments.ChallengeFragment;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 import ch.epfl.sweng.project.Fragments.DBUploadFragment;
-import ch.epfl.sweng.project.Fragments.DisplayChallengeRequestFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
 import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
 import ch.epfl.sweng.project.Fragments.MessagesFragment;
-import ch.epfl.sweng.project.Fragments.NewRun.RunningMapFragment;
+import ch.epfl.sweng.project.Fragments.RunFragments.RunningMapFragment;
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
 import ch.epfl.sweng.project.Model.Message;
@@ -64,8 +63,6 @@ public class SideBarActivity extends AppCompatActivity
         RunHistoryFragment.onRunHistoryInteractionListener,
         DisplayUserFragment.OnDisplayUserFragmentInteractionListener,
         MessagesFragment.MessagesFragmentInteractionListener,
-        ChallengeFragment.OnChallengeFragmentInteractionListener,
-        DisplayChallengeRequestFragment.OnDisplayChallengeRequestFragmentInteractionListener,
         DisplayRunFragment.DisplayRunFragmentInteractionListener
 {
 
@@ -102,8 +99,6 @@ public class SideBarActivity extends AppCompatActivity
             handler.postDelayed(runnableCode, 10000);
         }
     };
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,7 +177,6 @@ public class SideBarActivity extends AppCompatActivity
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -222,17 +216,21 @@ public class SideBarActivity extends AppCompatActivity
                     if (dataSnapshot.exists()) {
                         Map<String, String> users = new HashMap<>();
                         for (DataSnapshot user : dataSnapshot.getChildren()) {
-                            String usersName = user.getKey().toString();
-                            String usersEmail = user.child("name").getValue().toString();
+                            String usersName = user.child("name").getValue().toString();
+                            String usersEmail = user.getKey();
                             String[] surnameAndFamilyName = usersName.split(" ");
                             String surname = surnameAndFamilyName[0].toLowerCase();
                             String familyName = surnameAndFamilyName[1].toLowerCase();
 
+                            String myEmail = ((AppRunnest) getApplication()).getUser().getEmail();
+
                             String lowerCaseQuery = query.toLowerCase();
-                            if (usersName.toLowerCase().startsWith(lowerCaseQuery)
+                            if ((usersName.toLowerCase().startsWith(lowerCaseQuery)
                                     || surname.startsWith(lowerCaseQuery)
                                     || familyName.startsWith(lowerCaseQuery)
-                                    || usersEmail.toLowerCase().startsWith(lowerCaseQuery)) {
+                                    || usersEmail.toLowerCase().startsWith(lowerCaseQuery))
+                                    && !usersEmail.equals(myEmail))
+                            {
                                 users.put(usersName, usersEmail);
                             }
                         }
@@ -469,22 +467,6 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDisplayChallengeRequestFragmentInteraction(boolean accepted, String name, String email){
-
-        if(accepted){
-
-            launchFragment(ChallengeFragment.newInstance(name, email));
-        }
-        else{
-
-            launchFragment(new MessagesFragment());
-        }
-    }
-
-    @Override
-    public void onChallengeFragmentInteraction() {
-
-    }
     public void onProfileFragmentInteraction() {
     }
 
@@ -512,12 +494,16 @@ public class SideBarActivity extends AppCompatActivity
 
     @Override
     public void onDisplayUserFragmentInteraction(String challengedUserName, String challengedUserEmail) {
-        launchFragment(ChallengeFragment.newInstance(challengedUserName, challengedUserEmail));
+        Intent intent = new Intent(this, ChallengeActivity.class);
+        intent.putExtra("opponent", challengedUserName);
+        startActivity(intent);
     }
 
     @Override
     public void onMessagesFragmentInteraction(Message message) {
-        launchFragment(DisplayChallengeRequestFragment.newInstance(message));
+        Intent intent = new Intent(this, ChallengeActivity.class);
+        intent.putExtra("opponent", message.getSender());
+        startActivity(intent);
     }
 
     @Override

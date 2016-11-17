@@ -61,6 +61,7 @@ public class DisplayUserFragment extends Fragment {
     }
 
     private void displayFoundUser(View view, final String name, final String email) {
+        //TODO: check arguments
         TableLayout table = (TableLayout) view.findViewById(R.id.table);
         TableRow tableRow = new TableRow(this.getContext());
         TableRow.LayoutParams layoutParams = new TableRow.LayoutParams();
@@ -68,8 +69,8 @@ public class DisplayUserFragment extends Fragment {
 
         String text = "No user found.";
         Boolean noUserFound = true;
-        if (name != null && email != null) {
-            text = name + "\n" + email;
+        if (name != null) {
+            text = name;
             noUserFound = false;
         }
 
@@ -82,6 +83,7 @@ public class DisplayUserFragment extends Fragment {
         if (!noUserFound) {
             Button challengeButton = new Button(this.getContext());
             challengeButton.setText(R.string.challenge);
+            //challengeButton.setId(1);
             challengeButton.setLayoutParams(layoutParams);
             challengeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -96,7 +98,6 @@ public class DisplayUserFragment extends Fragment {
                     FirebaseHelper firebaseHelper = new FirebaseHelper();
                     firebaseHelper.send(challengeRequestMessage);
 
-                    // Go to ChallengeFragment
                     mListener.onDisplayUserFragmentInteraction(name, email);
                 }
             });
