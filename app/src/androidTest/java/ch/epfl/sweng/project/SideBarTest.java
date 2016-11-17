@@ -61,6 +61,7 @@ public class SideBarTest {
     public void setUpApp() {
         ((AppRunnest) mActivityRule.getActivity().getApplication()).setUser(new TestUser());
         ((AppRunnest) mActivityRule.getActivity().getApplication()).setTestSession(true);
+        ((AppRunnest) mActivityRule.getActivity().getApplication()).setNetworkHandler();
     }
 
     @Test
@@ -163,7 +164,22 @@ public class SideBarTest {
         listenerTest.onRunHistoryInteraction(listenerRun);
     }
 
+
+
     @Test
+    public void searchInexistentUser() {
+        onView(withId(R.id.search)).perform(click());
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(isAssignableFrom(EditText.class)).perform(typeText("kadfjisadsa"), pressKey(KeyEvent.KEYCODE_ENTER));
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.table)).check(matches(isDisplayed()));
+        onView(withText("No user found.")).check(matches(isDisplayed()));
+    }
+
+    //TODO: remove useless tests
+    /*@Test
     public void searchAndClickOnChallenge() {
         onView(withId(R.id.search)).perform(click());
 
@@ -178,20 +194,9 @@ public class SideBarTest {
         onView(isAssignableFrom(Button.class)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
-        onView(withId(R.id.waitChallengedUserTextView)).check(matches(isDisplayed()));
+        //onView(withId(R.id.waitChallengedUserTextView)).check(matches(isDisplayed()));
     }
 
-    @Test
-    public void searchInexistentUser() {
-        onView(withId(R.id.search)).perform(click());
-        SystemClock.sleep(WAIT_DURATION);
-
-        onView(isAssignableFrom(EditText.class)).perform(typeText("kadfjisadsa"), pressKey(KeyEvent.KEYCODE_ENTER));
-        SystemClock.sleep(WAIT_DURATION);
-
-        onView(withId(R.id.table)).check(matches(isDisplayed()));
-        onView(withText("No user found.")).check(matches(isDisplayed()));
-    }
 
     @Test
     public void acceptChallengeRequest() {
@@ -227,7 +232,7 @@ public class SideBarTest {
 
         onView(withText("DECLINE")).perform(click());
         SystemClock.sleep(WAIT_DURATION);
-    }
+    }*/
 
     @Test
     public void uselessOnFragmentListenersWork() {
@@ -390,4 +395,30 @@ public class SideBarTest {
         onView(withId(R.id.deleteRunButton)).perform(click());
 
     }
+
+    @Test
+    public void startChallenge() {
+        onView(withId(R.id.search)).perform(click());
+
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.table)).check(matches(isDisplayed()));
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(isAssignableFrom(Button.class)).perform(click());
+
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.readyBtn)).check(matches(isDisplayed()));
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.readyBtn)).perform(click());
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.challenge_chronometer)).check(matches(isDisplayed()));
+    }
+
 }

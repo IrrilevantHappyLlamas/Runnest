@@ -82,6 +82,7 @@ public class DisplayUserFragment extends Fragment {
         if (!noUserFound) {
             Button challengeButton = new Button(this.getContext());
             challengeButton.setText(R.string.challenge);
+            //challengeButton.setId(1);
             challengeButton.setLayoutParams(layoutParams);
             challengeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
