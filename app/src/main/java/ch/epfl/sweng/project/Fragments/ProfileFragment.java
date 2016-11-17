@@ -76,7 +76,7 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
                 DecimalFormat format = new DecimalFormat("#.0");
 
                 double distance = Double.valueOf(statistics[mFirebaseHelper.TOTAL_RUNNING_DISTANCE_INDEX]);
-                String toBeDisplayedDistance = String.valueOf(format.format(distance/100));
+                String toBeDisplayedDistance = String.valueOf(format.format(distance/1000));
                 ((TextView)view.findViewById(R.id.total_running_distance)).setText(toBeDisplayedDistance);
 
                 double time = Double.valueOf(statistics[mFirebaseHelper.TOTAL_RUNNING_TIME_INDEX]);
