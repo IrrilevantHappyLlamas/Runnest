@@ -194,6 +194,18 @@ public class SideBarTest {
     }
 
     @Test
+    public void cantSearchMyself() {
+        onView(withId(R.id.search)).perform(click());
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(isAssignableFrom(EditText.class)).perform(typeText("test user"), pressKey(KeyEvent.KEYCODE_ENTER));
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.table)).check(matches(isDisplayed()));
+        onView(withText("No user found.")).check(matches(isDisplayed()));
+    }
+
+    @Test
     public void acceptChallengeRequest() {
 
         SystemClock.sleep(WAIT_DURATION);
