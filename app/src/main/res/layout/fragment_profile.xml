@@ -12,13 +12,14 @@
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="match_parent"
+        android:layout_width="387dp"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:paddingLeft="10dp"
-        android:paddingRight="10dp">
+        android:paddingRight="10dp"
+        android:weightSum="1">
 
         <ImageView
             android:layout_width="match_parent"
@@ -73,81 +74,196 @@
             android:id="@+id/statTxt"
             android:paddingBottom="20dp"
             android:paddingTop="20dp"
-            android:paddingLeft="20dp"
+            android:paddingLeft="100dp"
             android:fontFamily="sans-serif"
-            android:textSize="25sp"/>
+            android:textSize="25sp"
+            />
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="40dp">
+            android:layout_height="40dp"
+            android:layout_marginBottom="10dp"
+            android:weightSum="1">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/running_man"
                 android:id="@+id/imageView"
-                android:layout_weight="1"/>
+                android:adjustViewBounds="false"
+                android:paddingRight="0dp"
+                android:paddingLeft="0dp"
+                android:layout_marginLeft="20dp"/>
 
             <ImageView
                 app:srcCompat="@android:drawable/ic_lock_idle_alarm"
                 android:id="@+id/imageView2"
-                android:layout_weight="1"
-                android:layout_height="30dp"
-                android:layout_width="30dp"/>
+                android:layout_weight="0.36"
+                android:layout_height="match_parent"
+                android:layout_width="30dp"
+                android:layout_marginLeft="40dp"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:srcCompat="@android:drawable/sym_action_call"
+                android:id="@+id/imageView4"
+                android:layout_weight="0.13"
+                android:paddingLeft="50dp"
+                android:layout_marginLeft="20dp"/>
+
         </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:weightSum="1">
+
+            <TextView
+                android:text="0"
+                android:layout_width="44dp"
+                android:layout_height="match_parent"
+                android:id="@+id/total_running_distance"
+                android:gravity="center_horizontal"
+                android:textSize="25sp"
+                android:paddingLeft="5dp"/>
+
+            <TextView
+                android:text="km"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/km"
+                android:layout_weight="0.18"
+                android:textSize="25sp"/>
+
+            <TextView
+                android:text="0 "
+                android:layout_width="64dp"
+                android:layout_height="match_parent"
+                android:id="@+id/total_running_time"
+                android:gravity="center_horizontal"
+                android:textSize="25sp"
+                android:paddingLeft="20dp"/>
+
+            <TextView
+                android:text="min"
+                android:layout_width="38dp"
+                android:layout_height="43dp"
+                android:id="@+id/min"
+                android:textSize="25sp"
+                android:layout_weight="0.19"/>
+
+            <TextView
+                android:layout_width="35dp"
+                android:layout_height="match_parent"
+                android:id="@+id/total_number_of_runs"
+                tools:text="0"
+                android:textSize="25sp"
+                android:paddingLeft="15dp"
+                android:layout_weight="0.21"/>
+
+            <TextView
+                android:text="runs"
+                android:layout_width="36dp"
+                android:layout_height="45dp"
+                android:id="@+id/textView3"
+                android:layout_weight="0.29"
+                android:textSize="25sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/imageView6"
+                android:layout_weight="0.12"
+                android:adjustViewBounds="false"
+                android:scaleType="center"
+                app:srcCompat="@drawable/common_google_signin_btn_icon_light"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/imageView5"
+                android:layout_weight="0.41"
+                app:srcCompat="@drawable/common_ic_googleplayservices"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/imageView3"
+                android:layout_weight="0.39"
+                android:adjustViewBounds="false"
+                app:srcCompat="@drawable/ic_audiotrack_light"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
             >
 
             <TextView
-                android:text="43.57 km"
+                android:text="0"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView3"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:textSize="20sp"/>
+                android:id="@+id/total_number_of_challenges"
+                android:layout_weight="0.04"
+                android:textSize="25sp"
+                android:paddingLeft="5dp"/>
 
             <TextView
-                android:text="9h 53min"
+                android:text="done"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView2"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:textSize="20sp"/>
+                android:id="@+id/done"
+                android:textSize="25sp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/total_number_of_won_challenges"
+                android:layout_weight="0.04"
+                android:text="0"
+                android:textSize="25sp"
+                android:paddingLeft="25dp"/>
+
+            <TextView
+                android:text="won"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/won"
+                android:layout_weight="0.02"
+                android:textSize="25sp"/>
+
+            <TextView
+                android:text="0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/total_number_of_lost_challenges"
+                android:layout_weight="0.03"
+                android:textSize="25sp"
+                android:paddingLeft="20dp"/>
+
+            <TextView
+                android:text="lost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/lost"
+                android:layout_weight="0.07"
+                android:textSize="25sp"/>
+
         </LinearLayout>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            app:srcCompat="@drawable/newbie_big"
-            android:id="@+id/imageView3"
-            android:layout_weight="1"
-            android:paddingBottom="0dp"
-            android:elevation="24dp"/>
-
-        <ProgressBar
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:id="@+id/progressBar2"
-            android:layout_height="50dp"
-            android:paddingLeft="50dp"
-            android:paddingRight="50dp"
-            android:progress="78"/>
-
-        <TextView
-            android:text="78% (6.43 km until Rookie)"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView4"
-            android:textSize="18sp"
-            android:gravity="center_horizontal"
-            android:paddingBottom="10dp"/>
 
     </LinearLayout>
 

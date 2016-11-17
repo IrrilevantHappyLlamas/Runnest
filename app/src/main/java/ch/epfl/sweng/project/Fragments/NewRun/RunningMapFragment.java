@@ -20,8 +20,11 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.MapView;
 
 import ch.epfl.sweng.project.Activities.SideBarActivity;
+import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Database.DBHelper;
+import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.Run;
+import ch.epfl.sweng.project.Model.User;
 
 
 /**
@@ -149,6 +152,13 @@ public class RunningMapFragment extends RunFragment {
             DBHelper dbHelper = new DBHelper(getContext());
             //TODO: verify that insertion has been performed correctly
             dbHelper.insert(mRun);
+
+            FirebaseHelper firebaseHelper = new FirebaseHelper();
+
+            //update user statistics
+            User currentUser = ((AppRunnest) getActivity().getApplication()).getUser();
+            firebaseHelper.updateUserStatistics(currentUser.getEmail(), mRun.getDuration(),
+                    mRun.getTrack().getDistance(), FirebaseHelper.RunType.SINGLE);
 
             mListener.onRunningMapFragmentInteraction(new Run(mRun));
         }

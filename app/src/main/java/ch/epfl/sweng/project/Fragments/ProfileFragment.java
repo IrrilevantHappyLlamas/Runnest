@@ -17,8 +17,10 @@ import android.widget.TextView;
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
 import java.io.InputStream;
+import java.text.DecimalFormat;
 
 import ch.epfl.sweng.project.AppRunnest;
+import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.User;
 
 /**
@@ -27,7 +29,7 @@ import ch.epfl.sweng.project.Model.User;
 public class ProfileFragment extends android.support.v4.app.Fragment {
 
     private ProfileFragmentInteractionListener mProfileListener = null;
-
+    private FirebaseHelper mFirebaseHelper = null;
     private User mUser;
 
 
@@ -35,7 +37,9 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_profile, container, false);
+        final View view =  inflater.inflate(R.layout.fragment_profile, container, false);
+
+        mFirebaseHelper = new FirebaseHelper();
 
         mUser = ((AppRunnest)getActivity().getApplicationContext()).getUser();
 
@@ -65,6 +69,27 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
         ((TextView)view.findViewById(R.id.emailTxt)).setText(email);
         ((TextView)view.findViewById(R.id.familyTxt)).setText(family);
 
+        mFirebaseHelper.getUserStatistics(mUser.getEmail(), new FirebaseHelper.statisticsHandler() {
+            @Override
+            public void handleRetrievedStatistics(String[] statistics) {
+
+                DecimalFormat format = new DecimalFormat("#.0");
+
+                double distance = Double.valueOf(statistics[mFirebaseHelper.TOTAL_RUNNING_DISTANCE_INDEX]);
+                String toBeDisplayedDistance = String.valueOf(format.format(distance/1000));
+                ((TextView)view.findViewById(R.id.total_running_distance)).setText(toBeDisplayedDistance);
+
+                double time = Double.valueOf(statistics[mFirebaseHelper.TOTAL_RUNNING_TIME_INDEX]);
+                String toBeDisplayedTime = String.valueOf(format.format(time/60));
+                ((TextView)view.findViewById(R.id.total_running_time)).setText(toBeDisplayedTime);
+
+                ((TextView)view.findViewById(R.id.total_number_of_runs)).setText(statistics[mFirebaseHelper.TOTAL_NUMBER_OF_RUNS_INDEX]);
+                ((TextView)view.findViewById(R.id.total_number_of_challenges)).setText(statistics[mFirebaseHelper.TOTAL_NUMBER_OF_CHALLENGES_INDEX]);
+                ((TextView)view.findViewById(R.id.total_number_of_won_challenges)).setText(statistics[mFirebaseHelper.TOTAL_NUMBER_OF_WON_CHALLENGES_INDEX]);
+                ((TextView)view.findViewById(R.id.total_number_of_lost_challenges)).setText(statistics[mFirebaseHelper.TOTAL_NUMBER_OF_LOST_CHALLENGES_INDEX]);
+
+            }
+        });
 
         return view;
     }
