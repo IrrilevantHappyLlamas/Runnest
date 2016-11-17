@@ -397,7 +397,7 @@ public class SideBarTest {
     }
 
     @Test
-    public void startChallenge() {
+    public void requestChallenge() {
         onView(withId(R.id.search)).perform(click());
 
         SystemClock.sleep(WAIT_DURATION);
@@ -419,6 +419,24 @@ public class SideBarTest {
         SystemClock.sleep(WAIT_DURATION);
 
         onView(withId(R.id.challenge_chronometer)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void acceptChallengeRequest() {
+
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withText("From: Pablo\nType: CHALLENGE_REQUEST")).perform(click());
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.readyBtn)).check(matches(isDisplayed()));
+        SystemClock.sleep(WAIT_DURATION);
     }
 
 }
