@@ -221,7 +221,7 @@ public class SideBarActivity extends AppCompatActivity
                     if (dataSnapshot.exists()) {
                         Map<String, String> users = new HashMap<>();
                         for (DataSnapshot user : dataSnapshot.getChildren()) {
-                            String usersName = user.getKey().toString();
+                            String usersName = user.getKey();
                             String usersEmail = user.child("name").getValue().toString();
                             String[] surnameAndFamilyName = usersName.split(" ");
                             String surname = surnameAndFamilyName[0].toLowerCase();
