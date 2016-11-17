@@ -2,7 +2,7 @@ package ch.epfl.sweng.project;
 
 import org.junit.Test;
 
-import ch.epfl.sweng.project.Fragments.NewRun.MapHandler;
+import ch.epfl.sweng.project.Fragments.RunFragments.MapHandler;
 
 
 public class MapHandlerTest {

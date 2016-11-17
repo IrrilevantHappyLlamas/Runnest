@@ -1,4 +1,4 @@
-package ch.epfl.sweng.project.Fragments.NewRun;
+package ch.epfl.sweng.project.Fragments.RunFragments;
 
 import android.app.Activity;
 import android.content.IntentSender;

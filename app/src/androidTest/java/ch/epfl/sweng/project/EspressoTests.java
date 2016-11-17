@@ -49,7 +49,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 @RunWith(AndroidJUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class SideBarTest {
+public class EspressoTests {
 
     private final int WAIT_DURATION = 2000;
 

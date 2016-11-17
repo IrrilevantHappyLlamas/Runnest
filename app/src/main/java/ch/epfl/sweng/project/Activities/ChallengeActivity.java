@@ -24,9 +24,9 @@ import com.google.android.gms.location.LocationServices;
 
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Firebase.FirebaseProxy;
-import ch.epfl.sweng.project.Fragments.NewRun.ChallengeReceiverFragment;
-import ch.epfl.sweng.project.Fragments.NewRun.ChallengeSenderFragment;
-import ch.epfl.sweng.project.Fragments.NewRun.LocationSettingsHandler;
+import ch.epfl.sweng.project.Fragments.RunFragments.ChallengeReceiverFragment;
+import ch.epfl.sweng.project.Fragments.RunFragments.ChallengeSenderFragment;
+import ch.epfl.sweng.project.Fragments.RunFragments.LocationSettingsHandler;
 import ch.epfl.sweng.project.Model.ChallengeProxy;
 import ch.epfl.sweng.project.Model.CheckPoint;
 

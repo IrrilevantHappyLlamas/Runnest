@@ -1,4 +1,4 @@
-package ch.epfl.sweng.project.Fragments.NewRun;
+package ch.epfl.sweng.project.Fragments.RunFragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
