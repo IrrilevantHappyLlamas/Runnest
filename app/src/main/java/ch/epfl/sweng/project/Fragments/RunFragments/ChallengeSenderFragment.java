@@ -57,12 +57,16 @@ public class ChallengeSenderFragment extends RunFragment {
             case TIME:
                 break;
             case DISTANCE:
-                distanceToShow = ((ChallengeActivity)getActivity()).getChallengeGoal() - distanceToShow;
-                if(distanceToShow <= 0.0) {
+                double remainingDistance =  (((ChallengeActivity)getActivity()).getChallengeGoal() -
+                        mRun.getTrack().getDistance())/1000;
+
+                if(remainingDistance <= 0.0) {
                     mRun.stop();
                     distanceToShow = 0.0;
                     stopLocationUpdates();
                     ((ChallengeActivity)getActivity()).imFinished();
+                } else {
+                    distanceToShow = (int)(remainingDistance/100)/10;
                 }
                 break;
         }

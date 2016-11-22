@@ -43,7 +43,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
     // Challenge type
     private ChallengeType challengeType = ChallengeType.TIME;
-    private double challengeGoal = 10000;
+    private double challengeGoal = 10000;   // time in milliseconds or distance in Km
 
     // ChallengeProxy
     private ChallengeProxy challengeProxy;
@@ -160,8 +160,10 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                     case DISTANCE:
                         //TODO
                         long opponentDuration = SystemClock.elapsedRealtime() - chronometer.getBase();
-                        //TODO show min and sec
-                        opponentTxt.setText("Opponent completed " + challengeGoal + " Km in " + opponentDuration);
+                        opponentTxt.setText("Opponent completed " +
+                                challengeGoal +
+                                " Km in " +
+                                transformDuration(opponentDuration));
                         ((ChallengeReceiverFragment)receiverFragment).stopRun();
                         break;
                 }
@@ -188,11 +190,10 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                         ((ChallengeSenderFragment)senderFragment).getRun().getTrack().getDistance());
                 break;
             case DISTANCE:
-                //TODO show min and sec
-                opponentTxt.setText("You have completed " +
+                userTxt.setText("You have completed " +
                         challengeGoal +
                         " Km in " +
-                        ((ChallengeSenderFragment)senderFragment).getRun().getDuration());
+                        transformDuration(((ChallengeSenderFragment)senderFragment).getRun().getDuration()));
                 break;
         }
 
@@ -209,6 +210,13 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         // opponentName
         Run opponentRun = ((ChallengeReceiverFragment)receiverFragment).getRun();
         Run userRun = ((ChallengeSenderFragment)senderFragment).getRun();
+    }
+
+    private String transformDuration(long duration) {
+        long minutes = duration / 60;
+        long seconds = duration % 60;
+
+        return (minutes + "' " + seconds + "''");
     }
 
     public ChallengeProxy getChallengeProxy(){
