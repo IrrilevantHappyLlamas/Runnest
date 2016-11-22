@@ -40,8 +40,11 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private LocationSettingsHandler mLocationSettingsHandler;
     private ChallengeProxy challengeProxy;
 
+    private Boolean owner = false;
     private Boolean opponentReady = false;
     private Boolean userReady = false;
+    private Boolean opponentFinished = false;
+    private Boolean userFinished = false;
 
     private FragmentManager fragmentManager;
     private Fragment senderFragment;
@@ -52,6 +55,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private Chronometer chronometer;
 
     private String opponentName;
+    private TextView waitingTxt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +83,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         chronometer = (Chronometer) findViewById(R.id.challenge_chronometer);
         chronometer.setVisibility(View.INVISIBLE);
 
+        waitingTxt = (TextView) findViewById(R.id.waitingTxt);
         userWaitingTxt = (TextView) findViewById(R.id.userWaitingTxt);
         readyBtn = (Button) findViewById(R.id.readyBtn);
         readyBtn.setOnClickListener(new View.OnClickListener() {
@@ -122,13 +127,46 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
             @Override
             public void isReadyHandler() {
                 opponentReady = true;
+                waitingTxt.setText("Your opponent is READY!");
+
                 if(userReady) {
                     startChallenge();
                 }
             }
+
+            @Override
+            public void isFinished() {
+                opponentFinished = true;
+                fragmentManager.beginTransaction().remove(receiverFragment);
+                //TODO: differentiate type of challenges
+                waitingTxt.setText("Opponent has finished!");
+                waitingTxt.setVisibility(View.VISIBLE);
+
+                if(userFinished) {
+                    endChallenge();
+                }
+            }
         };
 
-        challengeProxy = new FirebaseProxy(userName, opponentName, proxyHandler);
+        challengeProxy = new FirebaseProxy(userName, opponentName, proxyHandler, owner);
+    }
+
+    public void imFinished() {
+        userFinished = true;
+        fragmentManager.beginTransaction().remove(senderFragment);
+        //TODO: differentiate type of challenges
+        userWaitingTxt.setText("You have finished!");
+        userWaitingTxt.setVisibility(View.VISIBLE);
+
+        challengeProxy.imFinished();
+
+        if(opponentFinished) {
+            endChallenge();
+        }
+    }
+
+    private void endChallenge() {
+        //TODO: update stats, save challenge into DB and launch next fragment/activity
     }
 
     public ChallengeProxy getChallengeProxy(){
@@ -149,6 +187,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
         readyBtn.setVisibility(View.GONE);
         userWaitingTxt.setVisibility(View.GONE);
+        waitingTxt.setVisibility(View.GONE);
 
         chronometer.setVisibility(View.VISIBLE);
         chronometer.setBase(SystemClock.elapsedRealtime());
@@ -224,4 +263,5 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         super.onStart();
         mGoogleApiClient.connect();
     }
+
 }

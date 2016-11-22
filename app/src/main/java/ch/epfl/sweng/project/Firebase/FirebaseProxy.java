@@ -35,7 +35,9 @@ public class FirebaseProxy implements ChallengeProxy, ValueEventListener {
      * @param remoteOpponent    the remote challenger
      * @param handler           an handler from the proxy's client, which will handle callbacks
      */
-    public FirebaseProxy(String localUser, String remoteOpponent, final Handler handler) {
+    public FirebaseProxy(String localUser, String remoteOpponent, final Handler handler, boolean owner) {
+
+        //TODO: use owner
 
         if (localUser == null || remoteOpponent == null || handler == null) {
             throw new NullPointerException("FirebaseProxy construction parameters can't be null");
@@ -98,6 +100,11 @@ public class FirebaseProxy implements ChallengeProxy, ValueEventListener {
     @Override
     public void imReady() {
         firebaseHelper.setUserReady(challengeName, localUser);
+    }
+
+    @Override
+    public void imFinished() {
+        //TODO
     }
 
     private void setOpponentDataListener() {

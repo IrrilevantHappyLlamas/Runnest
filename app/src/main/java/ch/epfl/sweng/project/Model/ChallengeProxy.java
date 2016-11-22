@@ -5,6 +5,7 @@ public interface ChallengeProxy {
     interface Handler{
         void OnNewDataHandler(CheckPoint checkPoint);
         void isReadyHandler();
+        void isFinished();
     }
 
     void putData(CheckPoint checkPoint);
@@ -12,4 +13,6 @@ public interface ChallengeProxy {
     void startChallenge();
 
     void imReady();
+
+    void imFinished();
 }

@@ -64,7 +64,7 @@ public class FirebaseProxyActivity extends AppCompatActivity {
                 String remoteOpponent = remoteUserTxt.getText().toString();
 
                 if (!localUser.isEmpty() && !remoteOpponent.isEmpty()) {
-                    firebaseProxy = new FirebaseProxy(localUser, remoteOpponent, createHandler());
+                    firebaseProxy = new FirebaseProxy(localUser, remoteOpponent, createHandler(), true);
                     setupChallengeBtn.setEnabled(false);
                     localUserIsReadyBtn.setEnabled(true);
                 }
@@ -148,6 +148,13 @@ public class FirebaseProxyActivity extends AppCompatActivity {
                     localUserIsReadyBtn.setEnabled(false);
                     putDataBtn.setEnabled(true);
                 }
+            }
+
+            @Override
+            public void isFinished() {
+
+                //TODO
+
             }
         };
     }
