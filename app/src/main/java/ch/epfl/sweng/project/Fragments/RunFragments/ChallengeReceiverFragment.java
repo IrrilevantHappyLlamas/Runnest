@@ -55,6 +55,8 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
         mDistance = (TextView) view.findViewById(R.id.receiver_distance);
         updateDisplayedDistance();
 
+        mRun.start();
+
         return view;
     }
 
@@ -76,6 +78,10 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
 
     public Run getRun() {
         return new Run(mRun);
+    }
+
+    public void stopRun() {
+        mRun.stop();
     }
 
     /**

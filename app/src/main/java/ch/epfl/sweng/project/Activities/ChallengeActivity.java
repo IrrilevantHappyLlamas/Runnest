@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -36,35 +37,40 @@ import static ch.epfl.sweng.project.Activities.SideBarActivity.PERMISSION_REQUES
 public class ChallengeActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-
+    // Location
     private GoogleApiClient mGoogleApiClient;
     private LocationSettingsHandler mLocationSettingsHandler;
+
+    // Challenge type
+    private ChallengeType challengeType = ChallengeType.TIME;
+    private double challengeGoal = 10000;
+
+    // ChallengeProxy
     private ChallengeProxy challengeProxy;
-
     private Boolean owner = false;
-    private ChallengeType challengeType;
-    private double challengeGoal;
-
     private Boolean opponentReady = false;
     private Boolean userReady = false;
     private Boolean opponentFinished = false;
     private Boolean userFinished = false;
+    private String opponentName;
 
+    // Fragments
     private FragmentManager fragmentManager;
     private Fragment senderFragment;
     private Fragment receiverFragment;
 
+    // GUI
     private Button readyBtn;
-    private TextView userWaitingTxt;
     private Chronometer chronometer;
-
-    private String opponentName;
-    private TextView waitingTxt;
+    private TextView opponentTxt;
+    private TextView userTxt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_challenge);
+
+        //TODO extract intents: challengeType, challengeGoal, owner
 
         opponentName = getIntent().getExtras().getString("opponent");
 
@@ -87,8 +93,8 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         chronometer = (Chronometer) findViewById(R.id.challenge_chronometer);
         chronometer.setVisibility(View.INVISIBLE);
 
-        waitingTxt = (TextView) findViewById(R.id.waitingTxt);
-        userWaitingTxt = (TextView) findViewById(R.id.userWaitingTxt);
+        opponentTxt = (TextView) findViewById(R.id.opponentTxt);
+        userTxt = (TextView) findViewById(R.id.userTxt);
         readyBtn = (Button) findViewById(R.id.readyBtn);
         readyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,7 +121,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
      */
     private void readyState(){
         readyBtn.setVisibility(View.GONE);
-        userWaitingTxt.setVisibility(View.VISIBLE);
+        userTxt.setVisibility(View.VISIBLE);
     }
 
     private void createProxy(){
@@ -131,7 +137,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
             @Override
             public void isReadyHandler() {
                 opponentReady = true;
-                waitingTxt.setText("Your opponent is READY!");
+                opponentTxt.setText(R.string.opponent_ready);
 
                 if(userReady) {
                     startChallenge();
@@ -141,10 +147,24 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
             @Override
             public void isFinished() {
                 opponentFinished = true;
-                fragmentManager.beginTransaction().remove(receiverFragment);
-                //TODO: differentiate type of challenges
-                waitingTxt.setText("Opponent has finished!");
-                waitingTxt.setVisibility(View.VISIBLE);
+                fragmentManager.beginTransaction().remove(receiverFragment).commit();
+                opponentTxt.setVisibility(View.VISIBLE);
+
+                switch (challengeType) {
+                    case TIME:
+                        opponentTxt.setText("Opponent has finished!" +
+                                "\n" +
+                                "Final distance: " +
+                                ((ChallengeReceiverFragment)receiverFragment).getRun().getTrack().getDistance());
+                        break;
+                    case DISTANCE:
+                        //TODO
+                        long opponentDuration = SystemClock.elapsedRealtime() - chronometer.getBase();
+                        //TODO show min and sec
+                        opponentTxt.setText("Opponent completed " + challengeGoal + " Km in " + opponentDuration);
+                        ((ChallengeReceiverFragment)receiverFragment).stopRun();
+                        break;
+                }
 
                 if(userFinished) {
                     endChallenge();
@@ -157,10 +177,24 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
     public void imFinished() {
         userFinished = true;
-        fragmentManager.beginTransaction().remove(senderFragment);
-        //TODO: differentiate type of challenges
-        userWaitingTxt.setText("You have finished!");
-        userWaitingTxt.setVisibility(View.VISIBLE);
+        fragmentManager.beginTransaction().remove(senderFragment).commit();
+        userTxt.setVisibility(View.VISIBLE);
+
+        switch (challengeType) {
+            case TIME:
+                userTxt.setText("You have Finished!" +
+                        "\n" +
+                        "Final distance: " +
+                        ((ChallengeSenderFragment)senderFragment).getRun().getTrack().getDistance());
+                break;
+            case DISTANCE:
+                //TODO show min and sec
+                opponentTxt.setText("You have completed " +
+                        challengeGoal +
+                        " Km in " +
+                        ((ChallengeSenderFragment)senderFragment).getRun().getDuration());
+                break;
+        }
 
         challengeProxy.imFinished();
 
@@ -172,6 +206,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private void endChallenge() {
         //TODO: update stats, save challenge into DB and launch next fragment/activity
 
+        // opponentName
         Run opponentRun = ((ChallengeReceiverFragment)receiverFragment).getRun();
         Run userRun = ((ChallengeSenderFragment)senderFragment).getRun();
     }
@@ -197,16 +232,17 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         challengeProxy.startChallenge();
 
         readyBtn.setVisibility(View.GONE);
-        userWaitingTxt.setVisibility(View.GONE);
-        waitingTxt.setVisibility(View.GONE);
-
-        setupChronometer();
+        userTxt.setVisibility(View.GONE);
+        opponentTxt.setVisibility(View.GONE);
 
         receiverFragment = new ChallengeReceiverFragment();
         fragmentManager.beginTransaction().add(R.id.receiver_container, receiverFragment).commit();
 
         senderFragment = new ChallengeSenderFragment();
         fragmentManager.beginTransaction().add(R.id.sender_container, senderFragment).commit();
+
+        setupChronometer();
+
     }
 
     public void setupChronometer() {
@@ -216,7 +252,18 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 chronometer.start();
                 break;
             case TIME:
-                //TODO: timer logic...required API 24+
+                //TODO verify that cast to long isn't a problem
+                new CountDownTimer((long)challengeGoal, 1000) {
+
+                    public void onTick(long millisUntilFinished) {
+                        chronometer.setText("Time left: " + millisUntilFinished/1000);
+                    }
+
+                    public void onFinish() {
+                        chronometer.setText("Time's up!");
+                        imFinished();
+                    }
+                }.start();
                 break;
         }
 

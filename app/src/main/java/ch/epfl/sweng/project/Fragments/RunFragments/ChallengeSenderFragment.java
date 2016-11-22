@@ -42,6 +42,9 @@ public class ChallengeSenderFragment extends RunFragment {
 
         mDistance = (TextView) view.findViewById(R.id.sender_distance);
 
+        mRun = new Run();
+        mRun.start();
+
         return view;
     }
 
@@ -56,6 +59,7 @@ public class ChallengeSenderFragment extends RunFragment {
             case DISTANCE:
                 distanceToShow = ((ChallengeActivity)getActivity()).getChallengeGoal() - distanceToShow;
                 if(distanceToShow <= 0.0) {
+                    mRun.stop();
                     distanceToShow = 0.0;
                     stopLocationUpdates();
                     ((ChallengeActivity)getActivity()).imFinished();

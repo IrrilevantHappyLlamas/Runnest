@@ -38,4 +38,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="waiting_opponent">Waiting for your opponent...</string>
+    <string name="user_ready">YOU ARE READY!</string>
+    <string name="opponent_ready">Your opponent is READY!</string>
 </resources>
