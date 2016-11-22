@@ -41,6 +41,9 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private ChallengeProxy challengeProxy;
 
     private Boolean owner = false;
+    private ChallengeType challengeType;
+    private double challengeGoal;
+
     private Boolean opponentReady = false;
     private Boolean userReady = false;
     private Boolean opponentFinished = false;
@@ -181,6 +184,10 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         return mLocationSettingsHandler;
     }
 
+    public ChallengeType getChallengeType() {
+        return challengeType;
+    }
+
     public void startChallenge(){
 
         challengeProxy.startChallenge();
@@ -189,15 +196,27 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         userWaitingTxt.setVisibility(View.GONE);
         waitingTxt.setVisibility(View.GONE);
 
-        chronometer.setVisibility(View.VISIBLE);
-        chronometer.setBase(SystemClock.elapsedRealtime());
-        chronometer.start();
+        setupChronometer();
 
         receiverFragment = new ChallengeReceiverFragment();
         fragmentManager.beginTransaction().add(R.id.receiver_container, receiverFragment).commit();
 
         senderFragment = new ChallengeSenderFragment();
         fragmentManager.beginTransaction().add(R.id.sender_container, senderFragment).commit();
+    }
+
+    public void setupChronometer() {
+        switch (challengeType) {
+            case DISTANCE:
+                chronometer.setBase(SystemClock.elapsedRealtime());
+                chronometer.start();
+                break;
+            case TIME:
+                //TODO: timer logic...required API 24+
+                break;
+        }
+
+        chronometer.setVisibility(View.VISIBLE);
     }
 
 
@@ -264,4 +283,9 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         mGoogleApiClient.connect();
     }
 
+    public double getChallengeGoal() {
+        return challengeGoal;
+    }
+
+    public enum ChallengeType{TIME, DISTANCE};
 }

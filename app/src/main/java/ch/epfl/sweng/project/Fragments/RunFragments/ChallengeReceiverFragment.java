@@ -12,6 +12,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
+import ch.epfl.sweng.project.Activities.ChallengeActivity;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Track;
 
@@ -57,10 +58,18 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
     }
 
     private void updateDisplayedDistance() {
-        String distanceInKm = (int)(mTrack.getDistance()/100.0)/10.0
-                + " "
-                + getString(R.string.km);
 
+        double distanceToShow = (int)(mTrack.getDistance()/100.0)/10.0;
+
+        switch (((ChallengeActivity)getActivity()).getChallengeType()) {
+            case TIME:
+                break;
+            case DISTANCE:
+                distanceToShow = ((ChallengeActivity)getActivity()).getChallengeGoal() - distanceToShow;
+                break;
+        }
+
+        String distanceInKm = distanceToShow + " " + getString(R.string.km);
         mDistance.setText(distanceInKm);
     }
 

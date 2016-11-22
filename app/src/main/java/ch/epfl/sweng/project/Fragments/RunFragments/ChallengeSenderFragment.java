@@ -57,6 +57,28 @@ public class ChallengeSenderFragment extends RunFragment {
         ((ChallengeActivity)getActivity()).getChallengeProxy().putData(new CheckPoint(location));
     }
 
+    //FIXME
+    @Override
+    private void updateDisplayedDistance() {
+
+        double distanceToShow = (int)(mRun.getTrack().getDistance()/100.0)/10.0;
+
+        switch (((ChallengeActivity)getActivity()).getChallengeType()) {
+            case TIME:
+                break;
+            case DISTANCE:
+                distanceToShow = ((ChallengeActivity)getActivity()).getChallengeGoal() - distanceToShow;
+                if(distanceToShow <= 0.0) {
+                    distanceToShow = 0.0;
+                    stopLocationUpdates();
+                    ((ChallengeActivity)getActivity()).imFinished();
+                }
+                break;
+        }
+
+        String distanceInKm = distanceToShow + " " + getString(R.string.km);
+        mDistance.setText(distanceInKm);
+    }
 
     /**
      * Called when the <code>GoogleMap</code> is ready. Initialize a MapHandler.
