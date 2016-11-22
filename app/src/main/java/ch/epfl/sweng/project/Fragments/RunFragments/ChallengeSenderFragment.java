@@ -13,6 +13,7 @@ import com.google.android.gms.maps.MapView;
 
 import ch.epfl.sweng.project.Activities.ChallengeActivity;
 import ch.epfl.sweng.project.Model.CheckPoint;
+import ch.epfl.sweng.project.Model.Run;
 
 /**
  * This Fragment represent the "sender side" of a challenge, i.e. it handles the
@@ -44,22 +45,8 @@ public class ChallengeSenderFragment extends RunFragment {
         return view;
     }
 
-    /**
-     * Handle a location update.
-     *
-     * @param location      the new <code>Location</code>
-     */
     @Override
-    public void onLocationChanged(Location location) {
-        super.onLocationChanged(location);
-
-        //TODO
-        ((ChallengeActivity)getActivity()).getChallengeProxy().putData(new CheckPoint(location));
-    }
-
-    //FIXME
-    @Override
-    private void updateDisplayedDistance() {
+    protected void updateDisplayedDistance() {
 
         double distanceToShow = (int)(mRun.getTrack().getDistance()/100.0)/10.0;
 
@@ -78,6 +65,23 @@ public class ChallengeSenderFragment extends RunFragment {
 
         String distanceInKm = distanceToShow + " " + getString(R.string.km);
         mDistance.setText(distanceInKm);
+    }
+
+    public Run getRun() {
+        return new Run(mRun);
+    }
+
+    /**
+     * Handle a location update.
+     *
+     * @param location      the new <code>Location</code>
+     */
+    @Override
+    public void onLocationChanged(Location location) {
+        super.onLocationChanged(location);
+
+        //TODO
+        ((ChallengeActivity)getActivity()).getChallengeProxy().putData(new CheckPoint(location));
     }
 
     /**

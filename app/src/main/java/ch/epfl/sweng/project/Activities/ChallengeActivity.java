@@ -29,6 +29,7 @@ import ch.epfl.sweng.project.Fragments.RunFragments.ChallengeSenderFragment;
 import ch.epfl.sweng.project.Fragments.RunFragments.LocationSettingsHandler;
 import ch.epfl.sweng.project.Model.ChallengeProxy;
 import ch.epfl.sweng.project.Model.CheckPoint;
+import ch.epfl.sweng.project.Model.Run;
 
 import static ch.epfl.sweng.project.Activities.SideBarActivity.PERMISSION_REQUEST_CODE_FINE_LOCATION;
 
@@ -170,6 +171,9 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
     private void endChallenge() {
         //TODO: update stats, save challenge into DB and launch next fragment/activity
+
+        Run opponentRun = ((ChallengeReceiverFragment)receiverFragment).getRun();
+        Run userRun = ((ChallengeSenderFragment)senderFragment).getRun();
     }
 
     public ChallengeProxy getChallengeProxy(){
@@ -287,5 +291,5 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         return challengeGoal;
     }
 
-    public enum ChallengeType{TIME, DISTANCE};
+    public enum ChallengeType{TIME, DISTANCE}
 }

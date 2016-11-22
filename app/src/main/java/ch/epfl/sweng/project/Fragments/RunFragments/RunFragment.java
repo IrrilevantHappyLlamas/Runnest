@@ -75,7 +75,7 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
         startLocationUpdates();
     }
 
-    private void updateDisplayedDistance() {
+    protected void updateDisplayedDistance() {
         String distanceInKm = (int)(mRun.getTrack().getDistance()/100.0)/10.0
                 + " "
                 + getString(R.string.km);

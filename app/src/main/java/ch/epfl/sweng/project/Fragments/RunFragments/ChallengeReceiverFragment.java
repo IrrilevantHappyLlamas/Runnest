@@ -14,6 +14,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 
 import ch.epfl.sweng.project.Activities.ChallengeActivity;
 import ch.epfl.sweng.project.Model.CheckPoint;
+import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.Track;
 
 /**
@@ -29,7 +30,7 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
     private TextView mDistance = null;
 
     // Data storage
-    private Track mTrack = null;
+    private Run mRun = null;
 
     // Map
     private MapView mMapView = null;
@@ -49,7 +50,7 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
         mMapView.onCreate(savedInstanceState);
         mMapView.getMapAsync(this); //this is important
 
-        mTrack = new Track();
+        mRun = new Run();
 
         mDistance = (TextView) view.findViewById(R.id.receiver_distance);
         updateDisplayedDistance();
@@ -59,7 +60,7 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
 
     private void updateDisplayedDistance() {
 
-        double distanceToShow = (int)(mTrack.getDistance()/100.0)/10.0;
+        double distanceToShow = (int)(mRun.getTrack().getDistance()/100.0)/10.0;
 
         switch (((ChallengeActivity)getActivity()).getChallengeType()) {
             case TIME:
@@ -73,6 +74,10 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
         mDistance.setText(distanceInKm);
     }
 
+    public Run getRun() {
+        return new Run(mRun);
+    }
+
     /**
      * Handle updates, through <code>CheckPoint</code> of the opponent performance.
      *
@@ -82,7 +87,7 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
 
         mMapHandler.updateMap(checkPoint);
 
-        mTrack.add(checkPoint);
+        mRun.getTrack().add(checkPoint);
         updateDisplayedDistance();
     }
 
