@@ -26,7 +26,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String RUNS_TABLE_NAME = "runs";
     private static final String CHECKPOINTS_TABLE_NAME = "checkpoints";
 
-    public static final String[] RUNS_COLS = {"id", "name", "duration", "checkpointsFromId", "checkpointsToId"};
+    public static final String[] RUNS_COLS = {"id", "isChallenge", "name", "duration", "checkpointsFromId", "checkpointsToId"};
     public static final String[] CHECKPOINTS_COLS = {"id", "latitude", "longitude"};
 
     private Context mContext = null;
@@ -49,10 +49,11 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String createEffortsTableQuery = "CREATE TABLE " + RUNS_TABLE_NAME + " ("
                 + RUNS_COLS[0] + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + RUNS_COLS[1] + " TEXT, "
+                + RUNS_COLS[1] + " INTEGER, "
                 + RUNS_COLS[2] + " TEXT, "
-                + RUNS_COLS[3] + " INTEGER, "
-                + RUNS_COLS[4] + " INTEGER)";
+                + RUNS_COLS[3] + " TEXT, "
+                + RUNS_COLS[4] + " INTEGER, "
+                + RUNS_COLS[5] + " INTEGER)";
         String createCheckpointsTableQuery = "CREATE TABLE " + CHECKPOINTS_TABLE_NAME + " ("
                 + CHECKPOINTS_COLS[0] + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + CHECKPOINTS_COLS[1] + " DOUBLE, "
@@ -76,12 +77,31 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public boolean insertChallenge(Run run, Run friendRun) {
+        String friendName = friendRun.getName();
+
+        long firstRunId = insert(run, true);
+        long secondRunId = insert(friendRun, true);
+
+        return false;
+    }
+
     /**
      * Inserts an Run in the database.
      * @param run
      * @return true if the insertion was successful, false otherwise
      */
     public boolean insert(Run run) {
+        return insert(run, false) != -1;
+    }
+
+    /**
+     * Inserts an Run in the database marking it as a challenge if needed.
+     * @param run
+     * @param isChallenge denotes if it's a challenge
+     * @return true if the insertion was successful, false otherwise
+     */
+    private long insert(Run run, boolean isChallenge) {
         //insert all checkpoints
         Track track = run.getTrack();
         List<CheckPoint> checkpoints = track.getCheckpoints();
@@ -90,7 +110,7 @@ public class DBHelper extends SQLiteOpenHelper {
         for (CheckPoint checkpoint : checkpoints) {
             checkpointsToId = insert(checkpoint);
             if (checkpointsToId == -1) {
-                return false;
+                return -1;
             }
             if (checkpointsFromId == -1) {
                 checkpointsFromId = checkpointsToId;
@@ -100,13 +120,15 @@ public class DBHelper extends SQLiteOpenHelper {
         //insert Run
         String name = run.getName();
         ContentValues runContentValues = new ContentValues();
-        runContentValues.put(RUNS_COLS[1], name);
-        runContentValues.put(RUNS_COLS[2], run.getDuration());
-        runContentValues.put(RUNS_COLS[3], checkpointsFromId);
-        runContentValues.put(RUNS_COLS[4], checkpointsToId);
+        int challenge = isChallenge ? 1 : 0;
+        runContentValues.put(RUNS_COLS[1], challenge);
+        runContentValues.put(RUNS_COLS[2], name);
+        runContentValues.put(RUNS_COLS[3], run.getDuration());
+        runContentValues.put(RUNS_COLS[4], checkpointsFromId);
+        runContentValues.put(RUNS_COLS[5], checkpointsToId);
         long insertedRun = db.insert(RUNS_TABLE_NAME, null, runContentValues);
         run.setId(insertedRun);
-        return insertedRun != -1;
+        return insertedRun;
     }
 
     /**
@@ -153,10 +175,11 @@ public class DBHelper extends SQLiteOpenHelper {
         if (result.getCount() > 0) {
             while (result.moveToNext()) {
                 long id = result.getLong(0);
-                String name = result.getString(1);
-                long duration = Long.parseLong(result.getString(2));
-                long fromId = result.getLong(3);
-                long toId = result.getLong(4);
+                long isChallenge = result.getInt(1);
+                String name = result.getString(2);
+                long duration = Long.parseLong(result.getString(3));
+                long fromId = result.getLong(4);
+                long toId = result.getLong(5);
                 Track track = fetchTrack(fromId, toId);
                 Run run = new Run(name, id);
                 run.setTrack(track);
