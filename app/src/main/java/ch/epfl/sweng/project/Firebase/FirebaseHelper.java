@@ -90,7 +90,8 @@ public class FirebaseHelper {
     }
 
     private final String CHALLENGES_CHILD = "challenges";
-    private final String USER_STATUS = "status";
+    private final String USER_READY = "status";
+    private final String USER_FINISH = "finished";
     private final String USER_CHECKPOINTS = "checkpoints";
 
     /**
@@ -377,8 +378,10 @@ public class FirebaseHelper {
             throw new IllegalArgumentException("Challenge node parameters can't be null");
         }
 
-        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(USER_STATUS).setValue(false);
-        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(USER_STATUS).setValue(false);
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(USER_READY).setValue(false);
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(USER_FINISH).setValue(false);
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(USER_READY).setValue(false);
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(USER_FINISH).setValue(false);
     }
 
     /**
@@ -425,7 +428,7 @@ public class FirebaseHelper {
             throw new IllegalArgumentException("Challenge node or user parameters can't be empty");
         }
 
-        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user).child(USER_STATUS).setValue(true);
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user).child(USER_READY).setValue(true);
     }
 
     /**
@@ -444,7 +447,7 @@ public class FirebaseHelper {
         }
 
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user)
-                .child(USER_STATUS).addValueEventListener(listener);
+                .child(USER_READY).addValueEventListener(listener);
     }
 
     /**
@@ -475,7 +478,7 @@ public class FirebaseHelper {
         }
 
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user)
-                .child(USER_STATUS).removeEventListener(listener);
+                .child(USER_READY).removeEventListener(listener);
     }
 
 

@@ -59,8 +59,6 @@
         </activity>
 
         <!-- TODO Remove -->
-        <activity android:name="ch.epfl.sweng.project.Activities.FirebaseProxyActivity">
-        </activity>
     </application>
 
 </manifest>

@@ -45,33 +45,15 @@ public final class LoginActivity extends AppCompatActivity
     private FirebaseAuth mFirebaseAuth = null;
     private FirebaseAuth.AuthStateListener mAuthListener = null;
 
-    //TODO: remove after demo
-    private Button launchProxy = null;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // TODO: remove after demo
-        launchProxy = (Button) findViewById(R.id.to_proxy);
-        launchProxy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                launchProxy();
-            }
-        });
-
         setUpGoogleAuth();
         setUpFirebaseAuth();
         setUpLoginUI();
         ((AppRunnest) getApplication()).setNetworkHandler();
-    }
-
-    // TODO: remove after demo
-    private void launchProxy() {
-        Intent proxyIntent = new Intent(this, FirebaseProxyActivity.class);
-        startActivity(proxyIntent);
     }
 
     private void setUpLoginUI() {
