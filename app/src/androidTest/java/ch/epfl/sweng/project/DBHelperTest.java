@@ -44,13 +44,13 @@ public class DBHelperTest {
 
     @Test
     public void canRetrieveData() {
-        List<Run> runs = dbHelper.fetchAllEfforts();
+        List<Run> runs = dbHelper.fetchAllRuns();
         Assert.assertTrue(!runs.isEmpty());
     }
 
     @Test
     public void lastAddedIsLastRetrieved() {
-        List<Run> runs = dbHelper.fetchAllEfforts();
+        List<Run> runs = dbHelper.fetchAllRuns();
         Run lastRun = runs.get(runs.size() - 1);
         String name = lastRun.getName();
         Assert.assertEquals("test", name);
@@ -62,19 +62,19 @@ public class DBHelperTest {
 
     @Test
     public void canDelete() {
-        List<Run> runs = dbHelper.fetchAllEfforts();
+        List<Run> runs = dbHelper.fetchAllRuns();
         int initialNbRuns = runs.size();
 
         boolean isInserted = dbHelper.insert(createTestRun());
         Assert.assertTrue(isInserted);
 
-        runs = dbHelper.fetchAllEfforts();
+        runs = dbHelper.fetchAllRuns();
         Assert.assertEquals(initialNbRuns + 1, runs.size());
 
         Run myRun = runs.get(0);
         dbHelper.delete(myRun);
 
-        runs = dbHelper.fetchAllEfforts();
+        runs = dbHelper.fetchAllRuns();
         Assert.assertEquals(initialNbRuns, runs.size());
     }
 }

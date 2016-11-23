@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import ch.epfl.sweng.project.Model.Challenge;
 import ch.epfl.sweng.project.Model.CheckPoint;
@@ -218,16 +220,62 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Retrieves all efforts present in the database.
-     * @return the list of efforts present in the database
+     * Retrieves all runs present in the database.
+     * @return the list of runs present in the database
      */
-    public List<Run> fetchAllEfforts() {
+    public List<Run> fetchAllRuns() {
         Cursor result = db.query(RUNS_TABLE_NAME, RUNS_COLS, null, null, null, null, null);
         List<Run> runs = new ArrayList<>();
         if (result.getCount() > 0) {
             while (result.moveToNext()) {
                 long id = result.getLong(0);
-                long isChallenge = result.getInt(1);
+                boolean isChallenge = result.getInt(1) == 1;
+
+                if (!isChallenge) {
+                    Run run = fetchRun(id);
+                    runs.add(run);
+                }
+            }
+        }
+        result.close();
+        return runs;
+    }
+
+    /**
+     * Retrieves all challenges present in the database.
+     * @return the list of challenges present in the database
+     */
+    public List<Challenge> fetchAllChallenges() {
+        Cursor result = db.query(CHALLENGES_TABLE_NAME, CHALLENGES_COLS, null, null, null, null, null);
+        List<Challenge> challenges = new ArrayList<>();
+        if (result.getCount() > 0) {
+            while (result.moveToNext()) {
+                //long id = result.getLong(0);
+                String opponentName = result.getString(1);
+                Run myRun = fetchRun(result.getLong(2));
+                Run opponentRun = fetchRun(result.getLong(3));
+                Challenge challenge = new Challenge(opponentName, myRun, opponentRun);
+                challenges.add(challenge);
+            }
+        }
+        result.close();
+        return challenges;
+    }
+
+    /**
+     * Fetches a specific run from the database given its id
+     * @param id
+     * @return the run
+     */
+    private Run fetchRun(long id) {
+        if (id < 0) {
+            throw new IllegalArgumentException();
+        }
+
+        String selectRun = RUNS_COLS[0] + " = " + id;
+        Cursor result = db.query(RUNS_TABLE_NAME, RUNS_COLS, selectRun, null, null, null, null);
+        if (result.getCount() == 1) {
+            while (result.moveToNext()) {
                 String name = result.getString(2);
                 long duration = Long.parseLong(result.getString(3));
                 long fromId = result.getLong(4);
@@ -237,11 +285,13 @@ public class DBHelper extends SQLiteOpenHelper {
                 run.setTrack(track);
                 run.setDuration(duration);
 
-                runs.add(run);
+                return run;
             }
+        } else {
+            throw new NoSuchElementException();
         }
-        result.close();
-        return runs;
+
+        return null;
     }
 
     /**

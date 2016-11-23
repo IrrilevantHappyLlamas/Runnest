@@ -40,7 +40,7 @@ public class RunHistoryFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.simple_listview, container, false);
         DBHelper dbHelper = new DBHelper(this.getContext());
-        runs = dbHelper.fetchAllEfforts();
+        runs = dbHelper.fetchAllRuns();
 
         String[] runNames;
 
