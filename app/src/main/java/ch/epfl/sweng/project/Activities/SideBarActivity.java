@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -42,6 +43,7 @@ import java.util.Stack;
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
+import ch.epfl.sweng.project.Fragments.ChallengeDialogFragment;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 import ch.epfl.sweng.project.Fragments.DBUploadFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
@@ -63,7 +65,8 @@ public class SideBarActivity extends AppCompatActivity
         RunHistoryFragment.onRunHistoryInteractionListener,
         DisplayUserFragment.OnDisplayUserFragmentInteractionListener,
         MessagesFragment.MessagesFragmentInteractionListener,
-        DisplayRunFragment.DisplayRunFragmentInteractionListener
+        DisplayRunFragment.DisplayRunFragmentInteractionListener,
+        ChallengeDialogFragment.ChallengeDialogListener
 {
 
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
@@ -99,6 +102,9 @@ public class SideBarActivity extends AppCompatActivity
             handler.postDelayed(runnableCode, 10000);
         }
     };
+
+    private String challengedUserName = "no Name";
+    private String challengedUserEmail = "no eMail";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -494,9 +500,9 @@ public class SideBarActivity extends AppCompatActivity
 
     @Override
     public void onDisplayUserFragmentInteraction(String challengedUserName, String challengedUserEmail) {
-        Intent intent = new Intent(this, ChallengeActivity.class);
-        intent.putExtra("opponent", challengedUserName);
-        startActivity(intent);
+        this.challengedUserName = challengedUserName;
+        this.challengedUserEmail = challengedUserEmail;
+        showChallengeDialog();
     }
 
     @Override
@@ -510,5 +516,40 @@ public class SideBarActivity extends AppCompatActivity
     public void onDisplayRunFragmentInteraction() {
         // keep using the stack
         onNavigationItemSelected(navigationView.getMenu().getItem(2));
+    }
+
+
+    public void showChallengeDialog() {
+        // Create an instance of the dialog fragment and show it
+        DialogFragment dialog = new ChallengeDialogFragment();
+        dialog.show(getSupportFragmentManager(), "ChallengeDialogFragment");
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        // Send message
+        String from = ((AppRunnest) getApplication()).getUser().getEmail();
+        String to = FirebaseHelper.getFireBaseMail(challengedUserEmail);
+        String sender = ((AppRunnest) getApplication()).getUser().getName();
+        String message = "Run with me!";
+        Message challengeRequestMessage = new Message(from, to, sender, challengedUserName, Message.MessageType.CHALLENGE_REQUEST, message);
+        //Message challengeRequestMessage = new Message(from, to, sender, challengedUserName, Message.MessageType.CHALLENGE_REQUEST, message);
+
+        FirebaseHelper firebaseHelper = new FirebaseHelper();
+        firebaseHelper.send(challengeRequestMessage);
+
+
+        Intent intent = new Intent(this, ChallengeActivity.class);
+        intent.putExtra("type", ((ChallengeDialogFragment)dialog).getType());
+        intent.putExtra("firstValue", ((ChallengeDialogFragment)dialog).getFirstValue());
+        intent.putExtra("secondValue", ((ChallengeDialogFragment)dialog).getSecondValue());
+        intent.putExtra("owner", true);
+        intent.putExtra("opponent", challengedUserName);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+
     }
 }

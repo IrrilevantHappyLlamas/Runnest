@@ -1,6 +1,7 @@
 package ch.epfl.sweng.project.Activities;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -70,9 +71,23 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_challenge);
 
-        //TODO extract intents: challengeType, challengeGoal, owner
+        Intent intent = getIntent();
 
-        opponentName = getIntent().getExtras().getString("opponent");
+        Bundle extra = intent.getExtras();
+
+        opponentName = extra.getString("opponent");
+        owner = extra.getBoolean("owner");
+        challengeType = (ChallengeType) intent.getSerializableExtra("type");
+
+        int firstValue = intent.getIntExtra("firstValue", 0);
+        int secondValue = intent.getIntExtra("secondValue", 0);
+        switch (challengeType) {
+            case DISTANCE: challengeGoal = firstValue + secondValue/1000.0;
+                break;
+            case TIME: challengeGoal = firstValue*3600*1000 + secondValue*60*1000;
+                break;
+        }
+
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)

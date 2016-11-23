@@ -14,12 +14,14 @@ public class Message implements Serializable {
     private MessageType type;
     private String message;
     private Date time;
+    private int firstValue;
+    private int secondValue;
 
     /**
      * This enumeration represents all types of messages that can be sent to the server
      */
     public enum MessageType {
-        TEXT, CHALLENGE_REQUEST, CHALLENGE_RESPONSE, MY_IP_IS
+        TEXT, CHALLENGE_REQUEST, CHALLENGE_DISTANCE, CHALLENGE_TIME, CHALLENGE_RESPONSE, MY_IP_IS
     }
 
     /**
