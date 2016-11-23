@@ -98,9 +98,18 @@ public class DBHelper extends SQLiteOpenHelper {
         long myRunId = insert(challenge.getMyRun(), true);
         long opponentRunId = insert(challenge.getOpponentRun(), true);
 
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(CHALLENGES_COLS[1], opponentName);
+        contentValues.put(CHECKPOINTS_COLS[2], myRunId);
+        contentValues.put(CHECKPOINTS_COLS[3], opponentRunId);
 
-
-        return false;
+        long challengeId = db.insert(CHALLENGES_TABLE_NAME, null, contentValues);
+        if (challengeId != -1) {
+            challenge.setId(challengeId);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

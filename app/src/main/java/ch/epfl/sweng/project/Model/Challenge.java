@@ -9,6 +9,7 @@ public class Challenge {
     private String mOpponentName;
     private Run mMyRun;
     private Run mOpponentRun;
+    private long mId;
 
     public Challenge(String opponentName, Run myRun, Run opponentRun) {
         if (opponentName == null || opponentName.equals("") || myRun == null || opponentRun == null) {
@@ -18,6 +19,7 @@ public class Challenge {
         mOpponentName = opponentName;
         mMyRun = new Run(myRun);
         mOpponentRun = new Run(opponentRun);
+        mId = -1;
     }
 
     public String getOpponentName() {
@@ -30,5 +32,13 @@ public class Challenge {
 
     public Run getOpponentRun() {
         return new Run(mOpponentRun);
+    }
+
+    public long getId() {
+        return mId;
+    }
+
+    public void setId(long id) {
+        mId = id;
     }
 }

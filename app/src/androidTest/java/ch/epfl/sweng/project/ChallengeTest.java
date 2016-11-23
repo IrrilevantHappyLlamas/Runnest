@@ -55,4 +55,16 @@ public class ChallengeTest {
         Assert.assertEquals(myRun.getDuration(), challenge.getMyRun().getDuration());
         Assert.assertEquals(opponentRun.getDuration(), challenge.getOpponentRun().getDuration());
     }
+
+    @Test
+    public void setId() {
+        String opponentName = "someone";
+        Run myRun = createTestRun();
+        Run opponentRun = createTestRun();
+        Challenge challenge = new Challenge(opponentName, myRun, opponentRun);
+
+        long id = 1234;
+        challenge.setId(id);
+        Assert.assertEquals(id, challenge.getId());
+    }
 }
