@@ -42,8 +42,8 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private LocationSettingsHandler mLocationSettingsHandler;
 
     // Challenge type
-    private ChallengeType challengeType = ChallengeType.TIME;
-    private double challengeGoal = 10000;   // time in milliseconds or distance in Km
+    private ChallengeType challengeType = ChallengeType.DISTANCE;
+    private double challengeGoal = 10;   // time in milliseconds or distance in Km
 
     // ChallengeProxy
     private ChallengeProxy challengeProxy;
