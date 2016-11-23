@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
@@ -44,8 +45,8 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
  * implement this interface in order to receive event callbacks.
  * Each method passes the DialogFragment in case the host needs to query it. */
     public interface ChallengeDialogListener {
-        public void onDialogPositiveClick(DialogFragment dialog);
-        public void onDialogNegativeClick(DialogFragment dialog);
+        void onDialogPositiveClick(DialogFragment dialog);
+        void onDialogNegativeClick(DialogFragment dialog);
     }
 
     ChallengeDialogListener mListener;
@@ -61,6 +62,7 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.fragment_customize_challenge, null);
 
+        builder.setCancelable(false);
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         builder.setView(view)
@@ -70,7 +72,11 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
                     public void onClick(DialogInterface dialog, int id) {
                         // launch challenge
                         // Send the positive button event back to the host activity
-                        mListener.onDialogPositiveClick(ChallengeDialogFragment.this);
+                        if(firstValue + secondValue == 0) {
+                            Toast.makeText(getContext(), "The goal of the challenge cannot be 0!", Toast.LENGTH_LONG).show();
+                        } else {
+                            mListener.onDialogPositiveClick(ChallengeDialogFragment.this);
+                        }
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -168,7 +174,7 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
         super.onAttach(activity);
         // Verify that the host activity implements the callback interface
         try {
-            // Instantiate the NoticeDialogListener so we can send events to the host
+            // Instantiate the ChallengeDialogListener so we can send events to the host
             mListener = (ChallengeDialogListener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception

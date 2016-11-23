@@ -3,6 +3,9 @@ package ch.epfl.sweng.project.Model;
 import java.io.Serializable;
 import java.util.Date;
 
+import ch.epfl.sweng.project.Activities.ChallengeActivity;
+import ch.epfl.sweng.project.Fragments.ChallengeDialogFragment;
+
 /**
  * This class represents a message that can be sent to de server and retrieved from the server
  */
@@ -16,6 +19,7 @@ public class Message implements Serializable {
     private Date time;
     private int firstValue;
     private int secondValue;
+    private ChallengeActivity.ChallengeType challengeType;
 
     /**
      * This enumeration represents all types of messages that can be sent to the server
@@ -84,6 +88,41 @@ public class Message implements Serializable {
     }
 
     /**
+     * The constructor of the Message for challenge requests
+     *
+     * @param from
+     * @param to
+     * @param sender
+     * @param addressee
+     * @param type
+     * @param message
+     * @param challengeType
+     * @throws IllegalArgumentException
+     */
+    public Message(String from,
+                   String to,
+                   String sender,
+                   String addressee,
+                   MessageType type,
+                   String message,
+                   Date sentAt,
+                   int firstValue,
+                   int secondValue,
+                   ChallengeActivity.ChallengeType challengeType)
+            throws IllegalArgumentException
+    {
+        this(from, to, sender, addressee, type, message);
+        if (sentAt == null) {
+            throw new IllegalArgumentException("Invalid argument: parameters can't be null nor empty");
+        }
+
+        this.time = sentAt;
+        this.firstValue = firstValue;
+        this.secondValue = secondValue;
+        this.challengeType = challengeType;
+    }
+
+    /**
      * Getter for the from attribute
      *
      * @return the from attribute of the message
@@ -144,6 +183,33 @@ public class Message implements Serializable {
      */
     public Date getTime() {
         return time;
+    }
+
+    /**
+     * Getter for the first value
+     *
+     * @return the first value of the goal
+     */
+    public int getFirstValue() {
+        return firstValue;
+    }
+
+    /**
+     * Getter for the second value
+     *
+     * @return the second value of the goal
+     */
+    public int getSecondValue() {
+        return secondValue;
+    }
+
+    /**
+     * Getter for the challenge type
+     *
+     * @return the type of the challenge
+     */
+    public ChallengeActivity.ChallengeType getChallengeType() {
+        return challengeType;
     }
 
     /**

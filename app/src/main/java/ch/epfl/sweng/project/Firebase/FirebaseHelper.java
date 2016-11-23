@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ch.epfl.sweng.project.Activities.ChallengeActivity;
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Message;
@@ -39,6 +40,9 @@ public class FirebaseHelper {
     private final String MESSAGES_CHILD = "messages";
     private final String FROM_CHILD = "from";
     private final String SENDER_CHILD = "sender";
+    private final String CHALLENGE_TYPE_CHILD = "challenge_type";
+    private final String FIRST_VALUE_CHILD = "first_value";
+    private final String SECOND_VALUE_CHILD = "second_value";
     private final String ADDRESSEE_CHILD = "addressee";
     private final String TYPE_CHILD = "type";
     private final String MESSAGE_CHILD = "message";
@@ -137,8 +141,12 @@ public class FirebaseHelper {
         messageChild.child(ADDRESSEE_CHILD).setValue(message.getAddressee());
         messageChild.child(TYPE_CHILD).setValue(message.getType());
         messageChild.child(MESSAGE_CHILD).setValue(message.getMessage());
+        messageChild.child(CHALLENGE_TYPE_CHILD).setValue(message.getChallengeType());
+        messageChild.child(FIRST_VALUE_CHILD).setValue(message.getFirstValue());
+        messageChild.child(SECOND_VALUE_CHILD).setValue(message.getSecondValue());
         messageChild.child(TIME_CHILD).setValue(time);
     }
+
 
     /**
      * Fetches all messages in the server for a specific user and let the handler function take care of them
@@ -159,7 +167,10 @@ public class FirebaseHelper {
                         Message.MessageType type = children.child(TYPE_CHILD).getValue(Message.MessageType.class);
                         String messageText = children.child(MESSAGE_CHILD).getValue(String.class);
                         Date time = children.child(TIME_CHILD).getValue(Date.class);
-                        Message message = new Message(from, forUser, sender, addressee, type, messageText, time);
+                        int firstValue = children.child(FIRST_VALUE_CHILD).getValue(Integer.class);
+                        int secondValue = children.child(SECOND_VALUE_CHILD).getValue(Integer.class);
+                        ChallengeActivity.ChallengeType challengeType = children.child(CHALLENGE_TYPE_CHILD).getValue(ChallengeActivity.ChallengeType.class);
+                        Message message = new Message(from, forUser, sender, addressee, type, messageText, time, firstValue, secondValue, challengeType);
 
                         messages.add(message);
                     }
