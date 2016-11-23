@@ -26,7 +26,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static final String RUNS_TABLE_NAME = "runs";
     private static final String CHECKPOINTS_TABLE_NAME = "checkpoints";
-    private static final String CHALLENGES_TABLE_NAME = "checkpoints";
+    private static final String CHALLENGES_TABLE_NAME = "challenges";
 
     public static final String[] RUNS_COLS = {"id", "isChallenge", "name", "duration", "checkpointsFromId", "checkpointsToId"};
     public static final String[] CHECKPOINTS_COLS = {"id", "latitude", "longitude"};
@@ -93,15 +93,29 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertChallenge(Challenge challenge) {
+    /**
+     * Inserts an Run in the database.
+     * @param run
+     * @return true if the insertion was successful, false otherwise
+     */
+    public boolean insert(Run run) {
+        return insert(run, false) != -1;
+    }
+
+    /**
+     * Inserts an Challenge in the database.
+     * @param challenge
+     * @return true if the insertion was successful, false otherwise
+     */
+    public boolean insert(Challenge challenge) {
         String opponentName = challenge.getOpponentName();
         long myRunId = insert(challenge.getMyRun(), true);
         long opponentRunId = insert(challenge.getOpponentRun(), true);
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(CHALLENGES_COLS[1], opponentName);
-        contentValues.put(CHECKPOINTS_COLS[2], myRunId);
-        contentValues.put(CHECKPOINTS_COLS[3], opponentRunId);
+        contentValues.put(CHALLENGES_COLS[2], myRunId);
+        contentValues.put(CHALLENGES_COLS[3], opponentRunId);
 
         long challengeId = db.insert(CHALLENGES_TABLE_NAME, null, contentValues);
         if (challengeId != -1) {
@@ -113,19 +127,10 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Inserts an Run in the database.
-     * @param run
-     * @return true if the insertion was successful, false otherwise
-     */
-    public boolean insert(Run run) {
-        return insert(run, false) != -1;
-    }
-
-    /**
      * Inserts an Run in the database marking it as a challenge if needed.
      * @param run
      * @param isChallenge denotes if it's a challenge
-     * @return true if the insertion was successful, false otherwise
+     * @return the id of the inserted run
      */
     private long insert(Run run, boolean isChallenge) {
         //insert all checkpoints
@@ -171,24 +176,45 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Deletes a give run
+     * Deletes a given run
      * @param run to delete
-     * @return true if the deletion was succesfull
+     * @return true if the deletion was successful
      */
     public boolean delete(Run run) {
         long id = run.getId();
-
-        String selection = RUNS_COLS[0] + " = " + id;
-        Cursor result = db.query(RUNS_TABLE_NAME, RUNS_COLS, selection, null, null, null, null);
-        if (result.getCount() == 1) {
-            result.moveToNext();
-            long checkpointsFromId = result.getLong(3);
-            long checkpointsToId = result.getLong(4);
-            String deleteCheckpointsQuery = CHECKPOINTS_COLS[0] + " >= " + checkpointsFromId + " AND "
-                    + CHECKPOINTS_COLS[0] + " <= " + checkpointsToId;
-            db.delete(CHECKPOINTS_TABLE_NAME, deleteCheckpointsQuery, null);
+        if  (id >= 0) {
+            String selectRun = RUNS_COLS[0] + " = " + id;
+            Cursor result = db.query(RUNS_TABLE_NAME, RUNS_COLS, selectRun, null, null, null, null);
+            if (result.getCount() == 1) {
+                result.moveToNext();
+                long checkpointsFromId = result.getLong(3);
+                long checkpointsToId = result.getLong(4);
+                String deleteCheckpointsQuery = CHECKPOINTS_COLS[0] + " >= " + checkpointsFromId + " AND "
+                        + CHECKPOINTS_COLS[0] + " <= " + checkpointsToId;
+                db.delete(CHECKPOINTS_TABLE_NAME, deleteCheckpointsQuery, null);
+            }
+            return db.delete(RUNS_TABLE_NAME, selectRun, null) > 0;
+        } else {
+            return false;
         }
-        return db.delete(RUNS_TABLE_NAME, RUNS_COLS[0] + " = " + id, null) > 0;
+    }
+
+    /**
+     * Deletes a given challenge
+     * @param challenge to delete
+     * @return true if the deletion was successful
+     */
+    public boolean delete(Challenge challenge) {
+        long id = challenge.getId();
+        if  (id >= 0) {
+            delete(challenge.getMyRun());
+            delete(challenge.getOpponentRun());
+
+            String selectChallenge = CHALLENGES_COLS[0] + " = " + id;
+            return db.delete(CHALLENGES_TABLE_NAME, selectChallenge, null) > 0;
+        } else {
+            return false;
+        }
     }
 
     /**
