@@ -30,9 +30,9 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String CHECKPOINTS_TABLE_NAME = "checkpoints";
     private static final String CHALLENGES_TABLE_NAME = "challenges";
 
-    public static final String[] RUNS_COLS = {"id", "isChallenge", "name", "duration", "checkpointsFromId", "checkpointsToId"};
-    public static final String[] CHECKPOINTS_COLS = {"id", "latitude", "longitude"};
-    public static final String[] CHALLENGES_COLS = {"id", "opponentName", "myRunId", "opponentRunId"};
+    private static final String[] RUNS_COLS = {"id", "isChallenge", "name", "duration", "checkpointsFromId", "checkpointsToId"};
+    private static final String[] CHECKPOINTS_COLS = {"id", "latitude", "longitude"};
+    private static final String[] CHALLENGES_COLS = {"id", "opponentName", "myRunId", "opponentRunId"};
 
     private Context mContext = null;
 
@@ -250,11 +250,12 @@ public class DBHelper extends SQLiteOpenHelper {
         List<Challenge> challenges = new ArrayList<>();
         if (result.getCount() > 0) {
             while (result.moveToNext()) {
-                //long id = result.getLong(0);
+                long id = result.getLong(0);
                 String opponentName = result.getString(1);
                 Run myRun = fetchRun(result.getLong(2));
                 Run opponentRun = fetchRun(result.getLong(3));
                 Challenge challenge = new Challenge(opponentName, myRun, opponentRun);
+                challenge.setId(id);
                 challenges.add(challenge);
             }
         }
