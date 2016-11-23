@@ -10,13 +10,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.epfl.sweng.project.Model.Challenge;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.Track;
 
 /**
  * This class provides methods to interact with a SQLite local database.
- * It allows to store and retrieve Efforts.
+ * It allows to store and retrieve Runs.
  */
 public class DBHelper extends SQLiteOpenHelper {
     private SQLiteDatabase db;
@@ -25,9 +26,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static final String RUNS_TABLE_NAME = "runs";
     private static final String CHECKPOINTS_TABLE_NAME = "checkpoints";
+    private static final String CHALLENGES_TABLE_NAME = "checkpoints";
 
     public static final String[] RUNS_COLS = {"id", "isChallenge", "name", "duration", "checkpointsFromId", "checkpointsToId"};
     public static final String[] CHECKPOINTS_COLS = {"id", "latitude", "longitude"};
+    public static final String[] CHALLENGES_COLS = {"id", "opponentName", "myRunId", "opponentRunId"};
 
     private Context mContext = null;
 
@@ -54,12 +57,20 @@ public class DBHelper extends SQLiteOpenHelper {
                 + RUNS_COLS[3] + " TEXT, "
                 + RUNS_COLS[4] + " INTEGER, "
                 + RUNS_COLS[5] + " INTEGER)";
+        db.execSQL(createEffortsTableQuery);
+
         String createCheckpointsTableQuery = "CREATE TABLE " + CHECKPOINTS_TABLE_NAME + " ("
                 + CHECKPOINTS_COLS[0] + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + CHECKPOINTS_COLS[1] + " DOUBLE, "
                 + CHECKPOINTS_COLS[2] + " DOUBLE )";
-        db.execSQL(createEffortsTableQuery);
         db.execSQL(createCheckpointsTableQuery);
+
+        String createChallengesTableQuery = "CREATE TABLE " + CHALLENGES_TABLE_NAME + " ("
+                + CHALLENGES_COLS[0] + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + CHALLENGES_COLS[1] + " TEXT, "
+                + CHALLENGES_COLS[2] + " INTEGER, "
+                + CHALLENGES_COLS[3] + " INTEGER)";
+        db.execSQL(createChallengesTableQuery);
     }
 
     /**
@@ -71,17 +82,23 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         String dropEffortsTableQuery = "DROP TABLE IF EXISTS " + RUNS_TABLE_NAME;
-        String dropCheckpointsTableQuery = "DROP TABLE IF EXISTS " + CHECKPOINTS_TABLE_NAME;
         db.execSQL(dropEffortsTableQuery);
+
+        String dropCheckpointsTableQuery = "DROP TABLE IF EXISTS " + CHECKPOINTS_TABLE_NAME;
         db.execSQL(dropCheckpointsTableQuery);
+
+        String dropChallengesTableQuery = "DROP TABLE IF EXISTS " + CHALLENGES_TABLE_NAME;
+        db.execSQL(dropChallengesTableQuery);
+
         onCreate(db);
     }
 
-    public boolean insertChallenge(Run run, Run friendRun) {
-        String friendName = friendRun.getName();
+    public boolean insertChallenge(Challenge challenge) {
+        String opponentName = challenge.getOpponentName();
+        long myRunId = insert(challenge.getMyRun(), true);
+        long opponentRunId = insert(challenge.getOpponentRun(), true);
 
-        long firstRunId = insert(run, true);
-        long secondRunId = insert(friendRun, true);
+
 
         return false;
     }
