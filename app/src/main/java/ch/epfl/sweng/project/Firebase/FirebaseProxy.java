@@ -18,6 +18,7 @@ public class FirebaseProxy implements ChallengeProxy, ValueEventListener {
     private FirebaseHelper firebaseHelper = null;
 
     private String challengeName = null;
+    private boolean owner = false;
 
     private String localUser = null;
     private int localUserSeqNum = 0;
@@ -25,7 +26,12 @@ public class FirebaseProxy implements ChallengeProxy, ValueEventListener {
     private String remoteOpponent = null;
     private int remoteOpponentSeqNum = 0;
     private ValueEventListener onReadyListener = null;
-    private boolean firstStatusCallback = true;
+    private ValueEventListener onFinishedListener = null;
+    private boolean firstReadyCallback = true;
+    private boolean firstFinishedCallback = true;
+    private boolean remoteOpponentFinished = false;
+    private boolean localUserFinished = false;
+
 
     /**
      * Public constructor that takes the two opponents names and instantiates the challenge on firebase. It also takes
@@ -42,18 +48,21 @@ public class FirebaseProxy implements ChallengeProxy, ValueEventListener {
         } else if (localUser.isEmpty() || remoteOpponent.isEmpty()) {
             throw new IllegalArgumentException("Challenge user in firebase proxy can't be empty");
         }
+
+        // Instantiate proxy fields
         this.localUser = localUser;
         this.remoteOpponent = remoteOpponent;
         challengeName = generateChallengeName(localUser, remoteOpponent);
+        callbackHandler = handler;
+        this.owner = owner;
         firebaseHelper = new FirebaseHelper();
 
+        // Create firebase challenge node if challenge owner
         if (owner) {
             firebaseHelper.addChallengeNode(localUser, remoteOpponent, challengeName);
         }
-        setOpponentStatusListener();
-        setOpponentDataListener();
 
-        callbackHandler = handler;
+        setOpponentChallengeListeners();
     }
 
     @Override
@@ -94,31 +103,47 @@ public class FirebaseProxy implements ChallengeProxy, ValueEventListener {
 
     @Override
     public void startChallenge() {
-        firebaseHelper.removeUserStatusListener(challengeName, remoteOpponent, onReadyListener);
+        firebaseHelper.removeUserChallengeListener(challengeName, remoteOpponent, onReadyListener, FirebaseHelper.challengeNodeType.READY);
     }
 
     @Override
     public void imReady() {
-        firebaseHelper.setUserReady(challengeName, localUser);
+        firebaseHelper.setUserStatus(challengeName, localUser, FirebaseHelper.challengeNodeType.READY, true);
     }
 
     @Override
     public void imFinished() {
-        //TODO
+        firebaseHelper.setUserStatus(challengeName, localUser, FirebaseHelper.challengeNodeType.FINISH, true);
+        localUserFinished = true;
+
+        if (localUserFinished && remoteOpponentFinished && owner) {
+            deleteChallenge();
+        }
     }
 
-    private void setOpponentDataListener() {
-        firebaseHelper.setUserDataListener(challengeName, remoteOpponent, this);
+    private void deleteChallenge() {
+        firebaseHelper.removeUserChallengeListener(challengeName, remoteOpponent, this, FirebaseHelper.challengeNodeType.DATA);
+        firebaseHelper.removeUserChallengeListener(challengeName, remoteOpponent, onFinishedListener, FirebaseHelper.challengeNodeType.FINISH);
+        firebaseHelper.deleteChallengeNode(challengeName);
     }
 
-    private void setOpponentStatusListener() {
-        onReadyListener = new ValueEventListener() {
+    private void setOpponentChallengeListeners() {
+        onReadyListener = createReadyListener();
+        onFinishedListener = createFinishedListener();
+
+        firebaseHelper.setUserChallengeListener(challengeName, remoteOpponent, onReadyListener, FirebaseHelper.challengeNodeType.READY);
+        firebaseHelper.setUserChallengeListener(challengeName, remoteOpponent, onFinishedListener, FirebaseHelper.challengeNodeType.FINISH);
+        firebaseHelper.setUserChallengeListener(challengeName, remoteOpponent, this, FirebaseHelper.challengeNodeType.DATA);
+    }
+
+    private ValueEventListener createReadyListener() {
+        return new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     //FIXME find a cleaner way to do that
-                    if(firstStatusCallback) {
-                        firstStatusCallback = false;
+                    if(firstReadyCallback) {
+                        firstReadyCallback = false;
                     } else {
                         callbackHandler.isReadyHandler();
                     }
@@ -130,8 +155,31 @@ public class FirebaseProxy implements ChallengeProxy, ValueEventListener {
                 // TODO: handle firebase error
             }
         };
+    }
 
-        firebaseHelper.setUserStatusListener(challengeName, remoteOpponent, onReadyListener);
+    private ValueEventListener createFinishedListener() {
+        return new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    if(firstFinishedCallback) {
+                        firstFinishedCallback = false;
+                    } else {
+                        callbackHandler.isFinished();
+                        remoteOpponentFinished = true;
+                        if (localUserFinished && remoteOpponentFinished && owner) {
+                            deleteChallenge();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
     }
 
     private String generateChallengeName(String user1, String user2) {

@@ -1,16 +1,10 @@
 package ch.epfl.sweng.project.Firebase;
 
-import android.provider.ContactsContract;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Message;
 
@@ -90,9 +83,24 @@ public class FirebaseHelper {
     }
 
     private final String CHALLENGES_CHILD = "challenges";
-    private final String USER_READY = "status";
-    private final String USER_FINISH = "finished";
     private final String USER_CHECKPOINTS = "checkpoints";
+
+    public enum challengeNodeType {
+        READY("readyStatus"),
+        FINISH("finishStatus"),
+        DATA("checkpoints");
+
+        private final String nodeName;
+
+        challengeNodeType(final String nodeName) {
+            this.nodeName = nodeName;
+        }
+
+        @Override
+        public String toString() {
+            return nodeName;
+        }
+    }
 
     /**
      * Interface that allows to handle message fetching asynchronously from the server
@@ -378,10 +386,14 @@ public class FirebaseHelper {
             throw new IllegalArgumentException("Challenge node parameters can't be null");
         }
 
-        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(USER_READY).setValue(false);
-        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(USER_FINISH).setValue(false);
-        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(USER_READY).setValue(false);
-        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(USER_FINISH).setValue(false);
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(challengeNodeType.READY.toString()).setValue(false);
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(challengeNodeType.FINISH.toString()).setValue(false);
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(challengeNodeType.READY.toString()).setValue(false);
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(challengeNodeType.FINISH.toString()).setValue(false);
+    }
+
+    public void deleteChallengeNode(String challengeName) {
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).removeValue();
     }
 
     /**
@@ -402,25 +414,23 @@ public class FirebaseHelper {
         }
 
         DatabaseReference checkPointRef = databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user)
-                .child(USER_CHECKPOINTS).child(Integer.toString(seqNumber));
+                .child(challengeNodeType.DATA.toString()).child(Integer.toString(seqNumber));
 
         Map<String, Object> checkPointUpdate = new HashMap<>();
         checkPointUpdate.put("/latitude", checkPoint.getLatitude());
         checkPointUpdate.put("/longitude", checkPoint.getLongitude());
 
         checkPointRef.updateChildren(checkPointUpdate);
-
-        //checkPointRef.child("latitude").setValue(checkPoint.getLatitude());
-        //checkPointRef.child("longitude").setValue(checkPoint.getLongitude());
     }
 
+    // TODO : redo comments and args check
     /**
      * Sets the status of an user in a given challenge as "ready"
      *
      * @param challengeName     challenge in which the user is participating
      * @param user              user to set as "ready"
      */
-    public void setUserReady(String challengeName, String user) {
+    public void setUserStatus(String challengeName, String user, challengeNodeType statusNode, boolean status) {
 
         if (user == null || challengeName == null) {
             throw new NullPointerException("Challenge node or user parameters can't be null");
@@ -428,7 +438,7 @@ public class FirebaseHelper {
             throw new IllegalArgumentException("Challenge node or user parameters can't be empty");
         }
 
-        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user).child(USER_READY).setValue(true);
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user).child(statusNode.toString()).setValue(status);
     }
 
     /**
@@ -438,7 +448,7 @@ public class FirebaseHelper {
      * @param user              user whose status to observe
      * @param listener          listener to attach
      */
-    public void setUserStatusListener(String challengeName, String user, ValueEventListener listener) {
+    public void setUserChallengeListener(String challengeName, String user, ValueEventListener listener, challengeNodeType challengeNode) {
 
         if (user == null || challengeName == null || listener == null) {
             throw new NullPointerException("Challenge node, user or listener parameters can't be null");
@@ -447,29 +457,11 @@ public class FirebaseHelper {
         }
 
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user)
-                .child(USER_READY).addValueEventListener(listener);
+                .child(challengeNode.toString()).addValueEventListener(listener);
     }
 
-    /**
-     * Sets a given listener on the data node of a user participating in a run
-     *
-     * @param challengeName     challenge in which the user is participating
-     * @param user              user whose data to observe
-     * @param listener          listener to attach
-     */
-    public void setUserDataListener(String challengeName, String user, ValueEventListener listener) {
 
-        if (user == null || challengeName == null || listener == null) {
-            throw new NullPointerException("Challenge node, user or listener parameters can't be null");
-        } else if (user.isEmpty() || challengeName.isEmpty()) {
-            throw new IllegalArgumentException("Challenge node or user parameters can't be empty");
-        }
-
-        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user)
-                .child(USER_CHECKPOINTS).addValueEventListener(listener);
-    }
-
-    public void removeUserStatusListener(String challengeName, String user,ValueEventListener listener) {
+    public void removeUserChallengeListener(String challengeName, String user, ValueEventListener listener, challengeNodeType statusNode) {
 
         if (user == null || challengeName == null || listener == null) {
             throw new NullPointerException("Challenge node, user parameters can't be null");
@@ -478,7 +470,7 @@ public class FirebaseHelper {
         }
 
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user)
-                .child(USER_READY).removeEventListener(listener);
+                .child(statusNode.toString()).removeEventListener(listener);
     }
 
 

@@ -190,13 +190,13 @@ public class FirebaseHelperTest {
 
             }
         };
-        firebaseHelper.setUserStatusListener("testChallenge", "testUser1", listener);
+        firebaseHelper.setUserChallengeListener("testChallenge", "testUser1", listener);
         firebaseHelper.setUserDataListener("testChallenge", "testUser1", listener);
     }
 
     @Test(expected = NullPointerException.class)
     public void setUserStatusListenerThrowsNullPointer() {
-        firebaseHelper.setUserStatusListener("testChallenge", "testUser1", null);
+        firebaseHelper.setUserChallengeListener("testChallenge", "testUser1", null);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -212,7 +212,7 @@ public class FirebaseHelperTest {
 
             }
         };
-        firebaseHelper.setUserStatusListener("", "testUser1", listener);
+        firebaseHelper.setUserChallengeListener("", "testUser1", listener);
     }
 
     @Test(expected = NullPointerException.class)
