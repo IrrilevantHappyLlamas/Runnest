@@ -242,7 +242,10 @@ public class SideBarActivity extends AppCompatActivity
                             String surname = surnameAndFamilyName[0].toLowerCase();
                             String familyName = surnameAndFamilyName[1].toLowerCase();
 
-                            String myEmail = ((AppRunnest) getApplication()).getUser().getEmail();
+                            String myEmail = FirebaseHelper
+                                    .getFireBaseMail(((AppRunnest) getApplication())
+                                    .getUser()
+                                    .getEmail());
 
                             String lowerCaseQuery = query.toLowerCase();
                             if ((usersName.toLowerCase().startsWith(lowerCaseQuery)
