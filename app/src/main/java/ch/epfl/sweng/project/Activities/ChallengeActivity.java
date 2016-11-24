@@ -36,6 +36,7 @@ import ch.epfl.sweng.project.Model.ChallengeProxy;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.User;
+import ch.epfl.sweng.project.TestProxy;
 
 import static ch.epfl.sweng.project.Activities.SideBarActivity.PERMISSION_REQUEST_CODE_FINE_LOCATION;
 
@@ -203,7 +204,12 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 fragmentManager.beginTransaction().remove(receiverFragment).commit();
             }
         };
-        challengeProxy = new FirebaseProxy(userName, opponentName, proxyHandler, owner);
+
+        if (((AppRunnest) getApplication()).isTestSession()) {
+            challengeProxy = new TestProxy(proxyHandler);
+        } else {
+            challengeProxy = new FirebaseProxy(userName, opponentName, proxyHandler, owner);
+        }
     }
 
     public void imFinished() {
