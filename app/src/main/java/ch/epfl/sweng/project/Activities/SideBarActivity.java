@@ -50,6 +50,7 @@ import ch.epfl.sweng.project.Fragments.MessagesFragment;
 import ch.epfl.sweng.project.Fragments.RunFragments.RunningMapFragment;
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
+import ch.epfl.sweng.project.Model.Challenge;
 import ch.epfl.sweng.project.Model.Message;
 import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.User;
@@ -481,6 +482,11 @@ public class SideBarActivity extends AppCompatActivity
     public void onRunHistoryInteraction(Run run) {
         itemStack.push(historyItem);
         launchFragment(DisplayRunFragment.newInstance(run));
+    }
+
+    public void onChallengeHistoryInteraction(Challenge challenge) {
+        itemStack.push(historyItem);
+        //launch new fragment
     }
 
     @Override
