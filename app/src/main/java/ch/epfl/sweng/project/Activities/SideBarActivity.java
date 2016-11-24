@@ -137,7 +137,7 @@ public class SideBarActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         View header = navigationView.getHeaderView(0);
         TextView h1 = (TextView) header.findViewById(R.id.header1_nav_header);
-        TextView h2 = (TextView) header.findViewById(R.id.header2_nav_header);
+        final TextView h2 = (TextView) header.findViewById(R.id.header2_nav_header);
 
 
         runItem = navigationView.getMenu().getItem(1);
@@ -153,7 +153,14 @@ public class SideBarActivity extends AppCompatActivity
         User account = ((AppRunnest)getApplicationContext()).getUser();
         if (account != null) {
             h1.setText(account.getName());
-            h2.setText(account.getEmail());
+
+            mFirebaseHelper.getUserStatistics(account.getEmail(), new FirebaseHelper.statisticsHandler() {
+                @Override
+                public void handleRetrievedStatistics(String[] statistics) {
+                    String nbRuns = statistics[mFirebaseHelper.TOTAL_NUMBER_OF_RUNS_INDEX];
+                    h2.setText(nbRuns + " runs");
+                }
+            });
         }
 
         //Initializing the fragment
@@ -268,11 +275,6 @@ public class SideBarActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
