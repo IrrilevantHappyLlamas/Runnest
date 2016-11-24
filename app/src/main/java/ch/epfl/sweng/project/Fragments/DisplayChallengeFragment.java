@@ -178,17 +178,21 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
         switch(mCurrentMapType) {
 
             case MyMap:
-                mGoogleMap = displayTrack(mTrack, displayTrackSetupUI(googleMap));
+                mGoogleMap = googleMap;
+                displayTrack(mTrack, mGoogleMap);
+                displayTrackSetupUI(mGoogleMap);
                 break;
             case MyOpponentMap:
-                mOpponentGoogleMap = displayTrack(mOpponentTrack, displayTrackSetupUI(googleMap));
+                mOpponentGoogleMap = googleMap;
+                displayTrack(mOpponentTrack, mOpponentGoogleMap);
+                displayTrackSetupUI(mOpponentGoogleMap);
                 break;
             default:
                 throw new IllegalStateException("unknown map type");
         }
     }
 
-    private GoogleMap displayTrackSetupUI(GoogleMap googleMap) {
+    private void displayTrackSetupUI(GoogleMap googleMap) {
         googleMap.setBuildingsEnabled(false);
         googleMap.setIndoorEnabled(false);
         googleMap.setTrafficEnabled(false);
@@ -200,11 +204,9 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
         uiSettings.setMapToolbarEnabled(false);
         uiSettings.setZoomControlsEnabled(false);
         uiSettings.setMyLocationButtonEnabled(false);
-
-        return googleMap;
     }
 
-    private GoogleMap displayTrack(Track track, GoogleMap googleMap) {
+    private void displayTrack(Track track, GoogleMap googleMap) {
 
         if(track.getTotalCheckPoints() != 0) {
 
@@ -227,8 +229,6 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
             googleMap.animateCamera(cameraUpdate);
         }
-
-        return googleMap;
     }
 
     @Override
