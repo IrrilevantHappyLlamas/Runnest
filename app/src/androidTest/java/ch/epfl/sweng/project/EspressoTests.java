@@ -408,7 +408,7 @@ public class EspressoTests {
 
     }
 
-    @Test
+    /*@Test
     public void requestChallenge() {
         onView(withId(R.id.search)).perform(click());
 
@@ -431,7 +431,7 @@ public class EspressoTests {
         SystemClock.sleep(WAIT_DURATION);
 
         onView(withId(R.id.challenge_chronometer)).check(matches(isDisplayed()));
-    }
+    }*/
 
     @Test
     public void acceptChallengeRequest() {
@@ -449,6 +449,63 @@ public class EspressoTests {
 
         onView(withId(R.id.readyBtn)).check(matches(isDisplayed()));
         SystemClock.sleep(WAIT_DURATION);
+    }
+
+    @Test
+    public void requestChallengeDistance() {
+        onView(withId(R.id.search)).perform(click());
+
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.table)).check(matches(isDisplayed()));
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(isAssignableFrom(Button.class)).perform(click());
+
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.first_picker)).check(matches(isDisplayed()));
+        onView(withId(R.id.first_picker)).perform(click());
+
+        SystemClock.sleep(WAIT_DURATION);
+        SystemClock.sleep(WAIT_DURATION);
+        SystemClock.sleep(WAIT_DURATION);
+
+        /*onView(withId(R.id.readyBtn)).check(matches(isDisplayed()));
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.readyBtn)).perform(click());
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.challenge_chronometer)).check(matches(isDisplayed()));*/
+    }
+
+    @Test
+    public void requestChallengeTime() {
+        onView(withId(R.id.search)).perform(click());
+
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.table)).check(matches(isDisplayed()));
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(isAssignableFrom(Button.class)).perform(click());
+
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.readyBtn)).check(matches(isDisplayed()));
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.readyBtn)).perform(click());
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.challenge_chronometer)).check(matches(isDisplayed()));
     }
 
 }
