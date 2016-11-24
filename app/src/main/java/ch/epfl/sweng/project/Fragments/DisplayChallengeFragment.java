@@ -55,12 +55,19 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
     private Track mTrack = null;
     private Track mOpponentTrack = null;
 
+    private MapType mCurrentMapType = null;
+
     public static DisplayChallengeFragment newInstance(Challenge challenge) {
         DisplayChallengeFragment fragment = new DisplayChallengeFragment();
         Bundle args = new Bundle();
         args.putSerializable(CHALLENGE_TO_BE_DISPLAYED, challenge);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    private enum MapType {
+        MyMap,
+        MyOpponentMap
     }
 
     @Override
@@ -74,21 +81,22 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.fragment_display_run, container, false);
+        View view =  inflater.inflate(R.layout.fragment_display_challenge, container, false);
 
         if (mChallengeToBeDisplayed != null) {
 
             mTrack = mChallengeToBeDisplayed.getMyRun().getTrack();
             mOpponentTrack = mChallengeToBeDisplayed.getOpponentRun().getTrack();
 
+            mCurrentMapType = MapType.MyMap;
             mMapView = (MapView) view.findViewById(R.id.myMapView);
             mMapView.onCreate(savedInstanceState);
             mMapView.getMapAsync(this);
 
+            mCurrentMapType = MapType.MyOpponentMap;
             mOpponentMapView = (MapView) view.findViewById(R.id.myOpponentMapView);
             mOpponentMapView.onCreate(savedInstanceState);
             mOpponentMapView.getMapAsync(this);
-
 
             displayRunOnView(mChallengeToBeDisplayed.getMyRun(), view.findViewById(R.id.myTable));
             displayRunOnView(mChallengeToBeDisplayed.getOpponentRun(), view.findViewById(R.id.myOpponentTable));
@@ -166,14 +174,22 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mGoogleMap = googleMap;
-        mOpponentGoogleMap = googleMap;
 
-        displayTrackSetupUI(mGoogleMap);
-        displayTrack(mTrack, mGoogleMap);
+        switch(mCurrentMapType) {
 
-        displayTrackSetupUI(mOpponentGoogleMap);
-        displayTrack(mOpponentTrack, mOpponentGoogleMap);
+            case MyMap:
+                mGoogleMap = googleMap;
+                displayTrackSetupUI(mGoogleMap);
+                displayTrack(mTrack, mGoogleMap);
+                break;
+            case MyOpponentMap:
+                mOpponentGoogleMap = googleMap;
+                displayTrackSetupUI(mOpponentGoogleMap);
+                displayTrack(mOpponentTrack, mOpponentGoogleMap);
+                break;
+            default:
+                throw new IllegalStateException("unknown map type");
+        }
     }
 
     private void displayTrackSetupUI(GoogleMap GoogleMap) {
@@ -213,6 +229,13 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
             mGoogleMap.animateCamera(cameraUpdate);
         }
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mMapView.onLowMemory();
+        mOpponentMapView.onLowMemory();
     }
 
     @Override

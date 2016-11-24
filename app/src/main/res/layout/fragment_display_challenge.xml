@@ -5,30 +5,26 @@
              tools:context="ch.epfl.sweng.project.Fragments.DisplayChallengeFragment">
 
     <com.google.android.gms.maps.MapView
-        android:layout_width="wrap_content"
         android:layout_height="250dp"
-        android:id="@+id/myMapView" />
-
-    <com.google.android.gms.maps.MapView
-        android:layout_width="wrap_content"
-        android:layout_height="250dp"
-        android:id="@+id/myOpponentMapView" />
+        android:id="@+id/myMapView"
+        android:layout_gravity="top|left"
+        android:layout_width="150dp"/>
 
     <TableLayout
-        android:layout_width="match_parent"
         android:layout_height="230dp"
         android:id="@+id/myTable"
         android:orientation="horizontal"
-        android:layout_gravity="bottom|fill_vertical">
+        android:layout_gravity="bottom|left"
+        android:layout_width="150dp">
 
     </TableLayout>
 
     <TableLayout
-        android:layout_width="match_parent"
+        android:layout_width="150dp"
         android:layout_height="230dp"
         android:id="@+id/myOpponentTable"
         android:orientation="horizontal"
-        android:layout_gravity="bottom|fill_vertical">
+        android:layout_gravity="bottom|right">
 
     </TableLayout>
 
@@ -52,5 +48,11 @@
         android:layout_marginBottom="20dp"
         android:layout_marginRight="20dp"
         tools:ignore="RtlHardcoded"/>
+
+    <com.google.android.gms.maps.MapView
+        android:layout_height="250dp"
+        android:id="@+id/myOpponentMapView"
+        android:layout_gravity="top|right"
+        android:layout_width="150dp"/>
 
 </FrameLayout>

@@ -26,6 +26,7 @@ import com.google.android.gms.location.LocationServices;
 
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Database.DBHelper;
+import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Firebase.FirebaseProxy;
 import ch.epfl.sweng.project.Fragments.RunFragments.ChallengeReceiverFragment;
 import ch.epfl.sweng.project.Fragments.RunFragments.ChallengeSenderFragment;
@@ -34,6 +35,7 @@ import ch.epfl.sweng.project.Model.Challenge;
 import ch.epfl.sweng.project.Model.ChallengeProxy;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Run;
+import ch.epfl.sweng.project.Model.User;
 
 import static ch.epfl.sweng.project.Activities.SideBarActivity.PERMISSION_REQUEST_CODE_FINE_LOCATION;
 
@@ -44,9 +46,10 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private GoogleApiClient mGoogleApiClient;
     private LocationSettingsHandler mLocationSettingsHandler;
 
-    // Challenge type
+    // Challenge
     private ChallengeType challengeType;
     private double challengeGoal;   // time in milliseconds or distance in Km
+    private boolean win;
 
 
     // ChallengeProxy
@@ -175,7 +178,6 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                                 ((ChallengeReceiverFragment)receiverFragment).getRun().getTrack().getDistance());
                         break;
                     case DISTANCE:
-                        //TODO
                         long opponentDuration = SystemClock.elapsedRealtime() - chronometer.getBase();
                         opponentTxt.setText("Opponent completed " +
                                 challengeGoal +
@@ -222,20 +224,55 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     }
 
     private void endChallenge() {
-        //TODO: update stats, save challenge into DB and launch next fragment/activity
         Run opponentRun = ((ChallengeReceiverFragment)receiverFragment).getRun();
         Run userRun = ((ChallengeSenderFragment)senderFragment).getRun();
 
+        switch (challengeType) {
+            case TIME:
+                win = userRun.getTrack().getDistance() >= opponentRun.getTrack().getDistance();
+                break;
+            case DISTANCE:
+                win = userRun.getDuration() <= opponentRun.getDuration();
+                break;
+        }
+
+        //TODO: evaluate whether move win/lose message in to the next fragment or not, if not refactor (sane if bellow)
+        String finalResult;
+        if (win) {
+            finalResult = "You WIN!";
+        } else {
+            finalResult = "You LOSE!";
+        }
+        chronometer.setText(finalResult);
+
+        // Save challenge into the database
         Challenge challengeToSave = new Challenge(opponentName, userRun, opponentRun);
         DBHelper dbHelper = new DBHelper(this);
         dbHelper.insert(challengeToSave);
+
+        // Update statistic
+        FirebaseHelper.RunType challengeResult;
+        if (win) {
+            challengeResult = FirebaseHelper.RunType.CHALLENGE_WON;
+        } else {
+            challengeResult = FirebaseHelper.RunType.CHALLENGE_LOST;
+        }
+
+        FirebaseHelper fbHelper = new FirebaseHelper();
+        User currentUser = ((AppRunnest) this.getApplication()).getUser();
+        fbHelper.updateUserStatistics(currentUser.getEmail(),
+                userRun.getDuration(),
+                userRun.getTrack().getDistance(),
+                challengeResult);
     }
 
     private String transformDuration(long duration) {
-        long minutes = duration / 60;
-        long seconds = duration % 60;
+        if (duration < 0) {
+            throw new IllegalArgumentException("Duration could not be negative");
+        }
 
-        return (minutes + "' " + seconds + "''");
+        long durationInSeconds = duration/1000;
+        return (durationInSeconds/60 + "' " + durationInSeconds%60 + "''");
     }
 
     public ChallengeProxy getChallengeProxy(){
@@ -252,6 +289,10 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
     public ChallengeType getChallengeType() {
         return challengeType;
+    }
+
+    public String getOpponentName() {
+        return opponentName;
     }
 
     public void startChallenge(){

@@ -50,7 +50,7 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
         mMapView.onCreate(savedInstanceState);
         mMapView.getMapAsync(this); //this is important
 
-        mRun = new Run();
+        mRun = new Run(((ChallengeActivity)getActivity()).getOpponentName());
 
         mDistance = (TextView) view.findViewById(R.id.receiver_distance);
         updateDisplayedDistance();
@@ -62,7 +62,7 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
 
     private void updateDisplayedDistance() {
 
-        double distanceToShow = (int)(mRun.getTrack().getDistance()/100.0)/10.0;
+        double distanceToShow = mRun.getTrack().getDistance()/1000.0;
 
         switch (((ChallengeActivity)getActivity()).getChallengeType()) {
             case TIME:
@@ -72,7 +72,7 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
                 break;
         }
 
-        String distanceInKm = distanceToShow + " " + getString(R.string.km);
+        String distanceInKm = String.format("%.2f", distanceToShow) + " " + getString(R.string.km);
         mDistance.setText(distanceInKm);
     }
 
