@@ -239,7 +239,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         //TODO: evaluate whether move win/lose message in to the next fragment or not, if not refactor (sane if bellow)
         String finalResult;
         if (win) {
-            finalResult = "You WIN!";
+            finalResult = "You WON!";
         } else {
             finalResult = "You LOSE!";
         }
@@ -257,7 +257,6 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         } else {
             challengeResult = FirebaseHelper.RunType.CHALLENGE_LOST;
         }
-
         FirebaseHelper fbHelper = new FirebaseHelper();
         User currentUser = ((AppRunnest) this.getApplication()).getUser();
         fbHelper.updateUserStatistics(currentUser.getEmail(),

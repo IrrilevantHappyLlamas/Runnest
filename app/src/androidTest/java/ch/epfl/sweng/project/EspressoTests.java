@@ -487,7 +487,7 @@ public class EspressoTests {
 
         //Choose a distance challenge
         SystemClock.sleep(WAIT_DURATION);
-        onView(withId(R.id.btn_distance)).perform(click());
+        onView(withId(R.id.btn_time)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
         onView(withText("Challenge!")).perform(click());
 
@@ -596,18 +596,16 @@ public class EspressoTests {
         SystemClock.sleep(WAIT_DURATION);
 
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run_history));
-
         SystemClock.sleep(WAIT_DURATION);
 
         onView(withId(R.id.spinner)).perform(click());
-
         SystemClock.sleep(WAIT_DURATION);
 
         onData(allOf(is(instanceOf(String.class)), is("Challenges"))).perform(click());
-
         SystemClock.sleep(WAIT_DURATION);
 
         onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());
+        SystemClock.sleep(WAIT_DURATION);
     }
 
 
