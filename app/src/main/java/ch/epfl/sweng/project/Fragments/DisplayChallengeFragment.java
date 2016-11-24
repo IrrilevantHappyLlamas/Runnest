@@ -178,35 +178,33 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
         switch(mCurrentMapType) {
 
             case MyMap:
-                mGoogleMap = googleMap;
-                displayTrackSetupUI(mGoogleMap);
-                displayTrack(mTrack, mGoogleMap);
+                mGoogleMap = displayTrack(mTrack, displayTrackSetupUI(googleMap));
                 break;
             case MyOpponentMap:
-                mOpponentGoogleMap = googleMap;
-                displayTrackSetupUI(mOpponentGoogleMap);
-                displayTrack(mOpponentTrack, mOpponentGoogleMap);
+                mOpponentGoogleMap = displayTrack(mOpponentTrack, displayTrackSetupUI(googleMap));
                 break;
             default:
                 throw new IllegalStateException("unknown map type");
         }
     }
 
-    private void displayTrackSetupUI(GoogleMap GoogleMap) {
-        GoogleMap.setBuildingsEnabled(false);
-        GoogleMap.setIndoorEnabled(false);
-        GoogleMap.setTrafficEnabled(false);
+    private GoogleMap displayTrackSetupUI(GoogleMap googleMap) {
+        googleMap.setBuildingsEnabled(false);
+        googleMap.setIndoorEnabled(false);
+        googleMap.setTrafficEnabled(false);
 
-        UiSettings uiSettings = GoogleMap.getUiSettings();
+        UiSettings uiSettings = googleMap.getUiSettings();
 
         uiSettings.setCompassEnabled(false);
         uiSettings.setIndoorLevelPickerEnabled(false);
         uiSettings.setMapToolbarEnabled(false);
         uiSettings.setZoomControlsEnabled(false);
         uiSettings.setMyLocationButtonEnabled(false);
+
+        return googleMap;
     }
 
-    private void displayTrack(Track track, GoogleMap GoogleMap) {
+    private GoogleMap displayTrack(Track track, GoogleMap googleMap) {
 
         if(track.getTotalCheckPoints() != 0) {
 
@@ -221,21 +219,16 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
                 builder.include(latLng);
             }
 
-            mGoogleMap.addPolyline(polylineOptions.color(Color.BLUE));
+            googleMap.addPolyline(polylineOptions.color(Color.BLUE));
 
             // Center camera on past run
             LatLngBounds bounds = builder.build();
             int padding = 40;
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-            mGoogleMap.animateCamera(cameraUpdate);
+            googleMap.animateCamera(cameraUpdate);
         }
-    }
 
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mMapView.onLowMemory();
-        mOpponentMapView.onLowMemory();
+        return googleMap;
     }
 
     @Override
@@ -247,6 +240,40 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
             throw new RuntimeException(context.toString()
                     + " must implement OnDisplayChallengeFragmentInteractionListener");
         }
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mMapView.onLowMemory();
+        mOpponentMapView.onLowMemory();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mMapView.onResume();
+        mOpponentMapView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mMapView.onPause();
+        mOpponentMapView.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mMapView.onDestroy();
+        mOpponentMapView.onDestroy();
+    }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mMapView.onSaveInstanceState(outState);
+        mOpponentMapView.onSaveInstanceState(outState);
     }
 
     @Override

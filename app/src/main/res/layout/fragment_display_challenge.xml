@@ -5,7 +5,7 @@
              tools:context="ch.epfl.sweng.project.Fragments.DisplayChallengeFragment">
 
     <com.google.android.gms.maps.MapView
-        android:layout_height="250dp"
+        android:layout_height="150dp"
         android:id="@+id/myMapView"
         android:layout_gravity="top|left"
         android:layout_width="150dp"/>
@@ -50,7 +50,7 @@
         tools:ignore="RtlHardcoded"/>
 
     <com.google.android.gms.maps.MapView
-        android:layout_height="250dp"
+        android:layout_height="150dp"
         android:id="@+id/myOpponentMapView"
         android:layout_gravity="top|right"
         android:layout_width="150dp"/>
