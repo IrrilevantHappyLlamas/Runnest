@@ -295,6 +295,13 @@ public class FirebaseHelperTest {
         firebaseHelper.deleteChallengeNode("testChallenge");
     }
 
+    @Test
+    public void addNewUser() {
+        firebaseHelper.getDatabase().child("users").child("uselessUser").removeValue();
+        firebaseHelper.addOrUpdateUser("uselessUser", "uselessMail");
+        firebaseHelper.getDatabase().child("users").child("uselessUser").removeValue();
+    }
+
     /*
     @Test
     public void deletingMessageCorrectlyReadsDatabase() {
