@@ -79,8 +79,10 @@ public class FirebaseProxy implements ChallengeProxy, ValueEventListener {
             throw new IllegalStateException("Cannot add data to a terminated challenge");
         }
 
-        firebaseHelper.addChallengeCheckPoint(checkPoint, challengeName, localUser, localUserSeqNum);
-        localUserSeqNum++;
+        if(!localUserFinished) {
+            firebaseHelper.addChallengeCheckPoint(checkPoint, challengeName, localUser, localUserSeqNum);
+            localUserSeqNum++;
+        }
     }
 
     /**

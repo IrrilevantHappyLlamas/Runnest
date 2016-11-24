@@ -163,7 +163,6 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
             @Override
             public void isFinished() {
                 opponentFinished = true;
-                fragmentManager.beginTransaction().remove(receiverFragment).commit();
                 opponentTxt.setVisibility(View.VISIBLE);
 
                 switch (challengeType) {
@@ -187,9 +186,9 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 if(userFinished) {
                     endChallenge();
                 }
+                fragmentManager.beginTransaction().remove(receiverFragment).commit();
             }
         };
-
         challengeProxy = new FirebaseProxy(userName, opponentName, proxyHandler, owner);
     }
 

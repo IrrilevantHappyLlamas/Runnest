@@ -57,8 +57,10 @@ public class ChallengeSenderFragment extends RunFragment {
             case TIME:
                 break;
             case DISTANCE:
-                double remainingDistance =  (((ChallengeActivity)getActivity()).getChallengeGoal() -
-                        mRun.getTrack().getDistance())/1000;
+                double remainingDistance =  ((ChallengeActivity)getActivity()).getChallengeGoal() -
+                        (mRun.getTrack().getDistance())/1000.0;
+
+                System.out.print("RemainingDitance: " + remainingDistance);
 
                 if(remainingDistance <= 0.0) {
                     mRun.stop();
@@ -66,7 +68,7 @@ public class ChallengeSenderFragment extends RunFragment {
                     stopLocationUpdates();
                     ((ChallengeActivity)getActivity()).imFinished();
                 } else {
-                    distanceToShow = (int)(remainingDistance/100)/10;
+                    distanceToShow = remainingDistance;
                 }
                 break;
         }
