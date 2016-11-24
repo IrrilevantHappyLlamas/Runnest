@@ -12,8 +12,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:ignore="UselessParent">
+        android:layout_height="match_parent">
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/sign_in_button"
@@ -31,11 +30,10 @@
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:contentDescription="@string/login_app_iamge"/>
+            android:layout_centerHorizontal="true"/>
 
         <TextView
-            android:text="@string/who_runs_faster"
+            android:text="Who runs faster?"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/fasterTextView"
@@ -47,11 +45,10 @@
             android:layout_alignRight="@+id/runnestTextView"
             android:layout_alignEnd="@+id/runnestTextView"
             android:fontFamily="sans-serif"
-            android:typeface="sans"
-            tools:ignore="UnusedAttribute"/>
+            android:typeface="sans"/>
 
         <TextView
-            android:text="@string/runnest"
+            android:text="Runnest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/runnestTextView"
@@ -62,8 +59,7 @@
             android:layout_marginBottom="25dp"
             android:layout_alignBottom="@+id/fasterTextView"
             android:layout_centerHorizontal="true"
-            android:typeface="sans"
-            tools:ignore="UnusedAttribute"/>
+            android:typeface="sans"/>
 
     </RelativeLayout>
 

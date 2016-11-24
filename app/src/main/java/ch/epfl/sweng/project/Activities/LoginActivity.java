@@ -54,6 +54,7 @@ public final class LoginActivity extends AppCompatActivity
         setContentView(R.layout.activity_login);
 
         // TODO: remove after demo
+        /*
         launchProxy = (Button) findViewById(R.id.to_proxy);
         launchProxy.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +62,7 @@ public final class LoginActivity extends AppCompatActivity
                 launchProxy();
             }
         });
+        */
 
         setUpGoogleAuth();
         setUpFirebaseAuth();
