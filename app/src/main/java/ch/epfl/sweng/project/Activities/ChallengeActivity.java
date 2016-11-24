@@ -26,6 +26,7 @@ import com.google.android.gms.location.LocationServices;
 
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Database.DBHelper;
+import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Firebase.FirebaseProxy;
 import ch.epfl.sweng.project.Fragments.RunFragments.ChallengeReceiverFragment;
 import ch.epfl.sweng.project.Fragments.RunFragments.ChallengeSenderFragment;
@@ -34,6 +35,7 @@ import ch.epfl.sweng.project.Model.Challenge;
 import ch.epfl.sweng.project.Model.ChallengeProxy;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Run;
+import ch.epfl.sweng.project.Model.User;
 
 import static ch.epfl.sweng.project.Activities.SideBarActivity.PERMISSION_REQUEST_CODE_FINE_LOCATION;
 
@@ -226,9 +228,19 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         Run opponentRun = ((ChallengeReceiverFragment)receiverFragment).getRun();
         Run userRun = ((ChallengeSenderFragment)senderFragment).getRun();
 
+        // Save challenge into the database
         Challenge challengeToSave = new Challenge(opponentName, userRun, opponentRun);
         DBHelper dbHelper = new DBHelper(this);
         dbHelper.insert(challengeToSave);
+
+        // Update statistic
+        FirebaseHelper fbHelper = new FirebaseHelper();
+        User currentUser = ((AppRunnest) this.getApplication()).getUser();
+        fbHelper.updateUserStatistics(currentUser.getEmail(),
+                userRun.getDuration(),
+                userRun.getTrack().getDistance(),
+                FirebaseHelper.RunType.CHALLENGE_WON);
+        //TODO: differentiate win and lose
     }
 
     private String transformDuration(long duration) {
