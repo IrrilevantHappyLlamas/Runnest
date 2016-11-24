@@ -74,7 +74,7 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.fragment_display_run, container, false);
+        View view =  inflater.inflate(R.layout.fragment_display_challenge, container, false);
 
         if (mChallengeToBeDisplayed != null) {
 
@@ -213,6 +213,13 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
             mGoogleMap.animateCamera(cameraUpdate);
         }
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mMapView.onLowMemory();
+        mOpponentMapView.onLowMemory();
     }
 
     @Override

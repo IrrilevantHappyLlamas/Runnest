@@ -68,7 +68,7 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
 
         mMapView = (MapView) view.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
-        mMapView.getMapAsync(this); //this is important
+        mMapView.getMapAsync(this);
 
         if (mRunToBeDisplayed != null) {
 
