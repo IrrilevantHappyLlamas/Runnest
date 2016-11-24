@@ -12,6 +12,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 
 import ch.epfl.sweng.project.Activities.ChallengeActivity;
+import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Run;
 
@@ -33,7 +34,7 @@ public class ChallengeSenderFragment extends RunFragment {
 
         mMapView = (MapView) view.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
-        mMapView.getMapAsync(this); //this is important
+        mMapView.getMapAsync(this);
 
         //TODO
         // Location
@@ -42,7 +43,8 @@ public class ChallengeSenderFragment extends RunFragment {
 
         mDistance = (TextView) view.findViewById(R.id.sender_distance);
 
-        mRun = new Run();
+        String userName = ((AppRunnest)getActivity().getApplication()).getUser().getName();
+        mRun = new Run(userName);
         mRun.start();
 
         return view;
@@ -51,7 +53,7 @@ public class ChallengeSenderFragment extends RunFragment {
     @Override
     protected void updateDisplayedDistance() {
 
-        double distanceToShow = (int)(mRun.getTrack().getDistance()/100.0)/10.0;
+        double distanceToShow = mRun.getTrack().getDistance()/1000.0;
 
         switch (((ChallengeActivity)getActivity()).getChallengeType()) {
             case TIME:
@@ -71,7 +73,7 @@ public class ChallengeSenderFragment extends RunFragment {
                 break;
         }
 
-        String distanceInKm = distanceToShow + " " + getString(R.string.km);
+        String distanceInKm = String.format("%.2f", distanceToShow) + " " + getString(R.string.km);
         mDistance.setText(distanceInKm);
     }
 
