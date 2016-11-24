@@ -138,7 +138,7 @@ public class FirebaseHelper {
     /**
      * Allows to send a message that will be stored on the server
      *
-     * @param message
+     * @param message   message to be stored
      */
     public void send(Message message) {
         Date time = message.getTime();
@@ -159,8 +159,8 @@ public class FirebaseHelper {
     /**
      * Fetches all messages in the server for a specific user and let the handler function take care of them
      *
-     * @param forUser
-     * @param handler
+     * @param forUser   user which messages to fetch
+     * @param handler   handler for fetched messages
      */
     public void fetchMessages(final String forUser, final Handler handler) {
         databaseReference.child(MESSAGES_CHILD).child(forUser).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -196,7 +196,7 @@ public class FirebaseHelper {
     /**
      * Deletes a given message from the server
      *
-     * @param message
+     * @param message   message to delete
      */
     public void delete(Message message) {
         String messageId = message.getUid();
@@ -382,8 +382,7 @@ public class FirebaseHelper {
 
     /**
      * Creates a challenge under "challenges" node given the names of the opponents and
-     * the desired name of the challenge. If the challenge is already present on the database, throw
-     * an exception.
+     * the desired name of the challenge.
      *
      * @param user1             first challenger
      * @param user2             second challenger
@@ -494,12 +493,12 @@ public class FirebaseHelper {
      * Removes a ValueEventListener from one of the challenge nodes of a user participating in a run.
      * The node could be the READY, FINISH or DATA one, the listener to remove has to be specified.
      *
-     * @param challengeName
-     * @param user
-     * @param listener
-     * @param statusNode
+     * @param challengeName     challenge from which to remove the listener
+     * @param user              user on which the listener is currently attached
+     * @param listener          listener to remove
+     * @param nodeType          node to which the listener is attached
      */
-    public void removeUserChallengeListener(String challengeName, String user, ValueEventListener listener, challengeNodeType statusNode) {
+    public void removeUserChallengeListener(String challengeName, String user, ValueEventListener listener, challengeNodeType nodeType) {
 
         if (user == null || challengeName == null || listener == null) {
             throw new NullPointerException("Challenge node, user parameters can't be null");
@@ -508,7 +507,7 @@ public class FirebaseHelper {
         }
 
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user)
-                .child(statusNode.toString()).removeEventListener(listener);
+                .child(nodeType.toString()).removeEventListener(listener);
     }
 
 

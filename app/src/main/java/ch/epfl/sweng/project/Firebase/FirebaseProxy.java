@@ -161,7 +161,7 @@ public class FirebaseProxy implements ChallengeProxy, ValueEventListener {
         firebaseHelper.setUserStatus(challengeName, localUser, FirebaseHelper.challengeNodeType.FINISH, true);
         localUserFinished = true;
 
-        if (localUserFinished && remoteOpponentFinished && owner) {
+        if (remoteOpponentFinished && owner) {
             deleteChallenge();
         }
     }
@@ -208,7 +208,6 @@ public class FirebaseProxy implements ChallengeProxy, ValueEventListener {
 
     private ValueEventListener createFinishedListener() {
         return new ValueEventListener() {
-
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -217,7 +216,7 @@ public class FirebaseProxy implements ChallengeProxy, ValueEventListener {
                     } else {
                         callbackHandler.isFinished();
                         remoteOpponentFinished = true;
-                        if (localUserFinished && remoteOpponentFinished && owner) {
+                        if (localUserFinished && owner) {
                             deleteChallenge();
                         }
                     }

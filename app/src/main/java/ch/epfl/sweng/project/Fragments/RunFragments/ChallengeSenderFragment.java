@@ -45,7 +45,6 @@ public class ChallengeSenderFragment extends RunFragment {
 
         String userName = ((AppRunnest)getActivity().getApplication()).getUser().getName();
         mRun = new Run(userName);
-        mRun.start();
 
         return view;
     }
