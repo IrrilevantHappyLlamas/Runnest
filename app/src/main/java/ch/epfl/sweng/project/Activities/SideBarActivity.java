@@ -48,12 +48,14 @@ import ch.epfl.sweng.project.Fragments.ChallengeDialogFragment;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 import ch.epfl.sweng.project.Fragments.DBUploadFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
+import ch.epfl.sweng.project.Fragments.DisplayChallengeFragment;
 import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
 import ch.epfl.sweng.project.Fragments.MessagesFragment;
 import ch.epfl.sweng.project.Fragments.RequestDialogFragment;
 import ch.epfl.sweng.project.Fragments.RunFragments.RunningMapFragment;
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
+import ch.epfl.sweng.project.Model.Challenge;
 import ch.epfl.sweng.project.Model.Message;
 import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.User;
@@ -69,7 +71,8 @@ public class SideBarActivity extends AppCompatActivity
         MessagesFragment.MessagesFragmentInteractionListener,
         DisplayRunFragment.DisplayRunFragmentInteractionListener,
         ChallengeDialogFragment.ChallengeDialogListener,
-        RequestDialogFragment.RequestDialogListener
+        RequestDialogFragment.RequestDialogListener,
+        DisplayChallengeFragment.OnDisplayChallengeFragmentInteractionListener
 {
 
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
@@ -493,6 +496,11 @@ public class SideBarActivity extends AppCompatActivity
         launchFragment(DisplayRunFragment.newInstance(run));
     }
 
+    public void onChallengeHistoryInteraction(Challenge challenge) {
+        itemStack.push(historyItem);
+        launchFragment(DisplayChallengeFragment.newInstance(challenge));
+    }
+
     @Override
     public void onDBDownloadFragmentInteraction() {
         launchFragment(new ProfileFragment());
@@ -618,5 +626,11 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public void onDialogCancelClick(DialogFragment dialog) {
 
+    }
+
+    @Override
+    public void onDisplayChallengeFragmentInteraction() {
+        // keep using the stack
+        onNavigationItemSelected(navigationView.getMenu().getItem(2));
     }
 }

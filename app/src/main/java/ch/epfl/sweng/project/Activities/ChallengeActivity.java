@@ -25,10 +25,12 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
 import ch.epfl.sweng.project.AppRunnest;
+import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Firebase.FirebaseProxy;
 import ch.epfl.sweng.project.Fragments.RunFragments.ChallengeReceiverFragment;
 import ch.epfl.sweng.project.Fragments.RunFragments.ChallengeSenderFragment;
 import ch.epfl.sweng.project.Fragments.RunFragments.LocationSettingsHandler;
+import ch.epfl.sweng.project.Model.Challenge;
 import ch.epfl.sweng.project.Model.ChallengeProxy;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Run;
@@ -221,10 +223,12 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
     private void endChallenge() {
         //TODO: update stats, save challenge into DB and launch next fragment/activity
-
-        // opponentName
         Run opponentRun = ((ChallengeReceiverFragment)receiverFragment).getRun();
         Run userRun = ((ChallengeSenderFragment)senderFragment).getRun();
+
+        Challenge challengeToSave = new Challenge(opponentName, userRun, opponentRun);
+        DBHelper dbHelper = new DBHelper(this);
+        dbHelper.insert(challengeToSave);
     }
 
     private String transformDuration(long duration) {

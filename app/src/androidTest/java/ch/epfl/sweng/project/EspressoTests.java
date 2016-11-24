@@ -58,7 +58,14 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.anything;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 
 @RunWith(AndroidJUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -500,7 +507,7 @@ public class EspressoTests {
     public void challengeRequest() {
 
         // Send message
-        Message msg = new Message( "runnest_dot_ihl_at_gmail_dot_com",
+        Message msg = new Message("runnest_dot_ihl_at_gmail_dot_com",
                 "Test User",
                 "Runnest IHL",
                 "Test User",
@@ -509,10 +516,9 @@ public class EspressoTests {
                 new Date(),
                 1,
                 0,
-                ChallengeActivity.ChallengeType.DISTANCE );
+                ChallengeActivity.ChallengeType.DISTANCE);
         FirebaseHelper firebaseHelper = new FirebaseHelper();
         firebaseHelper.send(msg);
-
 
         //Tap on the request
         SystemClock.sleep(WAIT_DURATION);
@@ -542,5 +548,67 @@ public class EspressoTests {
 
         onView(withId(R.id.readyBtn)).check(matches(isDisplayed()));
     }
+
+    public void navigateToChallengeHistory() {
+
+        SystemClock.sleep(WAIT_DURATION);
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+
+        SystemClock.sleep(WAIT_DURATION);
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run_history));
+
+        SystemClock.sleep(WAIT_DURATION);
+        onView(withId(R.id.spinner)).perform(click());
+
+        SystemClock.sleep(WAIT_DURATION);
+        onData(allOf(is(instanceOf(String.class)), is("Challenges"))).perform(click());
+    }
+
+    @Test
+    public void navigateToSingleRunHistoryWithSpinner() {
+
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run_history));
+
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.spinner)).perform(click());
+
+        onData(allOf(is(instanceOf(String.class)), is("Challenges"))).perform(click());
+
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.spinner)).perform(click());
+
+        onData(allOf(is(instanceOf(String.class)), is("Single Runs"))).perform(click());
+    }
+
+    @Test
+    public void displayChallenge() {
+
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run_history));
+
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.spinner)).perform(click());
+
+        SystemClock.sleep(WAIT_DURATION);
+
+        onData(allOf(is(instanceOf(String.class)), is("Challenges"))).perform(click());
+
+        SystemClock.sleep(WAIT_DURATION);
+
+        onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());
+    }
+
 
 }

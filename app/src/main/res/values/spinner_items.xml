@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="spinner_items">
+        <item>Single Runs</item>
+        <item>Challenges</item>
+    </string-array>
+</resources>
