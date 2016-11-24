@@ -609,6 +609,7 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public void onDialogDeclineClick(DialogFragment dialog) {
         mFirebaseHelper.delete(requestMessage);
+        launchFragment(new MessagesFragment());
     }
 
     /**

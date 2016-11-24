@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
 import ch.epfl.sweng.project.Activities.ChallengeActivity;
+import ch.epfl.sweng.project.AppRunnest;
 
 
 public class ChallengeDialogFragment extends DialogFragment implements View.OnClickListener {
@@ -71,11 +72,16 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // launch challenge
-                        // Send the positive button event back to the host activity
-                        if(firstValue + secondValue == 0) {
-                            Toast.makeText(getContext(), "The goal of the challenge cannot be 0!", Toast.LENGTH_LONG).show();
-                        } else {
+                        if(firstValue + secondValue != 0)  {
                             mListener.onDialogPositiveClick(ChallengeDialogFragment.this);
+                        } else {
+                            if(((AppRunnest)getActivity().getApplicationContext()).isTestSession()){
+                                firstValue = 1;
+                                mListener.onDialogPositiveClick(ChallengeDialogFragment.this);
+                            } else {
+                                Toast.makeText(getContext(), "The goal of the challenge cannot be 0!",
+                                        Toast.LENGTH_LONG).show();
+                            }
                         }
                     }
                 })
