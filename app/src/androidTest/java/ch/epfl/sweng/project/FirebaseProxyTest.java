@@ -26,7 +26,12 @@ public class FirebaseProxyTest {
             public void isReadyHandler() {
 
             }
-        });
+
+            @Override
+            public void isFinished() {
+
+            }
+        }, true);
     }
 
     @Test
@@ -36,7 +41,7 @@ public class FirebaseProxyTest {
 
     @Test(expected = NullPointerException.class)
     public void constructorThrowsNullPointer() {
-        new FirebaseProxy(LOCAL_USER, REMOTE_OPPONENT, null);
+        new FirebaseProxy(LOCAL_USER, REMOTE_OPPONENT, null, true);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -51,7 +56,12 @@ public class FirebaseProxyTest {
             public void isReadyHandler() {
 
             }
-        });
+
+            @Override
+            public void isFinished() {
+
+            }
+        }, true);
     }
 
     @Test

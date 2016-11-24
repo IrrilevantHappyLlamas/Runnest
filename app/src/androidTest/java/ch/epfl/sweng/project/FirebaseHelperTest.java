@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
+import ch.epfl.sweng.project.Firebase.FirebaseProxy;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Message;
 
@@ -21,6 +22,17 @@ import ch.epfl.sweng.project.Model.Message;
 public class FirebaseHelperTest {
 
     private FirebaseHelper firebaseHelper;
+    private ValueEventListener listener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
 
     @Before
     public void instantiation() {
@@ -92,10 +104,14 @@ public class FirebaseHelperTest {
                         Assert.assertTrue(dataSnapshot.hasChild("testUser2"));
                         DataSnapshot user1 = dataSnapshot.child("testUser1");
                         DataSnapshot user2 = dataSnapshot.child("testUser2");
-                        Assert.assertTrue(user1.hasChild("status"));
-                        Assert.assertFalse((boolean)user1.child("status").getValue());
-                        Assert.assertTrue(user2.hasChild("status"));
-                        Assert.assertFalse((boolean)user2.child("status").getValue());
+                        Assert.assertTrue(user1.hasChild(FirebaseHelper.challengeNodeType.READY.toString()));
+                        Assert.assertFalse((boolean)user1.child(FirebaseHelper.challengeNodeType.READY.toString()).getValue());
+                        Assert.assertTrue(user2.hasChild(FirebaseHelper.challengeNodeType.READY.toString()));
+                        Assert.assertFalse((boolean)user2.child(FirebaseHelper.challengeNodeType.READY.toString()).getValue());
+                        Assert.assertTrue(user1.hasChild(FirebaseHelper.challengeNodeType.FINISH.toString()));
+                        Assert.assertFalse((boolean)user1.child(FirebaseHelper.challengeNodeType.FINISH.toString()).getValue());
+                        Assert.assertTrue(user2.hasChild(FirebaseHelper.challengeNodeType.FINISH.toString()));
+                        Assert.assertFalse((boolean)user2.child(FirebaseHelper.challengeNodeType.FINISH.toString()).getValue());
                     }
 
                     @Override
@@ -113,6 +129,16 @@ public class FirebaseHelperTest {
     @Test(expected = IllegalArgumentException.class)
     public void addChallengeNodeThrowsIllegalArgument() {
         firebaseHelper.addChallengeNode("testUser1", "testUser2", "");
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void deleteChallengeNodeThrowsNullPointer() {
+        firebaseHelper.deleteChallengeNode(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void deleteChallengeNodeThrowsIllegalArgument() {
+        firebaseHelper.deleteChallengeNode("");
     }
 
     @Test
@@ -138,7 +164,6 @@ public class FirebaseHelperTest {
 
     @Test(expected = NullPointerException.class)
     public void addChallengeCheckPointThrowsNullPointer() {
-        CheckPoint checkPoint = new CheckPoint(100, 100);
         firebaseHelper.addChallengeCheckPoint(null, "testChallenge",  "testUser1", 0);
     }
 
@@ -150,9 +175,9 @@ public class FirebaseHelperTest {
 
     @Test
     public void correctlySetUserReady() {
-        firebaseHelper.setUserReady("testChallenge", "testUser1");
+        firebaseHelper.setUserStatus("testChallenge", "testUser1", FirebaseHelper.challengeNodeType.READY, true);
         firebaseHelper.getDatabase().child("challenges").child("testChallenge")
-                .child("testUser1").child("status")
+                .child("testUser1").child(FirebaseHelper.challengeNodeType.READY.toString())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -169,71 +194,51 @@ public class FirebaseHelperTest {
 
     @Test(expected = NullPointerException.class)
     public void setUserReadyThrowsNullPointer() {
-        firebaseHelper.setUserReady(null,  "testUser1");
+        firebaseHelper.setUserStatus(null, "testUser1", FirebaseHelper.challengeNodeType.READY, true);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void setUserReadyThrowsIllegalArgument() {
-        firebaseHelper.setUserReady("",  "testUser1");
+        firebaseHelper.setUserStatus("", "testUser1", FirebaseHelper.challengeNodeType.READY, true);
     }
 
     @Test
     public void correctlySetUserListeners() {
-        ValueEventListener listener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-        firebaseHelper.setUserStatusListener("testChallenge", "testUser1", listener);
-        firebaseHelper.setUserDataListener("testChallenge", "testUser1", listener);
+        firebaseHelper.setUserChallengeListener("testChallenge", "testUser1", listener, FirebaseHelper.challengeNodeType.READY);
+        firebaseHelper.setUserChallengeListener("testChallenge", "testUser1", listener, FirebaseHelper.challengeNodeType.FINISH);
+        firebaseHelper.setUserChallengeListener("testChallenge", "testUser1", listener, FirebaseHelper.challengeNodeType.DATA);
     }
 
     @Test(expected = NullPointerException.class)
     public void setUserStatusListenerThrowsNullPointer() {
-        firebaseHelper.setUserStatusListener("testChallenge", "testUser1", null);
+        firebaseHelper.setUserChallengeListener("testChallenge", "testUser1", null, FirebaseHelper.challengeNodeType.READY);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void setUserStatusListenerThrowsIllegalArgument() {
-        ValueEventListener listener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+        firebaseHelper.setUserChallengeListener("", "testUser1", listener, FirebaseHelper.challengeNodeType.READY);
+    }
 
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-        firebaseHelper.setUserStatusListener("", "testUser1", listener);
+    @Test
+    public void removeUserListenerWorks() {
+        firebaseHelper.removeUserChallengeListener("testChallenge", "testUser1", listener, FirebaseHelper.challengeNodeType.READY);
+        firebaseHelper.removeUserChallengeListener("testChallenge", "testUser1", listener, FirebaseHelper.challengeNodeType.FINISH);
+        firebaseHelper.removeUserChallengeListener("testChallenge", "testUser1", listener, FirebaseHelper.challengeNodeType.DATA);
     }
 
     @Test(expected = NullPointerException.class)
-    public void setUserDataListenerThrowsNullPointer() {
-        firebaseHelper.setUserDataListener("testChallenge", "testUser1", null);
+    public void removeUserListenerThrowsNullPointer() {
+        firebaseHelper.removeUserChallengeListener("testChallenge", "testUser1", null, FirebaseHelper.challengeNodeType.READY);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void setUserDataListenerThrowsIllegalArgument() {
-        ValueEventListener listener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+    public void removeUserListenerThrowsIllegalArgument() {
+        firebaseHelper.removeUserChallengeListener("", "testUser1", listener, FirebaseHelper.challengeNodeType.READY);
+    }
 
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-        firebaseHelper.setUserDataListener("", "testUser1", listener);
+    @Test
+    public void deleteChallengeNodeWorks() {
+        firebaseHelper.deleteChallengeNode("testChallenge");
     }
 
     /*

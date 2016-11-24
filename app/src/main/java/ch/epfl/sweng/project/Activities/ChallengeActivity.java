@@ -46,6 +46,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private ChallengeType challengeType;
     private double challengeGoal;   // time in milliseconds or distance in Km
 
+
     // ChallengeProxy
     private ChallengeProxy challengeProxy;
     private Boolean owner = false;
