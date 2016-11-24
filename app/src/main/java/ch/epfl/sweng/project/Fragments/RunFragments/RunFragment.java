@@ -60,12 +60,6 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
     private MapHandler mMapHandler = null;
 
     protected void startRun() {
-
-        // initialize new Run
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy HH:mm:ss");
-        String runName = dateFormat.format(new Date());
-        mRun = new Run(runName);
         mRun.start();
 
         mDistance.setVisibility(View.VISIBLE);
