@@ -178,7 +178,6 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                                 ((ChallengeReceiverFragment)receiverFragment).getRun().getTrack().getDistance());
                         break;
                     case DISTANCE:
-                        //TODO
                         long opponentDuration = SystemClock.elapsedRealtime() - chronometer.getBase();
                         opponentTxt.setText("Opponent completed " +
                                 challengeGoal +
@@ -271,7 +270,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         if (duration < 0) {
             throw new IllegalArgumentException("Duration could not be negative");
         }
-        
+
         long durationInSeconds = duration/1000;
         return (durationInSeconds/60 + "' " + durationInSeconds%60 + "''");
     }
@@ -290,6 +289,10 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
     public ChallengeType getChallengeType() {
         return challengeType;
+    }
+
+    public String getOpponentName() {
+        return opponentName;
     }
 
     public void startChallenge(){
