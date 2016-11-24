@@ -91,7 +91,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         switch (challengeType) {
             case DISTANCE:
                 if(((AppRunnest)getApplication()).isTestSession()) {
-                    challengeGoal = 10;
+                    challengeGoal = 0;
                 } else {
                     challengeGoal = firstValue + secondValue / 1000.0;
                 }

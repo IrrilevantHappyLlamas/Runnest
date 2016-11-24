@@ -23,6 +23,8 @@ public class TestProxy implements ChallengeProxy {
     private double lat;
     private double lon;
 
+    private boolean terminated = false;
+
     public TestProxy(Handler handler) {
         this.handler = handler;
         lat = 45.0;
@@ -30,9 +32,13 @@ public class TestProxy implements ChallengeProxy {
     }
 
     private void sendNextPoint() {
-        handler.OnNewDataHandler(new CheckPoint(lat, lon));
-        lat += 0.05;
-        lon += 0.05;
+        /*
+        if(!terminated) {
+            handler.OnNewDataHandler(new CheckPoint(lat, lon));
+            lat += 0.05;
+            lon += 0.05;
+        }
+        */
     }
 
     @Override
@@ -47,7 +53,7 @@ public class TestProxy implements ChallengeProxy {
 
     @Override
     public void deleteChallenge() {
-
+        terminated = true;
     }
 
     @Override
@@ -59,5 +65,6 @@ public class TestProxy implements ChallengeProxy {
     @Override
     public void imFinished() {
         handler.isFinished();
+        deleteChallenge();
     }
 }
