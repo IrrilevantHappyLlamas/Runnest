@@ -57,6 +57,7 @@ public class RunHistoryFragment extends Fragment implements AdapterView.OnItemSe
                 R.array.spinner_items, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
 
         listView = (ListView) view.findViewById(R.id.list);
 
@@ -146,7 +147,7 @@ public class RunHistoryFragment extends Fragment implements AdapterView.OnItemSe
         switch(runType) {
             case SINGLE_RUN:
                 if(runs.isEmpty()) {
-                    toBeAdapted = new String[]{"No Run has been recorded yet."};
+                    toBeAdapted = new String[]{"No run recorded."};
                 }
                 else{
                     toBeAdapted = new String[runs.size()];
@@ -158,7 +159,7 @@ public class RunHistoryFragment extends Fragment implements AdapterView.OnItemSe
                 break;
             case CHALLENGE:
                 if(challenges.isEmpty()) {
-                    toBeAdapted = new String[]{"No Challenge has been recorded yet."};
+                    toBeAdapted = new String[]{"No challenge recorded."};
                 }
                 else{
                     toBeAdapted = new String[challenges.size()];

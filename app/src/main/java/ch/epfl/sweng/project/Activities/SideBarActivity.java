@@ -45,6 +45,7 @@ import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 import ch.epfl.sweng.project.Fragments.DBUploadFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
+import ch.epfl.sweng.project.Fragments.DisplayChallengeFragment;
 import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
 import ch.epfl.sweng.project.Fragments.MessagesFragment;
 import ch.epfl.sweng.project.Fragments.RunFragments.RunningMapFragment;
@@ -64,7 +65,8 @@ public class SideBarActivity extends AppCompatActivity
         RunHistoryFragment.onRunHistoryInteractionListener,
         DisplayUserFragment.OnDisplayUserFragmentInteractionListener,
         MessagesFragment.MessagesFragmentInteractionListener,
-        DisplayRunFragment.DisplayRunFragmentInteractionListener
+        DisplayRunFragment.DisplayRunFragmentInteractionListener,
+        DisplayChallengeFragment.OnDisplayChallengeFragmentInteractionListener
 {
 
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
@@ -514,6 +516,12 @@ public class SideBarActivity extends AppCompatActivity
 
     @Override
     public void onDisplayRunFragmentInteraction() {
+        // keep using the stack
+        onNavigationItemSelected(navigationView.getMenu().getItem(2));
+    }
+
+    @Override
+    public void onDisplayChallengeFragmentInteraction() {
         // keep using the stack
         onNavigationItemSelected(navigationView.getMenu().getItem(2));
     }
