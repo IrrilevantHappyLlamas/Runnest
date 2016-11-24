@@ -12,6 +12,8 @@ public interface ChallengeProxy {
 
     void startChallenge();
 
+    void deleteChallenge();
+
     void imReady();
 
     void imFinished();

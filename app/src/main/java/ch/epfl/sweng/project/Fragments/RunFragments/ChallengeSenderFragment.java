@@ -60,8 +60,6 @@ public class ChallengeSenderFragment extends RunFragment {
                 double remainingDistance =  ((ChallengeActivity)getActivity()).getChallengeGoal() -
                         (mRun.getTrack().getDistance())/1000.0;
 
-                System.out.print("RemainingDitance: " + remainingDistance);
-
                 if(remainingDistance <= 0.0) {
                     mRun.stop();
                     distanceToShow = 0.0;

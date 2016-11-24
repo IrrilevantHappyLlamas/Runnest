@@ -357,6 +357,12 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         mGoogleApiClient.connect();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        challengeProxy.deleteChallenge();
+    }
+
     public double getChallengeGoal() {
         return challengeGoal;
     }

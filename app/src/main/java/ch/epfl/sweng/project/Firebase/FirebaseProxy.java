@@ -65,9 +65,24 @@ public class FirebaseProxy implements ChallengeProxy, ValueEventListener {
         // Create firebase challenge node if challenge owner
         if (owner) {
             firebaseHelper.addChallengeNode(localUser, remoteOpponent, challengeName);
-        }
+            setOpponentChallengeListeners();
+        } else {
+            setOpponentChallengeListeners();
+            firebaseHelper.getDatabase().child("challenges").child(challengeName).child(remoteOpponent)
+                    .child(FirebaseHelper.challengeNodeType.READY.toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists() && (boolean)dataSnapshot.getValue()) {
+                        handler.isReadyHandler();
+                    }
+                }
 
-        setOpponentChallengeListeners();
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    throw databaseError.toException();
+                }
+            });
+        }
     }
 
     @Override
@@ -151,7 +166,11 @@ public class FirebaseProxy implements ChallengeProxy, ValueEventListener {
         }
     }
 
-    private void deleteChallenge() {
+    /**
+     * This public method removes challenge listeners and then deletes the challenge node on firebase.
+     */
+    @Override
+    public void deleteChallenge() {
         firebaseHelper.removeUserChallengeListener(challengeName, remoteOpponent, this, FirebaseHelper.challengeNodeType.DATA);
         firebaseHelper.removeUserChallengeListener(challengeName, remoteOpponent, onFinishedListener, FirebaseHelper.challengeNodeType.FINISH);
         firebaseHelper.deleteChallengeNode(challengeName);
