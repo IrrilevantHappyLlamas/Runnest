@@ -87,8 +87,6 @@ public class ChallengeSenderFragment extends RunFragment {
     @Override
     public void onLocationChanged(Location location) {
         super.onLocationChanged(location);
-
-        //TODO
         ((ChallengeActivity)getActivity()).getChallengeProxy().putData(new CheckPoint(location));
     }
 

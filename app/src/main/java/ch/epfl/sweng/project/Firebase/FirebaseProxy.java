@@ -191,7 +191,6 @@ public class FirebaseProxy implements ChallengeProxy, ValueEventListener {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    //FIXME find a cleaner way to do that
                     if(firstReadyCallback) {
                         firstReadyCallback = false;
                     } else {
