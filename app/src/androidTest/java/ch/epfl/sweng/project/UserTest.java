@@ -1,7 +1,15 @@
 package ch.epfl.sweng.project;
 
+import android.net.Uri;
+import android.os.Parcel;
+
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+
+import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.List;
 
 import ch.epfl.sweng.project.Model.AuthenticatedUser;
 import ch.epfl.sweng.project.Model.TestUser;
@@ -33,5 +41,21 @@ public class UserTest {
     @Test(expected = IllegalArgumentException.class)
     public void authUserWithNullAccountThrowsException() {
         new AuthenticatedUser(null);
+    }
+
+    @Test
+    public void gettersWorkForAuthUser() {
+
+        try {
+            GoogleSignInAccount googleUser = GoogleSignInAccount.zzfw(" ");
+            User testUser = new AuthenticatedUser(googleUser);
+            testUser.getId();
+            testUser.getEmail();
+            testUser.getFamilyName();
+            testUser.getName();
+            testUser.getPhotoUrl();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
