@@ -46,9 +46,10 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private GoogleApiClient mGoogleApiClient;
     private LocationSettingsHandler mLocationSettingsHandler;
 
-    // Challenge type
+    // Challenge
     private ChallengeType challengeType;
     private double challengeGoal;   // time in milliseconds or distance in Km
+    private boolean win;
 
 
     // ChallengeProxy
@@ -224,9 +225,26 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     }
 
     private void endChallenge() {
-        //TODO: update stats, save challenge into DB and launch next fragment/activity
         Run opponentRun = ((ChallengeReceiverFragment)receiverFragment).getRun();
         Run userRun = ((ChallengeSenderFragment)senderFragment).getRun();
+
+        switch (challengeType) {
+            case TIME:
+                win = userRun.getTrack().getDistance() >= opponentRun.getTrack().getDistance();
+                break;
+            case DISTANCE:
+                win = userRun.getDuration() <= opponentRun.getDuration();
+                break;
+        }
+
+        //TODO: evaluate whether move win/lose message in to the next fragment or not, if not refactor (sane if bellow)
+        String finalResult;
+        if (win) {
+            finalResult = "You WIN!";
+        } else {
+            finalResult = "You LOSE!";
+        }
+        chronometer.setText(finalResult);
 
         // Save challenge into the database
         Challenge challengeToSave = new Challenge(opponentName, userRun, opponentRun);
@@ -234,20 +252,28 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         dbHelper.insert(challengeToSave);
 
         // Update statistic
+        FirebaseHelper.RunType challengeResult;
+        if (win) {
+            challengeResult = FirebaseHelper.RunType.CHALLENGE_WON;
+        } else {
+            challengeResult = FirebaseHelper.RunType.CHALLENGE_LOST;
+        }
+
         FirebaseHelper fbHelper = new FirebaseHelper();
         User currentUser = ((AppRunnest) this.getApplication()).getUser();
         fbHelper.updateUserStatistics(currentUser.getEmail(),
                 userRun.getDuration(),
                 userRun.getTrack().getDistance(),
-                FirebaseHelper.RunType.CHALLENGE_WON);
-        //TODO: differentiate win and lose
+                challengeResult);
     }
 
     private String transformDuration(long duration) {
-        long minutes = duration / 60;
-        long seconds = duration % 60;
-
-        return (minutes + "' " + seconds + "''");
+        if (duration < 0) {
+            throw new IllegalArgumentException("Duration could not be negative");
+        }
+        
+        long durationInSeconds = duration/1000;
+        return (durationInSeconds/60 + "' " + durationInSeconds%60 + "''");
     }
 
     public ChallengeProxy getChallengeProxy(){
