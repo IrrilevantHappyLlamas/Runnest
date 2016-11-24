@@ -1,5 +1,9 @@
 package ch.epfl.sweng.project;
 
+import android.os.SystemClock;
+import android.widget.TextView;
+
+import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -8,6 +12,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,6 +84,45 @@ public class FirebaseHelperTest {
     }
 
     @Test
+    public void deleteCorrectly() {
+        String to = "you";
+        Message msg = new Message("me", to, "me", "you", Message.MessageType.TEXT, "Hello, world!");
+
+        firebaseHelper.send(msg);
+        SystemClock.sleep(2000);
+
+        firebaseHelper.delete(msg);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void addOrUpdateUserThrowsIllegalArgumentIOnNull() {
+        firebaseHelper.addOrUpdateUser("test", null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void addOrUpdateUserThrowsIllegalArgumentOnEmpty() {
+        firebaseHelper.addOrUpdateUser("test", "");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getUserStatisticThrowsIllegalArgumentIOnNull() {
+        firebaseHelper.getUserStatistics(null, new FirebaseHelper.statisticsHandler() {
+            @Override
+            public void handleRetrievedStatistics(String[] statistics) {
+            }
+        });
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getUserStatisticThrowsIllegalArgumentOnEmpty() {
+        firebaseHelper.getUserStatistics("", new FirebaseHelper.statisticsHandler() {
+            @Override
+            public void handleRetrievedStatistics(String[] statistics) {
+            }
+        });
+    }
+
+    @Test
     public void fetchingMessageCorrectlyReadsDatabase() {
         final List<Message> msgs = new ArrayList<>();
         firebaseHelper.fetchMessages("you", new FirebaseHelper.Handler() {
@@ -90,6 +134,16 @@ public class FirebaseHelperTest {
                 Assert.assertFalse(msgs.isEmpty());
             }
         });
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void updateUserStatisticThrowsIllegalArgumentIOnNull() {
+        firebaseHelper.updateUserStatistics(null, (long)10, (float)10, FirebaseHelper.RunType.SINGLE);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void updateUserStatisticThrowsIllegalArgumentOnEmpty() {
+        firebaseHelper.updateUserStatistics("", (long)10, (float)10, FirebaseHelper.RunType.SINGLE);
     }
 
     @Test
