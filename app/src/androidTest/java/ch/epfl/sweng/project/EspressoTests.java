@@ -41,6 +41,7 @@ import ch.epfl.sweng.project.Activities.ChallengeActivity;
 import ch.epfl.sweng.project.Activities.SideBarActivity;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
+import ch.epfl.sweng.project.Fragments.RunFragments.RunningMapFragment;
 import ch.epfl.sweng.project.Model.Message;
 import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.TestUser;
@@ -360,6 +361,8 @@ public class EspressoTests {
         onView(withId(R.id.start_run)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
+        mActivityRule.getActivity().getFragmentManager().findFragmentById(R.id.fragment_container);
+
         onView(withId(R.id.stop_run)).check(matches(isDisplayed()));
         onView(withId(R.id.stop_run)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
@@ -437,8 +440,6 @@ public class EspressoTests {
 
     }
 
-
-
     @Test
     public void challengeDistance() {
         //Tap on the challenge button per user
@@ -473,6 +474,8 @@ public class EspressoTests {
         SystemClock.sleep(WAIT_DURATION);
 
         onView(withId(R.id.challenge_chronometer)).check(matches(isDisplayed()));
+
+        SystemClock.sleep(2000);
     }
 
     @Test
@@ -491,8 +494,6 @@ public class EspressoTests {
         SystemClock.sleep(WAIT_DURATION);
         onView(withText("Challenge!")).perform(click());
 
-
-
         onView(withId(R.id.readyBtn)).check(matches(isDisplayed()));
         SystemClock.sleep(WAIT_DURATION);
 
@@ -501,6 +502,8 @@ public class EspressoTests {
         SystemClock.sleep(WAIT_DURATION);
 
         onView(withId(R.id.challenge_chronometer)).check(matches(isDisplayed()));
+
+        SystemClock.sleep(2000);
     }
 
     @Test
