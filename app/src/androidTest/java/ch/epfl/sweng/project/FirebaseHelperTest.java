@@ -299,6 +299,5 @@ public class FirebaseHelperTest {
     public void addNewUser() {
         firebaseHelper.getDatabase().child("users").child("uselessMail").removeValue();
         firebaseHelper.addOrUpdateUser("uselessUser", "uselessMail");
-        firebaseHelper.getDatabase().child("users").child("uselessMail").removeValue();
     }
 }
