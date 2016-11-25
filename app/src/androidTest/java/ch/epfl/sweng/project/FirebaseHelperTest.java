@@ -323,6 +323,6 @@ public class FirebaseHelperTest {
                 });
             }
         });
->>>>>>> parent of 350019c... Fix search without family name
     }
+    */
 }
