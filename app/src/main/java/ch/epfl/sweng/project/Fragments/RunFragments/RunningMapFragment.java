@@ -1,6 +1,7 @@
 package ch.epfl.sweng.project.Fragments.RunFragments;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -18,6 +19,9 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.MapView;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import ch.epfl.sweng.project.Activities.SideBarActivity;
 import ch.epfl.sweng.project.AppRunnest;
@@ -123,6 +127,12 @@ public class RunningMapFragment extends RunFragment {
     private void startButtonPressed() {
 
         if(checkPermission() && mLocationSettingsHandler.checkLocationSettings()) {
+
+            // initialize new Run
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy HH:mm:ss");
+            String runName = dateFormat.format(new Date());
+            mRun = new Run(runName);
             super.startRun();
 
             mStartUpdatesButton.setVisibility(View.INVISIBLE);

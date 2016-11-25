@@ -1,0 +1,58 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="ch.epfl.sweng.project.Fragments.DisplayChallengeFragment">
+
+    <com.google.android.gms.maps.MapView
+        android:layout_height="150dp"
+        android:id="@+id/myMapView"
+        android:layout_gravity="top|left"
+        android:layout_width="150dp"/>
+
+    <TableLayout
+        android:layout_height="230dp"
+        android:id="@+id/myTable"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom|left"
+        android:layout_width="150dp">
+
+    </TableLayout>
+
+    <TableLayout
+        android:layout_width="150dp"
+        android:layout_height="230dp"
+        android:id="@+id/myOpponentTable"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom|right">
+
+    </TableLayout>
+
+
+    <Button
+        android:text="@string/go_to_run_history"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/go_to_run_history"
+        android:layout_gravity="bottom|left|center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="20dp"
+        tools:ignore="RtlHardcoded"/>
+
+    <Button
+        android:text="@string/delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/deleteRunButton"
+        android:layout_gravity="bottom|right|center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"
+        tools:ignore="RtlHardcoded"/>
+
+    <com.google.android.gms.maps.MapView
+        android:layout_height="150dp"
+        android:id="@+id/myOpponentMapView"
+        android:layout_gravity="top|right"
+        android:layout_width="150dp"/>
+
+</FrameLayout>

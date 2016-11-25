@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -34,6 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,14 +44,18 @@ import java.util.Stack;
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
+import ch.epfl.sweng.project.Fragments.ChallengeDialogFragment;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 import ch.epfl.sweng.project.Fragments.DBUploadFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
+import ch.epfl.sweng.project.Fragments.DisplayChallengeFragment;
 import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
 import ch.epfl.sweng.project.Fragments.MessagesFragment;
+import ch.epfl.sweng.project.Fragments.RequestDialogFragment;
 import ch.epfl.sweng.project.Fragments.RunFragments.RunningMapFragment;
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
+import ch.epfl.sweng.project.Model.Challenge;
 import ch.epfl.sweng.project.Model.Message;
 import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.User;
@@ -63,7 +69,10 @@ public class SideBarActivity extends AppCompatActivity
         RunHistoryFragment.onRunHistoryInteractionListener,
         DisplayUserFragment.OnDisplayUserFragmentInteractionListener,
         MessagesFragment.MessagesFragmentInteractionListener,
-        DisplayRunFragment.DisplayRunFragmentInteractionListener
+        DisplayRunFragment.DisplayRunFragmentInteractionListener,
+        ChallengeDialogFragment.ChallengeDialogListener,
+        RequestDialogFragment.RequestDialogListener,
+        DisplayChallengeFragment.OnDisplayChallengeFragmentInteractionListener
 {
 
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
@@ -100,6 +109,10 @@ public class SideBarActivity extends AppCompatActivity
         }
     };
 
+    private String challengedUserName = "no Name";
+    private String challengedUserEmail = "no eMail";
+    private Message requestMessage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,7 +137,7 @@ public class SideBarActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         View header = navigationView.getHeaderView(0);
         TextView h1 = (TextView) header.findViewById(R.id.header1_nav_header);
-        TextView h2 = (TextView) header.findViewById(R.id.header2_nav_header);
+        final TextView h2 = (TextView) header.findViewById(R.id.header2_nav_header);
 
 
         runItem = navigationView.getMenu().getItem(1);
@@ -140,7 +153,14 @@ public class SideBarActivity extends AppCompatActivity
         User account = ((AppRunnest)getApplicationContext()).getUser();
         if (account != null) {
             h1.setText(account.getName());
-            h2.setText(account.getEmail());
+
+            mFirebaseHelper.getUserStatistics(account.getEmail(), new FirebaseHelper.statisticsHandler() {
+                @Override
+                public void handleRetrievedStatistics(String[] statistics) {
+                    String nbRuns = statistics[mFirebaseHelper.TOTAL_NUMBER_OF_RUNS_INDEX];
+                    h2.setText(nbRuns + " runs");
+                }
+            });
         }
 
         //Initializing the fragment
@@ -222,7 +242,10 @@ public class SideBarActivity extends AppCompatActivity
                             String surname = surnameAndFamilyName[0].toLowerCase();
                             String familyName = surnameAndFamilyName[1].toLowerCase();
 
-                            String myEmail = ((AppRunnest) getApplication()).getUser().getEmail();
+                            String myEmail = FirebaseHelper
+                                    .getFireBaseMail(((AppRunnest) getApplication())
+                                    .getUser()
+                                    .getEmail());
 
                             String lowerCaseQuery = query.toLowerCase();
                             if ((usersName.toLowerCase().startsWith(lowerCaseQuery)
@@ -255,11 +278,6 @@ public class SideBarActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -483,6 +501,11 @@ public class SideBarActivity extends AppCompatActivity
         launchFragment(DisplayRunFragment.newInstance(run));
     }
 
+    public void onChallengeHistoryInteraction(Challenge challenge) {
+        itemStack.push(historyItem);
+        launchFragment(DisplayChallengeFragment.newInstance(challenge));
+    }
+
     @Override
     public void onDBDownloadFragmentInteraction() {
         launchFragment(new ProfileFragment());
@@ -494,20 +517,124 @@ public class SideBarActivity extends AppCompatActivity
 
     @Override
     public void onDisplayUserFragmentInteraction(String challengedUserName, String challengedUserEmail) {
-        Intent intent = new Intent(this, ChallengeActivity.class);
-        intent.putExtra("opponent", challengedUserName);
-        startActivity(intent);
+        this.challengedUserName = challengedUserName;
+        this.challengedUserEmail = challengedUserEmail;
+        showChallengeDialog();
     }
 
     @Override
     public void onMessagesFragmentInteraction(Message message) {
-        Intent intent = new Intent(this, ChallengeActivity.class);
-        intent.putExtra("opponent", message.getSender());
-        startActivity(intent);
+        requestMessage = message;
+        showRequestDialog();
     }
 
     @Override
     public void onDisplayRunFragmentInteraction() {
+        // keep using the stack
+        onNavigationItemSelected(navigationView.getMenu().getItem(2));
+    }
+
+    /**
+     * Dialog for customize challenge.
+     */
+    public void showChallengeDialog() {
+        DialogFragment dialog = new ChallengeDialogFragment();
+        dialog.show(getSupportFragmentManager(), "ChallengeDialogFragment");
+    }
+
+    /**
+     * Click "challenge!" from the customize challenge dialog.
+     */
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+
+        ChallengeActivity.ChallengeType challengeType = ((ChallengeDialogFragment)dialog).getType();
+        int firstValue = ((ChallengeDialogFragment)dialog).getFirstValue();
+        int secondValue = ((ChallengeDialogFragment)dialog).getSecondValue();
+
+        // Send message
+        String from = ((AppRunnest) getApplication()).getUser().getEmail();
+        String to = FirebaseHelper.getFireBaseMail(challengedUserEmail);
+        String sender = ((AppRunnest) getApplication()).getUser().getName();
+        String message = "Run with me!";
+        Message challengeRequestMessage = new Message(from, to, sender, challengedUserName,
+                Message.MessageType.CHALLENGE_REQUEST, message, new Date(), firstValue, secondValue, challengeType);
+
+        FirebaseHelper firebaseHelper = new FirebaseHelper();
+        firebaseHelper.send(challengeRequestMessage);
+
+
+        Intent intent = new Intent(this, ChallengeActivity.class);
+        intent.putExtra("type", challengeType);
+        intent.putExtra("firstValue", firstValue);
+        intent.putExtra("secondValue", secondValue);
+        intent.putExtra("owner", true);
+        intent.putExtra("opponent", challengedUserName);
+        startActivity(intent);
+    }
+
+    /**
+     * Click "cancel" from the customize challenge dialog.
+     */
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+
+    }
+
+    /**
+     * Dialog for a challenge request.
+     */
+    public void showRequestDialog() {
+        DialogFragment dialog = new RequestDialogFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("type", requestMessage.getChallengeType());
+        args.putInt("firstValue", requestMessage.getFirstValue());
+        args.putInt("secondValue", requestMessage.getSecondValue());
+        args.putString("opponent", requestMessage.getFrom());
+        args.putString("sender", requestMessage.getSender());
+
+        dialog.setArguments(args);
+        dialog.show(getSupportFragmentManager(), "RequestDialogFragment");
+    }
+
+    /**
+     * Click "Accept" from the request challenge dialog.
+     */
+    @Override
+    public void onDialogAcceptClick(DialogFragment dialog) {
+        //mFirebaseHelper.delete(requestMessage);
+        ChallengeActivity.ChallengeType challengeType = ((RequestDialogFragment)dialog).getType();
+        int firstValue = ((RequestDialogFragment)dialog).getFirstValue();
+        int secondValue = ((RequestDialogFragment)dialog).getSecondValue();
+
+        Intent intent = new Intent(this, ChallengeActivity.class);
+        intent.putExtra("type", challengeType);
+        intent.putExtra("firstValue", firstValue);
+        intent.putExtra("secondValue", secondValue);
+        intent.putExtra("owner", false);
+        intent.putExtra("opponent", requestMessage.getSender());
+        startActivity(intent);
+    }
+
+    /**
+     * Click "Decline" from the request challenge dialog.
+     */
+    @Override
+    public void onDialogDeclineClick(DialogFragment dialog) {
+        mFirebaseHelper.delete(requestMessage);
+        launchFragment(new MessagesFragment());
+    }
+
+    /**
+     * Click "Cancel" from the request challenge dialog.
+     */
+    @Override
+    public void onDialogCancelClick(DialogFragment dialog) {
+
+    }
+
+    @Override
+    public void onDisplayChallengeFragmentInteraction() {
         // keep using the stack
         onNavigationItemSelected(navigationView.getMenu().getItem(2));
     }

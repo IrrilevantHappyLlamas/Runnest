@@ -1,16 +1,10 @@
 package ch.epfl.sweng.project.Firebase;
 
-import android.provider.ContactsContract;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ch.epfl.sweng.project.AppRunnest;
+import ch.epfl.sweng.project.Activities.ChallengeActivity;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Message;
 
@@ -39,6 +33,9 @@ public class FirebaseHelper {
     private final String MESSAGES_CHILD = "messages";
     private final String FROM_CHILD = "from";
     private final String SENDER_CHILD = "sender";
+    private final String CHALLENGE_TYPE_CHILD = "challenge_type";
+    private final String FIRST_VALUE_CHILD = "first_value";
+    private final String SECOND_VALUE_CHILD = "second_value";
     private final String ADDRESSEE_CHILD = "addressee";
     private final String TYPE_CHILD = "type";
     private final String MESSAGE_CHILD = "message";
@@ -90,8 +87,23 @@ public class FirebaseHelper {
     }
 
     private final String CHALLENGES_CHILD = "challenges";
-    private final String USER_STATUS = "status";
-    private final String USER_CHECKPOINTS = "checkpoints";
+
+    public enum challengeNodeType {
+        READY("readyStatus"),
+        FINISH("finishStatus"),
+        DATA("checkpoints");
+
+        private final String nodeName;
+
+        challengeNodeType(final String nodeName) {
+            this.nodeName = nodeName;
+        }
+
+        @Override
+        public String toString() {
+            return nodeName;
+        }
+    }
 
     /**
      * Interface that allows to handle message fetching asynchronously from the server
@@ -126,7 +138,7 @@ public class FirebaseHelper {
     /**
      * Allows to send a message that will be stored on the server
      *
-     * @param message
+     * @param message   message to be stored
      */
     public void send(Message message) {
         Date time = message.getTime();
@@ -137,14 +149,18 @@ public class FirebaseHelper {
         messageChild.child(ADDRESSEE_CHILD).setValue(message.getAddressee());
         messageChild.child(TYPE_CHILD).setValue(message.getType());
         messageChild.child(MESSAGE_CHILD).setValue(message.getMessage());
+        messageChild.child(CHALLENGE_TYPE_CHILD).setValue(message.getChallengeType());
+        messageChild.child(FIRST_VALUE_CHILD).setValue(message.getFirstValue());
+        messageChild.child(SECOND_VALUE_CHILD).setValue(message.getSecondValue());
         messageChild.child(TIME_CHILD).setValue(time);
     }
+
 
     /**
      * Fetches all messages in the server for a specific user and let the handler function take care of them
      *
-     * @param forUser
-     * @param handler
+     * @param forUser   user which messages to fetch
+     * @param handler   handler for fetched messages
      */
     public void fetchMessages(final String forUser, final Handler handler) {
         databaseReference.child(MESSAGES_CHILD).child(forUser).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -159,7 +175,10 @@ public class FirebaseHelper {
                         Message.MessageType type = children.child(TYPE_CHILD).getValue(Message.MessageType.class);
                         String messageText = children.child(MESSAGE_CHILD).getValue(String.class);
                         Date time = children.child(TIME_CHILD).getValue(Date.class);
-                        Message message = new Message(from, forUser, sender, addressee, type, messageText, time);
+                        int firstValue = children.child(FIRST_VALUE_CHILD).getValue(Integer.class);
+                        int secondValue = children.child(SECOND_VALUE_CHILD).getValue(Integer.class);
+                        ChallengeActivity.ChallengeType challengeType = children.child(CHALLENGE_TYPE_CHILD).getValue(ChallengeActivity.ChallengeType.class);
+                        Message message = new Message(from, forUser, sender, addressee, type, messageText, time, firstValue, secondValue, challengeType);
 
                         messages.add(message);
                     }
@@ -177,7 +196,7 @@ public class FirebaseHelper {
     /**
      * Deletes a given message from the server
      *
-     * @param message
+     * @param message   message to delete
      */
     public void delete(Message message) {
         String messageId = message.getUid();
@@ -363,7 +382,7 @@ public class FirebaseHelper {
 
     /**
      * Creates a challenge under "challenges" node given the names of the opponents and
-     * the desired name of the challenge
+     * the desired name of the challenge.
      *
      * @param user1             first challenger
      * @param user2             second challenger
@@ -377,8 +396,26 @@ public class FirebaseHelper {
             throw new IllegalArgumentException("Challenge node parameters can't be null");
         }
 
-        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(USER_STATUS).setValue(false);
-        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(USER_STATUS).setValue(false);
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(challengeNodeType.READY.toString()).setValue(false);
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(challengeNodeType.FINISH.toString()).setValue(false);
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(challengeNodeType.READY.toString()).setValue(false);
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(challengeNodeType.FINISH.toString()).setValue(false);
+    }
+
+    /**
+     * Deletes a given challenge node and all its children
+     *
+     * @param challengeName     name of the challenge to delete
+     */
+    public void deleteChallengeNode(String challengeName) {
+
+        if (challengeName == null) {
+            throw new NullPointerException("Challenge name was null");
+        } else if (challengeName.isEmpty()) {
+            throw new IllegalArgumentException("Challenge name can't be empty");
+        }
+
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).removeValue();
     }
 
     /**
@@ -399,25 +436,26 @@ public class FirebaseHelper {
         }
 
         DatabaseReference checkPointRef = databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user)
-                .child(USER_CHECKPOINTS).child(Integer.toString(seqNumber));
+                .child(challengeNodeType.DATA.toString()).child(Integer.toString(seqNumber));
 
         Map<String, Object> checkPointUpdate = new HashMap<>();
         checkPointUpdate.put("/latitude", checkPoint.getLatitude());
         checkPointUpdate.put("/longitude", checkPoint.getLongitude());
 
         checkPointRef.updateChildren(checkPointUpdate);
-
-        //checkPointRef.child("latitude").setValue(checkPoint.getLatitude());
-        //checkPointRef.child("longitude").setValue(checkPoint.getLongitude());
     }
 
     /**
-     * Sets the status of an user in a given challenge as "ready"
+     * Sets the status of an user in a given challenge as true or false. The status node can be either
+     * the READY or FINISH one. The DATA node can't be set to a value. Calling the method with that argument
+     * will do nothing.
      *
      * @param challengeName     challenge in which the user is participating
      * @param user              user to set as "ready"
+     * @param statusNode        status node type to set
+     * @param status            status to set
      */
-    public void setUserReady(String challengeName, String user) {
+    public void setUserStatus(String challengeName, String user, challengeNodeType statusNode, boolean status) {
 
         if (user == null || challengeName == null) {
             throw new NullPointerException("Challenge node or user parameters can't be null");
@@ -425,17 +463,21 @@ public class FirebaseHelper {
             throw new IllegalArgumentException("Challenge node or user parameters can't be empty");
         }
 
-        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user).child(USER_STATUS).setValue(true);
+        if (statusNode != challengeNodeType.DATA) {
+            databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user).child(statusNode.toString()).setValue(status);
+        }
     }
 
     /**
-     * Sets a given listener on the status node of a user participating in a run
+     * Sets a given listener on one of the challenge nodes of a user participating in a run. The node
+     * could be the READY, FINISH or DATA one
      *
      * @param challengeName     challenge in which the user is participating
      * @param user              user whose status to observe
      * @param listener          listener to attach
+     * @param challengeNode     challenge node to which to attach the listener
      */
-    public void setUserStatusListener(String challengeName, String user, ValueEventListener listener) {
+    public void setUserChallengeListener(String challengeName, String user, ValueEventListener listener, challengeNodeType challengeNode) {
 
         if (user == null || challengeName == null || listener == null) {
             throw new NullPointerException("Challenge node, user or listener parameters can't be null");
@@ -444,29 +486,19 @@ public class FirebaseHelper {
         }
 
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user)
-                .child(USER_STATUS).addValueEventListener(listener);
+                .child(challengeNode.toString()).addValueEventListener(listener);
     }
 
     /**
-     * Sets a given listener on the data node of a user participating in a run
+     * Removes a ValueEventListener from one of the challenge nodes of a user participating in a run.
+     * The node could be the READY, FINISH or DATA one, the listener to remove has to be specified.
      *
-     * @param challengeName     challenge in which the user is participating
-     * @param user              user whose data to observe
-     * @param listener          listener to attach
+     * @param challengeName     challenge from which to remove the listener
+     * @param user              user on which the listener is currently attached
+     * @param listener          listener to remove
+     * @param nodeType          node to which the listener is attached
      */
-    public void setUserDataListener(String challengeName, String user, ValueEventListener listener) {
-
-        if (user == null || challengeName == null || listener == null) {
-            throw new NullPointerException("Challenge node, user or listener parameters can't be null");
-        } else if (user.isEmpty() || challengeName.isEmpty()) {
-            throw new IllegalArgumentException("Challenge node or user parameters can't be empty");
-        }
-
-        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user)
-                .child(USER_CHECKPOINTS).addValueEventListener(listener);
-    }
-
-    public void removeUserStatusListener(String challengeName, String user,ValueEventListener listener) {
+    public void removeUserChallengeListener(String challengeName, String user, ValueEventListener listener, challengeNodeType nodeType) {
 
         if (user == null || challengeName == null || listener == null) {
             throw new NullPointerException("Challenge node, user parameters can't be null");
@@ -475,7 +507,7 @@ public class FirebaseHelper {
         }
 
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user)
-                .child(USER_STATUS).removeEventListener(listener);
+                .child(nodeType.toString()).removeEventListener(listener);
     }
 
 

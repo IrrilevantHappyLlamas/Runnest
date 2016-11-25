@@ -59,15 +59,11 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
         profilePic.requestLayout();
 
         // Display logged profile id
-        String id = getString(R.string.id) + ": " + mUser.getId();
-        String name = getString(R.string.name) + ": " + mUser.getName();
-        String email = getString(R.string.email) + ": " + mUser.getEmail();
-        String family = getString(R.string.family) + ": " + mUser.getFamilyName();
+        String name = mUser.getName();
+        String email = mUser.getEmail();
 
-        ((TextView)view.findViewById(R.id.idTxt)).setText(id);
         ((TextView)view.findViewById(R.id.nameTxt)).setText(name);
         ((TextView)view.findViewById(R.id.emailTxt)).setText(email);
-        ((TextView)view.findViewById(R.id.familyTxt)).setText(family);
 
         mFirebaseHelper.getUserStatistics(mUser.getEmail(), new FirebaseHelper.statisticsHandler() {
             @Override
@@ -83,7 +79,8 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
                 String toBeDisplayedTime = String.valueOf(format.format(time/60));
                 ((TextView)view.findViewById(R.id.total_running_time)).setText(toBeDisplayedTime);
 
-                ((TextView)view.findViewById(R.id.total_number_of_runs)).setText(statistics[mFirebaseHelper.TOTAL_NUMBER_OF_RUNS_INDEX]);
+                String nbRuns = statistics[mFirebaseHelper.TOTAL_NUMBER_OF_RUNS_INDEX];
+                ((TextView)view.findViewById(R.id.nb_runs)).setText(nbRuns + " runs");
                 ((TextView)view.findViewById(R.id.total_number_of_challenges)).setText(statistics[mFirebaseHelper.TOTAL_NUMBER_OF_CHALLENGES_INDEX]);
                 ((TextView)view.findViewById(R.id.total_number_of_won_challenges)).setText(statistics[mFirebaseHelper.TOTAL_NUMBER_OF_WON_CHALLENGES_INDEX]);
                 ((TextView)view.findViewById(R.id.total_number_of_lost_challenges)).setText(statistics[mFirebaseHelper.TOTAL_NUMBER_OF_LOST_CHALLENGES_INDEX]);
@@ -120,13 +117,12 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
 
         @Override
         protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
+            String urlDisplay = urls[0];
             Bitmap mIcon11 = null;
             try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
+                InputStream in = new java.net.URL(urlDisplay).openStream();
                 mIcon11 = BitmapFactory.decodeStream(in);
             } catch (Exception e) {
-                Log.e("Error", e.getMessage());
                 e.printStackTrace();
             }
             return mIcon11;

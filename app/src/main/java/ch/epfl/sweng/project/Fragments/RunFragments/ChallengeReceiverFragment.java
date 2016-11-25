@@ -12,7 +12,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
+import ch.epfl.sweng.project.Activities.ChallengeActivity;
 import ch.epfl.sweng.project.Model.CheckPoint;
+import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.Track;
 
 /**
@@ -28,7 +30,7 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
     private TextView mDistance = null;
 
     // Data storage
-    private Track mTrack = null;
+    private Run mRun = null;
 
     // Map
     private MapView mMapView = null;
@@ -48,20 +50,38 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
         mMapView.onCreate(savedInstanceState);
         mMapView.getMapAsync(this); //this is important
 
-        mTrack = new Track();
+        mRun = new Run(((ChallengeActivity)getActivity()).getOpponentName());
 
         mDistance = (TextView) view.findViewById(R.id.receiver_distance);
         updateDisplayedDistance();
+
+        mRun.start();
 
         return view;
     }
 
     private void updateDisplayedDistance() {
-        String distanceInKm = (int)(mTrack.getDistance()/100.0)/10.0
-                + " "
-                + getString(R.string.km);
 
+        double distanceToShow = mRun.getTrack().getDistance()/1000.0;
+
+        switch (((ChallengeActivity)getActivity()).getChallengeType()) {
+            case TIME:
+                break;
+            case DISTANCE:
+                distanceToShow = ((ChallengeActivity)getActivity()).getChallengeGoal() - distanceToShow;
+                break;
+        }
+
+        String distanceInKm = String.format("%.2f", distanceToShow) + " " + getString(R.string.km);
         mDistance.setText(distanceInKm);
+    }
+
+    public Run getRun() {
+        return new Run(mRun);
+    }
+
+    public void stopRun() {
+        mRun.stop();
     }
 
     /**
@@ -73,7 +93,7 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
 
         mMapHandler.updateMap(checkPoint);
 
-        mTrack.add(checkPoint);
+        mRun.getTrack().add(checkPoint);
         updateDisplayedDistance();
     }
 

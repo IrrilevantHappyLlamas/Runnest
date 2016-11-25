@@ -60,12 +60,6 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
     private MapHandler mMapHandler = null;
 
     protected void startRun() {
-
-        // initialize new Run
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy HH:mm:ss");
-        String runName = dateFormat.format(new Date());
-        mRun = new Run(runName);
         mRun.start();
 
         mDistance.setVisibility(View.VISIBLE);
@@ -75,10 +69,11 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
         startLocationUpdates();
     }
 
-    private void updateDisplayedDistance() {
-        String distanceInKm = (int)(mRun.getTrack().getDistance()/100.0)/10.0
-                + " "
-                + getString(R.string.km);
+    protected void updateDisplayedDistance() {
+        double distanceToShow = mRun.getTrack().getDistance()/1000.0;
+        String distanceInKm = String.format("%.2f", distanceToShow) +
+                " " +
+                getString(R.string.km);
 
         mDistance.setText(distanceInKm);
     }

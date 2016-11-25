@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Project</string>
+    <string name="app_name">Runnest</string>
     <string name="desc">Default Description</string>
     <string name="profile_tab">Profile</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -38,4 +38,9 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="waiting_opponent">Waiting for your opponent...</string>
+    <string name="user_ready">YOU ARE READY!</string>
+    <string name="opponent_ready">Your opponent is READY!</string>
+    <string name="who_runs_faster">Who runs faster?</string>
+    <string name="login_app_image">login app iamge</string>
 </resources>

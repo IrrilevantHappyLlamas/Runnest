@@ -33,16 +33,16 @@
             android:id="@+id/sender_container">
 
             <TextView
-                android:text="YOU ARE READY!"
+                android:text="@string/user_ready"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/userWaitingTxt"
+                android:id="@+id/userTxt"
                 android:layout_gravity="center"
                 android:visibility="invisible"
                 android:textColor="@android:color/black"/>
 
             <Button
-                android:text="Ready"
+                android:text="@string/ready"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/readyBtn"
@@ -62,10 +62,10 @@
             android:id="@+id/receiver_container">
 
             <TextView
-                android:text="Waiting for your opponent..."
+                android:text="@string/waiting_opponent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/waitingTxt"
+                android:id="@+id/opponentTxt"
                 android:layout_gravity="center"/>
         </FrameLayout>
     </LinearLayout>
