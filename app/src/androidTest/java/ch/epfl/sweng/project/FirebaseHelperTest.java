@@ -293,7 +293,36 @@ public class FirebaseHelperTest {
 
     @Test
     public void addNewUser() {
-        firebaseHelper.getDatabase().child("users").child("uselessMail").removeValue();
+        firebaseHelper.getDatabase().child("users").child("uselessUser").removeValue();
         firebaseHelper.addOrUpdateUser("uselessUser", "uselessMail");
+        firebaseHelper.getDatabase().child("users").child("uselessUser").removeValue();
+    }
+
+    /*
+    @Test
+    public void deletingMessageCorrectlyReadsDatabase() {
+        final List<Message> msgs = new ArrayList<>();
+        firebaseHelper.fetchMessages("you", new FirebaseHelper.Handler() {
+            @Override
+            public void handleRetrievedMessages(List<Message> messages1) {
+                Assert.assertFalse(messages1.isEmpty());
+                final String messageUid = messages1.get(0).getUid();
+                firebaseHelper.delete(messages1.get(0));
+
+                SystemClock.sleep(3000);
+
+                firebaseHelper.fetchMessages("you", new FirebaseHelper.Handler() {
+                    @Override
+                    public void handleRetrievedMessages(List<Message> messages2) {
+                        for (Message m : messages2) {
+                            if (m.getUid().equals(messageUid)) {
+                                Assert.assertTrue(false);
+                            }
+                        }
+                    }
+                });
+            }
+        });
+>>>>>>> parent of 350019c... Fix search without family name
     }
 }
