@@ -1,9 +1,7 @@
 package ch.epfl.sweng.project;
 
 import android.os.SystemClock;
-import android.widget.TextView;
 
-import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -12,12 +10,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
-import ch.epfl.sweng.project.Firebase.FirebaseProxy;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Message;
 
