@@ -40,14 +40,7 @@ public class TestProxy implements ChallengeProxy {
 
     @Override
     public void startChallenge() {
-        /*
-        for(int i = 0; i < 2; ++i) {
-            SystemClock.sleep(2000);
-            handler.OnNewDataHandler(new CheckPoint(lat, lon));
-            lat += 0.01;
-            lon += 0.01;
-        }
-        */
+       
     }
 
     @Override
