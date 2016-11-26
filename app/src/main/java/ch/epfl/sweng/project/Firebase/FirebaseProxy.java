@@ -234,8 +234,8 @@ public class FirebaseProxy implements ChallengeProxy, ValueEventListener {
 
     private String generateChallengeName(String user1, String user2) {
 
-        int namesCompare = user1.compareTo(user2);
         String challengeName;
+        int namesCompare = user1.compareTo(user2);
         challengeName = (namesCompare <= 0)?user1 + " vs " + user2:user2 + " vs " + user1;
 
         Random rnd = new Random();
