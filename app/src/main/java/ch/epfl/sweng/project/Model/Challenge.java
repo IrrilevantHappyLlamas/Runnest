@@ -9,16 +9,30 @@ import java.io.Serializable;
  */
 public class Challenge implements Serializable {
     private String mOpponentName;
+    private Type mType;
+    private double mGoal;
+    private boolean mIsWon;
     private Run mMyRun;
     private Run mOpponentRun;
     private long mId;
 
-    public Challenge(String opponentName, Run myRun, Run opponentRun) {
-        if (opponentName == null || opponentName.equals("") || myRun == null || opponentRun == null) {
+    public static enum Type {
+        TIME,
+        DISTANCE
+    }
+
+    public Challenge(String opponentName, Type type, double goal, boolean isWon, Run myRun, Run opponentRun) {
+        if (opponentName == null || opponentName.equals("")
+                || type == null || goal <= 0
+                || myRun == null || opponentRun == null)
+        {
             throw new IllegalArgumentException();
         }
 
         mOpponentName = opponentName;
+        mType = type;
+        mGoal = goal;
+        mIsWon = isWon;
         mMyRun = new Run(myRun);
         mOpponentRun = new Run(opponentRun);
         mId = -1;
@@ -26,6 +40,18 @@ public class Challenge implements Serializable {
 
     public String getOpponentName() {
         return mOpponentName;
+    }
+
+    public Type getType() {
+        return mType;
+    }
+
+    public double getGoal() {
+        return mGoal;
+    }
+
+    public boolean isWon() {
+        return mIsWon;
     }
 
     public Run getMyRun() {

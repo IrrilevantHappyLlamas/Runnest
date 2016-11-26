@@ -434,6 +434,4 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     public double getChallengeGoal() {
         return challengeGoal;
     }
-
-    public enum ChallengeType{TIME, DISTANCE}
 }
