@@ -4,7 +4,7 @@
               android:id="@+id/main_layout"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/colorAccent"
+              android:background= "@color/colorBlack"
               android:orientation="vertical"
               android:weightSum="4"
               android:theme="@style/AppTheme.NoActionBar"
@@ -15,6 +15,17 @@
         android:layout_height="match_parent"
         tools:ignore="UselessParent">
 
+        <Button
+            android:id="@+id/sign_in_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            tools:visibility="visible"
+            android:layout_marginTop="56dp"
+            android:layout_below="@+id/loginScrrenImage"
+            android:layout_centerHorizontal="true"/>
+
+        <!--
         <com.google.android.gms.common.SignInButton
             android:id="@+id/sign_in_button"
             android:layout_width="wrap_content"
@@ -24,6 +35,7 @@
             android:layout_marginTop="56dp"
             android:layout_below="@+id/loginScrrenImage"
             android:layout_centerHorizontal="true"/>
+        -->
 
         <ImageView
             app:srcCompat="@drawable/login_screen"
@@ -35,35 +47,34 @@
             android:contentDescription="@string/login_app_image"/>
 
         <TextView
-            android:text="@string/who_runs_faster"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/fasterTextView"
-            android:textSize="18sp"
-            android:textStyle="normal|italic"
-            android:textColor="@color/colorDarkGreen"
-            android:layout_marginBottom="30dp"
-            android:layout_above="@+id/loginScrrenImage"
-            android:layout_alignRight="@+id/runnestTextView"
-            android:layout_alignEnd="@+id/runnestTextView"
-            android:fontFamily="sans-serif"
-            android:typeface="sans"
-            tools:ignore="UnusedAttribute"/>
-
-        <TextView
             android:text="@string/runnest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/runnestTextView"
-            android:textSize="36sp"
+            android:textSize="46sp"
             android:fontFamily="sans-serif"
             android:textStyle="normal|bold"
-            android:textColor="@color/colorDarkGreen"
+            android:textColor="@color/colorDarkDarkGreen"
             android:layout_marginBottom="25dp"
             android:layout_alignBottom="@+id/fasterTextView"
             android:layout_centerHorizontal="true"
             android:typeface="sans"
             tools:ignore="UnusedAttribute"/>
+
+        <TextView
+            android:text="@string/who_runs_faster"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/fasterTextView"
+            android:textSize="22sp"
+            android:textStyle="normal|italic"
+            android:textColor="@color/colorDarkDarkGreen"
+            android:layout_marginBottom="29dp"
+            android:fontFamily="sans-serif"
+            android:typeface="sans"
+            tools:ignore="UnusedAttribute"
+            android:layout_above="@+id/loginScrrenImage"
+            android:layout_centerHorizontal="true"/>
 
     </RelativeLayout>
 
