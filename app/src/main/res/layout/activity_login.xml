@@ -4,7 +4,7 @@
               android:id="@+id/main_layout"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background= "@color/colorBlack"
+              android:background= "@drawable/gradient_background"
               android:orientation="vertical"
               android:weightSum="4"
               android:theme="@style/AppTheme.NoActionBar"
@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:ignore="UselessParent">
-
+<!--
         <Button
             android:id="@+id/sign_in_button"
             android:layout_width="wrap_content"
@@ -23,9 +23,10 @@
             tools:visibility="visible"
             android:layout_marginTop="56dp"
             android:layout_below="@+id/loginScrrenImage"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:elevation="22dp"/>
+-->
 
-        <!--
         <com.google.android.gms.common.SignInButton
             android:id="@+id/sign_in_button"
             android:layout_width="wrap_content"
@@ -35,7 +36,7 @@
             android:layout_marginTop="56dp"
             android:layout_below="@+id/loginScrrenImage"
             android:layout_centerHorizontal="true"/>
-        -->
+
 
         <ImageView
             app:srcCompat="@drawable/login_screen"
