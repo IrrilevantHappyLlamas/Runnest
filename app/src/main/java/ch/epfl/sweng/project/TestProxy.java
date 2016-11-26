@@ -67,4 +67,9 @@ public class TestProxy implements ChallengeProxy {
         handler.isFinished();
         deleteChallenge();
     }
+
+    @Override
+    public void abortChallenge() {
+        
+    }
 }

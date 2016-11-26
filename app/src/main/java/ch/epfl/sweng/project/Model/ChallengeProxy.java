@@ -6,6 +6,7 @@ public interface ChallengeProxy {
         void OnNewDataHandler(CheckPoint checkPoint);
         void isReadyHandler();
         void isFinished();
+        void hasAborted();
     }
 
     void putData(CheckPoint checkPoint);
@@ -17,4 +18,6 @@ public interface ChallengeProxy {
     void imReady();
 
     void imFinished();
+
+    void abortChallenge();
 }

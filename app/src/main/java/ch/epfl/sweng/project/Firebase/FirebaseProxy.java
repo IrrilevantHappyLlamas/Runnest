@@ -166,6 +166,11 @@ public class FirebaseProxy implements ChallengeProxy, ValueEventListener {
         }
     }
 
+    @Override
+    public void abortChallenge() {
+
+    }
+
     /**
      * This public method removes challenge listeners and then deletes the challenge node on firebase.
      */

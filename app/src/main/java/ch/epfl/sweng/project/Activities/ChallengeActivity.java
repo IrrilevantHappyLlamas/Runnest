@@ -203,6 +203,11 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 }
                 fragmentManager.beginTransaction().remove(receiverFragment).commit();
             }
+
+            @Override
+            public void hasAborted() {
+                // TODO (Toby): call what's needed when the opponent has exited the challenge
+            }
         };
 
         if (((AppRunnest) getApplication()).isTestSession()) {
