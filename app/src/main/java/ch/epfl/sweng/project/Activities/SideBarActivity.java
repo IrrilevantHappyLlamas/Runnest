@@ -548,7 +548,7 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
 
-        ChallengeActivity.ChallengeType challengeType = ((ChallengeDialogFragment)dialog).getType();
+        Challenge.Type challengeType = ((ChallengeDialogFragment)dialog).getType();
         int firstValue = ((ChallengeDialogFragment)dialog).getFirstValue();
         int secondValue = ((ChallengeDialogFragment)dialog).getSecondValue();
 
@@ -603,7 +603,7 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public void onDialogAcceptClick(DialogFragment dialog) {
         //mFirebaseHelper.delete(requestMessage);
-        ChallengeActivity.ChallengeType challengeType = ((RequestDialogFragment)dialog).getType();
+        Challenge.Type challengeType = ((RequestDialogFragment)dialog).getType();
         int firstValue = ((RequestDialogFragment)dialog).getFirstValue();
         int secondValue = ((RequestDialogFragment)dialog).getSecondValue();
 

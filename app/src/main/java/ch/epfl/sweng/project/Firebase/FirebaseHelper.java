@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import ch.epfl.sweng.project.Activities.ChallengeActivity;
+import ch.epfl.sweng.project.Model.Challenge;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Message;
 
@@ -177,7 +178,7 @@ public class FirebaseHelper {
                         Date time = children.child(TIME_CHILD).getValue(Date.class);
                         int firstValue = children.child(FIRST_VALUE_CHILD).getValue(Integer.class);
                         int secondValue = children.child(SECOND_VALUE_CHILD).getValue(Integer.class);
-                        ChallengeActivity.ChallengeType challengeType = children.child(CHALLENGE_TYPE_CHILD).getValue(ChallengeActivity.ChallengeType.class);
+                        Challenge.Type challengeType = children.child(CHALLENGE_TYPE_CHILD).getValue(Challenge.Type.class);
                         Message message = new Message(from, forUser, sender, addressee, type, messageText, time, firstValue, secondValue, challengeType);
 
                         messages.add(message);

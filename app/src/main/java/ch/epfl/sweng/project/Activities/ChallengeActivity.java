@@ -48,7 +48,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private LocationSettingsHandler mLocationSettingsHandler;
 
     // Challenge
-    private ChallengeType challengeType;
+    private Challenge.Type challengeType;
     private double challengeGoal;   // time in milliseconds or distance in Km
     private boolean win;
 
@@ -84,7 +84,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
         opponentName = extra.getString("opponent");
         owner = extra.getBoolean("owner");
-        challengeType = (ChallengeType) intent.getSerializableExtra("type");
+        challengeType = (Challenge.Type) intent.getSerializableExtra("type");
 
         int firstValue = intent.getIntExtra("firstValue", 0);
         int secondValue = intent.getIntExtra("secondValue", 0);
@@ -241,21 +241,21 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
     private void endChallenge() {
         Run opponentRun = ((ChallengeReceiverFragment)receiverFragment).getRun();
-        Run userRun = ((ChallengeSenderFragment)senderFragment).getRun();
+        Run myRun = ((ChallengeSenderFragment)senderFragment).getRun();
 
         switch (challengeType) {
             case TIME:
                 if(((AppRunnest)getApplication()).isTestSession()) {
                     win = true;
                 } else {
-                    win = userRun.getTrack().getDistance() >= opponentRun.getTrack().getDistance();
+                    win = myRun.getTrack().getDistance() >= opponentRun.getTrack().getDistance();
                 }
                 break;
             case DISTANCE:
                 if(((AppRunnest)getApplication()).isTestSession()) {
                     win = false;
                 } else {
-                    win = userRun.getDuration() <= opponentRun.getDuration();
+                    win = myRun.getDuration() <= opponentRun.getDuration();
                 }
                 break;
         }
@@ -270,7 +270,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         chronometer.setText(finalResult);
 
         // Save challenge into the database
-        Challenge challengeToSave = new Challenge(opponentName, userRun, opponentRun);
+        Challenge challengeToSave = new Challenge(opponentName, challengeType, challengeGoal, win, myRun, opponentRun);
         DBHelper dbHelper = new DBHelper(this);
         dbHelper.insert(challengeToSave);
 
@@ -284,8 +284,8 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         FirebaseHelper fbHelper = new FirebaseHelper();
         User currentUser = ((AppRunnest) this.getApplication()).getUser();
         fbHelper.updateUserStatistics(currentUser.getEmail(),
-                userRun.getDuration(),
-                userRun.getTrack().getDistance(),
+                myRun.getDuration(),
+                myRun.getTrack().getDistance(),
                 challengeResult);
     }
 
@@ -310,7 +310,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         return mLocationSettingsHandler;
     }
 
-    public ChallengeType getChallengeType() {
+    public Challenge.Type getChallengeType() {
         return challengeType;
     }
 
