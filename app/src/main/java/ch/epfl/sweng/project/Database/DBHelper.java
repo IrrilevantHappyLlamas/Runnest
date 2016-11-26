@@ -10,7 +10,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 import ch.epfl.sweng.project.Model.Challenge;
 import ch.epfl.sweng.project.Model.CheckPoint;
@@ -32,7 +31,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static final String[] RUNS_COLS = {"id", "isChallenge", "name", "duration", "checkpointsFromId", "checkpointsToId"};
     private static final String[] CHECKPOINTS_COLS = {"id", "latitude", "longitude"};
-    private static final String[] CHALLENGES_COLS = {"id", "opponentName", "myRunId", "opponentRunId"};
+    private static final String[] CHALLENGES_COLS = {"id", "opponentName", "type", "goal", "isWon", "myRunId", "opponentRunId"};
 
     private Context mContext = null;
 
@@ -70,8 +69,11 @@ public class DBHelper extends SQLiteOpenHelper {
         String createChallengesTableQuery = "CREATE TABLE " + CHALLENGES_TABLE_NAME + " ("
                 + CHALLENGES_COLS[0] + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + CHALLENGES_COLS[1] + " TEXT, "
-                + CHALLENGES_COLS[2] + " INTEGER, "
-                + CHALLENGES_COLS[3] + " INTEGER)";
+                + CHALLENGES_COLS[2] + " TEXT, "
+                + CHALLENGES_COLS[3] + " DOUBLE, "
+                + CHALLENGES_COLS[4] + " INTEGER, "
+                + CHALLENGES_COLS[5] + " INTEGER, "
+                + CHALLENGES_COLS[6] + " INTEGER)";
         db.execSQL(createChallengesTableQuery);
     }
 
@@ -111,13 +113,19 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public boolean insert(Challenge challenge) {
         String opponentName = challenge.getOpponentName();
+        Challenge.Type type = challenge.getType();
+        double goal = challenge.getGoal();
+        int isWon = (challenge.isWon()) ? 1 : 0;
         long myRunId = insert(challenge.getMyRun(), true);
         long opponentRunId = insert(challenge.getOpponentRun(), true);
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(CHALLENGES_COLS[1], opponentName);
-        contentValues.put(CHALLENGES_COLS[2], myRunId);
-        contentValues.put(CHALLENGES_COLS[3], opponentRunId);
+        contentValues.put(CHALLENGES_COLS[2], type.toString());
+        contentValues.put(CHALLENGES_COLS[3], goal);
+        contentValues.put(CHALLENGES_COLS[4], isWon);
+        contentValues.put(CHALLENGES_COLS[5], myRunId);
+        contentValues.put(CHALLENGES_COLS[6], opponentRunId);
 
         long challengeId = db.insert(CHALLENGES_TABLE_NAME, null, contentValues);
         if (challengeId != -1) {
@@ -252,9 +260,22 @@ public class DBHelper extends SQLiteOpenHelper {
             while (result.moveToNext()) {
                 long id = result.getLong(0);
                 String opponentName = result.getString(1);
-                Run myRun = fetchRun(result.getLong(2));
-                Run opponentRun = fetchRun(result.getLong(3));
-                Challenge challenge = new Challenge(opponentName, myRun, opponentRun);
+
+                Challenge.Type type = null;
+                switch (result.getString(2)) {
+                    case "TIME" :
+                        type = Challenge.Type.TIME;
+                        break;
+                    case "DISTANCE" :
+                        type = Challenge.Type.DISTANCE;
+                        break;
+                }
+
+                double goal = result.getDouble(3);
+                boolean isWon = result.getShort(4) == 1;
+                Run myRun = fetchRun(result.getLong(5));
+                Run opponentRun = fetchRun(result.getLong(6));
+                Challenge challenge = new Challenge(opponentName, type, goal, isWon, myRun, opponentRun);
                 challenge.setId(id);
                 challenges.add(challenge);
             }
