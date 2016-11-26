@@ -61,6 +61,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private Boolean opponentFinished = false;
     private Boolean userFinished = false;
     private String opponentName;
+    private String challengeId;
 
     // Fragments
     private FragmentManager fragmentManager;
@@ -85,6 +86,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         opponentName = extra.getString("opponent");
         owner = extra.getBoolean("owner");
         challengeType = (ChallengeType) intent.getSerializableExtra("type");
+        challengeId = extra.getString("msgId");
 
         int firstValue = intent.getIntExtra("firstValue", 0);
         int secondValue = intent.getIntExtra("secondValue", 0);
@@ -162,12 +164,12 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
         ChallengeProxy.Handler proxyHandler = new ChallengeProxy.Handler() {
             @Override
-            public void OnNewDataHandler(CheckPoint checkPoint) {
+            public void hasNewData(CheckPoint checkPoint) {
                 ((ChallengeReceiverFragment)receiverFragment).onNewData(checkPoint);
             }
 
             @Override
-            public void isReadyHandler() {
+            public void isReady() {
                 opponentReady = true;
                 opponentTxt.setText(R.string.opponent_ready);
 
@@ -206,14 +208,14 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
             @Override
             public void hasAborted() {
-                // TODO (Toby): call what's needed when the opponent has exited the challenge
+                // TODO (Toby to Rick): when the opponent exits the challenge, you should do the same
             }
         };
 
         if (((AppRunnest) getApplication()).isTestSession()) {
             challengeProxy = new TestProxy(proxyHandler);
         } else {
-            challengeProxy = new FirebaseProxy(userName, opponentName, proxyHandler, owner);
+            challengeProxy = new FirebaseProxy(userName, opponentName, proxyHandler, owner, challengeId);
         }
     }
 
@@ -431,9 +433,22 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        challengeProxy.abortChallenge();
+        //TODO: (Toby -> ?) update database? don't have time to upload.....
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        challengeProxy.abortChallenge();
+        //TODO: (Toby -> ?) update database? don't have time to upload.....
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
-        challengeProxy.deleteChallenge();
     }
 
     public double getChallengeGoal() {

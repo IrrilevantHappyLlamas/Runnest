@@ -1,5 +1,7 @@
 package ch.epfl.sweng.project;
 
+import android.os.SystemClock;
+
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
 
@@ -24,12 +26,12 @@ public class FirebaseProxyTest {
         String remote = owner?REMOTE_OPPONENT:LOCAL_USER;
         return  new FirebaseProxy(local, remote, new ChallengeProxy.Handler() {
             @Override
-            public void OnNewDataHandler(CheckPoint checkPoint) {
+            public void hasNewData(CheckPoint checkPoint) {
 
             }
 
             @Override
-            public void isReadyHandler() {
+            public void isReady() {
 
             }
 
@@ -37,32 +39,36 @@ public class FirebaseProxyTest {
             public void isFinished() {
 
             }
-        }, owner);
+
+            @Override
+            public void hasAborted() {
+
+            }
+        }, owner, 0);
     }
 
     @Test
     public void constructorCorrectlyInstantiateChallenge() {
-        FirebaseProxy proxyOwner = createCorrectProxy(true);
-        createCorrectProxy(false);
-        proxyOwner.deleteChallenge();
-
+        createCorrectProxy(true);
+        FirebaseProxy proxyNotOwner = createCorrectProxy(false);
+        proxyNotOwner.abortChallenge();
     }
 
     @Test(expected = NullPointerException.class)
     public void constructorThrowsNullPointer() {
-        new FirebaseProxy(LOCAL_USER, REMOTE_OPPONENT, null, true);
+        new FirebaseProxy(LOCAL_USER, REMOTE_OPPONENT, null, true, 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void constructorThrowsIllegalArgument() {
         new FirebaseProxy(LOCAL_USER, "", new ChallengeProxy.Handler() {
             @Override
-            public void OnNewDataHandler(CheckPoint checkPoint) {
+            public void hasNewData(CheckPoint checkPoint) {
 
             }
 
             @Override
-            public void isReadyHandler() {
+            public void isReady() {
 
             }
 
@@ -70,7 +76,26 @@ public class FirebaseProxyTest {
             public void isFinished() {
 
             }
+
+            @Override
+            public void hasAborted() {
+
+            }
         }, true);
+    }
+
+    @Test
+    public void checkForPreviousStateReadyTriggerCallback() {
+        FirebaseProxy proxyOwner = createCorrectProxy(true);
+        proxyOwner.imReady();
+        createCorrectProxy(false);
+    }
+
+    @Test
+    public void checkForPreviousStateAbortTriggerCallback() {
+        FirebaseProxy proxyOwner = createCorrectProxy(true);
+        proxyOwner.abortChallenge();
+        createCorrectProxy(false);
     }
 
     @Test
@@ -78,7 +103,6 @@ public class FirebaseProxyTest {
         FirebaseProxy proxyOwner = createCorrectProxy(true);
         FirebaseProxy proxyNotOwner = createCorrectProxy(false);
         readyAndStartChallenge(proxyOwner, proxyNotOwner);
-        proxyOwner.deleteChallenge();
     }
 
     private void readyAndStartChallenge(FirebaseProxy owner, FirebaseProxy slave) {
@@ -89,13 +113,26 @@ public class FirebaseProxyTest {
     }
 
     @Test
+    public void imReadyOnTerminatedChallenge() {
+        FirebaseProxy proxyOwner = createCorrectProxy(true);
+        proxyOwner.abortChallenge();
+        proxyOwner.imReady();
+    }
+
+    @Test
+    public void startChallengeOnTerminatedChallenge() {
+        FirebaseProxy proxyOwner = createCorrectProxy(true);
+        proxyOwner.abortChallenge();
+        proxyOwner.startChallenge();
+    }
+
+    @Test
     public void correctlyPutDataAndTriggerCallback() {
         FirebaseProxy proxyOwner = createCorrectProxy(true);
         FirebaseProxy proxyNotOwner = createCorrectProxy(false);
         readyAndStartChallenge(proxyOwner, proxyNotOwner);
         proxyOwner.putData(new CheckPoint(100.0, 100.0));
         proxyNotOwner.putData(new CheckPoint(100.0, 100.0));
-        proxyOwner.deleteChallenge();
     }
 
     @Test(expected = NullPointerException.class)
@@ -105,47 +142,41 @@ public class FirebaseProxyTest {
     }
 
     @Test
+    public void putDataOnTerminatedChallenge() {
+        FirebaseProxy proxyOwner = createCorrectProxy(true);
+        proxyOwner.abortChallenge();
+        proxyOwner.putData(new CheckPoint(100.0, 100.0));
+    }
+
+    @Test
     public void imFinishWorksAndTriggersCallback() {
         FirebaseProxy proxyOwner = createCorrectProxy(true);
         FirebaseProxy proxyNotOwner = createCorrectProxy(false);
         readyAndStartChallenge(proxyOwner, proxyNotOwner);
         proxyNotOwner.imFinished();
+        SystemClock.sleep(2000);
         proxyOwner.imFinished();
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void startChallengeThrowsIllegalState() {
+    @Test
+    public void imFinishedOnTerminatedChallenge() {
         FirebaseProxy proxyOwner = createCorrectProxy(true);
-        proxyOwner.deleteChallenge();
-        proxyOwner.startChallenge();
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void imReadyThrowsIllegalState() {
-        FirebaseProxy proxyOwner = createCorrectProxy(true);
-        proxyOwner.deleteChallenge();
-        proxyOwner.imReady();
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void imFinishedThrowsIllegalState() {
-        FirebaseProxy proxyOwner = createCorrectProxy(true);
-        proxyOwner.deleteChallenge();
-        proxyOwner.imFinished();
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void putDataThrowsIllegalState() {
-        FirebaseProxy proxyOwner = createCorrectProxy(true);
-        proxyOwner.deleteChallenge();
+        proxyOwner.abortChallenge();
         proxyOwner.putData(new CheckPoint(100.0, 100.0));
     }
 
-
-    @Test(expected = DatabaseException.class)
-    public void onCancelledThrowsException() {
+    @Test
+    public void abortChallengeWorksAndTriggersCallback() {
         FirebaseProxy proxyOwner = createCorrectProxy(true);
-        proxyOwner.onCancelled(DatabaseError.fromException(new NullPointerException()));
+        FirebaseProxy proxyNotOwner = createCorrectProxy(false);
+        readyAndStartChallenge(proxyOwner, proxyNotOwner);
+        proxyNotOwner.abortChallenge();
     }
 
+    @Test
+    public void abortChallengeOnTerminatedChallenge() {
+        FirebaseProxy proxyOwner = createCorrectProxy(true);
+        proxyOwner.abortChallenge();
+        proxyOwner.abortChallenge();
+    }
 }

@@ -91,6 +91,7 @@ public class FirebaseHelper {
     public enum challengeNodeType {
         READY("readyStatus"),
         FINISH("finishStatus"),
+        ABORT("abortStatus"),
         DATA("checkpoints");
 
         private final String nodeName;
@@ -398,8 +399,10 @@ public class FirebaseHelper {
 
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(challengeNodeType.READY.toString()).setValue(false);
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(challengeNodeType.FINISH.toString()).setValue(false);
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(challengeNodeType.ABORT.toString()).setValue(false);
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(challengeNodeType.READY.toString()).setValue(false);
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(challengeNodeType.FINISH.toString()).setValue(false);
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(challengeNodeType.ABORT.toString()).setValue(false);
     }
 
     /**

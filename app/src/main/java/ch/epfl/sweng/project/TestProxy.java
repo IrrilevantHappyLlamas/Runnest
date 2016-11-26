@@ -1,7 +1,5 @@
 package ch.epfl.sweng.project;
 
-import java.util.logging.Handler;
-
 import ch.epfl.sweng.project.Model.ChallengeProxy;
 import ch.epfl.sweng.project.Model.CheckPoint;
 
@@ -34,7 +32,7 @@ public class TestProxy implements ChallengeProxy {
     private void sendNextPoint() {
         /*
         if(!terminated) {
-            handler.OnNewDataHandler(new CheckPoint(lat, lon));
+            handler.hasNewData(new CheckPoint(lat, lon));
             lat += 0.05;
             lon += 0.05;
         }
@@ -52,24 +50,18 @@ public class TestProxy implements ChallengeProxy {
     }
 
     @Override
-    public void deleteChallenge() {
-        terminated = true;
-    }
-
-    @Override
     public void imReady() {
-        handler.isReadyHandler();
+        handler.isReady();
         runnableHandler.post(runnableCode);
     }
 
     @Override
     public void imFinished() {
         handler.isFinished();
-        deleteChallenge();
     }
 
     @Override
     public void abortChallenge() {
-        
+
     }
 }

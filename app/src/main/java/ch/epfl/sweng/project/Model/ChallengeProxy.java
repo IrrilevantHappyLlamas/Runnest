@@ -3,8 +3,8 @@ package ch.epfl.sweng.project.Model;
 public interface ChallengeProxy {
 
     interface Handler{
-        void OnNewDataHandler(CheckPoint checkPoint);
-        void isReadyHandler();
+        void hasNewData(CheckPoint checkPoint);
+        void isReady();
         void isFinished();
         void hasAborted();
     }
@@ -12,8 +12,6 @@ public interface ChallengeProxy {
     void putData(CheckPoint checkPoint);
 
     void startChallenge();
-
-    void deleteChallenge();
 
     void imReady();
 

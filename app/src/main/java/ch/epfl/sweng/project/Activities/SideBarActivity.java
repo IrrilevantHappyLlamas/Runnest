@@ -39,6 +39,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Stack;
 
 import ch.epfl.sweng.project.AppRunnest;
@@ -559,9 +560,13 @@ public class SideBarActivity extends AppCompatActivity
         String from = ((AppRunnest) getApplication()).getUser().getEmail();
         String to = FirebaseHelper.getFireBaseMail(challengedUserEmail);
         String sender = ((AppRunnest) getApplication()).getUser().getName();
-        String message = "Run with me!";
+
+        Random rnd = new Random();
+        int rndNumber = 100000 + rnd.nextInt(900000);
+        String message = Integer.toString(rndNumber);
+        Date timestampId = new Date();
         Message challengeRequestMessage = new Message(from, to, sender, challengedUserName,
-                Message.MessageType.CHALLENGE_REQUEST, message, new Date(), firstValue, secondValue, challengeType);
+                Message.MessageType.CHALLENGE_REQUEST, message, timestampId, firstValue, secondValue, challengeType);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
         firebaseHelper.send(challengeRequestMessage);
@@ -573,6 +578,7 @@ public class SideBarActivity extends AppCompatActivity
         intent.putExtra("secondValue", secondValue);
         intent.putExtra("owner", true);
         intent.putExtra("opponent", challengedUserName);
+        intent.putExtra("msgId", message);
         startActivity(intent);
     }
 
@@ -616,6 +622,7 @@ public class SideBarActivity extends AppCompatActivity
         intent.putExtra("secondValue", secondValue);
         intent.putExtra("owner", false);
         intent.putExtra("opponent", requestMessage.getSender());
+        intent.putExtra("msgId", requestMessage.getMessage());
         startActivity(intent);
     }
 
