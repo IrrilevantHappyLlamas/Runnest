@@ -60,11 +60,13 @@ public final class LoginActivity extends AppCompatActivity
         // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);
 
+        /*
         // Customize sign-in button
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
         //noinspection deprecation
         signInButton.setScopes(mGso.getScopeArray());
+        //*/
     }
 
     private void setUpGoogleAuth() {
@@ -132,7 +134,7 @@ public final class LoginActivity extends AppCompatActivity
             ((AppRunnest)getApplication()).setUser(new AuthenticatedUser(acct));
             firebaseAuthWithGoogle(acct);
         } else {
-            ((SignInButton) findViewById(R.id.sign_in_button)).setEnabled(true);
+            findViewById(R.id.sign_in_button).setEnabled(true);
             Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
         }
     }
@@ -221,7 +223,7 @@ public final class LoginActivity extends AppCompatActivity
             switch (v.getId()) {
                 case R.id.sign_in_button:
                     Log.d(TAG, "clickSignInBtn:");
-                    ((SignInButton) findViewById(R.id.sign_in_button)).setEnabled(false);
+                    findViewById(R.id.sign_in_button).setEnabled(false);
                     signOut();
                     signIn();
                     break;
