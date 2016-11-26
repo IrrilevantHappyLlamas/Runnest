@@ -5,6 +5,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Random;
+
 import ch.epfl.sweng.project.Model.ChallengeProxy;
 import ch.epfl.sweng.project.Model.CheckPoint;
 
@@ -237,21 +239,14 @@ public class FirebaseProxy implements ChallengeProxy, ValueEventListener {
 
     private String generateChallengeName(String user1, String user2) {
 
-        // Argument check
-        if (user1 == null || user2 == null) {
-            throw new NullPointerException("User names for challenge can't be null");
-        } else if (user1.isEmpty() || user2.isEmpty()) {
-            throw new IllegalArgumentException("User names for challenge can't be empty");
-        }
-
-        int namesCompare = user1.compareTo(user2);
         String challengeName;
+        int namesCompare = user1.compareTo(user2);
+        challengeName = (namesCompare <= 0)?user1 + " vs " + user2:user2 + " vs " + user1;
 
-        if (namesCompare <= 0) {
-            challengeName = user1 + "_vs_" + user2;
-        } else {
-            challengeName = user2 + "_vs_" + user1;
-        }
+        Random rnd = new Random();
+        int rndNumber = 100000 + rnd.nextInt(900000);
+
+        challengeName += " " + rndNumber;
 
         return challengeName;
     }
