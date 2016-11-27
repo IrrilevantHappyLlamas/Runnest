@@ -15,6 +15,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -50,6 +51,7 @@ import ch.epfl.sweng.project.Fragments.DBUploadFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
 import ch.epfl.sweng.project.Fragments.DisplayChallengeFragment;
 import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
+import ch.epfl.sweng.project.Fragments.EmptySearchFragment;
 import ch.epfl.sweng.project.Fragments.MessagesFragment;
 import ch.epfl.sweng.project.Fragments.RequestDialogFragment;
 import ch.epfl.sweng.project.Fragments.RunFragments.RunningMapFragment;
@@ -72,7 +74,8 @@ public class SideBarActivity extends AppCompatActivity
         DisplayRunFragment.DisplayRunFragmentInteractionListener,
         ChallengeDialogFragment.ChallengeDialogListener,
         RequestDialogFragment.RequestDialogListener,
-        DisplayChallengeFragment.OnDisplayChallengeFragmentInteractionListener
+        DisplayChallengeFragment.OnDisplayChallengeFragmentInteractionListener,
+        EmptySearchFragment.OnEmptySearchFragmentInteractionListener
 {
 
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
@@ -86,6 +89,7 @@ public class SideBarActivity extends AppCompatActivity
     private Fragment mCurrentFragment = null;
     private FragmentManager fragmentManager = null;
     private SearchView mSearchView = null;
+    private MenuItem mSearchViewAsMenuItem = null;
 
     private FirebaseHelper mFirebaseHelper = null;
 
@@ -205,9 +209,24 @@ public class SideBarActivity extends AppCompatActivity
         // Associate searchable configuration with the SearchView
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         mSearchView = (SearchView) menu.findItem(R.id.search).getActionView();
-
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
+        //get the searchBar as a MenuItem( as opposed to as a SearchView)
+        mSearchViewAsMenuItem = (MenuItem) menu.findItem(R.id.search);
+
+        //define that when the searchBar collapses, you go back to the fragment from which you opened it.
+        MenuItemCompat.setOnActionExpandListener(mSearchViewAsMenuItem, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                onNavigationItemSelected(itemStack.peek());
+                return true;
+            }
+        });
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
 
             @Override
@@ -220,7 +239,10 @@ public class SideBarActivity extends AppCompatActivity
                 if (!newText.equals("")) {
                     return findUsers(newText);
                 }
-                return true;
+                else {
+                    launchFragment(new EmptySearchFragment());
+                    return true;
+                }
             }
         });
 
@@ -262,7 +284,7 @@ public class SideBarActivity extends AppCompatActivity
                         }
                         launchFragment(DisplayUserFragment.newInstance(users));
                     } else {
-                        launchFragment(DisplayUserFragment.newInstance(null));
+                        launchFragment(DisplayUserFragment.newInstance(new HashMap<String, String>()));
                     }
                 }
 
@@ -640,5 +662,9 @@ public class SideBarActivity extends AppCompatActivity
     public void onDisplayChallengeFragmentInteraction() {
         // keep using the stack
         onNavigationItemSelected(navigationView.getMenu().getItem(2));
+    }
+
+    @Override
+    public void onEmptySearchFragmentInteraction(){
     }
 }
