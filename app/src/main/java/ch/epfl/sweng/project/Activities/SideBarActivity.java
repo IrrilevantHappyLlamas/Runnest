@@ -211,22 +211,30 @@ public class SideBarActivity extends AppCompatActivity
         mSearchView = (SearchView) menu.findItem(R.id.search).getActionView();
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
-        //get the searchBar as a MenuItem( as opposed to as a SearchView)
+        //get the searchBar as a MenuItem (as opposed to as a SearchView)
         mSearchViewAsMenuItem = (MenuItem) menu.findItem(R.id.search);
 
-        //define that when the searchBar collapses, you go back to the fragment from which you opened it.
+        //define the behaviour of the searchBar, i.e.
+        // that when the searchBar collapses, you go back to the fragment from which you opened it,
+        //and that when you open the searchBar you go to a empty fragment.
         MenuItemCompat.setOnActionExpandListener(mSearchViewAsMenuItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
+                launchFragment(new EmptySearchFragment());
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
+                // this line is very important, without it the previous fragment isn't displayed correctly
+                //maybe because of synchrony problems.
+                mSearchView.setQuery("", false);
+
                 onNavigationItemSelected(itemStack.peek());
                 return true;
             }
         });
+
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
 
             @Override
