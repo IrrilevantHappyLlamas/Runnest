@@ -95,7 +95,7 @@ public class DisplayUserFragment extends Fragment {
             tableRow.addView(challengeButton);
 
             Button scheduleButton = new Button(this.getContext());
-            scheduleButton.setText("Schedule");
+            scheduleButton.setText(R.string.schedule);
             scheduleButton.setLayoutParams(layoutParams);
             scheduleButton.setOnClickListener(new View.OnClickListener() {
                 @Override
