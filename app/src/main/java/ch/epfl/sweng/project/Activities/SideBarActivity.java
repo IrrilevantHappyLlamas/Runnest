@@ -399,8 +399,7 @@ public class SideBarActivity extends AppCompatActivity
     public void onDestroy() {
         super.onDestroy();
         if(((AppRunnest)getApplication()).getUser().isLoggedIn()) {
-            launchEmergencyUpload();
-
+            ((AppRunnest) getApplication()).launchEmergencyUpload();
         }
     }
 
@@ -408,8 +407,7 @@ public class SideBarActivity extends AppCompatActivity
     public void onPause() {
         super.onPause();
         if(((AppRunnest)getApplication()).getUser().isLoggedIn()) {
-            launchEmergencyUpload();
-
+            ((AppRunnest) getApplication()).launchEmergencyUpload();
         }
     }
 
@@ -417,23 +415,8 @@ public class SideBarActivity extends AppCompatActivity
     public void onStop() {
         super.onStop();
         if(((AppRunnest)getApplication()).getUser().isLoggedIn()) {
-            launchEmergencyUpload();
-
+            ((AppRunnest) getApplication()).launchEmergencyUpload();
         }
-    }
-
-    /**
-     * Called by lifecycle methods of the activity, triggers an upload of the database file to firebase.
-     * This method can't wait for success or failure, since the activity is stopping or being destroyed, so there is
-     * no guarantee the upload will be successful.
-     */
-    private void launchEmergencyUpload() {
-        DBHelper dbHelper = new DBHelper(this);
-        Uri file = Uri.fromFile(dbHelper.getDatabasePath());
-        StorageReference storageRef = FirebaseStorage.getInstance()
-                .getReferenceFromUrl("gs://runnest-146309.appspot.com")
-                .child("users").child(((AppRunnest) getApplication()).getUser().getFirebaseId());
-        storageRef.child(dbHelper.getDatabaseName()).putFile(file);
     }
 
     private void dialogLogout(){

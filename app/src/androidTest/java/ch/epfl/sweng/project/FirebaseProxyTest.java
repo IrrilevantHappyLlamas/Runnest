@@ -44,7 +44,7 @@ public class FirebaseProxyTest {
             public void hasAborted() {
 
             }
-        }, owner, 0);
+        }, owner, "testID");
     }
 
     @Test
@@ -56,7 +56,7 @@ public class FirebaseProxyTest {
 
     @Test(expected = NullPointerException.class)
     public void constructorThrowsNullPointer() {
-        new FirebaseProxy(LOCAL_USER, REMOTE_OPPONENT, null, true, 0);
+        new FirebaseProxy(LOCAL_USER, REMOTE_OPPONENT, null, true, "testID");
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -81,7 +81,7 @@ public class FirebaseProxyTest {
             public void hasAborted() {
 
             }
-        }, true);
+        }, true, "testID");
     }
 
     @Test

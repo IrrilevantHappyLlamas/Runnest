@@ -60,6 +60,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private Boolean userReady = false;
     private Boolean opponentFinished = false;
     private Boolean userFinished = false;
+    private boolean isEmergencyUploadNecessary = true;
     private String opponentName;
     private String challengeId;
 
@@ -73,6 +74,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private Chronometer chronometer;
     private TextView opponentTxt;
     private TextView userTxt;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -201,6 +203,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 }
 
                 if(userFinished) {
+                    isEmergencyUploadNecessary = false;
                     endChallenge();
                 }
                 fragmentManager.beginTransaction().remove(receiverFragment).commit();
@@ -242,6 +245,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         challengeProxy.imFinished();
 
         if(opponentFinished) {
+            isEmergencyUploadNecessary = false;
             endChallenge();
         }
     }
@@ -432,18 +436,26 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         mGoogleApiClient.connect();
     }
 
+    //TODO: decidere se anche onPause
+
     @Override
     public void onStop() {
         super.onStop();
         challengeProxy.abortChallenge();
-        //TODO: (Toby -> ?) update database? don't have time to upload.....
+        if (isEmergencyUploadNecessary) {
+            //TODO: (update database with current challenge??) happens even if activity is just put in background
+            ((AppRunnest) getApplication()).launchEmergencyUpload();
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         challengeProxy.abortChallenge();
-        //TODO: (Toby -> ?) update database? don't have time to upload.....
+        if (isEmergencyUploadNecessary) {
+            //TODO: (Toby -> ?) (update database with current challenge??)
+            ((AppRunnest) getApplication()).launchEmergencyUpload();
+        }
     }
 
     @Override

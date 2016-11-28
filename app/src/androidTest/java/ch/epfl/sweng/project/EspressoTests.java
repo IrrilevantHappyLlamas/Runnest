@@ -445,8 +445,6 @@ public class EspressoTests {
         SystemClock.sleep(WAIT_DURATION);
         onView(withText("Challenge!")).perform(click());
 
-
-
         onView(withId(R.id.readyBtn)).check(matches(isDisplayed()));
         SystemClock.sleep(WAIT_DURATION);
 

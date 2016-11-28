@@ -53,7 +53,7 @@ public class FirebaseProxy implements ChallengeProxy {
      */
     public FirebaseProxy(String localUser, String remoteOpponent, final Handler handler, boolean owner, String identifier) {
 
-        if (localUser == null || remoteOpponent == null || handler == null) {
+        if (localUser == null || remoteOpponent == null || identifier == null || handler == null) {
             throw new NullPointerException("FirebaseProxy construction parameters can't be null");
         } else if (localUser.isEmpty() || remoteOpponent.isEmpty()) {
             throw new IllegalArgumentException("Challenge user in firebase proxy can't be empty");
@@ -139,6 +139,14 @@ public class FirebaseProxy implements ChallengeProxy {
         });
     }
 
+    public String getChallengeName() {
+        return challengeName;
+    }
+
+    public boolean isChallengeTerminated() {
+        return isChallengeTerminated;
+    }
+
     @Override
     public void imReady() {
         if (isChallengeTerminated) {
@@ -189,10 +197,6 @@ public class FirebaseProxy implements ChallengeProxy {
 
     @Override
     public void abortChallenge() {
-        if (isChallengeTerminated) {
-            return;
-        }
-
         firebaseHelper.setUserStatus(challengeName, localUser, FirebaseHelper.challengeNodeType.ABORT, true);
         removeActiveListeners();
         isChallengeTerminated = true;
