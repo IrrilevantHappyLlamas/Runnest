@@ -45,6 +45,7 @@ import java.util.Stack;
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
+import ch.epfl.sweng.project.Fragments.AcceptScheduleDialogFragment;
 import ch.epfl.sweng.project.Fragments.ChallengeDialogFragment;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 import ch.epfl.sweng.project.Fragments.DBUploadFragment;
@@ -52,8 +53,10 @@ import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
 import ch.epfl.sweng.project.Fragments.DisplayChallengeFragment;
 import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
 import ch.epfl.sweng.project.Fragments.EmptySearchFragment;
+import ch.epfl.sweng.project.Fragments.MemoDialogFragment;
 import ch.epfl.sweng.project.Fragments.MessagesFragment;
 import ch.epfl.sweng.project.Fragments.RequestDialogFragment;
+import ch.epfl.sweng.project.Fragments.RequestScheduleDialogFragment;
 import ch.epfl.sweng.project.Fragments.RunFragments.RunningMapFragment;
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
@@ -73,6 +76,9 @@ public class SideBarActivity extends AppCompatActivity
         MessagesFragment.MessagesFragmentInteractionListener,
         DisplayRunFragment.DisplayRunFragmentInteractionListener,
         ChallengeDialogFragment.ChallengeDialogListener,
+        RequestScheduleDialogFragment.OnRequestScheduleDialogListener,
+        AcceptScheduleDialogFragment.AcceptScheduleDialogListener,
+        MemoDialogFragment.MemoDialogListener,
         RequestDialogFragment.RequestDialogListener,
         DisplayChallengeFragment.OnDisplayChallengeFragmentInteractionListener,
         EmptySearchFragment.OnEmptySearchFragmentInteractionListener
@@ -562,6 +568,12 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
+    public void onMessagesFragmentScheduleRequestInteraction(Message message) {
+        requestMessage = message;
+        showAcceptScheduleDialog();
+    }
+
+    @Override
     public void onDisplayRunFragmentInteraction() {
         // keep using the stack
         onNavigationItemSelected(navigationView.getMenu().getItem(2));
@@ -573,6 +585,21 @@ public class SideBarActivity extends AppCompatActivity
     public void showChallengeDialog() {
         DialogFragment dialog = new ChallengeDialogFragment();
         dialog.show(getSupportFragmentManager(), "ChallengeDialogFragment");
+    }
+
+    public void showRequestScheduleDialog() {
+        DialogFragment dialog = new RequestScheduleDialogFragment();
+        dialog.show(getSupportFragmentManager(), "RequestScheduleDialogFragment");
+    }
+
+    public void showAcceptScheduleDialog() {
+        DialogFragment dialog = new AcceptScheduleDialogFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("type", requestMessage.getChallengeType());
+        args.putString("sender", requestMessage.getSender());
+        args.putSerializable("date", requestMessage.getTime());
+        dialog.setArguments(args);
+        dialog.show(getSupportFragmentManager(), "RequestDialogFragment");
     }
 
     /**
@@ -674,5 +701,109 @@ public class SideBarActivity extends AppCompatActivity
 
     @Override
     public void onEmptySearchFragmentInteraction(){
+    }
+
+    @Override
+    public void onDisplayUserFragmentInteractionSchedule(String name, String email){
+
+        this.challengedUserName = name;
+        this.challengedUserEmail = email;
+        showRequestScheduleDialog();
+    }
+
+    /**
+     *Click "Schedule!" on the request schedule dialog
+     */
+    @Override
+    public void onRequestScheduleDialogPositiveClick(DialogFragment dialog){
+
+        ChallengeActivity.ChallengeType challengeType = ((RequestScheduleDialogFragment)dialog).getType();
+        int year =  ((RequestScheduleDialogFragment)dialog).getScheduledYear();
+        int month = ((RequestScheduleDialogFragment)dialog).getScheduledMonth();
+        int day = ((RequestScheduleDialogFragment)dialog).getScheduledDay();
+        int hour = ((RequestScheduleDialogFragment)dialog).getScheduledHour();
+        int minute = ((RequestScheduleDialogFragment)dialog).getScheduledMinute();
+
+        Date scheduledDate = new Date(year, month, day, hour, minute);
+
+        // Send message
+        String from = ((AppRunnest) getApplication()).getUser().getEmail();
+        String to = FirebaseHelper.getFireBaseMail(challengedUserEmail);
+        String sender = ((AppRunnest) getApplication()).getUser().getName();
+        String message = "let's schedule a run!";
+        Message scheduleRequestMessage = new Message(from, to, sender, challengedUserName,
+                Message.MessageType.SCHEDULE_REQUEST, message, scheduledDate, challengeType);
+
+        FirebaseHelper firebaseHelper = new FirebaseHelper();
+        firebaseHelper.send(scheduleRequestMessage);
+    }
+
+    /**
+     * Click "Cancel" from the request schedule dialog.
+     */
+    @Override
+    public void onRequestScheduleDialogNegativeClick(DialogFragment dialog){
+    }
+
+    @Override
+    public void onAcceptScheduleDialogAcceptClick(DialogFragment dialog){
+        ChallengeActivity.ChallengeType challengeType = ((AcceptScheduleDialogFragment)dialog).getType();
+        Date scheduledDate = ((AcceptScheduleDialogFragment)dialog).getScheduledDate();
+
+        String from = ((AppRunnest) getApplication()).getUser().getEmail();
+        String to = FirebaseHelper.getFireBaseMail(requestMessage.getFrom());
+        String sender = ((AppRunnest) getApplication()).getUser().getName();
+        String addressee = requestMessage.getSender();
+        String message = "don't forget this run!";
+
+        // Send message to other user
+        Message memoToOpponentMessage = new Message(from, to, sender, addressee,
+                Message.MessageType.MEMO, message, scheduledDate, challengeType);
+
+        // Send message to yourself
+        Message memoToMyselfMessage = new Message(to, FirebaseHelper.getFireBaseMail(from), addressee, sender,
+                Message.MessageType.MEMO, message, scheduledDate, challengeType);
+
+        FirebaseHelper firebaseHelper = new FirebaseHelper();
+        firebaseHelper.send(memoToOpponentMessage);
+        firebaseHelper.send(memoToMyselfMessage);
+
+        mFirebaseHelper.delete(requestMessage);
+        launchFragment(new MessagesFragment());
+    }
+
+    @Override
+    public void onAcceptScheduleDialogDeclineClick(DialogFragment dialog){
+        mFirebaseHelper.delete(requestMessage);
+        launchFragment(new MessagesFragment());
+    }
+
+    @Override
+    public void onAcceptScheduleDialogCancelClick(DialogFragment dialog){
+    }
+
+    @Override
+    public void OnMessagesFragmentMemoInteraction(Message message){
+        requestMessage = message;
+        showMemoDialog();
+    }
+
+    public void showMemoDialog(){
+        DialogFragment dialog = new MemoDialogFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("type", requestMessage.getChallengeType());
+        args.putString("opponent", requestMessage.getFrom());
+        args.putString("sender", requestMessage.getSender());
+        args.putSerializable("date", requestMessage.getTime());
+        dialog.setArguments(args);
+        dialog.show(getSupportFragmentManager(), "MemoDialogFragment");
+    }
+
+    public void onMemoDialogCloseClick(DialogFragment dialog){
+    }
+
+    public void onMemoDialogDeleteClick(DialogFragment dialog){
+        mFirebaseHelper.delete(requestMessage);
+        launchFragment(new MessagesFragment());
     }
 }
