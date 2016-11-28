@@ -1,14 +1,11 @@
 package ch.epfl.sweng.project.Fragments;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import java.util.Calendar;
-import android.net.Uri;
-import android.os.Build;
+
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.DialogFragment;
@@ -44,12 +41,7 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
     DatePicker datePicker;
     TimePicker timePicker;
 
-    //gathered info
-    private int scheduledYear;
-    private int scheduledMonth;
-    private int scheduledDay;
-    private int scheduledHour;
-    private int scheduledMinute;
+    private Calendar scheduledCalendar;
     ChallengeActivity.ChallengeType type;
 
 
@@ -130,32 +122,25 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
 
         datePicker = (DatePicker) view.findViewById(R.id.datePicker);
         timePicker = (TimePicker) view.findViewById(R.id.timePicker);
+        timePicker.setIs24HourView(true);
 
-        final Calendar c = Calendar.getInstance();
+        scheduledCalendar = Calendar.getInstance();
 
-        scheduledYear = c.get(Calendar.YEAR);
-        scheduledMonth = c.get(Calendar.MONTH);
-        scheduledDay = c.get(Calendar.DAY_OF_MONTH);
-        scheduledHour = c.get(Calendar.HOUR);
-        scheduledMinute = c.get(Calendar.MINUTE);
-
-        datePicker.init(scheduledYear, scheduledMonth, scheduledDay, new DatePicker.OnDateChangedListener() {
+        datePicker.init(scheduledCalendar.get(Calendar.YEAR), scheduledCalendar.get(Calendar.MONTH), scheduledCalendar.get(Calendar.DAY_OF_MONTH), new DatePicker.OnDateChangedListener() {
             @Override
             public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                scheduledYear = year;
-                scheduledMonth = monthOfYear;
-                scheduledDay = dayOfMonth;
+                scheduledCalendar.set(year, monthOfYear, dayOfMonth);
             }
         });
 
-        timePicker.setCurrentHour(scheduledHour);
-        timePicker.setCurrentMinute(scheduledMinute);
+        timePicker.setCurrentHour(scheduledCalendar.get(Calendar.HOUR_OF_DAY));
+        timePicker.setCurrentMinute(scheduledCalendar.get(Calendar.MINUTE));
 
         timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                scheduledHour = hourOfDay;
-                scheduledMinute = minute;
+                scheduledCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                scheduledCalendar.set(Calendar.MINUTE, minute);
             }
         });
     }
@@ -184,23 +169,7 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
         return type;
     }
 
-    public int getScheduledDay() {
-        return scheduledDay;
-    }
-
-    public int getScheduledHour() {
-        return scheduledHour;
-    }
-
-    public int getScheduledMinute() {
-        return scheduledMinute;
-    }
-
-    public int getScheduledYear() {
-        return scheduledYear;
-    }
-
-    public int getScheduledMonth() {
-        return scheduledMonth;
+    public Calendar getScheduledCalendar() {
+        return scheduledCalendar;
     }
 }

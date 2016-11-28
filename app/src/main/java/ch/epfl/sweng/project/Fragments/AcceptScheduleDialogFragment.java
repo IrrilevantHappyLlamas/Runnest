@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import java.util.Calendar;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -95,10 +96,12 @@ public class AcceptScheduleDialogFragment extends DialogFragment {
         timeTxt = (TextView) view.findViewById(R.id.txt_time);
         typeTxt.setText(type.toString());
 
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(scheduledDate);
         dateDescriptionTxt.setText("On date");
-        dateTxt.setText(String.valueOf(scheduledDate.getDay()) + "-" + String.valueOf(scheduledDate.getMonth()) + "-" + String.valueOf(scheduledDate.getYear()));
+        dateTxt.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)) + "-" + String.valueOf(calendar.get(Calendar.MONTH)+1) + "-" + String.valueOf(calendar.get(Calendar.YEAR)));
         timeDescriptionTxt.setText("At");
-        timeTxt.setText(String.valueOf(scheduledDate.getHours()) + " : " + String.valueOf(scheduledDate.getMinutes()));
+        timeTxt.setText(String.valueOf(calendar.get(Calendar.HOUR_OF_DAY)) + " : " + String.valueOf(calendar.get(Calendar.MINUTE)));
 
         return builder.create();
     }
@@ -148,4 +151,6 @@ public class AcceptScheduleDialogFragment extends DialogFragment {
     public Date getScheduledDate() {
         return scheduledDate;
     }
+
+
 }

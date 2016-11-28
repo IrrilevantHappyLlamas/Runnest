@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import ch.epfl.sweng.project.Activities.ChallengeActivity;
@@ -80,10 +81,12 @@ public class MemoDialogFragment extends DialogFragment {
         timeTxt = (TextView) view.findViewById(R.id.txt_time);
         typeTxt.setText(type.toString());
 
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(scheduledDate);
         dateDescriptionTxt.setText("On date");
-        dateTxt.setText(String.valueOf(scheduledDate.getDay()) + "-" + String.valueOf(scheduledDate.getMonth()) + "-" + String.valueOf(scheduledDate.getYear()));
+        dateTxt.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)) + "-" + String.valueOf(calendar.get(Calendar.MONTH)+1) + "-" + String.valueOf(calendar.get(Calendar.YEAR)));
         timeDescriptionTxt.setText("At");
-        timeTxt.setText(String.valueOf(scheduledDate.getHours()) + " : " + String.valueOf(scheduledDate.getMinutes()));
+        timeTxt.setText(String.valueOf(calendar.get(Calendar.HOUR_OF_DAY)) + " : " + String.valueOf(calendar.get(Calendar.MINUTE)));
 
         return builder.create();
     }

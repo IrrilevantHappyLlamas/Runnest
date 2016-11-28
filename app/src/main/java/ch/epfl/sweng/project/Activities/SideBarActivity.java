@@ -718,13 +718,8 @@ public class SideBarActivity extends AppCompatActivity
     public void onRequestScheduleDialogPositiveClick(DialogFragment dialog){
 
         ChallengeActivity.ChallengeType challengeType = ((RequestScheduleDialogFragment)dialog).getType();
-        int year =  ((RequestScheduleDialogFragment)dialog).getScheduledYear();
-        int month = ((RequestScheduleDialogFragment)dialog).getScheduledMonth();
-        int day = ((RequestScheduleDialogFragment)dialog).getScheduledDay();
-        int hour = ((RequestScheduleDialogFragment)dialog).getScheduledHour();
-        int minute = ((RequestScheduleDialogFragment)dialog).getScheduledMinute();
 
-        Date scheduledDate = new Date(year, month, day, hour, minute);
+        Date scheduledDate = ((RequestScheduleDialogFragment)dialog).getScheduledCalendar().getTime();
 
         // Send message
         String from = ((AppRunnest) getApplication()).getUser().getEmail();
