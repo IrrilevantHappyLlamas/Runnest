@@ -1,6 +1,8 @@
 package ch.epfl.sweng.project.Fragments.RunFragments;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +17,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import ch.epfl.sweng.project.Activities.ChallengeActivity;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Run;
-import ch.epfl.sweng.project.Model.Track;
 
 /**
  * This Fragment represent the "receiver side" of a challenge, i.e. it handles the
@@ -25,6 +26,19 @@ import ch.epfl.sweng.project.Model.Track;
  * he ran, from when challenge started until now.
  */
 public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCallback {
+
+    // Last opponent update
+    private final long TIME_BEFORE_NOTIFY_MISSING_UPDATES = 15000;
+    private TextView warning_text;
+    private long lastUpdateTime;
+    private Handler handler = new Handler();
+    private Runnable runnableCode = new Runnable() {
+        @Override
+        public void run() {
+            updateWarningTextVisibility();
+            handler.postDelayed(runnableCode, TIME_BEFORE_NOTIFY_MISSING_UPDATES);
+        }
+    };
 
     // Live stats
     private TextView mDistance = null;
@@ -41,14 +55,17 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_challenge_receiver, container, false);
 
+        warning_text = (TextView) view.findViewById(R.id.warning_text);
+        warning_text.setVisibility(View.GONE);
+        lastUpdateTime = SystemClock.elapsedRealtime();
+
         mMapView = (MapView) view.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
-        mMapView.getMapAsync(this); //this is important
+        mMapView.getMapAsync(this);
 
         mRun = new Run(((ChallengeActivity)getActivity()).getOpponentName());
 
@@ -57,7 +74,15 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
 
         mRun.start();
 
+        handler.post(runnableCode);
+
         return view;
+    }
+
+    private void updateWarningTextVisibility() {
+        if ((SystemClock.elapsedRealtime() - lastUpdateTime) >= TIME_BEFORE_NOTIFY_MISSING_UPDATES) {
+            warning_text.setVisibility(View.VISIBLE);
+        }
     }
 
     private void updateDisplayedDistance() {
@@ -90,6 +115,9 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
      * @param checkPoint    new <code>Checkpoint</code>
      */
     public void onNewData(CheckPoint checkPoint) {
+
+        lastUpdateTime = SystemClock.elapsedRealtime();
+        warning_text.setVisibility(View.GONE);
 
         mMapHandler.updateMap(checkPoint);
 

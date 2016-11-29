@@ -24,4 +24,11 @@
         android:textAlignment="center"
         android:text="dfsdf"
         />
+
+    <TextView
+        android:text="@string/warning_missing_updates"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/warning_text"
+        android:layout_gravity="center"/>
 </FrameLayout>

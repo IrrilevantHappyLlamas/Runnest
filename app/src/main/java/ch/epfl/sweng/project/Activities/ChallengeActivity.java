@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -75,7 +76,6 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private TextView opponentTxt;
     private TextView userTxt;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,7 +117,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         mLocationSettingsHandler = new LocationSettingsHandler(mGoogleApiClient, this);
         mLocationSettingsHandler.checkLocationSettings();
 
-        //Initializing the fragment
+        //Initializing fragments
         fragmentManager = getSupportFragmentManager();
         senderFragment = fragmentManager.findFragmentById(R.id.sender_container);
         receiverFragment = fragmentManager.findFragmentById(R.id.receiver_container);
