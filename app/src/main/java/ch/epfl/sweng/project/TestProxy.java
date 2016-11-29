@@ -9,7 +9,6 @@ import ch.epfl.sweng.project.Model.CheckPoint;
 public class TestProxy implements ChallengeProxy {
 
     private Handler handler = null;
-    private android.os.Handler runnableHandler = new android.os.Handler();
 
     public TestProxy(Handler handler) {
         this.handler = handler;

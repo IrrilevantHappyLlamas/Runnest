@@ -421,8 +421,6 @@ public class EspressoTests {
 
     }
 
-
-
     @Test
     public void challengeDistance() {
         //Tap on the challenge button per user

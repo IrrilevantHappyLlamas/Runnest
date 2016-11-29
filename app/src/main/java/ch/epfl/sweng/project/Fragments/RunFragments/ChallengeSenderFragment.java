@@ -2,7 +2,6 @@ package ch.epfl.sweng.project.Fragments.RunFragments;
 
 import android.location.Location;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +10,8 @@ import android.widget.TextView;
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+
+import java.util.Locale;
 
 import ch.epfl.sweng.project.Activities.ChallengeActivity;
 import ch.epfl.sweng.project.AppRunnest;
@@ -28,17 +29,13 @@ import ch.epfl.sweng.project.Model.Run;
 public class ChallengeSenderFragment extends RunFragment {
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_challenge_sender, container, false);
 
         mMapView = (MapView) view.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         mMapView.getMapAsync(this);
 
-        //TODO
-        // Location
         mGoogleApiClient = ((ChallengeActivity)getActivity()).getGoogleApiClient();
         mLocationSettingsHandler = ((ChallengeActivity)getActivity()).getLocationSettingsHandler();
 
@@ -47,15 +44,12 @@ public class ChallengeSenderFragment extends RunFragment {
         String userName = ((AppRunnest)getActivity().getApplication()).getUser().getName();
         mRun = new Run(userName);
 
-
-
         return view;
     }
 
     public void endChallenge(){
         super.stopRun();
     }
-
 
     @Override
     protected void updateDisplayedDistance() {
@@ -79,7 +73,7 @@ public class ChallengeSenderFragment extends RunFragment {
                 break;
         }
 
-        String distanceInKm = String.format("%.2f", distanceToShow) + " " + getString(R.string.km);
+        String distanceInKm = String.format(Locale.getDefault(), "%.2f", distanceToShow) + " " + getString(R.string.km);
         mDistance.setText(distanceInKm);
     }
 

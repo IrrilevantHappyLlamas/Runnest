@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -53,7 +52,6 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private double challengeGoal;   // time in milliseconds or distance in Km
     private boolean win;
 
-
     // ChallengeProxy
     private ChallengeProxy challengeProxy;
     private Boolean owner = false;
@@ -81,8 +79,22 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_challenge);
 
-        Intent intent = getIntent();
+        extractIntent(getIntent());
+        setupGoogleApi();
+        createProxy();
 
+        // Location
+        mLocationSettingsHandler = new LocationSettingsHandler(mGoogleApiClient, this);
+        mLocationSettingsHandler.checkLocationSettings();
+
+        setupFragments();
+        setupGUI();
+
+        opponentReady = false;
+        userReady = false;
+    }
+
+    private void extractIntent(Intent intent) {
         Bundle extra = intent.getExtras();
 
         opponentName = extra.getString("opponent");
@@ -104,57 +116,20 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 }
                 break;
         }
+    }
 
-
+    private void setupGoogleApi() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+    }
 
-        createProxy();
-
-        mLocationSettingsHandler = new LocationSettingsHandler(mGoogleApiClient, this);
-        mLocationSettingsHandler.checkLocationSettings();
-
-        //Initializing fragments
+    private void setupFragments() {
         fragmentManager = getSupportFragmentManager();
         senderFragment = fragmentManager.findFragmentById(R.id.sender_container);
         receiverFragment = fragmentManager.findFragmentById(R.id.receiver_container);
-
-        // Setup Chronometer
-        chronometer = (Chronometer) findViewById(R.id.challenge_chronometer);
-        chronometer.setVisibility(View.INVISIBLE);
-
-        opponentTxt = (TextView) findViewById(R.id.opponentTxt);
-        userTxt = (TextView) findViewById(R.id.userTxt);
-        readyBtn = (Button) findViewById(R.id.readyBtn);
-        readyBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(checkPermission() && mLocationSettingsHandler.checkLocationSettings()) {
-                    challengeProxy.imReady();
-                    userReady = true;
-                    readyState();
-
-                    // In a test session we don't want to wait for the opponent
-                    if (opponentReady || ((AppRunnest)getApplication()).isTestSession()){
-                        startChallenge();
-                    }
-                }
-            }
-        });
-
-        opponentReady = false;
-        userReady = false;
-    }
-
-    /**
-     * Switch to ready state
-     */
-    private void readyState(){
-        readyBtn.setVisibility(View.GONE);
-        userTxt.setVisibility(View.VISIBLE);
     }
 
     private void createProxy(){
@@ -250,6 +225,78 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         }
     }
 
+    private void startChallenge(){
+
+        challengeProxy.startChallenge();
+
+        readyBtn.setVisibility(View.GONE);
+        userTxt.setVisibility(View.GONE);
+        opponentTxt.setVisibility(View.GONE);
+
+        receiverFragment = new ChallengeReceiverFragment();
+        fragmentManager.beginTransaction().add(R.id.receiver_container, receiverFragment).commit();
+
+        senderFragment = new ChallengeSenderFragment();
+        fragmentManager.beginTransaction().add(R.id.sender_container, senderFragment).commit();
+
+        setupChronometer();
+    }
+
+    private void setupChronometer() {
+        switch (challengeType) {
+            case DISTANCE:
+                chronometer.setBase(SystemClock.elapsedRealtime());
+                chronometer.start();
+                break;
+            case TIME:
+                //TODO verify that cast to long isn't a problem
+                new CountDownTimer((long)challengeGoal, 1000) {
+
+                    public void onTick(long millisUntilFinished) {
+                        String timeLeft = "Time left: " + millisUntilFinished/1000;
+                        chronometer.setText(timeLeft);
+                    }
+
+                    public void onFinish() {
+                        String timeIsUp = "Time's up!";
+                        chronometer.setText(timeIsUp);
+                        ((ChallengeSenderFragment)senderFragment).endChallenge();
+                        imFinished();
+                    }
+                }.start();
+                break;
+        }
+
+        chronometer.setVisibility(View.VISIBLE);
+    }
+
+    private void setupGUI() {
+        chronometer = (Chronometer) findViewById(R.id.challenge_chronometer);
+        chronometer.setVisibility(View.INVISIBLE);
+
+        opponentTxt = (TextView) findViewById(R.id.opponentTxt);
+        userTxt = (TextView) findViewById(R.id.userTxt);
+
+        readyBtn = (Button) findViewById(R.id.readyBtn);
+        readyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(checkPermission() && mLocationSettingsHandler.checkLocationSettings()) {
+                    challengeProxy.imReady();
+                    userReady = true;
+
+                    readyBtn.setVisibility(View.GONE);
+                    userTxt.setVisibility(View.VISIBLE);
+
+                    // In a test session we don't want to wait for the opponent
+                    if (opponentReady || ((AppRunnest)getApplication()).isTestSession()){
+                        startChallenge();
+                    }
+                }
+            }
+        });
+    }
+
     private void endChallenge() {
         chronometer.stop();
 
@@ -258,18 +305,12 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
         switch (challengeType) {
             case TIME:
-                if(((AppRunnest)getApplication()).isTestSession()) {
-                    win = true;
-                } else {
-                    win = userRun.getTrack().getDistance() >= opponentRun.getTrack().getDistance();
-                }
+                win = ((AppRunnest) getApplication()).isTestSession() ||
+                        userRun.getTrack().getDistance() >= opponentRun.getTrack().getDistance();
                 break;
             case DISTANCE:
-                if(((AppRunnest)getApplication()).isTestSession()) {
-                    win = false;
-                } else {
-                    win = userRun.getDuration() <= opponentRun.getDuration();
-                }
+                win = !((AppRunnest) getApplication()).isTestSession() &&
+                        userRun.getDuration() <= opponentRun.getDuration();
                 break;
         }
 
@@ -330,49 +371,9 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         return opponentName;
     }
 
-    public void startChallenge(){
-
-        challengeProxy.startChallenge();
-
-        readyBtn.setVisibility(View.GONE);
-        userTxt.setVisibility(View.GONE);
-        opponentTxt.setVisibility(View.GONE);
-
-        receiverFragment = new ChallengeReceiverFragment();
-        fragmentManager.beginTransaction().add(R.id.receiver_container, receiverFragment).commit();
-
-        senderFragment = new ChallengeSenderFragment();
-        fragmentManager.beginTransaction().add(R.id.sender_container, senderFragment).commit();
-
-        setupChronometer();
+    public double getChallengeGoal() {
+        return challengeGoal;
     }
-
-    public void setupChronometer() {
-        switch (challengeType) {
-            case DISTANCE:
-                chronometer.setBase(SystemClock.elapsedRealtime());
-                chronometer.start();
-                break;
-            case TIME:
-                //TODO verify that cast to long isn't a problem
-                new CountDownTimer((long)challengeGoal, 1000) {
-
-                    public void onTick(long millisUntilFinished) {
-                        chronometer.setText("Time left: " + millisUntilFinished/1000);
-                    }
-
-                    public void onFinish() {
-                        chronometer.setText("Time's up!");
-                        ((ChallengeSenderFragment)senderFragment).endChallenge();
-                        imFinished();
-                    }
-                }.start();
-                break;
-        }
-
-        chronometer.setVisibility(View.VISIBLE);
-    }
-
 
     /**
      * Check <code>ACCESS_FINE_LOCATION</code> permission, if necessary request it.
@@ -437,7 +438,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         mGoogleApiClient.connect();
     }
 
-    //TODO: decidere se anche onPause
+    //TODO: decide if onPause too
 
     @Override
     public void onStop() {
@@ -457,15 +458,6 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
             //TODO: (Toby -> ?) (update database with current challenge??)
             ((AppRunnest) getApplication()).launchEmergencyUpload();
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
-
-    public double getChallengeGoal() {
-        return challengeGoal;
     }
 
     public enum ChallengeType{TIME, DISTANCE}

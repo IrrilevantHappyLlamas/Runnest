@@ -1,7 +1,6 @@
 package ch.epfl.sweng.project.Fragments.RunFragments;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -24,8 +23,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Locale;
 
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Model.CheckPoint;
@@ -90,13 +88,14 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
         mLocationChangeSimulation = new CountDownTimer(10000, 500) {
             private Location location;
             private double lat = 0.001;
-            private double lon = 45.54;
+            private double lon = 0.001;
 
             private boolean isRunning = true;
 
             public void onTick(long millisUntilFinished) {
                 if(isRunning) {
                     lat += 0.001;
+                    lon += 0.001;
 
                     location = new Location("test");
                     location.setLatitude(lat);
@@ -114,7 +113,7 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
 
     protected void updateDisplayedDistance() {
         double distanceToShow = mRun.getTrack().getDistance()/1000.0;
-        String distanceInKm = String.format("%.2f", distanceToShow) +
+        String distanceInKm = String.format(Locale.getDefault(), "%.2f", distanceToShow) +
                 " " +
                 getString(R.string.km);
 
@@ -143,7 +142,7 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
-    protected void stopLocationUpdates() {
+    private void stopLocationUpdates() {
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 mGoogleApiClient,
                 this
