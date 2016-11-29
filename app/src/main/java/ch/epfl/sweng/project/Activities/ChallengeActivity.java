@@ -185,12 +185,15 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 opponentFinished = true;
                 opponentTxt.setVisibility(View.VISIBLE);
 
+                ((ChallengeReceiverFragment)receiverFragment).stopRun();
+
                 switch (challengeType) {
                     case TIME:
                         opponentTxt.setText("Opponent has finished!" +
                                 "\n" +
                                 "Final distance: " +
-                                ((ChallengeReceiverFragment)receiverFragment).getRun().getTrack().getDistance());
+                                (int)((ChallengeReceiverFragment)receiverFragment).getRun().getTrack().getDistance() +
+                                " m");
                         break;
                     case DISTANCE:
                         long opponentDuration = SystemClock.elapsedRealtime() - chronometer.getBase();
@@ -198,7 +201,6 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                                 challengeGoal +
                                 " Km in " +
                                 transformDuration(opponentDuration));
-                        ((ChallengeReceiverFragment)receiverFragment).stopRun();
                         break;
                 }
 
@@ -231,8 +233,9 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
             case TIME:
                 userTxt.setText("You have Finished!" +
                         "\n" +
-                        "Final distance: " +
-                        ((ChallengeSenderFragment)senderFragment).getRun().getTrack().getDistance());
+                        "Final distance:  " +
+                        (int)((ChallengeSenderFragment)senderFragment).getRun().getTrack().getDistance() +
+                        " m");
                 break;
             case DISTANCE:
                 userTxt.setText("You have completed " +
@@ -251,6 +254,8 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     }
 
     private void endChallenge() {
+        chronometer.stop();
+
         Run opponentRun = ((ChallengeReceiverFragment)receiverFragment).getRun();
         Run userRun = ((ChallengeSenderFragment)senderFragment).getRun();
 

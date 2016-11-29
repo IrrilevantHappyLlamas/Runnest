@@ -93,7 +93,7 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
 
         mMapHandler.updateMap(checkPoint);
 
-        mRun.getTrack().add(checkPoint);
+        mRun.update(checkPoint);
         updateDisplayedDistance();
     }
 
