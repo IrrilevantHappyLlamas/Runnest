@@ -71,11 +71,11 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
         mMapView.onCreate(savedInstanceState);
         mMapView.getMapAsync(this);
 
-        mDistance = (TextView) view.findViewById(R.id.receiver_distance);
-        updateDisplayedDistance();
-
         mRun = new Run(((ChallengeActivity)getActivity()).getOpponentName());
         mRun.start();
+
+        mDistance = (TextView) view.findViewById(R.id.receiver_distance);
+        updateDisplayedDistance();
 
         handler.post(runnableCode);
 
