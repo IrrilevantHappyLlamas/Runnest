@@ -53,7 +53,7 @@ import static org.hamcrest.Matchers.is;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class EspressoTests {
 
-    private final int WAIT_DURATION = 2000;
+    private final int WAIT_DURATION = 1000;
 
     @Rule
     public ActivityTestRule<SideBarActivity> mActivityRule = new ActivityTestRule<>(
@@ -448,7 +448,6 @@ public class EspressoTests {
         onView(withId(R.id.readyBtn)).check(matches(isDisplayed()));
         SystemClock.sleep(WAIT_DURATION);
 
-        //FIXME double click on ready (require single click during tests?)
         onView(withId(R.id.readyBtn)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
@@ -456,7 +455,8 @@ public class EspressoTests {
     }
 
     @Test
-    public void challengeTime() {        //Tap on the challenge button per user
+    public void challengeTime() {
+        //Tap on the challenge button per user
         onView(withId(R.id.search)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
         onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
@@ -476,7 +476,6 @@ public class EspressoTests {
         onView(withId(R.id.readyBtn)).check(matches(isDisplayed()));
         SystemClock.sleep(WAIT_DURATION);
 
-        //FIXME double click on ready (require single click during tests?)
         onView(withId(R.id.readyBtn)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
@@ -587,6 +586,4 @@ public class EspressoTests {
         onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());
         SystemClock.sleep(WAIT_DURATION);
     }
-
-
 }
