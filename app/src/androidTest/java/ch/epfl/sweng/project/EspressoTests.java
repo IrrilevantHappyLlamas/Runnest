@@ -54,6 +54,8 @@ import static org.hamcrest.Matchers.is;
 public class EspressoTests {
 
     private final int WAIT_DURATION = 1000;
+    //TODO: find a way to bound this to setupLocationChangeSimulation value
+    public final static int RUN_DURATION = 10000;
 
     @Rule
     public ActivityTestRule<SideBarActivity> mActivityRule = new ActivityTestRule<>(
@@ -364,7 +366,7 @@ public class EspressoTests {
         SystemClock.sleep(WAIT_DURATION);
 
         onView(withId(R.id.start_run)).perform(click());
-        SystemClock.sleep(WAIT_DURATION);
+        SystemClock.sleep(RUN_DURATION);
 
         pressBack();
         SystemClock.sleep(WAIT_DURATION);
@@ -429,29 +431,25 @@ public class EspressoTests {
         onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
         SystemClock.sleep(WAIT_DURATION);
         onView(withId(R.id.table)).check(matches(isDisplayed()));
-        SystemClock.sleep(WAIT_DURATION);
         onView(isAssignableFrom(Button.class)).perform(click());
 
         //Tap con cancel
         SystemClock.sleep(WAIT_DURATION);
         onView(withId(R.id.first_picker)).check(matches(isDisplayed()));
-        SystemClock.sleep(WAIT_DURATION);
         onView(withText("Cancel")).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
         //Tap on Challenge! and start a challenge of 1km
         onView(isAssignableFrom(Button.class)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
-        SystemClock.sleep(WAIT_DURATION);
         onView(withText("Challenge!")).perform(click());
 
         onView(withId(R.id.readyBtn)).check(matches(isDisplayed()));
-        SystemClock.sleep(WAIT_DURATION);
-
         onView(withId(R.id.readyBtn)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
         onView(withId(R.id.challenge_chronometer)).check(matches(isDisplayed()));
+        SystemClock.sleep(RUN_DURATION);
     }
 
     @Test

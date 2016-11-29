@@ -2,6 +2,7 @@ package ch.epfl.sweng.project.Fragments.RunFragments;
 
 import android.location.Location;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,8 +47,15 @@ public class ChallengeSenderFragment extends RunFragment {
         String userName = ((AppRunnest)getActivity().getApplication()).getUser().getName();
         mRun = new Run(userName);
 
+
+
         return view;
     }
+
+    public void endChallenge(){
+        super.stopRun();
+    }
+
 
     @Override
     protected void updateDisplayedDistance() {
@@ -62,9 +70,8 @@ public class ChallengeSenderFragment extends RunFragment {
                         (mRun.getTrack().getDistance())/1000.0;
 
                 if(remainingDistance <= 0.0) {
-                    mRun.stop();
                     distanceToShow = 0.0;
-                    stopLocationUpdates();
+                    endChallenge();
                     ((ChallengeActivity)getActivity()).imFinished();
                 } else {
                     distanceToShow = remainingDistance;
@@ -99,7 +106,7 @@ public class ChallengeSenderFragment extends RunFragment {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         super.onMapReady(googleMap);
-        super.startRun();
+        startRun();
     }
 
     @Override

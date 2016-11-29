@@ -94,11 +94,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         int secondValue = intent.getIntExtra("secondValue", 0);
         switch (challengeType) {
             case DISTANCE:
-                if(((AppRunnest)getApplication()).isTestSession()) {
-                    challengeGoal = 0;
-                } else {
-                    challengeGoal = firstValue + secondValue / 1000.0;
-                }
+                challengeGoal = firstValue + secondValue / 1000.0;
                 break;
             case TIME:
                 if(((AppRunnest)getApplication()).isTestSession()) {
@@ -197,7 +193,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                                 " m");
                         break;
                     case DISTANCE:
-                        long opponentDuration = SystemClock.elapsedRealtime() - chronometer.getBase();
+                        long opponentDuration = (SystemClock.elapsedRealtime() - chronometer.getBase())/1000;
                         opponentTxt.setText("Opponent completed " +
                                 challengeGoal +
                                 " Km in " +
@@ -311,8 +307,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
             throw new IllegalArgumentException("Duration could not be negative");
         }
 
-        long durationInSeconds = duration/1000;
-        return (durationInSeconds/60 + "' " + durationInSeconds%60 + "''");
+        return (duration/60 + "' " + duration%60 + "''");
     }
 
     public ChallengeProxy getChallengeProxy(){
@@ -350,7 +345,6 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         fragmentManager.beginTransaction().add(R.id.sender_container, senderFragment).commit();
 
         setupChronometer();
-
     }
 
     public void setupChronometer() {
@@ -369,6 +363,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
                     public void onFinish() {
                         chronometer.setText("Time's up!");
+                        ((ChallengeSenderFragment)senderFragment).endChallenge();
                         imFinished();
                     }
                 }.start();
