@@ -119,6 +119,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         createProxy();
 
         mLocationSettingsHandler = new LocationSettingsHandler(mGoogleApiClient, this);
+        mLocationSettingsHandler.checkLocationSettings();
 
         //Initializing the fragment
         fragmentManager = getSupportFragmentManager();
