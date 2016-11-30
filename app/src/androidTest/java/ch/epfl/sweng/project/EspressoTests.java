@@ -183,74 +183,6 @@ public class EspressoTests {
         onView(withText("No user found.")).check(matches(isDisplayed()));
     }
 
-    //TODO: remove useless tests
-    /*@Test
-    public void searchAndClickOnChallenge() {
-        onView(withId(R.id.search)).perform(click());
-
-        SystemClock.sleep(WAIT_DURATION);
-
-        onView(isAssignableFrom(EditText.class)).perform(typeText("pablo"), pressKey(KeyEvent.KEYCODE_ENTER));
-        SystemClock.sleep(WAIT_DURATION);
-
-        onView(withId(R.id.table)).check(matches(isDisplayed()));
-        SystemClock.sleep(WAIT_DURATION);
-
-        onView(isAssignableFrom(Button.class)).perform(click());
-        SystemClock.sleep(WAIT_DURATION);
-
-        //onView(withId(R.id.waitChallengedUserTextView)).check(matches(isDisplayed()));
-    }
-
-
-    @Test
-    public void cantSearchMyself() {
-        onView(withId(R.id.search)).perform(click());
-        SystemClock.sleep(WAIT_DURATION);
-
-        onView(isAssignableFrom(EditText.class)).perform(typeText("test user"), pressKey(KeyEvent.KEYCODE_ENTER));
-        SystemClock.sleep(WAIT_DURATION);
-
-        onView(withId(R.id.table)).check(matches(isDisplayed()));
-        onView(withText("No user found.")).check(matches(isDisplayed()));
-    }
-
-    @Test
-    public void acceptChallengeRequest() {
-
-        SystemClock.sleep(WAIT_DURATION);
-
-        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        SystemClock.sleep(WAIT_DURATION);
-
-        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
-        SystemClock.sleep(WAIT_DURATION);
-
-        onView(withText("From: Pablo\nType: CHALLENGE_REQUEST")).perform(click());
-        SystemClock.sleep(WAIT_DURATION);
-
-        onView(withText("ACCEPT")).perform(click());
-        SystemClock.sleep(WAIT_DURATION);
-    }
-
-    @Test
-    public void declineChallengeRequest() {
-
-        SystemClock.sleep(WAIT_DURATION);
-
-        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        SystemClock.sleep(WAIT_DURATION);
-
-        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
-        SystemClock.sleep(WAIT_DURATION);
-
-        onView(withText("From: Pablo\nType: CHALLENGE_REQUEST")).perform(click());
-        SystemClock.sleep(WAIT_DURATION);
-
-        onView(withText("DECLINE")).perform(click());
-        SystemClock.sleep(WAIT_DURATION);
-    }*/
-
     @Test
     public void uselessOnFragmentListenersWork() {
 
@@ -474,8 +406,6 @@ public class EspressoTests {
         onView(withId(R.id.btn_time)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
         onView(withText("Challenge!")).perform(click());
-
-
 
         onView(withId(R.id.readyBtn)).check(matches(isDisplayed()));
         SystemClock.sleep(WAIT_DURATION);
@@ -769,5 +699,65 @@ public class EspressoTests {
 
         onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());
         SystemClock.sleep(WAIT_DURATION);
+    }
+
+    @Test
+    public void challengeQuit() {
+        //Tap on the challenge button per user
+        onView(withId(R.id.search)).perform(click());
+        SystemClock.sleep(WAIT_DURATION);
+        onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
+        SystemClock.sleep(WAIT_DURATION);
+        onView(withText(R.string.challenge)).perform(click());
+        SystemClock.sleep(WAIT_DURATION);
+
+        //Tap on Challenge! and start a challenge of 1km
+        onView(withId(R.id.btn_time)).perform(click());
+        SystemClock.sleep(WAIT_DURATION);
+        onView(withText("Challenge!")).perform(click());
+
+        onView(withId(R.id.readyBtn)).check(matches(isDisplayed()));
+        onView(withId(R.id.readyBtn)).perform(click());
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.challenge_chronometer)).check(matches(isDisplayed()));
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.back_to_side_btn)).check(matches(isDisplayed()));
+        onView(withId(R.id.back_to_side_btn)).perform(click());
+
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withText(R.string.quit)).perform(click());
+        SystemClock.sleep(WAIT_DURATION);
+    }
+
+    @Test
+    public void challengeStopWait() {
+        //Tap on the challenge button per user
+        onView(withId(R.id.search)).perform(click());
+        SystemClock.sleep(WAIT_DURATION);
+        onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
+        SystemClock.sleep(WAIT_DURATION);
+        onView(withText(R.string.challenge)).perform(click());
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.btn_time)).perform(click());
+        SystemClock.sleep(WAIT_DURATION);
+        onView(withText("Challenge!")).perform(click());
+
+        onView(withId(R.id.readyBtn)).check(matches(isDisplayed()));
+        onView(withId(R.id.readyBtn)).perform(click());
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.challenge_chronometer)).check(matches(isDisplayed()));
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.back_to_side_btn)).check(matches(isDisplayed()));
+        onView(withId(R.id.back_to_side_btn)).perform(click());
+
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withText(R.string.quit)).perform(click());
     }
 }

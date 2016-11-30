@@ -127,7 +127,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 break;
             case TIME:
                 if(((AppRunnest)getApplication()).isTestSession()) {
-                    challengeGoal = 1000;
+                    challengeGoal = 15000;
                 } else {
                     challengeGoal = firstValue * 3600 * 1000 + secondValue * 60 * 1000;
                 }
@@ -514,7 +514,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         new AlertDialog.Builder(this)
                 .setTitle("Quit Challenge")
                 .setMessage("Are you sure you want to to quit your current Challenge?")
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.quit, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         challengeProxy.abortChallenge();
                         aborted = true;
@@ -542,7 +542,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         new AlertDialog.Builder(this)
                 .setTitle("Stop Waiting")
                 .setMessage("Are you sure you want to stop waiting and go back?")
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.quit, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         //TODO delete challenge from firebase?
 

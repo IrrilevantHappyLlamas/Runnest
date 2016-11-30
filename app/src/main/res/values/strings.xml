@@ -45,4 +45,5 @@
     <string name="who_runs_faster">Who runs faster?</string>
     <string name="login_app_image">login app iamge</string>
     <string name="schedule">Schedule</string>
+    <string name="quit">Quit</string>
 </resources>

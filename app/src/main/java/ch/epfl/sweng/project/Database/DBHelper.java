@@ -278,9 +278,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 String opponentName = result.getString(1);
 
                 Challenge.Type type = null;
-                if (result.getString(2) == Challenge.Type.TIME.toString()) {
+                if (result.getString(2).equals(Challenge.Type.TIME.toString())) {
                     type = Challenge.Type.TIME;
-                } else if (result.getString(2) == Challenge.Type.DISTANCE.toString()) {
+                } else if (result.getString(2).equals(Challenge.Type.DISTANCE.toString())) {
                     type = Challenge.Type.DISTANCE;
                 }
 
