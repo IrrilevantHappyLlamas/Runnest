@@ -525,7 +525,7 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onMessagesFragmentInteraction(Message message) {
+    public void onMessagesFragmentInteraction(final Message message) {
         requestMessage = message;
 
         if (message.getType() == Message.MessageType.CHALLENGE_REQUEST) {
@@ -537,6 +537,10 @@ public class SideBarActivity extends AppCompatActivity
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
                         showRequestDialog();
+                    } else {
+                        //TODO: maybe show dialog that explains ...
+                        FirebaseHelper fbHelper = new FirebaseHelper();
+                        fbHelper.delete(message);
                     }
                 }
 
