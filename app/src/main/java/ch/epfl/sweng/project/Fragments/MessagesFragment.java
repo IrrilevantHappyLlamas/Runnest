@@ -102,11 +102,25 @@ public class MessagesFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         if (!mMessages.isEmpty()) {
-            mListener.onMessagesFragmentInteraction(mMessages.get(position));
+            switch(mMessages.get(position).getType()) {
+                case CHALLENGE_REQUEST:
+                    mListener.onMessagesFragmentInteraction(mMessages.get(position));
+                    break;
+                case SCHEDULE_REQUEST:
+                    mListener.onMessagesFragmentScheduleRequestInteraction(mMessages.get(position));
+                    break;
+                case MEMO:
+                    mListener.OnMessagesFragmentMemoInteraction(mMessages.get(position));
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
     public interface MessagesFragmentInteractionListener {
         void onMessagesFragmentInteraction(Message message);
+        void onMessagesFragmentScheduleRequestInteraction(Message message);
+        void OnMessagesFragmentMemoInteraction(Message message);
     }
 }
