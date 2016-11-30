@@ -11,7 +11,7 @@ public class Challenge implements Serializable {
     private String mOpponentName;
     private Type mType;
     private double mGoal;
-    private boolean mIsWon;
+    private Result mResult;
     private Run mMyRun;
     private Run mOpponentRun;
     private long mId;
@@ -21,7 +21,14 @@ public class Challenge implements Serializable {
         DISTANCE
     }
 
-    public Challenge(String opponentName, Type type, double goal, boolean isWon, Run myRun, Run opponentRun) {
+    public static enum Result {
+        WON,
+        LOST,
+        ABORTED_BY_ME,
+        ABORTED_BY_OTHER
+    }
+
+    public Challenge(String opponentName, Type type, double goal, Result result, Run myRun, Run opponentRun) {
         if (opponentName == null || opponentName.equals("")
                 || type == null || goal <= 0
                 || myRun == null || opponentRun == null)
@@ -32,7 +39,7 @@ public class Challenge implements Serializable {
         mOpponentName = opponentName;
         mType = type;
         mGoal = goal;
-        mIsWon = isWon;
+        mResult = result;
         mMyRun = new Run(myRun);
         mOpponentRun = new Run(opponentRun);
         mId = -1;
@@ -50,8 +57,12 @@ public class Challenge implements Serializable {
         return mGoal;
     }
 
+    public Result getResult() {
+        return mResult;
+    }
+
     public boolean isWon() {
-        return mIsWon;
+        return mResult == Result.ABORTED_BY_OTHER || mResult == Result.WON;
     }
 
     public Run getMyRun() {

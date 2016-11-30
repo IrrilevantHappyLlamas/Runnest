@@ -22,37 +22,37 @@ public class ChallengeTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void nullOpponentNameThrowsException() {
-        Challenge challenge = new Challenge(null, Challenge.Type.DISTANCE, 100, true, createTestRun(), createTestRun());
+        Challenge challenge = new Challenge(null, Challenge.Type.DISTANCE, 100, Challenge.Result.WON, createTestRun(), createTestRun());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void emptyOpponentNameThrowsException() {
-        Challenge challenge = new Challenge("", Challenge.Type.TIME, 100, true, createTestRun(), createTestRun());
+        Challenge challenge = new Challenge("", Challenge.Type.TIME, 100, Challenge.Result.LOST, createTestRun(), createTestRun());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void nullMyRunThrowsException() {
-        Challenge challenge = new Challenge("someone", Challenge.Type.TIME, 100, false, null, createTestRun());
+        Challenge challenge = new Challenge("someone", Challenge.Type.TIME, 100, Challenge.Result.ABORTED_BY_OTHER, null, createTestRun());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void nullOpponentRunThrowsException() {
-        Challenge challenge = new Challenge("someone", Challenge.Type.TIME, 100, false, createTestRun(), null);
+        Challenge challenge = new Challenge("someone", Challenge.Type.TIME, 100, Challenge.Result.ABORTED_BY_ME, createTestRun(), null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void nullTypeThrowsException() {
-        Challenge challenge = new Challenge("someone", null, 100, false, createTestRun(), createTestRun());
+        Challenge challenge = new Challenge("someone", null, 100, Challenge.Result.WON, createTestRun(), createTestRun());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void negativeGoalThrowsException() {
-        Challenge challenge = new Challenge("someone", Challenge.Type.DISTANCE, -100, false, createTestRun(), createTestRun());
+        Challenge challenge = new Challenge("someone", Challenge.Type.DISTANCE, -100, Challenge.Result.WON, createTestRun(), createTestRun());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void zeroGoalThrowsException() {
-        Challenge challenge = new Challenge("someone", Challenge.Type.DISTANCE, 0, false, createTestRun(), createTestRun());
+        Challenge challenge = new Challenge("someone", Challenge.Type.DISTANCE, 0, Challenge.Result.WON, createTestRun(), createTestRun());
     }
 
     @Test
@@ -60,15 +60,16 @@ public class ChallengeTest {
         String opponentName = "someone";
         Challenge.Type type = Challenge.Type.DISTANCE;
         double goal = 123;
-        boolean isWon = false;
+        Challenge.Result result = Challenge.Result.WON;
         Run myRun = createTestRun();
         Run opponentRun = createTestRun();
-        Challenge challenge = new Challenge(opponentName, type, goal, isWon, myRun, opponentRun);
+        Challenge challenge = new Challenge(opponentName, type, goal, result, myRun, opponentRun);
 
         Assert.assertTrue(opponentName.equals(challenge.getOpponentName()));
         Assert.assertTrue(type == challenge.getType());
         Assert.assertEquals(goal, challenge.getGoal(), 0);
-        Assert.assertTrue(isWon == challenge.isWon());
+        Assert.assertTrue(result == challenge.getResult());
+        Assert.assertTrue(challenge.isWon());
         Assert.assertEquals(myRun.getDuration(), challenge.getMyRun().getDuration());
         Assert.assertEquals(opponentRun.getDuration(), challenge.getOpponentRun().getDuration());
     }
@@ -78,7 +79,7 @@ public class ChallengeTest {
         String opponentName = "someone";
         Run myRun = createTestRun();
         Run opponentRun = createTestRun();
-        Challenge challenge = new Challenge(opponentName, Challenge.Type.TIME, 100, false, myRun, opponentRun);
+        Challenge challenge = new Challenge(opponentName, Challenge.Type.TIME, 100, Challenge.Result.WON, myRun, opponentRun);
 
         long id = 1234;
         challenge.setId(id);
