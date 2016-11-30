@@ -17,6 +17,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import ch.epfl.sweng.project.Activities.ChallengeActivity;
+import ch.epfl.sweng.project.Model.Challenge;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,7 +26,7 @@ import ch.epfl.sweng.project.Activities.ChallengeActivity;
  * to handle interaction events.
  */
 public class MemoDialogFragment extends DialogFragment {
-    private ChallengeActivity.ChallengeType type;
+    private Challenge.Type type;
     private Date scheduledDate;
     private String sender;
     private TextView typeTxt;
@@ -103,7 +104,7 @@ public class MemoDialogFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
-        type = (ChallengeActivity.ChallengeType)args.get("type");
+        type = (Challenge.Type)args.get("type");
         scheduledDate = (Date) args.get("date");
         sender = args.getString("sender");
     }
@@ -129,7 +130,7 @@ public class MemoDialogFragment extends DialogFragment {
         mListener = null;
     }
 
-    public ChallengeActivity.ChallengeType getType() {
+    public Challenge.Type getType() {
         return type;
     }
 

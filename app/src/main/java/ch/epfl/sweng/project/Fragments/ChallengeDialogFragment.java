@@ -22,6 +22,7 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
 import ch.epfl.sweng.project.Activities.ChallengeActivity;
 import ch.epfl.sweng.project.AppRunnest;
+import ch.epfl.sweng.project.Model.Challenge;
 
 
 public class ChallengeDialogFragment extends DialogFragment implements View.OnClickListener {
@@ -29,7 +30,7 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
     //Challenge type
     Button distanceBtn;
     Button timeBtn;
-    ChallengeActivity.ChallengeType type;
+    Challenge.Type type;
 
     TextView setParameter;
 
@@ -115,7 +116,7 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
 
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                if(type == ChallengeActivity.ChallengeType.DISTANCE){
+                if(type == Challenge.Type.DISTANCE){
                     secondValue = newVal*100;
                 } else {
                     secondValue = newVal*5;
@@ -164,13 +165,12 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
                 secondPicker.setMaxValue(9);
                 secondPicker.setWrapSelectorWheel(true);
 
-
                 /*
                 secondPicker.setMinValue(0);
                 secondPicker.setMaxValue(999);
                 secondPicker.setWrapSelectorWheel(true);*/
 
-                type = ChallengeActivity.ChallengeType.DISTANCE;
+                type = Challenge.Type.DISTANCE;
                 break;
 
             case R.id.btn_time:
@@ -202,7 +202,7 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
                 secondPicker.setMaxValue(59);
                 secondPicker.setWrapSelectorWheel(true);*/
 
-                type = ChallengeActivity.ChallengeType.TIME;
+                type = Challenge.Type.TIME;
                 break;
         }
     }
@@ -237,7 +237,7 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
     }
 
 
-    public ChallengeActivity.ChallengeType getType() {
+    public Challenge.Type getType() {
         return type;
     }
 

@@ -28,6 +28,7 @@ import ch.epfl.sweng.project.Activities.ChallengeActivity;
 import ch.epfl.sweng.project.Activities.SideBarActivity;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
+import ch.epfl.sweng.project.Model.Challenge;
 import ch.epfl.sweng.project.Model.Message;
 import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.TestUser;
@@ -275,7 +276,7 @@ public class EspressoTests {
                 new Date(),
                 1,
                 0,
-                ChallengeActivity.ChallengeType.DISTANCE );
+                Challenge.Type.DISTANCE );
         listenerTest.onMessagesFragmentInteraction(msg);
     }
 
@@ -568,7 +569,7 @@ public class EspressoTests {
                 new Date(),
                 1,
                 0,
-                ChallengeActivity.ChallengeType.DISTANCE);
+                Challenge.Type.DISTANCE);
         FirebaseHelper firebaseHelper = new FirebaseHelper();
         firebaseHelper.send(msg);
 
@@ -612,7 +613,7 @@ public class EspressoTests {
                 Message.MessageType.SCHEDULE_REQUEST,
                 "that's a test",
                 new Date(),
-                ChallengeActivity.ChallengeType.DISTANCE);
+                Challenge.Type.DISTANCE);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
         firebaseHelper.send(msg1);
@@ -651,7 +652,7 @@ public class EspressoTests {
                 Message.MessageType.SCHEDULE_REQUEST,
                 "that's a test",
                 new Date(),
-                ChallengeActivity.ChallengeType.DISTANCE);
+                Challenge.Type.DISTANCE);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
         firebaseHelper.send(msg1);
@@ -684,7 +685,7 @@ public class EspressoTests {
                 Message.MessageType.MEMO,
                 "that's a test",
                 new Date(),
-                ChallengeActivity.ChallengeType.DISTANCE);
+                Challenge.Type.DISTANCE);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
         firebaseHelper.send(msg1);

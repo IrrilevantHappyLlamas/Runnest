@@ -19,7 +19,7 @@ public class Message implements Serializable {
     private Date time;
     private int firstValue;
     private int secondValue;
-    private ChallengeActivity.ChallengeType challengeType;
+    private Challenge.Type challengeType;
 
     /**
      * This enumeration represents all types of messages that can be sent to the server
@@ -108,7 +108,7 @@ public class Message implements Serializable {
                    Date sentAt,
                    int firstValue,
                    int secondValue,
-                   ChallengeActivity.ChallengeType challengeType)
+                   Challenge.Type challengeType)
             throws IllegalArgumentException
     {
         this(from, to, sender, addressee, type, message);
@@ -141,7 +141,7 @@ public class Message implements Serializable {
                    MessageType type,
                    String message,
                    Date scheduledDate,
-                   ChallengeActivity.ChallengeType challengeType)
+                   Challenge.Type challengeType)
             throws IllegalArgumentException
     {
         this(from, to, sender, addressee, type, message);
@@ -241,7 +241,7 @@ public class Message implements Serializable {
      *
      * @return the type of the challenge
      */
-    public ChallengeActivity.ChallengeType getChallengeType() {
+    public Challenge.Type getChallengeType() {
         return challengeType;
     }
 

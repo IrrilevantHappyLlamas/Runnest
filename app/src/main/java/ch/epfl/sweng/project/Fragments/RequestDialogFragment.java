@@ -21,12 +21,13 @@ import android.widget.Toast;
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
 import ch.epfl.sweng.project.Activities.ChallengeActivity;
+import ch.epfl.sweng.project.Model.Challenge;
 
 
 public class RequestDialogFragment extends DialogFragment implements View.OnClickListener {
 
 
-    private ChallengeActivity.ChallengeType type;
+    private Challenge.Type type;
     private int firstValue;
     private int secondValue;
     private String opponent;
@@ -93,7 +94,7 @@ public class RequestDialogFragment extends DialogFragment implements View.OnClic
 
         typeTxt.setText(type.toString());
 
-        if(type == ChallengeActivity.ChallengeType.DISTANCE) {
+        if(type == Challenge.Type.DISTANCE) {
             requestDescriptionTxt.setText("Wins the first one to reach ");
             goalTxt.setText((firstValue + secondValue/1000.0) + "km");
         } else {
@@ -116,7 +117,7 @@ public class RequestDialogFragment extends DialogFragment implements View.OnClic
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
-        type = (ChallengeActivity.ChallengeType)args.get("type");
+        type = (Challenge.Type)args.get("type");
         firstValue = args.getInt("firstValue");
         secondValue = args.getInt("secondValue");
         opponent = args.getString("opponent");
@@ -145,7 +146,7 @@ public class RequestDialogFragment extends DialogFragment implements View.OnClic
         mListener = null;
     }
 
-    public ChallengeActivity.ChallengeType getType() {
+    public Challenge.Type getType() {
         return type;
     }
 

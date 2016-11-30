@@ -81,7 +81,8 @@ public class DBHelperTest {
 
     @Test
     public void canInsertNewChallenge() {
-        Challenge challenge = new Challenge("someone", createTestRun(), createTestRun());
+        Run run = createTestRun();
+        Challenge challenge = new Challenge("someone", Challenge.Type.DISTANCE, 1.3, Challenge.Result.ABORTED_BY_OTHER, run, run);
         Assert.assertTrue(dbHelper.insert(challenge));
     }
 
@@ -92,11 +93,33 @@ public class DBHelperTest {
     }
 
     @Test
+    public void lastAddedIsLastRetrieveChallenges() {
+        String opponentName = "someone";
+        Challenge.Type type = Challenge.Type.DISTANCE;
+        double goal = 1.3;
+        Run run1 = createTestRun();
+        Run run2 = createTestRun();
+
+        Challenge challenge = new Challenge(opponentName, type, goal, Challenge.Result.LOST, run1, run2);
+        Assert.assertTrue(dbHelper.insert(challenge));
+
+        List<Challenge> challenges = dbHelper.fetchAllChallenges();
+        Assert.assertFalse(challenges.isEmpty());
+
+        Challenge last = challenges.get(challenges.size() - 1);
+        Assert.assertEquals(opponentName, last.getOpponentName());
+        Assert.assertEquals(type, last.getType());
+        Assert.assertEquals(goal, last.getGoal(), 0);
+        Assert.assertFalse(last.isWon());
+    }
+
+    @Test
     public void canDeleteChallenge() {
         List<Challenge> challenges = dbHelper.fetchAllChallenges();
         int initialNbRuns = challenges.size();
 
-        Challenge challenge = new Challenge("someone", createTestRun(), createTestRun());
+        Run run = createTestRun();
+        Challenge challenge = new Challenge("someone", Challenge.Type.TIME, 156.57, Challenge.Result.WON, run, run);
         Assert.assertTrue(dbHelper.insert(challenge));
 
         challenges = dbHelper.fetchAllChallenges();

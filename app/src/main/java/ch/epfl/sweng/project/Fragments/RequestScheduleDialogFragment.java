@@ -25,6 +25,7 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
 import ch.epfl.sweng.project.Activities.ChallengeActivity;
 import ch.epfl.sweng.project.AppRunnest;
+import ch.epfl.sweng.project.Model.Challenge;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,7 +43,7 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
     TimePicker timePicker;
 
     private Calendar scheduledCalendar;
-    ChallengeActivity.ChallengeType type;
+    Challenge.Type type;
 
 
     /* The activity that creates an instance of this dialog fragment must
@@ -106,14 +107,14 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
                 distanceBtn.setBackgroundColor(Color.RED);
                 timeBtn.setBackgroundColor(Color.GRAY);
 
-                type = ChallengeActivity.ChallengeType.DISTANCE;
+                type = Challenge.Type.DISTANCE;
                 break;
 
             case R.id.button_time:
                 distanceBtn.setBackgroundColor(Color.GRAY);
                 timeBtn.setBackgroundColor(Color.RED);
 
-                type = ChallengeActivity.ChallengeType.TIME;
+                type = Challenge.Type.TIME;
                 break;
         }
     }
@@ -165,7 +166,7 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
         mListener = null;
     }
 
-    public ChallengeActivity.ChallengeType getType() {
+    public Challenge.Type getType() {
         return type;
     }
 

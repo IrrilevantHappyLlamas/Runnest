@@ -32,6 +32,8 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -552,9 +554,29 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onMessagesFragmentInteraction(Message message) {
+    public void onMessagesFragmentInteraction(final Message message) {
         requestMessage = message;
-        showRequestDialog();
+
+        if (message.getType() == Message.MessageType.CHALLENGE_REQUEST) {
+            User user = ((AppRunnest) getApplication()).getUser();
+            String nodeName = user.getName() + " " + user.getFamilyName() + "_vs_" + message.getSender();
+            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
+            dbRef.child("challenges").child(nodeName).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        showRequestDialog();
+                    } else {
+                        //TODO: maybe show dialog that explains ...
+                        FirebaseHelper fbHelper = new FirebaseHelper();
+                        fbHelper.delete(message);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) { }
+            });
+        }
     }
 
     @Override
@@ -598,7 +620,7 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
 
-        ChallengeActivity.ChallengeType challengeType = ((ChallengeDialogFragment)dialog).getType();
+        Challenge.Type challengeType = ((ChallengeDialogFragment)dialog).getType();
         int firstValue = ((ChallengeDialogFragment)dialog).getFirstValue();
         int secondValue = ((ChallengeDialogFragment)dialog).getSecondValue();
 
@@ -661,8 +683,8 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onDialogAcceptClick(DialogFragment dialog) {
+        Challenge.Type challengeType = ((RequestDialogFragment)dialog).getType();
         mFirebaseHelper.delete(requestMessage);
-        ChallengeActivity.ChallengeType challengeType = ((RequestDialogFragment)dialog).getType();
         int firstValue = ((RequestDialogFragment)dialog).getFirstValue();
         int secondValue = ((RequestDialogFragment)dialog).getSecondValue();
 
@@ -735,7 +757,7 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public void onRequestScheduleDialogPositiveClick(DialogFragment dialog){
 
-        ChallengeActivity.ChallengeType challengeType = ((RequestScheduleDialogFragment)dialog).getType();
+        Challenge.Type challengeType = ((RequestScheduleDialogFragment)dialog).getType();
 
         Date scheduledDate = ((RequestScheduleDialogFragment)dialog).getScheduledCalendar().getTime();
 
@@ -760,7 +782,7 @@ public class SideBarActivity extends AppCompatActivity
 
     @Override
     public void onAcceptScheduleDialogAcceptClick(DialogFragment dialog){
-        ChallengeActivity.ChallengeType challengeType = ((AcceptScheduleDialogFragment)dialog).getType();
+        Challenge.Type challengeType = ((AcceptScheduleDialogFragment)dialog).getType();
         Date scheduledDate = ((AcceptScheduleDialogFragment)dialog).getScheduledDate();
 
         String from = ((AppRunnest) getApplication()).getUser().getEmail();

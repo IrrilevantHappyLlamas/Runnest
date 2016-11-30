@@ -57,7 +57,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private LocationSettingsHandler mLocationSettingsHandler;
 
     // Challenge
-    private ChallengeType challengeType;
+    private Challenge.Type challengeType;
     private double challengeGoal;   // time in milliseconds or distance in Km
     private boolean win;
 
@@ -115,7 +115,8 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
         opponentName = extra.getString("opponent");
         owner = extra.getBoolean("owner");
-        challengeType = (ChallengeType) intent.getSerializableExtra("type");
+
+        challengeType = (Challenge.Type) intent.getSerializableExtra("type");
         challengeId = extra.getString("msgId");
 
         int firstValue = intent.getIntExtra("firstValue", 0);
@@ -358,24 +359,29 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
             }
         }
 
-        // Save challenge into the database
-        Challenge challengeToSave = new Challenge(opponentName, userRun, opponentRun);
-        DBHelper dbHelper = new DBHelper(this);
-        dbHelper.insert(challengeToSave);
-
-        // Update statistic
+        // Challenge results
         FirebaseHelper.RunType challengeResult;
+        Challenge.Result result;
         if (win) {
             challengeResult = FirebaseHelper.RunType.CHALLENGE_WON;
+            result = aborted? Challenge.Result.ABORTED_BY_OTHER: Challenge.Result.WON;
         } else {
             challengeResult = FirebaseHelper.RunType.CHALLENGE_LOST;
+            result = aborted? Challenge.Result.ABORTED_BY_ME: Challenge.Result.LOST;
         }
+
+        // Update statistic
         FirebaseHelper fbHelper = new FirebaseHelper();
         User currentUser = ((AppRunnest) this.getApplication()).getUser();
         fbHelper.updateUserStatistics(currentUser.getEmail(),
                 userRun.getDuration(),
                 userRun.getTrack().getDistance(),
                 challengeResult);
+
+        // Save challenge into the database
+        Challenge challengeToSave = new Challenge(opponentName, challengeType, challengeGoal, result, userRun, opponentRun);
+        DBHelper dbHelper = new DBHelper(this);
+        dbHelper.insert(challengeToSave);
 
         // Go to recap challenge
         goToChallengeRecap();
@@ -401,7 +407,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         return mLocationSettingsHandler;
     }
 
-    public ChallengeType getChallengeType() {
+    public Challenge.Type getChallengeType() {
         return challengeType;
     }
 
@@ -531,7 +537,6 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 .show();
     }
 
-
     private void stopWaitingForOpponent(){
 
         new AlertDialog.Builder(this)
@@ -561,6 +566,4 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         setResult(SideBarActivity.REQUEST_END_CHALLENGE, returnIntent);
         finish();
     }
-
-    public enum ChallengeType{TIME, DISTANCE}
 }
