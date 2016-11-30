@@ -31,6 +31,8 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -525,7 +527,23 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public void onMessagesFragmentInteraction(Message message) {
         requestMessage = message;
-        showRequestDialog();
+
+        if (message.getType() == Message.MessageType.CHALLENGE_REQUEST) {
+            User user = ((AppRunnest) getApplication()).getUser();
+            String nodeName = user.getName() + " " + user.getFamilyName() + "_vs_" + message.getSender();
+            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
+            dbRef.child("challenges").child(nodeName).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        showRequestDialog();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) { }
+            });
+        }
     }
 
     @Override

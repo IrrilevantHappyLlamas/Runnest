@@ -510,6 +510,4 @@ public class FirebaseHelper {
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user)
                 .child(nodeType.toString()).removeEventListener(listener);
     }
-
-
 }
