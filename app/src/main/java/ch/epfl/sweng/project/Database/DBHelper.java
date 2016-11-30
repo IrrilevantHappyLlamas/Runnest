@@ -31,7 +31,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static final String[] RUNS_COLS = {"id", "isChallenge", "name", "duration", "checkpointsFromId", "checkpointsToId"};
     private static final String[] CHECKPOINTS_COLS = {"id", "latitude", "longitude"};
-    private static final String[] CHALLENGES_COLS = {"id", "opponentName", "type", "goal", "isWon", "myRunId", "opponentRunId"};
+    private static final String[] CHALLENGES_COLS = {"id", "opponentName", "type", "goal", "result", "myRunId", "opponentRunId"};
 
     private Context mContext = null;
 
@@ -115,7 +115,23 @@ public class DBHelper extends SQLiteOpenHelper {
         String opponentName = challenge.getOpponentName();
         Challenge.Type type = challenge.getType();
         double goal = challenge.getGoal();
-        int isWon = (challenge.isWon()) ? 1 : 0;
+
+        int result = 1;
+        switch (challenge.getResult()) {
+            case WON:
+                result = 0;
+                break;
+            case LOST:
+                result = 1;
+                break;
+            case ABORTED_BY_ME:
+                result = 2;
+                break;
+            case ABORTED_BY_OTHER:
+                result = 3;
+                break;
+        }
+
         long myRunId = insert(challenge.getMyRun(), true);
         long opponentRunId = insert(challenge.getOpponentRun(), true);
 
@@ -123,7 +139,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(CHALLENGES_COLS[1], opponentName);
         contentValues.put(CHALLENGES_COLS[2], type.toString());
         contentValues.put(CHALLENGES_COLS[3], goal);
-        contentValues.put(CHALLENGES_COLS[4], isWon);
+        contentValues.put(CHALLENGES_COLS[4], result);
         contentValues.put(CHALLENGES_COLS[5], myRunId);
         contentValues.put(CHALLENGES_COLS[6], opponentRunId);
 
@@ -269,10 +285,27 @@ public class DBHelper extends SQLiteOpenHelper {
                 }
 
                 double goal = result.getDouble(3);
+
                 boolean isWon = result.getShort(4) == 1;
+                Challenge.Result resultOfTheRun = Challenge.Result.LOST;
+                switch (result.getShort(4)) {
+                    case 0:
+                        resultOfTheRun = Challenge.Result.WON;
+                        break;
+                    case 1:
+                        resultOfTheRun = Challenge.Result.LOST;
+                        break;
+                    case 2:
+                        resultOfTheRun = Challenge.Result.ABORTED_BY_ME;
+                        break;
+                    case 3:
+                        resultOfTheRun = Challenge.Result.ABORTED_BY_OTHER;
+                        break;
+                }
+
                 Run myRun = fetchRun(result.getLong(5));
                 Run opponentRun = fetchRun(result.getLong(6));
-                Challenge challenge = new Challenge(opponentName, type, goal, isWon, myRun, opponentRun);
+                Challenge challenge = new Challenge(opponentName, type, goal, resultOfTheRun, myRun, opponentRun);
                 challenge.setId(id);
                 challenges.add(challenge);
             }
