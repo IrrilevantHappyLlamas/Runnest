@@ -413,6 +413,8 @@ public class EspressoTests {
         SystemClock.sleep(RUN_DURATION);
 
         onView(withId(R.id.challenge_chronometer)).check(matches(isDisplayed()));
+
+        SystemClock.sleep(RUN_DURATION);
     }
 
     @Test
