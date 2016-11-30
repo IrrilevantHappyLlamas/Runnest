@@ -1,7 +1,6 @@
 package ch.epfl.sweng.project.Activities;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,7 +18,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,7 +69,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private boolean isEmergencyUploadNecessary = true;
     private String opponentName;
     private String challengeId;
-    ChallengeProxy.Handler proxyHandler;
+    private ChallengeProxy.Handler proxyHandler;
 
     // Fragments
     private FragmentManager fragmentManager;
@@ -251,14 +249,14 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         }
     }
 
-    public void startChallenge(){
+    private void startChallenge(){
 
         challengeProxy.startChallenge();
 
         readyBtn.setVisibility(View.GONE);
         userTxt.setVisibility(View.GONE);
         opponentTxt.setVisibility(View.GONE);
-        backToSideBtn.setText("quit");
+        backToSideBtn.setText(R.string.quit);
 
         receiverFragment = new ChallengeReceiverFragment();
         fragmentManager.beginTransaction().add(R.id.receiver_container, receiverFragment).commit();
@@ -344,7 +342,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private void endChallenge() {
         chronometer.stop();
         phase = AFTER_CHALLENGE;
-        backToSideBtn.setText("back");
+        backToSideBtn.setText(R.string.back);
         Run opponentRun = ((ChallengeReceiverFragment)receiverFragment).getRun();
         Run userRun = ((ChallengeSenderFragment)senderFragment).getRun();
 
