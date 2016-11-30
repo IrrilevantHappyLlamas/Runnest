@@ -150,14 +150,11 @@ public class RunningMapFragment extends RunFragment {
 
     private void stopButtonPressed() {
         if (mRequestingLocationUpdates) {
-            mRequestingLocationUpdates = false;
+            super.stopRun();
+
             setButtonsEnabledState();
-            super.stopLocationUpdates();
-
             mChronometer.stop();
-            mRun.stop();
             ((SideBarActivity)getActivity()).setRunning(false);
-
 
             DBHelper dbHelper = new DBHelper(getContext());
             //TODO: verify that insertion has been performed correctly

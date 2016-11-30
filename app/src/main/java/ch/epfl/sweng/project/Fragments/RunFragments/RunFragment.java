@@ -1,10 +1,10 @@
 package ch.epfl.sweng.project.Fragments.RunFragments;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -23,9 +23,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Locale;
 
+import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Run;
 
@@ -42,7 +42,6 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener
 {
-
     // Location update
     protected GoogleApiClient mGoogleApiClient = null;
     protected boolean mRequestingLocationUpdates = false;
@@ -58,6 +57,7 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
     // Map
     protected MapView mMapView = null;
     private MapHandler mMapHandler = null;
+    private CountDownTimer mLocationChangeSimulation = null;
 
     protected void startRun() {
         mRun.start();
@@ -67,11 +67,53 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
 
         mRequestingLocationUpdates = true;
         startLocationUpdates();
+
+        if(((AppRunnest)getActivity().getApplication()).isTestSession()) {
+            setupLocationChangeSimulation();
+        }
+    }
+
+    protected void stopRun() {
+        mRequestingLocationUpdates = false;
+        stopLocationUpdates();
+        mRun.stop();
+
+        if(((AppRunnest)getActivity().getApplication()).isTestSession()) {
+            mLocationChangeSimulation.onFinish();
+        }
+    }
+
+    private void setupLocationChangeSimulation() {
+        //TODO: find a way to bound 10000 to RUN_DURATION in EspressoTest
+        mLocationChangeSimulation = new CountDownTimer(10000, 500) {
+            private Location location;
+            private double lat = 0.001;
+            private double lon = 0.001;
+
+            private boolean isRunning = true;
+
+            public void onTick(long millisUntilFinished) {
+                if(isRunning) {
+                    lat += 0.001;
+                    lon += 0.001;
+
+                    location = new Location("test");
+                    location.setLatitude(lat);
+                    location.setLongitude(lon);
+
+                    onLocationChanged(location);
+                }
+            }
+
+            public void onFinish() {
+                isRunning = false;
+            }
+        }.start();
     }
 
     protected void updateDisplayedDistance() {
         double distanceToShow = mRun.getTrack().getDistance()/1000.0;
-        String distanceInKm = String.format("%.2f", distanceToShow) +
+        String distanceInKm = String.format(Locale.getDefault(), "%.2f", distanceToShow) +
                 " " +
                 getString(R.string.km);
 
@@ -100,7 +142,7 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
-    protected void stopLocationUpdates() {
+    private void stopLocationUpdates() {
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 mGoogleApiClient,
                 this

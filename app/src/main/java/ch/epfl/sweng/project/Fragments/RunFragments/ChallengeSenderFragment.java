@@ -11,6 +11,8 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 
+import java.util.Locale;
+
 import ch.epfl.sweng.project.Activities.ChallengeActivity;
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Model.CheckPoint;
@@ -27,17 +29,13 @@ import ch.epfl.sweng.project.Model.Run;
 public class ChallengeSenderFragment extends RunFragment {
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_challenge_sender, container, false);
 
         mMapView = (MapView) view.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         mMapView.getMapAsync(this);
 
-        //TODO
-        // Location
         mGoogleApiClient = ((ChallengeActivity)getActivity()).getGoogleApiClient();
         mLocationSettingsHandler = ((ChallengeActivity)getActivity()).getLocationSettingsHandler();
 
@@ -47,6 +45,10 @@ public class ChallengeSenderFragment extends RunFragment {
         mRun = new Run(userName);
 
         return view;
+    }
+
+    public void endChallenge(){
+        super.stopRun();
     }
 
     @Override
@@ -62,9 +64,8 @@ public class ChallengeSenderFragment extends RunFragment {
                         (mRun.getTrack().getDistance())/1000.0;
 
                 if(remainingDistance <= 0.0) {
-                    mRun.stop();
                     distanceToShow = 0.0;
-                    stopLocationUpdates();
+                    endChallenge();
                     ((ChallengeActivity)getActivity()).imFinished();
                 } else {
                     distanceToShow = remainingDistance;
@@ -72,7 +73,7 @@ public class ChallengeSenderFragment extends RunFragment {
                 break;
         }
 
-        String distanceInKm = String.format("%.2f", distanceToShow) + " " + getString(R.string.km);
+        String distanceInKm = String.format(Locale.getDefault(), "%.2f", distanceToShow) + " " + getString(R.string.km);
         mDistance.setText(distanceInKm);
     }
 
@@ -99,7 +100,7 @@ public class ChallengeSenderFragment extends RunFragment {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         super.onMapReady(googleMap);
-        super.startRun();
+        startRun();
     }
 
     @Override

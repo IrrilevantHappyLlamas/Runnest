@@ -61,7 +61,6 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private double challengeGoal;   // time in milliseconds or distance in Km
     private boolean win;
 
-
     // ChallengeProxy
     private ChallengeProxy challengeProxy;
     private Boolean owner = false;
@@ -90,13 +89,28 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private int phase = BEFORE_CHALLENGE;
     private boolean aborted = false;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_challenge);
 
-        Intent intent = getIntent();
+        extractIntent(getIntent());
+        setupGoogleApi();
+        createProxy();
 
+        // Location
+        mLocationSettingsHandler = new LocationSettingsHandler(mGoogleApiClient, this);
+        mLocationSettingsHandler.checkLocationSettings();
+
+        setupFragments();
+        setupGUI();
+
+        opponentReady = false;
+        userReady = false;
+    }
+
+    private void extractIntent(Intent intent) {
         Bundle extra = intent.getExtras();
 
         opponentName = extra.getString("opponent");
@@ -108,11 +122,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         int secondValue = intent.getIntExtra("secondValue", 0);
         switch (challengeType) {
             case DISTANCE:
-                if(((AppRunnest)getApplication()).isTestSession()) {
-                    challengeGoal = 0;
-                } else {
-                    challengeGoal = firstValue + secondValue / 1000.0;
-                }
+                challengeGoal = firstValue + secondValue / 1000.0;
                 break;
             case TIME:
                 if(((AppRunnest)getApplication()).isTestSession()) {
@@ -122,70 +132,20 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 }
                 break;
         }
+    }
 
-
+    private void setupGoogleApi() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+    }
 
-        createProxy();
-
-        mLocationSettingsHandler = new LocationSettingsHandler(mGoogleApiClient, this);
-
-        //Initializing the fragment
+    private void setupFragments() {
         fragmentManager = getSupportFragmentManager();
         senderFragment = fragmentManager.findFragmentById(R.id.sender_container);
         receiverFragment = fragmentManager.findFragmentById(R.id.receiver_container);
-
-        // Setup Chronometer
-        chronometer = (Chronometer) findViewById(R.id.challenge_chronometer);
-        chronometer.setVisibility(View.INVISIBLE);
-
-        opponentTxt = (TextView) findViewById(R.id.opponentTxt);
-        userTxt = (TextView) findViewById(R.id.userTxt);
-        backToSideBtn = (Button) findViewById(R.id.back_to_side_btn);
-        backToSideBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(phase == BEFORE_CHALLENGE){
-                    stopWaitingForOpponent();
-                } else if(phase == DURING_CHALLENGE){
-                    dialogQuitChallenge();
-                } else {
-                    goToChallengeRecap();
-                }
-            }
-        });
-
-        readyBtn = (Button) findViewById(R.id.readyBtn);
-        readyBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(checkPermission() && mLocationSettingsHandler.checkLocationSettings()) {
-                    challengeProxy.imReady();
-                    userReady = true;
-                    readyState();
-
-                    // In a test session we don't want to wait for the opponent
-                    if (opponentReady || ((AppRunnest)getApplication()).isTestSession()){
-                        startChallenge();
-                    }
-                }
-            }
-        });
-
-        opponentReady = false;
-        userReady = false;
-    }
-
-    /**
-     * Switch to ready state
-     */
-    private void readyState(){
-        readyBtn.setVisibility(View.GONE);
-        userTxt.setVisibility(View.VISIBLE);
     }
 
     private void createProxy(){
@@ -213,30 +173,31 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 opponentFinished = true;
                 opponentTxt.setVisibility(View.VISIBLE);
 
+                ((ChallengeReceiverFragment)receiverFragment).stopRun();
+
                 switch (challengeType) {
                     case TIME:
                         opponentTxt.setText("Opponent has finished!" +
                                 "\n" +
                                 "Final distance: " +
-                                ((ChallengeReceiverFragment)receiverFragment).getRun().getTrack().getDistance());
+                                (int)((ChallengeReceiverFragment)receiverFragment).getRun().getTrack().getDistance() +
+                                " m");
                         break;
                     case DISTANCE:
-                        long opponentDuration = SystemClock.elapsedRealtime() - chronometer.getBase();
+                        long opponentDuration = (SystemClock.elapsedRealtime() - chronometer.getBase())/1000;
                         opponentTxt.setText("Opponent completed " +
                                 challengeGoal +
                                 " Km in " +
                                 transformDuration(opponentDuration));
-                        ((ChallengeReceiverFragment)receiverFragment).stopRun();
                         break;
                 }
 
-                if(!aborted) {
-                    if (userFinished) {
-                        isEmergencyUploadNecessary = false;
-                        endChallenge();
-                    }
+                fragmentManager.beginTransaction().remove(receiverFragment).commitAllowingStateLoss();
+
+                if (userFinished) {
+                    isEmergencyUploadNecessary = false;
+                    endChallenge();
                 }
-                fragmentManager.beginTransaction().remove(receiverFragment).commit();
             }
 
             @Override
@@ -244,10 +205,11 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 // TODO (Toby to Rick): when the opponent exits the challenge, you should do the same
                 aborted = true;
                 win = true;
-                //TODO redundancy
+                //this.isFinished();
+                //imFinished();
+                ((ChallengeSenderFragment)senderFragment).endChallenge();
+                ((ChallengeReceiverFragment)receiverFragment).stopRun();
                 endChallenge();
-                this.isFinished();
-                imFinished();
             }
         };
 
@@ -260,15 +222,15 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
     public void imFinished() {
         userFinished = true;
-        fragmentManager.beginTransaction().remove(senderFragment).commit();
         userTxt.setVisibility(View.VISIBLE);
 
         switch (challengeType) {
             case TIME:
                 userTxt.setText("You have Finished!" +
                         "\n" +
-                        "Final distance: " +
-                        ((ChallengeSenderFragment)senderFragment).getRun().getTrack().getDistance());
+                        "Final distance:  " +
+                        (int)((ChallengeSenderFragment)senderFragment).getRun().getTrack().getDistance() +
+                        " m");
                 break;
             case DISTANCE:
                 userTxt.setText("You have completed " +
@@ -278,50 +240,123 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 break;
         }
 
-        if(!aborted) {
-            challengeProxy.imFinished();
+        fragmentManager.beginTransaction().remove(senderFragment).commitAllowingStateLoss();
 
-            if (opponentFinished) {
-                isEmergencyUploadNecessary = false;
-                endChallenge();
-            }
+        challengeProxy.imFinished();
+
+        if (opponentFinished) {
+            isEmergencyUploadNecessary = false;
+            endChallenge();
         }
     }
 
+    public void startChallenge(){
+
+        challengeProxy.startChallenge();
+
+        readyBtn.setVisibility(View.GONE);
+        userTxt.setVisibility(View.GONE);
+        opponentTxt.setVisibility(View.GONE);
+        backToSideBtn.setText("quit");
+
+        receiverFragment = new ChallengeReceiverFragment();
+        fragmentManager.beginTransaction().add(R.id.receiver_container, receiverFragment).commit();
+
+        senderFragment = new ChallengeSenderFragment();
+        fragmentManager.beginTransaction().add(R.id.sender_container, senderFragment).commit();
+
+        setupChronometer();
+        phase = DURING_CHALLENGE;
+    }
+
+    private void setupChronometer() {
+        switch (challengeType) {
+            case DISTANCE:
+                chronometer.setBase(SystemClock.elapsedRealtime());
+                chronometer.start();
+                break;
+            case TIME:
+                //TODO verify that cast to long isn't a problem
+                new CountDownTimer((long)challengeGoal, 1000) {
+
+                    public void onTick(long millisUntilFinished) {
+                        String timeLeft = "Time left: " + transformDuration(millisUntilFinished/1000);
+                        chronometer.setText(timeLeft);
+                    }
+
+                    public void onFinish() {
+                        String timeIsUp = "Time's up!";
+                        chronometer.setText(timeIsUp);
+                        ((ChallengeSenderFragment)senderFragment).endChallenge();
+                        imFinished();
+                    }
+                }.start();
+                break;
+        }
+
+        chronometer.setVisibility(View.VISIBLE);
+    }
+
+    private void setupGUI() {
+        chronometer = (Chronometer) findViewById(R.id.challenge_chronometer);
+        chronometer.setVisibility(View.INVISIBLE);
+
+        opponentTxt = (TextView) findViewById(R.id.opponentTxt);
+        userTxt = (TextView) findViewById(R.id.userTxt);
+
+        backToSideBtn = (Button) findViewById(R.id.back_to_side_btn);
+        backToSideBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(phase == BEFORE_CHALLENGE){
+                    stopWaitingForOpponent();
+                } else if(phase == DURING_CHALLENGE){
+                    dialogQuitChallenge();
+                } else {
+                    goToChallengeRecap();
+                }
+            }
+        });
+
+        readyBtn = (Button) findViewById(R.id.readyBtn);
+        readyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(checkPermission() && mLocationSettingsHandler.checkLocationSettings()) {
+                    challengeProxy.imReady();
+                    userReady = true;
+
+                    readyBtn.setVisibility(View.GONE);
+                    userTxt.setVisibility(View.VISIBLE);
+
+                    // In a test session we don't want to wait for the opponent
+                    if (opponentReady || ((AppRunnest)getApplication()).isTestSession()){
+                        startChallenge();
+                    }
+                }
+            }
+        });
+    }
+
     private void endChallenge() {
+        chronometer.stop();
         phase = AFTER_CHALLENGE;
         backToSideBtn.setText("back");
         Run opponentRun = ((ChallengeReceiverFragment)receiverFragment).getRun();
         Run userRun = ((ChallengeSenderFragment)senderFragment).getRun();
 
-
         if(!aborted) {
             switch (challengeType) {
                 case TIME:
-                    if (((AppRunnest) getApplication()).isTestSession()) {
-                        win = true;
-                    } else {
-                        win = userRun.getTrack().getDistance() >= opponentRun.getTrack().getDistance();
-                    }
+                    win = ((AppRunnest) getApplication()).isTestSession() ||
+                            userRun.getTrack().getDistance() >= opponentRun.getTrack().getDistance();
                     break;
                 case DISTANCE:
-                    if (((AppRunnest) getApplication()).isTestSession()) {
-                        win = false;
-                    } else {
-                        win = userRun.getDuration() <= opponentRun.getDuration();
-                    }
+                    win = !((AppRunnest) getApplication()).isTestSession() &&
+                            userRun.getDuration() <= opponentRun.getDuration();
                     break;
             }
         }
-
-        //TODO: evaluate whether move win/lose message in to the next fragment or not, if not refactor (sane if bellow)
-        String finalResult;
-        if (win) {
-            finalResult = "You WON!";
-        } else {
-            finalResult = "You LOSE!";
-        }
-        chronometer.setText(finalResult);
 
         // Save challenge into the database
         Challenge challengeToSave = new Challenge(opponentName, userRun, opponentRun);
@@ -341,6 +376,9 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 userRun.getDuration(),
                 userRun.getTrack().getDistance(),
                 challengeResult);
+
+        // Go to recap challenge
+        goToChallengeRecap();
     }
 
     private String transformDuration(long duration) {
@@ -348,8 +386,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
             throw new IllegalArgumentException("Duration could not be negative");
         }
 
-        long durationInSeconds = duration/1000;
-        return (durationInSeconds/60 + "' " + durationInSeconds%60 + "''");
+        return (duration/60 + "' " + duration%60 + "''");
     }
 
     public ChallengeProxy getChallengeProxy(){
@@ -372,50 +409,9 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         return opponentName;
     }
 
-    public void startChallenge(){
-
-        challengeProxy.startChallenge();
-
-        readyBtn.setVisibility(View.GONE);
-        userTxt.setVisibility(View.GONE);
-        opponentTxt.setVisibility(View.GONE);
-        backToSideBtn.setText("quit");
-
-        receiverFragment = new ChallengeReceiverFragment();
-        fragmentManager.beginTransaction().add(R.id.receiver_container, receiverFragment).commit();
-
-        senderFragment = new ChallengeSenderFragment();
-        fragmentManager.beginTransaction().add(R.id.sender_container, senderFragment).commit();
-
-        setupChronometer();
-        phase = DURING_CHALLENGE;
+    public double getChallengeGoal() {
+        return challengeGoal;
     }
-
-    public void setupChronometer() {
-        switch (challengeType) {
-            case DISTANCE:
-                chronometer.setBase(SystemClock.elapsedRealtime());
-                chronometer.start();
-                break;
-            case TIME:
-                //TODO verify that cast to long isn't a problem
-                new CountDownTimer((long)challengeGoal, 1000) {
-
-                    public void onTick(long millisUntilFinished) {
-                        chronometer.setText("Time left: " + millisUntilFinished/1000);
-                    }
-
-                    public void onFinish() {
-                        chronometer.setText("Time's up!");
-                        imFinished();
-                    }
-                }.start();
-                break;
-        }
-
-        chronometer.setVisibility(View.VISIBLE);
-    }
-
 
     /**
      * Check <code>ACCESS_FINE_LOCATION</code> permission, if necessary request it.
@@ -480,9 +476,9 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         mGoogleApiClient.connect();
     }
 
-    //TODO: decidere se anche onPause
+    //TODO: decide if onPause too
 
-    @Override
+    /*@Override
     public void onStop() {
         super.onStop();
         challengeProxy.abortChallenge();
@@ -500,17 +496,12 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
             //TODO: (Toby -> ?) (update database with current challenge??)
             ((AppRunnest) getApplication()).launchEmergencyUpload();
         }
-    }
+    }*/
 
     @Override
     public void onBackPressed() {
         backToSideBtn.performClick();
     }
-
-    public double getChallengeGoal() {
-        return challengeGoal;
-    }
-
 
     private void dialogQuitChallenge(){
 
@@ -522,12 +513,13 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                         challengeProxy.abortChallenge();
                         aborted = true;
                         win = false;
+
+                        //proxyHandler.isFinished();
+                        //imFinished();
+
+                        ((ChallengeSenderFragment)senderFragment).endChallenge();
+                        ((ChallengeReceiverFragment)receiverFragment).stopRun();
                         endChallenge();
-                        proxyHandler.isFinished();
-                        imFinished();
-                        /*Intent returnIntent = new Intent();
-                        setResult(SideBarActivity.REQUEST_END_CHALLENGE, returnIntent);
-                        finish();*/
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -548,6 +540,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         //TODO delete challenge from firebase?
+
                         Intent returnIntent = new Intent();
                         setResult(SideBarActivity.REQUEST_STOP_WAITING, returnIntent);
                         finish();

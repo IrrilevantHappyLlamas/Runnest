@@ -200,6 +200,7 @@ public class FirebaseProxy implements ChallengeProxy {
         firebaseHelper.setUserStatus(challengeName, localUser, FirebaseHelper.challengeNodeType.ABORT, true);
         removeActiveListeners();
         isChallengeTerminated = true;
+        System.out.println("******  LOCAL USER   ******" + localUser);
     }
 
     private ValueEventListener createReadyListener() {

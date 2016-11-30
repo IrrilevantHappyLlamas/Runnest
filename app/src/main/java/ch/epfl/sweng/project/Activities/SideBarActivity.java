@@ -569,6 +569,8 @@ public class SideBarActivity extends AppCompatActivity
         intent.putExtra("opponent", challengedUserName);
         intent.putExtra("msgId", message);
         //startActivity(intent);
+
+        mSearchView.setQuery("", false);
         //TODO define result code
         startActivityForResult(intent, 1);
     }

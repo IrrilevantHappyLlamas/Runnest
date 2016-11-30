@@ -53,7 +53,9 @@ import static org.hamcrest.Matchers.is;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class EspressoTests {
 
-    private final int WAIT_DURATION = 2000;
+    private final int WAIT_DURATION = 1000;
+    //TODO: find a way to bound this to setupLocationChangeSimulation value
+    public final static int RUN_DURATION = 10000;
 
     @Rule
     public ActivityTestRule<SideBarActivity> mActivityRule = new ActivityTestRule<>(
@@ -364,7 +366,7 @@ public class EspressoTests {
         SystemClock.sleep(WAIT_DURATION);
 
         onView(withId(R.id.start_run)).perform(click());
-        SystemClock.sleep(WAIT_DURATION);
+        SystemClock.sleep(RUN_DURATION);
 
         pressBack();
         SystemClock.sleep(WAIT_DURATION);
@@ -419,8 +421,6 @@ public class EspressoTests {
 
     }
 
-
-
     @Test
     public void challengeDistance() {
         //Tap on the challenge button per user
@@ -429,34 +429,30 @@ public class EspressoTests {
         onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
         SystemClock.sleep(WAIT_DURATION);
         onView(withId(R.id.table)).check(matches(isDisplayed()));
-        SystemClock.sleep(WAIT_DURATION);
         onView(isAssignableFrom(Button.class)).perform(click());
 
         //Tap con cancel
         SystemClock.sleep(WAIT_DURATION);
         onView(withId(R.id.first_picker)).check(matches(isDisplayed()));
-        SystemClock.sleep(WAIT_DURATION);
         onView(withText("Cancel")).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
         //Tap on Challenge! and start a challenge of 1km
         onView(isAssignableFrom(Button.class)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
-        SystemClock.sleep(WAIT_DURATION);
         onView(withText("Challenge!")).perform(click());
 
         onView(withId(R.id.readyBtn)).check(matches(isDisplayed()));
-        SystemClock.sleep(WAIT_DURATION);
-
-        //FIXME double click on ready (require single click during tests?)
         onView(withId(R.id.readyBtn)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
         onView(withId(R.id.challenge_chronometer)).check(matches(isDisplayed()));
+        SystemClock.sleep(RUN_DURATION);
     }
 
     @Test
-    public void challengeTime() {        //Tap on the challenge button per user
+    public void challengeTime() {
+        //Tap on the challenge button per user
         onView(withId(R.id.search)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
         onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
@@ -476,7 +472,6 @@ public class EspressoTests {
         onView(withId(R.id.readyBtn)).check(matches(isDisplayed()));
         SystemClock.sleep(WAIT_DURATION);
 
-        //FIXME double click on ready (require single click during tests?)
         onView(withId(R.id.readyBtn)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
@@ -587,6 +582,4 @@ public class EspressoTests {
         onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());
         SystemClock.sleep(WAIT_DURATION);
     }
-
-
 }
