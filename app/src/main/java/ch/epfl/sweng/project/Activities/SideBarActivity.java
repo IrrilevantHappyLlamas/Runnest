@@ -41,6 +41,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Stack;
 
 import ch.epfl.sweng.project.AppRunnest;
@@ -78,6 +79,9 @@ public class SideBarActivity extends AppCompatActivity
 {
 
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
+    public static final int REQUEST_STOP_WAITING = 2;
+    public static final int REQUEST_ABORT = 3;
+    public static final int REQUEST_END_CHALLENGE = 4;
 
     //Item stack(LIFO)
     private Stack<MenuItem> itemStack = new Stack<>();
@@ -114,6 +118,8 @@ public class SideBarActivity extends AppCompatActivity
     private String challengedUserName = "no Name";
     private String challengedUserEmail = "no eMail";
     private Message requestMessage;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -242,8 +248,11 @@ public class SideBarActivity extends AppCompatActivity
                             String usersEmail = user.getKey();
                             String[] surnameAndFamilyName = usersName.split(" ");
                             String surname = surnameAndFamilyName[0].toLowerCase();
-                            String familyName = surnameAndFamilyName[1].toLowerCase();
-
+                            String familyName = "";
+                            if (surnameAndFamilyName.length > 1) {
+                                familyName = surnameAndFamilyName[1].toLowerCase();
+                            }
+                            
                             String myEmail = FirebaseHelper
                                     .getFireBaseMail(((AppRunnest) getApplication())
                                     .getUser()
@@ -346,7 +355,8 @@ public class SideBarActivity extends AppCompatActivity
     private void launchFragment(Fragment toLaunch){
         if(toLaunch != null) {
             mCurrentFragment = toLaunch;
-            fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
+            //fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commitAllowingStateLoss();
         }
     }
 
@@ -397,8 +407,7 @@ public class SideBarActivity extends AppCompatActivity
     public void onDestroy() {
         super.onDestroy();
         if(((AppRunnest)getApplication()).getUser().isLoggedIn()) {
-            launchEmergencyUpload();
-
+            ((AppRunnest) getApplication()).launchEmergencyUpload();
         }
     }
 
@@ -406,8 +415,7 @@ public class SideBarActivity extends AppCompatActivity
     public void onPause() {
         super.onPause();
         if(((AppRunnest)getApplication()).getUser().isLoggedIn()) {
-            launchEmergencyUpload();
-
+            ((AppRunnest) getApplication()).launchEmergencyUpload();
         }
     }
 
@@ -415,23 +423,8 @@ public class SideBarActivity extends AppCompatActivity
     public void onStop() {
         super.onStop();
         if(((AppRunnest)getApplication()).getUser().isLoggedIn()) {
-            launchEmergencyUpload();
-
+            ((AppRunnest) getApplication()).launchEmergencyUpload();
         }
-    }
-
-    /**
-     * Called by lifecycle methods of the activity, triggers an upload of the database file to firebase.
-     * This method can't wait for success or failure, since the activity is stopping or being destroyed, so there is
-     * no guarantee the upload will be successful.
-     */
-    private void launchEmergencyUpload() {
-        DBHelper dbHelper = new DBHelper(this);
-        Uri file = Uri.fromFile(dbHelper.getDatabasePath());
-        StorageReference storageRef = FirebaseStorage.getInstance()
-                .getReferenceFromUrl("gs://runnest-146309.appspot.com")
-                .child("users").child(((AppRunnest) getApplication()).getUser().getFirebaseId());
-        storageRef.child(dbHelper.getDatabaseName()).putFile(file);
     }
 
     private void dialogLogout(){
@@ -578,9 +571,13 @@ public class SideBarActivity extends AppCompatActivity
         String from = ((AppRunnest) getApplication()).getUser().getEmail();
         String to = FirebaseHelper.getFireBaseMail(challengedUserEmail);
         String sender = ((AppRunnest) getApplication()).getUser().getName();
-        String message = "Run with me!";
+
+        Random rnd = new Random();
+        int rndNumber = 100000 + rnd.nextInt(900000);
+        String message = Integer.toString(rndNumber);
+        Date timestampId = new Date();
         Message challengeRequestMessage = new Message(from, to, sender, challengedUserName,
-                Message.MessageType.CHALLENGE_REQUEST, message, new Date(), firstValue, secondValue, challengeType);
+                Message.MessageType.CHALLENGE_REQUEST, message, timestampId, firstValue, secondValue, challengeType);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
         firebaseHelper.send(challengeRequestMessage);
@@ -592,7 +589,10 @@ public class SideBarActivity extends AppCompatActivity
         intent.putExtra("secondValue", secondValue);
         intent.putExtra("owner", true);
         intent.putExtra("opponent", challengedUserName);
-        startActivity(intent);
+        intent.putExtra("msgId", message);
+        //startActivity(intent);
+        //TODO define result code
+        startActivityForResult(intent, 1);
     }
 
     /**
@@ -624,8 +624,8 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onDialogAcceptClick(DialogFragment dialog) {
-        //mFirebaseHelper.delete(requestMessage);
         Challenge.Type challengeType = ((RequestDialogFragment)dialog).getType();
+        mFirebaseHelper.delete(requestMessage);
         int firstValue = ((RequestDialogFragment)dialog).getFirstValue();
         int secondValue = ((RequestDialogFragment)dialog).getSecondValue();
 
@@ -635,7 +635,8 @@ public class SideBarActivity extends AppCompatActivity
         intent.putExtra("secondValue", secondValue);
         intent.putExtra("owner", false);
         intent.putExtra("opponent", requestMessage.getSender());
-        startActivity(intent);
+        intent.putExtra("msgId", requestMessage.getMessage());
+        startActivityForResult(intent, 1);
     }
 
     /**
@@ -660,4 +661,24 @@ public class SideBarActivity extends AppCompatActivity
         // keep using the stack
         onNavigationItemSelected(navigationView.getMenu().getItem(2));
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == REQUEST_STOP_WAITING){
+            Toast.makeText(getApplicationContext(),"You have deleted the challenge",
+                    Toast.LENGTH_LONG).show();
+        } else if(resultCode == REQUEST_ABORT) {
+            Toast.makeText(getApplicationContext(),"You have aborted the challenge",
+                    Toast.LENGTH_LONG).show();
+        } else if(resultCode == REQUEST_END_CHALLENGE) {
+            DBHelper dbHelper = new DBHelper(this);
+            List<Challenge> challenges = dbHelper.fetchAllChallenges();
+            Challenge lastChallenge = challenges.get(challenges.size() - 1);
+            onChallengeHistoryInteraction(lastChallenge);
+            historyItem.setChecked(true);
+        }
+
+    }
+
+
 }

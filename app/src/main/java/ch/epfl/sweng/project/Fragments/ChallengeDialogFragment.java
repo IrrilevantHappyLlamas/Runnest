@@ -108,6 +108,7 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
                 firstValue = newVal;
+                System.out.println("FIRST PICKER VALUE = " + newVal);
             }
         });
 
@@ -115,7 +116,14 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
 
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                secondValue = newVal;
+                if(type == Challenge.Type.DISTANCE){
+                    secondValue = newVal*100;
+                } else {
+                    secondValue = newVal*5;
+                }
+
+                System.out.println("SECOND PICKER VALUE = " + newVal);
+                System.out.println("SECOND VALUE = " + secondValue);
             }
         });
 
@@ -138,12 +146,29 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
                 firstUnit.setText("km");
                 secondUnit.setText("m");
 
+                firstPicker.setValue(0);
+                firstValue = 0;
                 firstPicker.setMinValue(0);
                 firstPicker.setMaxValue(100);
                 firstPicker.setWrapSelectorWheel(true);
+
+
+                String[] meters = new String[10];
+                for(int i=0; i<meters.length; i++) {
+                    meters[i] = Integer.toString((i)*100);
+                }
+                secondPicker.setValue(0);
+                secondValue = 0;
+                secondPicker.setMaxValue(9);
+                secondPicker.setDisplayedValues(meters);
+                secondPicker.setMinValue(0);
+                secondPicker.setMaxValue(9);
+                secondPicker.setWrapSelectorWheel(true);
+
+                /*
                 secondPicker.setMinValue(0);
                 secondPicker.setMaxValue(999);
-                secondPicker.setWrapSelectorWheel(true);
+                secondPicker.setWrapSelectorWheel(true);*/
 
                 type = Challenge.Type.DISTANCE;
                 break;
@@ -155,12 +180,27 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
                 firstUnit.setText("h");
                 secondUnit.setText("min");
 
+                firstPicker.setValue(0);
+                firstValue = 0;
                 firstPicker.setMinValue(0);
                 firstPicker.setMaxValue(10);
                 firstPicker.setWrapSelectorWheel(true);
+
+                String[] minutes = new String[12];
+                for(int i=0; i<minutes.length; i++) {
+                    minutes[i] = Integer.toString((i)*5);
+                }
+                secondPicker.setValue(0);
+                secondValue = 0;
+                secondPicker.setDisplayedValues(minutes);
+                secondPicker.setMinValue(0);
+                secondPicker.setMaxValue(11);
+                secondPicker.setWrapSelectorWheel(true);
+
+                /*
                 secondPicker.setMinValue(0);
                 secondPicker.setMaxValue(59);
-                secondPicker.setWrapSelectorWheel(true);
+                secondPicker.setWrapSelectorWheel(true);*/
 
                 type = Challenge.Type.TIME;
                 break;
