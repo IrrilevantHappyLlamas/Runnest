@@ -77,6 +77,9 @@ public class SideBarActivity extends AppCompatActivity
 {
 
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
+    public static final int REQUEST_STOP_WAITING = 2;
+    public static final int REQUEST_ABORT = 3;
+    public static final int REQUEST_END_CHALLENGE = 4;
 
     //Item stack(LIFO)
     private Stack<MenuItem> itemStack = new Stack<>();
@@ -113,6 +116,8 @@ public class SideBarActivity extends AppCompatActivity
     private String challengedUserName = "no Name";
     private String challengedUserEmail = "no eMail";
     private Message requestMessage;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -348,7 +353,8 @@ public class SideBarActivity extends AppCompatActivity
     private void launchFragment(Fragment toLaunch){
         if(toLaunch != null) {
             mCurrentFragment = toLaunch;
-            fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
+            //fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commitAllowingStateLoss();
         }
     }
 
@@ -562,7 +568,9 @@ public class SideBarActivity extends AppCompatActivity
         intent.putExtra("owner", true);
         intent.putExtra("opponent", challengedUserName);
         intent.putExtra("msgId", message);
-        startActivity(intent);
+        //startActivity(intent);
+        //TODO define result code
+        startActivityForResult(intent, 1);
     }
 
     /**
@@ -594,7 +602,7 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onDialogAcceptClick(DialogFragment dialog) {
-        //mFirebaseHelper.delete(requestMessage);
+        mFirebaseHelper.delete(requestMessage);
         ChallengeActivity.ChallengeType challengeType = ((RequestDialogFragment)dialog).getType();
         int firstValue = ((RequestDialogFragment)dialog).getFirstValue();
         int secondValue = ((RequestDialogFragment)dialog).getSecondValue();
@@ -606,7 +614,7 @@ public class SideBarActivity extends AppCompatActivity
         intent.putExtra("owner", false);
         intent.putExtra("opponent", requestMessage.getSender());
         intent.putExtra("msgId", requestMessage.getMessage());
-        startActivity(intent);
+        startActivityForResult(intent, 1);
     }
 
     /**
@@ -631,4 +639,24 @@ public class SideBarActivity extends AppCompatActivity
         // keep using the stack
         onNavigationItemSelected(navigationView.getMenu().getItem(2));
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == REQUEST_STOP_WAITING){
+            Toast.makeText(getApplicationContext(),"You have deleted the challenge",
+                    Toast.LENGTH_LONG).show();
+        } else if(resultCode == REQUEST_ABORT) {
+            Toast.makeText(getApplicationContext(),"You have aborted the challenge",
+                    Toast.LENGTH_LONG).show();
+        } else if(resultCode == REQUEST_END_CHALLENGE) {
+            DBHelper dbHelper = new DBHelper(this);
+            List<Challenge> challenges = dbHelper.fetchAllChallenges();
+            Challenge lastChallenge = challenges.get(challenges.size() - 1);
+            onChallengeHistoryInteraction(lastChallenge);
+            historyItem.setChecked(true);
+        }
+
+    }
+
+
 }
