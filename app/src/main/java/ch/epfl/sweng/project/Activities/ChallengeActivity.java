@@ -286,10 +286,12 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                     }
 
                     public void onFinish() {
-                        String timeIsUp = "Time's up!";
-                        chronometer.setText(timeIsUp);
-                        ((ChallengeSenderFragment)senderFragment).endChallenge();
-                        imFinished();
+                        if(!aborted) {
+                            String timeIsUp = "Time's up!";
+                            chronometer.setText(timeIsUp);
+                            ((ChallengeSenderFragment) senderFragment).endChallenge();
+                            imFinished();
+                        }
                     }
                 }.start();
                 break;

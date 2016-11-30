@@ -56,7 +56,7 @@ public class EspressoTests {
 
     private final int WAIT_DURATION = 1000;
     //TODO: find a way to bound this to setupLocationChangeSimulation value
-    public final static int RUN_DURATION = 10000;
+    public final static int RUN_DURATION = 11000;
 
     @Rule
     public ActivityTestRule<SideBarActivity> mActivityRule = new ActivityTestRule<>(
@@ -351,12 +351,11 @@ public class EspressoTests {
         SystemClock.sleep(WAIT_DURATION);
 
         onView(withId(R.id.deleteRunButton)).perform(click());
-
     }
 
     @Test
     public void challengeDistance() {
-        //Tap on the challenge button per user
+        SystemClock.sleep(WAIT_DURATION);
         onView(withId(R.id.search)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
         onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
@@ -389,7 +388,7 @@ public class EspressoTests {
 
     @Test
     public void challengeTime() {
-        //Tap on the challenge button per user
+        SystemClock.sleep(WAIT_DURATION);
         onView(withId(R.id.search)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
         onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
@@ -411,14 +410,14 @@ public class EspressoTests {
         SystemClock.sleep(WAIT_DURATION);
 
         onView(withId(R.id.readyBtn)).perform(click());
-        SystemClock.sleep(WAIT_DURATION);
+        SystemClock.sleep(RUN_DURATION);
 
         onView(withId(R.id.challenge_chronometer)).check(matches(isDisplayed()));
     }
 
     @Test
     public void scheduleRequestCancel() {
-        //Tap on the challenge button per user
+        SystemClock.sleep(WAIT_DURATION);
         onView(withId(R.id.search)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
         onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
@@ -440,7 +439,7 @@ public class EspressoTests {
 
     @Test
     public void scheduleRequestDistance() {
-        //Tap on the challenge button per user
+        SystemClock.sleep(WAIT_DURATION);
         onView(withId(R.id.search)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
         onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
@@ -464,6 +463,7 @@ public class EspressoTests {
 
     @Test
     public void scheduleRequestTime() {
+        SystemClock.sleep(WAIT_DURATION);
         //Tap on the challenge button per user
         onView(withId(R.id.search)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
@@ -490,41 +490,65 @@ public class EspressoTests {
     public void challengeRequest() {
 
         // Send message
-        Message msg = new Message("runnest_dot_ihl_at_gmail_dot_com",
+        Message msg1 = new Message("runnest_dot_ihl_at_gmail_dot_com",
                 "Test User",
                 "Runnest IHL",
                 "Test User",
                 Message.MessageType.CHALLENGE_REQUEST,
-                "that's a test",
+                "test 1",
+                new Date(),
+                1,
+                0,
+                Challenge.Type.DISTANCE);
+        SystemClock.sleep(WAIT_DURATION);
+        Message msg2 = new Message("runnest_dot_ihl_at_gmail_dot_com",
+                "Test User",
+                "Runnest IHL",
+                "Test User",
+                Message.MessageType.CHALLENGE_REQUEST,
+                "test 2",
+                new Date(),
+                1,
+                0,
+                Challenge.Type.DISTANCE);
+        SystemClock.sleep(WAIT_DURATION);
+        Message msg3 = new Message("runnest_dot_ihl_at_gmail_dot_com",
+                "Test User",
+                "Runnest IHL",
+                "Test User",
+                Message.MessageType.CHALLENGE_REQUEST,
+                "test 3",
                 new Date(),
                 1,
                 0,
                 Challenge.Type.DISTANCE);
         FirebaseHelper firebaseHelper = new FirebaseHelper();
-        firebaseHelper.send(msg);
+        firebaseHelper.send(msg1);
+        firebaseHelper.send(msg2);
+        firebaseHelper.send(msg3);
+        SystemClock.sleep(WAIT_DURATION);
 
         //Tap on the request
-        SystemClock.sleep(WAIT_DURATION);
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         SystemClock.sleep(WAIT_DURATION);
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
         SystemClock.sleep(WAIT_DURATION);
 
         //Tap on Cancel
-        onView(withId(R.id.list)).perform(ViewActions.click());
+        onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());
         //onView(withText("From: Runnest IHL\nType: CHALLENGE_REQUEST")).perform(click());
         SystemClock.sleep(WAIT_DURATION);
         onView(withText("Cancel")).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
         //Tap on Decline
-        onView(withId(R.id.list)).perform(ViewActions.click());
+        onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());
         SystemClock.sleep(WAIT_DURATION);
         onView(withText("Decline")).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
         //Tap on Accept
-        onView(withId(R.id.list)).perform(ViewActions.click());
+        onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());
         SystemClock.sleep(WAIT_DURATION);
         onView(withText("Accept")).perform(click());
         SystemClock.sleep(WAIT_DURATION);
@@ -703,7 +727,7 @@ public class EspressoTests {
 
     @Test
     public void challengeQuit() {
-        //Tap on the challenge button per user
+        SystemClock.sleep(WAIT_DURATION);
         onView(withId(R.id.search)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
         onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
@@ -721,7 +745,7 @@ public class EspressoTests {
         SystemClock.sleep(WAIT_DURATION);
 
         onView(withId(R.id.challenge_chronometer)).check(matches(isDisplayed()));
-        SystemClock.sleep(WAIT_DURATION);
+        SystemClock.sleep(RUN_DURATION);
 
         onView(withId(R.id.back_to_side_btn)).check(matches(isDisplayed()));
         onView(withId(R.id.back_to_side_btn)).perform(click());
@@ -734,7 +758,7 @@ public class EspressoTests {
 
     @Test
     public void challengeStopWait() {
-        //Tap on the challenge button per user
+        SystemClock.sleep(WAIT_DURATION);
         onView(withId(R.id.search)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
         onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
@@ -746,11 +770,6 @@ public class EspressoTests {
         SystemClock.sleep(WAIT_DURATION);
         onView(withText("Challenge!")).perform(click());
 
-        onView(withId(R.id.readyBtn)).check(matches(isDisplayed()));
-        onView(withId(R.id.readyBtn)).perform(click());
-        SystemClock.sleep(WAIT_DURATION);
-
-        onView(withId(R.id.challenge_chronometer)).check(matches(isDisplayed()));
         SystemClock.sleep(WAIT_DURATION);
 
         onView(withId(R.id.back_to_side_btn)).check(matches(isDisplayed()));

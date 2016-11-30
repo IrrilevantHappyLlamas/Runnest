@@ -110,7 +110,7 @@ public class MessagesFragment extends ListFragment {
                     mListener.onMessagesFragmentScheduleRequestInteraction(mMessages.get(position));
                     break;
                 case MEMO:
-                    mListener.OnMessagesFragmentMemoInteraction(mMessages.get(position));
+                    mListener.onMessagesFragmentMemoInteraction(mMessages.get(position));
                     break;
                 default:
                     break;
@@ -121,6 +121,6 @@ public class MessagesFragment extends ListFragment {
     public interface MessagesFragmentInteractionListener {
         void onMessagesFragmentInteraction(Message message);
         void onMessagesFragmentScheduleRequestInteraction(Message message);
-        void OnMessagesFragmentMemoInteraction(Message message);
+        void onMessagesFragmentMemoInteraction(Message message);
     }
 }

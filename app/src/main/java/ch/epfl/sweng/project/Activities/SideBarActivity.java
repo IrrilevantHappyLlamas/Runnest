@@ -556,7 +556,10 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public void onMessagesFragmentInteraction(final Message message) {
         requestMessage = message;
+        showRequestDialog();
 
+        //FIXME: correctly check on firebase
+        /*
         if (message.getType() == Message.MessageType.CHALLENGE_REQUEST) {
             User user = ((AppRunnest) getApplication()).getUser();
             String nodeName = user.getName() + " " + user.getFamilyName() + "_vs_" + message.getSender();
@@ -577,6 +580,7 @@ public class SideBarActivity extends AppCompatActivity
                 public void onCancelled(DatabaseError databaseError) { }
             });
         }
+        */
     }
 
     @Override
@@ -818,7 +822,7 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void OnMessagesFragmentMemoInteraction(Message message){
+    public void onMessagesFragmentMemoInteraction(Message message){
         requestMessage = message;
         showMemoDialog();
     }
