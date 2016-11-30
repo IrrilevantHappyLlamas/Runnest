@@ -262,15 +262,17 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
         //TODO: evaluate whether move win/lose message in to the next fragment or not, if not refactor (sane if bellow)
         String finalResult;
+        Challenge.Result result = Challenge.Result.LOST;
         if (win) {
             finalResult = "You WON!";
+            result = Challenge.Result.WON;
         } else {
             finalResult = "You LOSE!";
         }
         chronometer.setText(finalResult);
 
         // Save challenge into the database
-        Challenge challengeToSave = new Challenge(opponentName, challengeType, challengeGoal, win, myRun, opponentRun);
+        Challenge challengeToSave = new Challenge(opponentName, challengeType, challengeGoal, result, myRun, opponentRun);
         DBHelper dbHelper = new DBHelper(this);
         dbHelper.insert(challengeToSave);
 

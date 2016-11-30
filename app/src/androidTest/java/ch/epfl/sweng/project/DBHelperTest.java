@@ -82,7 +82,7 @@ public class DBHelperTest {
     @Test
     public void canInsertNewChallenge() {
         Run run = createTestRun();
-        Challenge challenge = new Challenge("someone", Challenge.Type.DISTANCE, 1.3, true, run, run);
+        Challenge challenge = new Challenge("someone", Challenge.Type.DISTANCE, 1.3, Challenge.Result.ABORTED_BY_OTHER, run, run);
         Assert.assertTrue(dbHelper.insert(challenge));
     }
 
@@ -97,11 +97,10 @@ public class DBHelperTest {
         String opponentName = "someone";
         Challenge.Type type = Challenge.Type.DISTANCE;
         double goal = 1.3;
-        boolean isWon = true;
         Run run1 = createTestRun();
         Run run2 = createTestRun();
 
-        Challenge challenge = new Challenge(opponentName, type, goal, isWon, run1, run2);
+        Challenge challenge = new Challenge(opponentName, type, goal, Challenge.Result.LOST, run1, run2);
         Assert.assertTrue(dbHelper.insert(challenge));
 
         List<Challenge> challenges = dbHelper.fetchAllChallenges();
@@ -111,7 +110,7 @@ public class DBHelperTest {
         Assert.assertEquals(opponentName, last.getOpponentName());
         Assert.assertEquals(type, last.getType());
         Assert.assertEquals(goal, last.getGoal(), 0);
-        Assert.assertTrue(isWon == last.isWon());
+        Assert.assertFalse(last.isWon());
     }
 
     @Test
@@ -120,7 +119,7 @@ public class DBHelperTest {
         int initialNbRuns = challenges.size();
 
         Run run = createTestRun();
-        Challenge challenge = new Challenge("someone", Challenge.Type.TIME, 156.57, false, run, run);
+        Challenge challenge = new Challenge("someone", Challenge.Type.TIME, 156.57, Challenge.Result.WON, run, run);
         Assert.assertTrue(dbHelper.insert(challenge));
 
         challenges = dbHelper.fetchAllChallenges();
