@@ -2,52 +2,50 @@ package ch.epfl.sweng.project.Fragments;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.NumberPicker;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import ch.epfl.sweng.project.Activities.ChallengeActivity;
 import ch.epfl.sweng.project.Model.Challenge;
 
-
-public class RequestDialogFragment extends DialogFragment implements View.OnClickListener {
-
-
+/**
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link MemoDialogFragment.MemoDialogListener} interface
+ * to handle interaction events.
+ */
+public class MemoDialogFragment extends DialogFragment {
     private Challenge.Type type;
-    private int firstValue;
-    private int secondValue;
-    private String opponent;
+    private Date scheduledDate;
     private String sender;
     private TextView typeTxt;
-    private TextView requestDescriptionTxt;
-    private TextView goalTxt;
+    private TextView dateDescriptionTxt;
+    private TextView dateTxt;
+    private TextView timeDescriptionTxt;
+    private TextView timeTxt;
 
     /* The activity that creates an instance of this dialog fragment must
      * implement this interface in order to receive event callbacks.
      * Each method passes the DialogFragment in case the host needs to query it. */
-    public interface RequestDialogListener {
-        void onDialogAcceptClick(DialogFragment dialog);
-        void onDialogDeclineClick(DialogFragment dialog);
-        void onDialogCancelClick(DialogFragment dialog);
+    public interface MemoDialogListener {
+        void onMemoDialogCloseClick(DialogFragment dialog);
+        void onMemoDialogDeleteClick(DialogFragment dialog);
     }
 
-    RequestDialogListener mListener;
+    MemoDialogFragment.MemoDialogListener mListener;
 
-    public RequestDialogFragment() {
+    public MemoDialogFragment() {
         // Required empty public constructor
     }
 
@@ -56,51 +54,40 @@ public class RequestDialogFragment extends DialogFragment implements View.OnClic
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.fragment_request_dialog, null);
+        View view = inflater.inflate(R.layout.fragment_memo_dialog, null);
 
         builder.setCancelable(false);
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         builder.setView(view)
                 // Add action buttons
-                .setPositiveButton("Accept", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-
-                        mListener.onDialogAcceptClick(RequestDialogFragment.this);
-                    }
-                })
-                .setNegativeButton("Decline", new DialogInterface.OnClickListener() {
+                .setNeutralButton("Close", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //cancel
                         // Send the positive button event back to the host activity
-                        mListener.onDialogDeclineClick(RequestDialogFragment.this);
+                        mListener.onMemoDialogCloseClick(MemoDialogFragment.this);
                     }
-                })
-                .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        //cancel
-                        // Send the positive button event back to the host activity
-                        mListener.onDialogCancelClick(RequestDialogFragment.this);
-                    }
-                });
+                }).setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
 
+                        mListener.onMemoDialogDeleteClick(MemoDialogFragment.this);
+            }
+        });
 
-
-        ((TextView)view.findViewById(R.id.txt_requester)).setText(sender + " challenged you on a run based on:");
+        ((TextView)view.findViewById(R.id.txt_requester)).setText(getString(R.string.you_and) + sender + getString(R.string.scheduled_a_run_based_on));
         typeTxt = (TextView) view.findViewById(R.id.txt_challenge_type);
-        requestDescriptionTxt = (TextView) view.findViewById(R.id.txt_request_description);
-        goalTxt = (TextView) view.findViewById(R.id.txt_goal);
-
+        dateDescriptionTxt = (TextView) view.findViewById(R.id.txt_date_description);
+        dateTxt = (TextView) view.findViewById(R.id.txt_date);
+        timeDescriptionTxt = (TextView) view.findViewById(R.id.txt_time_description);
+        timeTxt = (TextView) view.findViewById(R.id.txt_time);
         typeTxt.setText(type.toString());
 
-        if(type == Challenge.Type.DISTANCE) {
-            requestDescriptionTxt.setText("Wins the first one to reach ");
-            goalTxt.setText((firstValue + secondValue/1000.0) + "km");
-        } else {
-            requestDescriptionTxt.setText("Wins the one who runs the most distance in ");
-            goalTxt.setText(firstValue + "h " + secondValue + "min");
-        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(scheduledDate);
+        dateDescriptionTxt.setText(getString(R.string.on_date));
+        dateTxt.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)) + getString(R.string.righetta) + String.valueOf(calendar.get(Calendar.MONTH)+1) + getString(R.string.righetta) + String.valueOf(calendar.get(Calendar.YEAR)));
+        timeDescriptionTxt.setText(getString(R.string.at));
+        timeTxt.setText(String.valueOf(calendar.get(Calendar.HOUR_OF_DAY)) + getString((R.string.due_punti)) + String.valueOf(calendar.get(Calendar.MINUTE)));
 
         return builder.create();
     }
@@ -118,11 +105,8 @@ public class RequestDialogFragment extends DialogFragment implements View.OnClic
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         type = (Challenge.Type)args.get("type");
-        firstValue = args.getInt("firstValue");
-        secondValue = args.getInt("secondValue");
-        opponent = args.getString("opponent");
+        scheduledDate = (Date) args.get("date");
         sender = args.getString("sender");
-
     }
 
 
@@ -132,7 +116,7 @@ public class RequestDialogFragment extends DialogFragment implements View.OnClic
         // Verify that the host activity implements the callback interface
         try {
             // Instantiate the RequestDialogListener so we can send events to the host
-            mListener = (RequestDialogListener) activity;
+            mListener = (MemoDialogFragment.MemoDialogListener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
@@ -150,16 +134,7 @@ public class RequestDialogFragment extends DialogFragment implements View.OnClic
         return type;
     }
 
-    public int getFirstValue() {
-        return firstValue;
+    public Date getScheduledDate() {
+        return scheduledDate;
     }
-
-    public int getSecondValue() {
-        return secondValue;
-    }
-
-    public String getOpponent() {
-        return opponent;
-    }
-
 }

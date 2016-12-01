@@ -76,7 +76,7 @@ public class DisplayUserFragment extends Fragment {
 
         TextView nameAndEmailTextView = new TextView(this.getContext());
         nameAndEmailTextView.setText(text);
-        nameAndEmailTextView.setTextSize(18);
+        nameAndEmailTextView.setTextSize(16);
         nameAndEmailTextView.setLayoutParams(layoutParams);
         tableRow.addView(nameAndEmailTextView);
 
@@ -93,6 +93,18 @@ public class DisplayUserFragment extends Fragment {
             });
 
             tableRow.addView(challengeButton);
+
+            Button scheduleButton = new Button(this.getContext());
+            scheduleButton.setText(R.string.schedule);
+            scheduleButton.setLayoutParams(layoutParams);
+            scheduleButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onDisplayUserFragmentInteractionSchedule(name, email);
+                }
+            });
+
+            tableRow.addView(scheduleButton);
         }
 
         table.addView(tableRow);
@@ -118,5 +130,6 @@ public class DisplayUserFragment extends Fragment {
 
     public interface OnDisplayUserFragmentInteractionListener {
         void onDisplayUserFragmentInteraction(String challengedUserName, String challengedUserEmail);
+        void onDisplayUserFragmentInteractionSchedule(String challengedUserName, String challengedUserEmail);
     }
 }

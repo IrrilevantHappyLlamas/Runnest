@@ -19,13 +19,13 @@ public class Message implements Serializable {
     private Date time;
     private int firstValue;
     private int secondValue;
-    private ChallengeActivity.ChallengeType challengeType;
+    private Challenge.Type challengeType;
 
     /**
      * This enumeration represents all types of messages that can be sent to the server
      */
     public enum MessageType {
-        TEXT, CHALLENGE_REQUEST, CHALLENGE_DISTANCE, CHALLENGE_TIME, CHALLENGE_RESPONSE, MY_IP_IS
+        TEXT, CHALLENGE_REQUEST, CHALLENGE_DISTANCE, CHALLENGE_TIME, CHALLENGE_RESPONSE, MY_IP_IS, SCHEDULE_REQUEST, MEMO
     }
 
     /**
@@ -108,7 +108,7 @@ public class Message implements Serializable {
                    Date sentAt,
                    int firstValue,
                    int secondValue,
-                   ChallengeActivity.ChallengeType challengeType)
+                   Challenge.Type challengeType)
             throws IllegalArgumentException
     {
         this(from, to, sender, addressee, type, message);
@@ -121,6 +121,39 @@ public class Message implements Serializable {
         this.secondValue = secondValue;
         this.challengeType = challengeType;
     }
+
+    /**
+     * The constructor of the Message for schedule requests and memo
+     *
+     * @param from
+     * @param to
+     * @param sender
+     * @param addressee
+     * @param type
+     * @param message
+     * @param challengeType
+     * @throws IllegalArgumentException
+     */
+    public Message(String from,
+                   String to,
+                   String sender,
+                   String addressee,
+                   MessageType type,
+                   String message,
+                   Date scheduledDate,
+                   Challenge.Type challengeType)
+            throws IllegalArgumentException
+    {
+        this(from, to, sender, addressee, type, message);
+        if (scheduledDate == null) {
+            throw new IllegalArgumentException("Invalid argument: parameters can't be null nor empty");
+        }
+
+        this.time = scheduledDate;
+        this.challengeType = challengeType;
+    }
+
+
 
     /**
      * Getter for the from attribute
@@ -208,7 +241,7 @@ public class Message implements Serializable {
      *
      * @return the type of the challenge
      */
-    public ChallengeActivity.ChallengeType getChallengeType() {
+    public Challenge.Type getChallengeType() {
         return challengeType;
     }
 

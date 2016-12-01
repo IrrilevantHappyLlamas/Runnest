@@ -55,7 +55,9 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:value="@integer/google_play_services_version"/>
 
-        <activity android:name="ch.epfl.sweng.project.Activities.ChallengeActivity">
+        <activity
+            android:name="ch.epfl.sweng.project.Activities.ChallengeActivity"
+            android:screenOrientation="portrait">
         </activity>
 
         <!-- TODO Remove -->

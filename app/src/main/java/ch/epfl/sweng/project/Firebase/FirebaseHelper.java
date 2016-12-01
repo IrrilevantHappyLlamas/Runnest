@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import ch.epfl.sweng.project.Activities.ChallengeActivity;
+import ch.epfl.sweng.project.Model.Challenge;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Message;
 
@@ -91,6 +92,7 @@ public class FirebaseHelper {
     public enum challengeNodeType {
         READY("readyStatus"),
         FINISH("finishStatus"),
+        ABORT("abortStatus"),
         DATA("checkpoints");
 
         private final String nodeName;
@@ -177,7 +179,7 @@ public class FirebaseHelper {
                         Date time = children.child(TIME_CHILD).getValue(Date.class);
                         int firstValue = children.child(FIRST_VALUE_CHILD).getValue(Integer.class);
                         int secondValue = children.child(SECOND_VALUE_CHILD).getValue(Integer.class);
-                        ChallengeActivity.ChallengeType challengeType = children.child(CHALLENGE_TYPE_CHILD).getValue(ChallengeActivity.ChallengeType.class);
+                        Challenge.Type challengeType = children.child(CHALLENGE_TYPE_CHILD).getValue(Challenge.Type.class);
                         Message message = new Message(from, forUser, sender, addressee, type, messageText, time, firstValue, secondValue, challengeType);
 
                         messages.add(message);
@@ -398,8 +400,10 @@ public class FirebaseHelper {
 
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(challengeNodeType.READY.toString()).setValue(false);
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(challengeNodeType.FINISH.toString()).setValue(false);
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(challengeNodeType.ABORT.toString()).setValue(false);
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(challengeNodeType.READY.toString()).setValue(false);
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(challengeNodeType.FINISH.toString()).setValue(false);
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(challengeNodeType.ABORT.toString()).setValue(false);
     }
 
     /**
@@ -509,6 +513,4 @@ public class FirebaseHelper {
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user)
                 .child(nodeType.toString()).removeEventListener(listener);
     }
-
-
 }

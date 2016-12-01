@@ -15,6 +15,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -31,6 +32,8 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -39,19 +42,24 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Stack;
 
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
+import ch.epfl.sweng.project.Fragments.AcceptScheduleDialogFragment;
 import ch.epfl.sweng.project.Fragments.ChallengeDialogFragment;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 import ch.epfl.sweng.project.Fragments.DBUploadFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
 import ch.epfl.sweng.project.Fragments.DisplayChallengeFragment;
 import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
+import ch.epfl.sweng.project.Fragments.EmptySearchFragment;
+import ch.epfl.sweng.project.Fragments.MemoDialogFragment;
 import ch.epfl.sweng.project.Fragments.MessagesFragment;
 import ch.epfl.sweng.project.Fragments.RequestDialogFragment;
+import ch.epfl.sweng.project.Fragments.RequestScheduleDialogFragment;
 import ch.epfl.sweng.project.Fragments.RunFragments.RunningMapFragment;
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
@@ -71,11 +79,18 @@ public class SideBarActivity extends AppCompatActivity
         MessagesFragment.MessagesFragmentInteractionListener,
         DisplayRunFragment.DisplayRunFragmentInteractionListener,
         ChallengeDialogFragment.ChallengeDialogListener,
+        RequestScheduleDialogFragment.OnRequestScheduleDialogListener,
+        AcceptScheduleDialogFragment.AcceptScheduleDialogListener,
+        MemoDialogFragment.MemoDialogListener,
         RequestDialogFragment.RequestDialogListener,
-        DisplayChallengeFragment.OnDisplayChallengeFragmentInteractionListener
+        DisplayChallengeFragment.OnDisplayChallengeFragmentInteractionListener,
+        EmptySearchFragment.OnEmptySearchFragmentInteractionListener
 {
 
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
+    public static final int REQUEST_STOP_WAITING = 2;
+    public static final int REQUEST_ABORT = 3;
+    public static final int REQUEST_END_CHALLENGE = 4;
 
     //Item stack(LIFO)
     private Stack<MenuItem> itemStack = new Stack<>();
@@ -86,6 +101,7 @@ public class SideBarActivity extends AppCompatActivity
     private Fragment mCurrentFragment = null;
     private FragmentManager fragmentManager = null;
     private SearchView mSearchView = null;
+    private MenuItem mSearchViewAsMenuItem = null;
 
     private FirebaseHelper mFirebaseHelper = null;
 
@@ -112,6 +128,8 @@ public class SideBarActivity extends AppCompatActivity
     private String challengedUserName = "no Name";
     private String challengedUserEmail = "no eMail";
     private Message requestMessage;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -205,8 +223,31 @@ public class SideBarActivity extends AppCompatActivity
         // Associate searchable configuration with the SearchView
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         mSearchView = (SearchView) menu.findItem(R.id.search).getActionView();
-
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        //get the searchBar as a MenuItem (as opposed to as a SearchView)
+        mSearchViewAsMenuItem = (MenuItem) menu.findItem(R.id.search);
+
+        //define the behaviour of the searchBar, i.e.
+        // that when the searchBar collapses, you go back to the fragment from which you opened it,
+        //and that when you open the searchBar you go to a empty fragment.
+        MenuItemCompat.setOnActionExpandListener(mSearchViewAsMenuItem, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                launchFragment(new EmptySearchFragment());
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                // this line is very important, without it the previous fragment isn't displayed correctly
+                //maybe because of synchrony problems.
+                mSearchView.setQuery("", false);
+
+                onNavigationItemSelected(itemStack.peek());
+                return true;
+            }
+        });
 
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
 
@@ -220,7 +261,10 @@ public class SideBarActivity extends AppCompatActivity
                 if (!newText.equals("")) {
                     return findUsers(newText);
                 }
-                return true;
+                else {
+                    launchFragment(new EmptySearchFragment());
+                    return true;
+                }
             }
         });
 
@@ -240,8 +284,11 @@ public class SideBarActivity extends AppCompatActivity
                             String usersEmail = user.getKey();
                             String[] surnameAndFamilyName = usersName.split(" ");
                             String surname = surnameAndFamilyName[0].toLowerCase();
-                            String familyName = surnameAndFamilyName[1].toLowerCase();
-
+                            String familyName = "";
+                            if (surnameAndFamilyName.length > 1) {
+                                familyName = surnameAndFamilyName[1].toLowerCase();
+                            }
+                            
                             String myEmail = FirebaseHelper
                                     .getFireBaseMail(((AppRunnest) getApplication())
                                     .getUser()
@@ -259,7 +306,7 @@ public class SideBarActivity extends AppCompatActivity
                         }
                         launchFragment(DisplayUserFragment.newInstance(users));
                     } else {
-                        launchFragment(DisplayUserFragment.newInstance(null));
+                        launchFragment(DisplayUserFragment.newInstance(new HashMap<String, String>()));
                     }
                 }
 
@@ -344,7 +391,8 @@ public class SideBarActivity extends AppCompatActivity
     private void launchFragment(Fragment toLaunch){
         if(toLaunch != null) {
             mCurrentFragment = toLaunch;
-            fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
+            //fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commitAllowingStateLoss();
         }
     }
 
@@ -395,8 +443,7 @@ public class SideBarActivity extends AppCompatActivity
     public void onDestroy() {
         super.onDestroy();
         if(((AppRunnest)getApplication()).getUser().isLoggedIn()) {
-            launchEmergencyUpload();
-
+            ((AppRunnest) getApplication()).launchEmergencyUpload();
         }
     }
 
@@ -404,8 +451,7 @@ public class SideBarActivity extends AppCompatActivity
     public void onPause() {
         super.onPause();
         if(((AppRunnest)getApplication()).getUser().isLoggedIn()) {
-            launchEmergencyUpload();
-
+            ((AppRunnest) getApplication()).launchEmergencyUpload();
         }
     }
 
@@ -413,23 +459,8 @@ public class SideBarActivity extends AppCompatActivity
     public void onStop() {
         super.onStop();
         if(((AppRunnest)getApplication()).getUser().isLoggedIn()) {
-            launchEmergencyUpload();
-
+            ((AppRunnest) getApplication()).launchEmergencyUpload();
         }
-    }
-
-    /**
-     * Called by lifecycle methods of the activity, triggers an upload of the database file to firebase.
-     * This method can't wait for success or failure, since the activity is stopping or being destroyed, so there is
-     * no guarantee the upload will be successful.
-     */
-    private void launchEmergencyUpload() {
-        DBHelper dbHelper = new DBHelper(this);
-        Uri file = Uri.fromFile(dbHelper.getDatabasePath());
-        StorageReference storageRef = FirebaseStorage.getInstance()
-                .getReferenceFromUrl("gs://runnest-146309.appspot.com")
-                .child("users").child(((AppRunnest) getApplication()).getUser().getFirebaseId());
-        storageRef.child(dbHelper.getDatabaseName()).putFile(file);
     }
 
     private void dialogLogout(){
@@ -523,9 +554,39 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onMessagesFragmentInteraction(Message message) {
+    public void onMessagesFragmentInteraction(final Message message) {
         requestMessage = message;
         showRequestDialog();
+
+        //FIXME: correctly check on firebase
+        /*
+        if (message.getType() == Message.MessageType.CHALLENGE_REQUEST) {
+            User user = ((AppRunnest) getApplication()).getUser();
+            String nodeName = user.getName() + " " + user.getFamilyName() + "_vs_" + message.getSender();
+            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
+            dbRef.child("challenges").child(nodeName).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        showRequestDialog();
+                    } else {
+                        //TODO: maybe show dialog that explains ...
+                        FirebaseHelper fbHelper = new FirebaseHelper();
+                        fbHelper.delete(message);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) { }
+            });
+        }
+        */
+    }
+
+    @Override
+    public void onMessagesFragmentScheduleRequestInteraction(Message message) {
+        requestMessage = message;
+        showAcceptScheduleDialog();
     }
 
     @Override
@@ -542,13 +603,28 @@ public class SideBarActivity extends AppCompatActivity
         dialog.show(getSupportFragmentManager(), "ChallengeDialogFragment");
     }
 
+    public void showRequestScheduleDialog() {
+        DialogFragment dialog = new RequestScheduleDialogFragment();
+        dialog.show(getSupportFragmentManager(), "RequestScheduleDialogFragment");
+    }
+
+    public void showAcceptScheduleDialog() {
+        DialogFragment dialog = new AcceptScheduleDialogFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("type", requestMessage.getChallengeType());
+        args.putString("sender", requestMessage.getSender());
+        args.putSerializable("date", requestMessage.getTime());
+        dialog.setArguments(args);
+        dialog.show(getSupportFragmentManager(), "RequestDialogFragment");
+    }
+
     /**
      * Click "challenge!" from the customize challenge dialog.
      */
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
 
-        ChallengeActivity.ChallengeType challengeType = ((ChallengeDialogFragment)dialog).getType();
+        Challenge.Type challengeType = ((ChallengeDialogFragment)dialog).getType();
         int firstValue = ((ChallengeDialogFragment)dialog).getFirstValue();
         int secondValue = ((ChallengeDialogFragment)dialog).getSecondValue();
 
@@ -556,9 +632,13 @@ public class SideBarActivity extends AppCompatActivity
         String from = ((AppRunnest) getApplication()).getUser().getEmail();
         String to = FirebaseHelper.getFireBaseMail(challengedUserEmail);
         String sender = ((AppRunnest) getApplication()).getUser().getName();
-        String message = "Run with me!";
+
+        Random rnd = new Random();
+        int rndNumber = 100000 + rnd.nextInt(900000);
+        String message = Integer.toString(rndNumber);
+        Date timestampId = new Date();
         Message challengeRequestMessage = new Message(from, to, sender, challengedUserName,
-                Message.MessageType.CHALLENGE_REQUEST, message, new Date(), firstValue, secondValue, challengeType);
+                Message.MessageType.CHALLENGE_REQUEST, message, timestampId, firstValue, secondValue, challengeType);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
         firebaseHelper.send(challengeRequestMessage);
@@ -570,7 +650,12 @@ public class SideBarActivity extends AppCompatActivity
         intent.putExtra("secondValue", secondValue);
         intent.putExtra("owner", true);
         intent.putExtra("opponent", challengedUserName);
-        startActivity(intent);
+        intent.putExtra("msgId", message);
+        //startActivity(intent);
+
+        mSearchView.setQuery("", false);
+        //TODO define result code
+        startActivityForResult(intent, 1);
     }
 
     /**
@@ -602,8 +687,8 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onDialogAcceptClick(DialogFragment dialog) {
-        //mFirebaseHelper.delete(requestMessage);
-        ChallengeActivity.ChallengeType challengeType = ((RequestDialogFragment)dialog).getType();
+        Challenge.Type challengeType = ((RequestDialogFragment)dialog).getType();
+        mFirebaseHelper.delete(requestMessage);
         int firstValue = ((RequestDialogFragment)dialog).getFirstValue();
         int secondValue = ((RequestDialogFragment)dialog).getSecondValue();
 
@@ -613,7 +698,8 @@ public class SideBarActivity extends AppCompatActivity
         intent.putExtra("secondValue", secondValue);
         intent.putExtra("owner", false);
         intent.putExtra("opponent", requestMessage.getSender());
-        startActivity(intent);
+        intent.putExtra("msgId", requestMessage.getMessage());
+        startActivityForResult(intent, 1);
     }
 
     /**
@@ -637,5 +723,126 @@ public class SideBarActivity extends AppCompatActivity
     public void onDisplayChallengeFragmentInteraction() {
         // keep using the stack
         onNavigationItemSelected(navigationView.getMenu().getItem(2));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == REQUEST_STOP_WAITING){
+            Toast.makeText(getApplicationContext(),"You have deleted the challenge",
+                    Toast.LENGTH_LONG).show();
+        } else if(resultCode == REQUEST_ABORT) {
+            Toast.makeText(getApplicationContext(),"You have aborted the challenge",
+                    Toast.LENGTH_LONG).show();
+        } else if(resultCode == REQUEST_END_CHALLENGE) {
+            DBHelper dbHelper = new DBHelper(this);
+            List<Challenge> challenges = dbHelper.fetchAllChallenges();
+            Challenge lastChallenge = challenges.get(challenges.size() - 1);
+            onChallengeHistoryInteraction(lastChallenge);
+            historyItem.setChecked(true);
+        }
+
+    }
+
+    @Override
+    public void onEmptySearchFragmentInteraction(){
+    }
+
+    @Override
+    public void onDisplayUserFragmentInteractionSchedule(String name, String email){
+
+        this.challengedUserName = name;
+        this.challengedUserEmail = email;
+        showRequestScheduleDialog();
+    }
+
+    /**
+     *Click "Schedule!" on the request schedule dialog
+     */
+    @Override
+    public void onRequestScheduleDialogPositiveClick(DialogFragment dialog){
+
+        Challenge.Type challengeType = ((RequestScheduleDialogFragment)dialog).getType();
+
+        Date scheduledDate = ((RequestScheduleDialogFragment)dialog).getScheduledCalendar().getTime();
+
+        // Send message
+        String from = ((AppRunnest) getApplication()).getUser().getEmail();
+        String to = FirebaseHelper.getFireBaseMail(challengedUserEmail);
+        String sender = ((AppRunnest) getApplication()).getUser().getName();
+        String message = "let's schedule a run!";
+        Message scheduleRequestMessage = new Message(from, to, sender, challengedUserName,
+                Message.MessageType.SCHEDULE_REQUEST, message, scheduledDate, challengeType);
+
+        FirebaseHelper firebaseHelper = new FirebaseHelper();
+        firebaseHelper.send(scheduleRequestMessage);
+    }
+
+    /**
+     * Click "Cancel" from the request schedule dialog.
+     */
+    @Override
+    public void onRequestScheduleDialogNegativeClick(DialogFragment dialog){
+    }
+
+    @Override
+    public void onAcceptScheduleDialogAcceptClick(DialogFragment dialog){
+        Challenge.Type challengeType = ((AcceptScheduleDialogFragment)dialog).getType();
+        Date scheduledDate = ((AcceptScheduleDialogFragment)dialog).getScheduledDate();
+
+        String from = ((AppRunnest) getApplication()).getUser().getEmail();
+        String to = FirebaseHelper.getFireBaseMail(requestMessage.getFrom());
+        String sender = ((AppRunnest) getApplication()).getUser().getName();
+        String addressee = requestMessage.getSender();
+        String message = "don't forget this run!";
+
+        // Send message to other user
+        Message memoToOpponentMessage = new Message(from, to, sender, addressee,
+                Message.MessageType.MEMO, message, scheduledDate, challengeType);
+
+        // Send message to yourself
+        Message memoToMyselfMessage = new Message(to, FirebaseHelper.getFireBaseMail(from), addressee, sender,
+                Message.MessageType.MEMO, message, scheduledDate, challengeType);
+
+        FirebaseHelper firebaseHelper = new FirebaseHelper();
+        firebaseHelper.send(memoToOpponentMessage);
+        firebaseHelper.send(memoToMyselfMessage);
+
+        mFirebaseHelper.delete(requestMessage);
+        launchFragment(new MessagesFragment());
+    }
+
+    @Override
+    public void onAcceptScheduleDialogDeclineClick(DialogFragment dialog){
+        mFirebaseHelper.delete(requestMessage);
+        launchFragment(new MessagesFragment());
+    }
+
+    @Override
+    public void onAcceptScheduleDialogCancelClick(DialogFragment dialog){
+    }
+
+    @Override
+    public void onMessagesFragmentMemoInteraction(Message message){
+        requestMessage = message;
+        showMemoDialog();
+    }
+
+    public void showMemoDialog(){
+        DialogFragment dialog = new MemoDialogFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("type", requestMessage.getChallengeType());
+        args.putString("opponent", requestMessage.getFrom());
+        args.putString("sender", requestMessage.getSender());
+        args.putSerializable("date", requestMessage.getTime());
+        dialog.setArguments(args);
+        dialog.show(getSupportFragmentManager(), "MemoDialogFragment");
+    }
+
+    public void onMemoDialogCloseClick(DialogFragment dialog){
+    }
+
+    public void onMemoDialogDeleteClick(DialogFragment dialog){
+        mFirebaseHelper.delete(requestMessage);
+        launchFragment(new MessagesFragment());
     }
 }

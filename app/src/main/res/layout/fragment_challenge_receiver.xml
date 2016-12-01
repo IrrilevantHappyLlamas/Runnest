@@ -9,19 +9,18 @@
         android:layout_height="wrap_content"
         android:id="@+id/mapView" />
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="87dp">
-
-    </LinearLayout>
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/receiver_distance"
         android:textSize="30sp"
         android:textAlignment="center"
-        android:text="dfsdf"
         />
+
+    <TextView
+        android:text="@string/warning_missing_updates"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/warning_text"
+        android:layout_gravity="center"/>
 </FrameLayout>
