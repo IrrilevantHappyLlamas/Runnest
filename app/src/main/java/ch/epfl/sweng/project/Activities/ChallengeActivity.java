@@ -66,7 +66,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private Boolean userReady = false;
     private Boolean opponentFinished = false;
     private Boolean userFinished = false;
-    private boolean isEmergencyUploadNecessary = true;
+    private boolean isIntendedActivityExit = false;
     private String opponentName;
     private String challengeId;
     private ChallengeProxy.Handler proxyHandler;
@@ -196,20 +196,18 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 fragmentManager.beginTransaction().remove(receiverFragment).commitAllowingStateLoss();
 
                 if (userFinished) {
-                    isEmergencyUploadNecessary = false;
+                    isIntendedActivityExit = true;
                     endChallenge();
                 }
             }
 
             @Override
             public void hasAborted() {
-                // TODO (Toby to Rick): when the opponent exits the challenge, you should do the same
                 aborted = true;
                 win = true;
-                //this.isFinished();
-                //imFinished();
                 ((ChallengeSenderFragment)senderFragment).endChallenge();
                 ((ChallengeReceiverFragment)receiverFragment).stopRun();
+                isIntendedActivityExit = true;
                 endChallenge();
             }
         };
@@ -249,7 +247,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         challengeProxy.imFinished();
 
         if (opponentFinished) {
-            isEmergencyUploadNecessary = false;
+            isIntendedActivityExit = false;
             endChallenge();
         }
     }
@@ -489,12 +487,12 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
     //TODO: decide if onPause too
 
-    /*@Override
+    @Override
     public void onStop() {
         super.onStop();
-        challengeProxy.abortChallenge();
-        if (isEmergencyUploadNecessary) {
-            //TODO: (update database with current challenge??) happens even if activity is just put in background
+        if (!isIntendedActivityExit) {
+            // TODO: decide what to do
+            //challengeProxy.abortChallenge();
             ((AppRunnest) getApplication()).launchEmergencyUpload();
         }
     }
@@ -502,12 +500,11 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     @Override
     public void onDestroy() {
         super.onDestroy();
-        challengeProxy.abortChallenge();
-        if (isEmergencyUploadNecessary) {
-            //TODO: (Toby -> ?) (update database with current challenge??)
+        if (!isIntendedActivityExit) {
+            challengeProxy.abortChallenge();
             ((AppRunnest) getApplication()).launchEmergencyUpload();
         }
-    }*/
+    }
 
     @Override
     public void onBackPressed() {
@@ -525,11 +522,9 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                         aborted = true;
                         win = false;
 
-                        //proxyHandler.isFinished();
-                        //imFinished();
-
                         ((ChallengeSenderFragment)senderFragment).endChallenge();
                         ((ChallengeReceiverFragment)receiverFragment).stopRun();
+                        isIntendedActivityExit = true;
                         endChallenge();
                     }
                 })
@@ -550,9 +545,10 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 .setPositiveButton(R.string.quit, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         //TODO delete challenge from firebase?
-
+                        challengeProxy.abortChallenge();
                         Intent returnIntent = new Intent();
                         setResult(SideBarActivity.REQUEST_STOP_WAITING, returnIntent);
+                        isIntendedActivityExit = true;
                         finish();
                     }
                 })
