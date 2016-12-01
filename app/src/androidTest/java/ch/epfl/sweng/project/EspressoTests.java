@@ -459,21 +459,9 @@ public class EspressoTests {
                 1,
                 0,
                 Challenge.Type.DISTANCE);
-        SystemClock.sleep(WAIT_DURATION);
-        Message msg3 = new Message("runnest_dot_ihl_at_gmail_dot_com",
-                "Test User",
-                "Runnest IHL",
-                "Test User",
-                Message.MessageType.CHALLENGE_REQUEST,
-                "test 3",
-                new Date(),
-                1,
-                0,
-                Challenge.Type.DISTANCE);
         FirebaseHelper firebaseHelper = new FirebaseHelper();
         firebaseHelper.send(msg1);
         firebaseHelper.send(msg2);
-        firebaseHelper.send(msg3);
         SystemClock.sleep(WAIT_DURATION);
 
         //Tap on the request

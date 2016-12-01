@@ -30,7 +30,7 @@ import ch.epfl.sweng.project.Model.Run;
 public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCallback {
 
     // Last opponent update
-    private final long TIME_BEFORE_NOTIFY_MISSING_UPDATES = 15000;
+    private final long TIME_BEFORE_NOTIFY_MISSING_UPDATES = 30000;
     private TextView warningText;
     private long lastUpdateTime;
     //TODO caps or not?
