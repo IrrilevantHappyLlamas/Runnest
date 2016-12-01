@@ -9,4 +9,5 @@
     <color name="blue_grey_500">#607d8b</color>
     <color name="blue_grey_900">#263238</color>
     <color name="colorBlack">#000000</color>
+    <color name="colorLightGrey">#C0C0C0</color>
 </resources>
