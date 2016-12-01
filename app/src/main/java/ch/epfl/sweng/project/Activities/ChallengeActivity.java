@@ -176,17 +176,17 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
                 switch (challengeType) {
                     case TIME:
-                        opponentTxt.setText("Opponent has finished!" +
+                        opponentTxt.setText(getString(R.string.opponent_finished) +
                                 "\n" +
-                                "Final distance: " +
+                                getString(R.string.final_distance) + getString(R.string.colon) +
                                 (int)((ChallengeReceiverFragment)receiverFragment).getRun().getTrack().getDistance() +
-                                " m");
+                                getString(R.string.meters));
                         break;
                     case DISTANCE:
                         long opponentDuration = (SystemClock.elapsedRealtime() - chronometer.getBase())/1000;
-                        opponentTxt.setText("Opponent completed " +
-                                challengeGoal +
-                                " Km in " +
+                        opponentTxt.setText(getString(R.string.opponent_completed) +
+                                challengeGoal + getString(R.string.km) +
+                                getString(R.string.white_space) + getString(R.string.in) +
                                 transformDuration(opponentDuration));
                         break;
                 }
@@ -225,16 +225,17 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
         switch (challengeType) {
             case TIME:
-                userTxt.setText("You have Finished!" +
+                userTxt.setText(getString(R.string.user_finished) +
                         "\n" +
-                        "Final distance:  " +
+                        getString(R.string.final_distance) +
                         (int)((ChallengeSenderFragment)senderFragment).getRun().getTrack().getDistance() +
-                        " m");
+                        getString(R.string.meters));
                 break;
             case DISTANCE:
-                userTxt.setText("You have completed " +
+                userTxt.setText(getString(R.string.user_completed) +
                         challengeGoal +
-                        " Km in " +
+                        challengeGoal + getString(R.string.km) +
+                        getString(R.string.white_space) + getString(R.string.in) +
                         transformDuration(((ChallengeSenderFragment)senderFragment).getRun().getDuration()));
                 break;
         }

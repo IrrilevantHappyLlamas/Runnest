@@ -38,4 +38,13 @@
     <string name="quit">Quit</string>
     <string name="back">Back</string>
     <string name="abort">abort</string>
+    <string name="opponent_finished">Opponent has finished!</string>
+    <string name="final_distance">"Final distance: "</string>
+    <string name="colon">:</string>
+    <string name="meters">" m"</string>
+    <string name="white_space">" "</string>
+    <string name="opponent_completed">"Opponent completed "</string>
+    <string name="in">in</string>
+    <string name="user_finished">You have Finished!</string>
+    <string name="user_completed">"You have completed "</string>
 </resources>
