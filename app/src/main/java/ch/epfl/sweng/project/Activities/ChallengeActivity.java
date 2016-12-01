@@ -174,22 +174,24 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
                 ((ChallengeReceiverFragment)receiverFragment).stopRun();
 
+                String opponentTextToShow = "";
                 switch (challengeType) {
                     case TIME:
-                        opponentTxt.setText(getString(R.string.opponent_finished) +
+                        opponentTextToShow = getString(R.string.opponent_finished) +
                                 "\n" +
                                 getString(R.string.final_distance) + getString(R.string.colon) +
                                 (int)((ChallengeReceiverFragment)receiverFragment).getRun().getTrack().getDistance() +
-                                getString(R.string.meters));
+                                getString(R.string.meters);
                         break;
                     case DISTANCE:
                         long opponentDuration = (SystemClock.elapsedRealtime() - chronometer.getBase())/1000;
-                        opponentTxt.setText(getString(R.string.opponent_completed) +
+                        opponentTextToShow = getString(R.string.opponent_completed) +
                                 challengeGoal + getString(R.string.km) +
                                 getString(R.string.white_space) + getString(R.string.in) +
-                                transformDuration(opponentDuration));
+                                transformDuration(opponentDuration);
                         break;
                 }
+                opponentTxt.setText(opponentTextToShow);
 
                 fragmentManager.beginTransaction().remove(receiverFragment).commitAllowingStateLoss();
 
@@ -223,22 +225,24 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         userFinished = true;
         userTxt.setVisibility(View.VISIBLE);
 
+        String userTextToShow = "";
         switch (challengeType) {
             case TIME:
-                userTxt.setText(getString(R.string.user_finished) +
+                userTextToShow = getString(R.string.user_finished) +
                         "\n" +
                         getString(R.string.final_distance) +
                         (int)((ChallengeSenderFragment)senderFragment).getRun().getTrack().getDistance() +
-                        getString(R.string.meters));
+                        getString(R.string.meters);
                 break;
             case DISTANCE:
-                userTxt.setText(getString(R.string.user_completed) +
+                userTextToShow = getString(R.string.user_completed) +
                         challengeGoal +
                         challengeGoal + getString(R.string.km) +
                         getString(R.string.white_space) + getString(R.string.in) +
-                        transformDuration(((ChallengeSenderFragment)senderFragment).getRun().getDuration()));
+                        transformDuration(((ChallengeSenderFragment)senderFragment).getRun().getDuration());
                 break;
         }
+        userTxt.setText(userTextToShow);
 
         fragmentManager.beginTransaction().remove(senderFragment).commitAllowingStateLoss();
 
