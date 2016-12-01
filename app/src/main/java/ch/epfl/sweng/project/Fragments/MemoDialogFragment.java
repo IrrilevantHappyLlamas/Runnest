@@ -74,7 +74,7 @@ public class MemoDialogFragment extends DialogFragment {
             }
         });
 
-        ((TextView)view.findViewById(R.id.txt_requester)).setText("you and " + sender + " scheduled a run based on");
+        ((TextView)view.findViewById(R.id.txt_requester)).setText(getString(R.string.you_and) + sender + getString(R.string.scheduled_a_run_based_on));
         typeTxt = (TextView) view.findViewById(R.id.txt_challenge_type);
         dateDescriptionTxt = (TextView) view.findViewById(R.id.txt_date_description);
         dateTxt = (TextView) view.findViewById(R.id.txt_date);
@@ -84,10 +84,10 @@ public class MemoDialogFragment extends DialogFragment {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(scheduledDate);
-        dateDescriptionTxt.setText("On date");
-        dateTxt.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)) + "-" + String.valueOf(calendar.get(Calendar.MONTH)+1) + "-" + String.valueOf(calendar.get(Calendar.YEAR)));
-        timeDescriptionTxt.setText("At");
-        timeTxt.setText(String.valueOf(calendar.get(Calendar.HOUR_OF_DAY)) + " : " + String.valueOf(calendar.get(Calendar.MINUTE)));
+        dateDescriptionTxt.setText(getString(R.string.on_date));
+        dateTxt.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)) + getString(R.string.righetta) + String.valueOf(calendar.get(Calendar.MONTH)+1) + getString(R.string.righetta) + String.valueOf(calendar.get(Calendar.YEAR)));
+        timeDescriptionTxt.setText(getString(R.string.at));
+        timeTxt.setText(String.valueOf(calendar.get(Calendar.HOUR_OF_DAY)) + getString((R.string.due_punti)) + String.valueOf(calendar.get(Calendar.MINUTE)));
 
         return builder.create();
     }
