@@ -13,71 +13,68 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:paddingTop="10dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:weightSum="1">
+        android:layout_height="match_parent"
+        tools:ignore="UselessParent">
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="100dp">
-
-            <ImageView
-                android:id="@+id/photoImg"
-                android:contentDescription="@string/desc"
-                tools:ignore="UnusedIds"
-                app:srcCompat="@drawable/profile_head_small"
-                android:layout_alignParentTop="true"
-                android:layout_toLeftOf="@+id/familyTxt"
-                android:layout_toStartOf="@+id/familyTxt"
-                android:paddingRight="10dp"
-                android:layout_height="100dp"
-                android:layout_weight="0"
-                android:layout_width="110dp"/>
+            android:layout_height="wrap_content"
+            >
 
             <LinearLayout
                 android:orientation="vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="100dp"
-                android:layout_weight="1">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorAccent"
+                tools:ignore="UselessParent">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/textView2"/>
-
-                <TextView
-                    android:text="Runnest IHL"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/nameTxt"
-                    android:layout_alignBottom="@+id/photoImg"
-                    android:layout_alignRight="@+id/idTxt"
-                    android:layout_alignEnd="@+id/idTxt"
-                    android:textSize="18sp"/>
-
-                <TextView
-                    android:text="runnest.ihl@gmail.com"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/emailTxt"
-                    android:layout_below="@+id/nameTxt"
-                    android:layout_centerHorizontal="true"
+                <ImageView
+                    android:id="@+id/photoImg"
+                    android:contentDescription="@string/desc"
                     tools:ignore="UnusedIds"
-                    android:textSize="16sp"/>
+                    app:srcCompat="@drawable/profile_head_small"
+                    android:layout_height="100dp"
+                    android:layout_weight="0"
+                    android:layout_width="100dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_gravity="center_horizontal"/>
 
-                <TextView
-                    android:text="23 runs"
+                <LinearLayout
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/nb_runs"
-                    android:textSize="16sp"/>
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:layout_marginBottom="10dp">
 
+                    <TextView
+                        android:text="@string/runnest_ihl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/nameTxt"
+                        android:textSize="24sp"
+                        android:textAlignment="center"
+                        android:layout_marginBottom="10dp"
+                        android:gravity="center"
+                        android:textStyle="normal|bold"/>
+
+                    <TextView
+                        android:text="@string/_23_runs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/nb_runs"
+                        android:textSize="18sp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="15dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:textAlignment="center"
+                        android:background="@drawable/login_button"
+                        android:textColor="@color/cast_expanded_controller_progress_text_color"
+                        android:layout_gravity="center"/>
+
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>
@@ -86,7 +83,114 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="40dp">
+            android:layout_marginBottom="27dp"
+            >
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorLightGrey"
+                    android:paddingBottom="15dp"
+                    android:paddingTop="15dp"
+                    tools:ignore="UselessParent">
+
+                    <TextView
+                        android:text="@string/_0"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/total_running_distance"
+                        android:textSize="25sp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="right|center_vertical"
+                        android:paddingRight="5dp"
+                        tools:ignore="NestedWeights,RtlHardcoded,RtlSymmetry"/>
+
+                    <TextView
+                        android:text="@string/km"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/km"
+                        android:layout_weight="1"
+                        android:textSize="25sp"
+                        android:gravity="center_vertical"
+                        android:layout_gravity="center_vertical"/>
+
+                    <TextView
+                        android:text="@string/_0"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/total_running_time"
+                        android:textSize="25sp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="right|center_vertical"
+                        android:paddingRight="5dp"
+                        tools:ignore="RtlHardcoded,RtlSymmetry"/>
+
+                    <TextView
+                        android:text="@string/min"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/min"
+                        android:textSize="25sp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="left|center_vertical"
+                        tools:ignore="RtlHardcoded"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:paddingBottom="10dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    app:srcCompat="@drawable/challenge_small"
+                    android:id="@+id/imageView4"
+                    android:layout_gravity="center_horizontal"
+                    android:contentDescription="@string/challenge"/>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:text="@string/_0"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/total_number_of_challenges"
+                        android:layout_weight="1"
+                        android:textSize="25sp"
+                        android:gravity="right"
+                        android:paddingRight="5dp"
+                        tools:ignore="RtlHardcoded,RtlSymmetry"/>
+
+                    <TextView
+                        android:text="@string/challenges"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/challenges"
+                        android:textSize="25sp"
+                        android:layout_weight="1"
+                        android:gravity="left"
+                        tools:ignore="RtlHardcoded"/>
+                </LinearLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:orientation="vertical"
@@ -96,168 +200,87 @@
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:layout_gravity="top">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        app:srcCompat="@drawable/running_man"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        app:srcCompat="@drawable/victory_small"
                         android:id="@+id/imageView"
-                        android:adjustViewBounds="false"
-                        android:paddingRight="0dp"
-                        android:paddingLeft="0dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_weight="1"/>
+                        android:layout_weight="1"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="5dp"
+                        android:contentDescription="@string/won"
+                        tools:ignore="NestedWeights"/>
 
                     <ImageView
-                        app:srcCompat="@android:drawable/ic_lock_idle_alarm"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        app:srcCompat="@drawable/lose_small"
                         android:id="@+id/imageView2"
                         android:layout_weight="1"
-                        android:layout_height="50dp"
-                        android:layout_width="50dp"
-                        android:layout_marginLeft="40dp"/>
-
+                        android:layout_gravity="center_vertical"
+                        android:contentDescription="@string/lost"/>
                 </LinearLayout>
 
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:text="0"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:id="@+id/total_running_distance"
-                        android:gravity="center_horizontal"
-                        android:textSize="25sp"
-                        android:paddingLeft="5dp"
-                        android:layout_weight="1"/>
-
-                    <TextView
-                        android:text="km"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/km"
-                        android:layout_weight="1"
-                        android:textSize="25sp"/>
-
-                    <TextView
-                        android:text="0 "
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:id="@+id/total_running_time"
-                        android:gravity="center_horizontal"
-                        android:textSize="25sp"
-                        android:paddingLeft="20dp"
-                        android:layout_weight="1"/>
-
-                    <TextView
-                        android:text="min"
-                        android:layout_width="match_parent"
-                        android:layout_height="43dp"
-                        android:id="@+id/min"
-                        android:textSize="25sp"
-                        android:layout_weight="1"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:id="@+id/imageView6"
-                        android:layout_weight="0.12"
-                        android:adjustViewBounds="false"
-                        android:scaleType="center"
-                        app:srcCompat="@drawable/common_google_signin_btn_icon_light"/>
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:id="@+id/imageView5"
-                        android:layout_weight="0.41"
-                        app:srcCompat="@drawable/common_ic_googleplayservices"/>
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:id="@+id/imageView3"
-                        android:layout_weight="0.39"
-                        android:adjustViewBounds="false"
-                        app:srcCompat="@drawable/ic_audiotrack_light"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:text="0"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/total_number_of_challenges"
-                        android:layout_weight="0.04"
-                        android:textSize="25sp"
-                        android:paddingLeft="5dp"/>
-
-                    <TextView
-                        android:text="done"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/done"
-                        android:textSize="25sp"
-                        />
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="top">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/total_number_of_won_challenges"
-                        android:layout_weight="0.04"
-                        android:text="0"
+                        android:text="@string/_0"
                         android:textSize="25sp"
-                        android:paddingLeft="25dp"/>
+                        android:paddingRight="5dp"
+                        android:layout_weight="1"
+                        android:gravity="right|center_vertical"
+                        android:layout_gravity="center_vertical"
+                        tools:ignore="NestedWeights,RtlHardcoded,RtlSymmetry"/>
 
                     <TextView
-                        android:text="won"
+                        android:text="@string/won"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/won"
-                        android:layout_weight="0.02"
-                        android:textSize="25sp"/>
+                        android:textSize="25sp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center_vertical"/>
 
                     <TextView
-                        android:text="0"
+                        android:text="@string/_0"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/total_number_of_lost_challenges"
-                        android:layout_weight="0.03"
                         android:textSize="25sp"
-                        android:paddingLeft="20dp"/>
+                        android:layout_gravity="center_vertical"
+                        android:paddingRight="5dp"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        tools:ignore="RtlHardcoded,RtlSymmetry"/>
 
                     <TextView
-                        android:text="lost"
+                        android:text="@string/lost"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/lost"
-                        android:layout_weight="0.07"
-                        android:textSize="25sp"/>
+                        android:layout_weight="1"
+                        android:textSize="25sp"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="left"
+                        tools:ignore="RtlHardcoded"/>
 
                 </LinearLayout>
-
             </LinearLayout>
 
         </LinearLayout>
-
     </LinearLayout>
 
 </RelativeLayout>

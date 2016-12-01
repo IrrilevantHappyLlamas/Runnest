@@ -20,7 +20,10 @@
     <string name="search_title">search_title</string>
     <string name="decline">DECLINE</string>
     <string name="accept">ACCEPT</string>
-    <string name="km">"Km"</string>
+    <string name="km">"km"</string>
+    <string name="running_man">Running Man</string>
+    <string name="lock_idle_alarm">Lock Idle Alarm</string>
+    <string name="newbie">Newbie</string>
     <string name="uploading_user_data">Uploading user data …</string>
     <string name="challenge">Challenge</string>
 
@@ -62,4 +65,12 @@
     <string name="due_punti">" : "</string>
     <string name="you_and">"you and "</string>
     <string name="scheduled_a_run_based_on">" scheduled a run based on"</string>
+    <string name="sign_in">Sign in</string>
+    <string name="min">min</string>
+    <string name="_0">0</string>
+    <string name="_23_runs">23 runs</string>
+    <string name="runnest_ihl">Runnest IHL</string>
+    <string name="challenges">challenges</string>
+    <string name="lost">lost</string>
+    <string name="won">won</string>
 </resources>

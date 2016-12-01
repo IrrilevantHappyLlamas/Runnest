@@ -80,7 +80,7 @@ public class EspressoTests {
     }
 
     @Test
-    public void navigateToRunningMap() {;
+    public void navigateToRunningMap() {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         SystemClock.sleep(WAIT_DURATION);
 
@@ -122,7 +122,7 @@ public class EspressoTests {
         onView(withText("OK"))
                 .perform(click());
 
-        SystemClock.sleep(WAIT_DURATION);
+        SystemClock.sleep(RUN_DURATION);
     }
 
 

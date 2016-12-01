@@ -63,7 +63,7 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
         String email = mUser.getEmail();
 
         ((TextView)view.findViewById(R.id.nameTxt)).setText(name);
-        ((TextView)view.findViewById(R.id.emailTxt)).setText(email);
+        //((TextView)view.findViewById(R.id.emailTxt)).setText(email);
 
         mFirebaseHelper.getUserStatistics(mUser.getEmail(), new FirebaseHelper.statisticsHandler() {
             @Override
