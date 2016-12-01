@@ -13,7 +13,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Schedule Request"
+            android:text="@string/schedule_request"
             android:id="@+id/txt_request_title"
             android:textSize="24sp"
             android:textStyle="normal|bold"
@@ -22,7 +22,7 @@
             android:layout_marginBottom="20dp"/>
 
         <TextView
-            android:text="Opponent wants to schedule a run based on:"
+            android:text="@string/opponent_wants_to_schedule_a_run_based_on"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/txt_requester"
@@ -31,7 +31,6 @@
             android:layout_marginRight="10dp"/>
 
         <TextView
-            android:text="Type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/txt_challenge_type"
@@ -41,7 +40,7 @@
             android:layout_marginTop="20dp"/>
 
         <TextView
-            android:text="on Date"
+            android:text="@string/on_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/txt_date_description"
@@ -51,7 +50,6 @@
             android:layout_marginBottom="20dp"/>
 
         <TextView
-            android:text="5 km"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/txt_date"
@@ -61,7 +59,6 @@
             android:gravity="center"/>
 
         <TextView
-            android:text="TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/txt_time_description"
@@ -70,7 +67,6 @@
             android:textSize="20sp"/>
 
         <TextView
-            android:text="TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/txt_time"
