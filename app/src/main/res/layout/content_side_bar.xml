@@ -8,6 +8,7 @@
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingTop="@dimen/activity_vertical_margin"
+                android:background="@color/backgroundApp"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 tools:context="ch.epfl.sweng.project.Activities.SideBarActivity"
                 tools:showIn="@layout/app_bar_side_bar"

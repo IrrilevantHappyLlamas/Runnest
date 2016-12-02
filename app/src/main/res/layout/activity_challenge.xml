@@ -9,6 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="5dp"
+    android:background="@color/backgroundApp"
     tools:context="ch.epfl.sweng.project.Activities.ChallengeActivity">
 
     <LinearLayout
