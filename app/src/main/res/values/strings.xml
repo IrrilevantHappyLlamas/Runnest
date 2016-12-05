@@ -28,7 +28,7 @@
     <string name="challenge">Challenge</string>
 
     <string name="delete">Delete</string>
-    <string name="go_to_run_history">GO TO RUN HISTORY</string>
+    <string name="history">History</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="waiting_opponent">Waiting for your opponent…</string>
@@ -71,6 +71,8 @@
     <string name="_23_runs">23 runs</string>
     <string name="runnest_ihl">Runnest IHL</string>
     <string name="challenges">challenges</string>
-    <string name="lost">lost</string>
-    <string name="won">won</string>
+
+    <string name="lost">LOST</string>
+    <string name="won">WON</string>
+    <string name="left">LEFT</string>
 </resources>

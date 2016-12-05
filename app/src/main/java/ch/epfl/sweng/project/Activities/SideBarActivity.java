@@ -158,6 +158,7 @@ public class SideBarActivity extends AppCompatActivity
         final TextView h2 = (TextView) header.findViewById(R.id.header2_nav_header);
 
 
+        // TODO: remove/replace fab
         runItem = navigationView.getMenu().getItem(1);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -167,6 +168,7 @@ public class SideBarActivity extends AppCompatActivity
                 onNavigationItemSelected(runItem);
             }
         });
+        fab.hide();
 
         User account = ((AppRunnest)getApplicationContext()).getUser();
         if (account != null) {
@@ -344,7 +346,8 @@ public class SideBarActivity extends AppCompatActivity
                 itemStack.push(item);
             }
 
-            fab.show();
+            //TODO
+            //fab.show();
             showSearchBar();
 
             // Handle navigation view item clicks here.
@@ -355,11 +358,12 @@ public class SideBarActivity extends AppCompatActivity
                 launchFragment(new ProfileFragment());
             } else if (id == R.id.nav_run) {
                 toolbar.setTitle("Run");
-                fab.hide();
+                //TODO
+                //fab.hide();
                 hideSearchBar();
                 launchFragment(new RunningMapFragment());
             } else if (id == R.id.nav_run_history) {
-                toolbar.setTitle("Run History");
+                toolbar.setTitle("History");
                 launchFragment(new RunHistoryFragment());
             } else if (id == R.id.nav_messages) {
                 toolbar.setTitle("Messages");

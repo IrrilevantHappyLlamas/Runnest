@@ -234,7 +234,6 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 break;
             case DISTANCE:
                 userTextToShow = getString(R.string.user_completed) +
-                        challengeGoal +
                         challengeGoal + getString(R.string.km) +
                         getString(R.string.white_space) + getString(R.string.in) +
                         transformDuration(((ChallengeSenderFragment)senderFragment).getRun().getDuration());
