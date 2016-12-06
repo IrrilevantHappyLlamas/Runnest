@@ -38,7 +38,7 @@
 
             <com.google.android.gms.maps.MapView
                 android:layout_height="170dp"
-                android:id="@+id/myMapView"
+                android:id="@+id/user_map"
                 android:layout_gravity="top"
                 android:layout_width="match_parent"
                 android:layout_marginTop="3dp"
@@ -104,7 +104,7 @@
 
             <com.google.android.gms.maps.MapView
                 android:layout_height="170dp"
-                android:id="@+id/myOpponentMapView"
+                android:id="@+id/opponent_map"
                 android:layout_gravity="bottom"
                 android:layout_width="match_parent"
                 android:layout_alignParentBottom="true"
@@ -168,29 +168,29 @@
             android:text="@string/delete"
             android:layout_width="130dp"
             android:layout_height="wrap_content"
-            android:id="@+id/deleteRunButton"
+            android:id="@+id/button_delete"
             android:layout_gravity="bottom|end|center_horizontal"
             android:background="@drawable/button_shape_green"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginRight="30dp"
-            android:layout_marginEnd="30dp"
-            android:layout_marginBottom="5dp"/>
+            android:layout_marginRight="40dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="8dp"/>
 
         <Button
             android:text="@string/history"
             android:layout_width="130dp"
             android:layout_height="wrap_content"
-            android:id="@+id/go_to_run_history"
+            android:id="@+id/button_history"
             android:layout_gravity="bottom|start|center_horizontal"
-            android:layout_marginLeft="30dp"
-            android:layout_marginStart="30dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginStart="40dp"
             android:background="@drawable/button_shape_green"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_marginBottom="5dp"/>
+            android:layout_marginBottom="8dp"/>
     </RelativeLayout>
 
 </RelativeLayout>

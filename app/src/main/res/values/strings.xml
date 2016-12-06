@@ -55,7 +55,8 @@
     <string name="schedule_request">Schedule Request</string>
     <string name="schedule_your_challenge">Schedule your challenge!</string>
     <string name="choose_the_challenge_type">Choose the challenge type</string>
-    <string name="distance">Distance</string>
+    <string name="distance_challenge">Distance Challenge:</string>
+    <string name="time_challenge">Time Challenge:</string>
     <string name="time">Time</string>
     <string name="choose_the_date">Choose the date!</string>
     <string name="choose_the_time">Choose the time!</string>
@@ -75,4 +76,8 @@
     <string name="lost">LOST</string>
     <string name="won">WON</string>
     <string name="left">LEFT</string>
+    <string name="average_pace">Average pace:</string>
+    <string name="distance">Distance:</string>
+    <string name="duration">Duration:</string>
+    <string name="min_over_km">min/km</string>
 </resources>

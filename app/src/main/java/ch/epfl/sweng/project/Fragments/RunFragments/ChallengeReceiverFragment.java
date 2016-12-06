@@ -14,6 +14,7 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.MapStyleOptions;
 
 import java.util.Locale;
 
@@ -91,7 +92,7 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
 
     private void updateDisplayedDistance() {
 
-        double distanceToShow = mRun.getTrack().getDistance()/1000.0;
+        double distanceToShow = mRun.getTrack().getDistance()/1000;
 
         switch (((ChallengeActivity)getActivity()).getChallengeType()) {
             case TIME:
@@ -136,6 +137,9 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        MapStyleOptions mapStyle = MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.map_style_no_label);
+        googleMap.setMapStyle(mapStyle);
+
         mMapHandler = new MapHandler(googleMap, ContextCompat.getColor(getContext(), R.color.colorAccent));
         mMapHandler.setupRunningMapUI();
     }

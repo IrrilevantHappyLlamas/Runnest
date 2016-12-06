@@ -32,7 +32,7 @@ public class CheckPoint {
     }
 
     /**
-     * Computes the distance in meters to a <code>CheckPoint</code> passed as argument
+     * Computes the distance in m to a <code>CheckPoint</code> passed as argument
      *
      * @param destination   <code>CheckPoint</code> to which calculate the distance
      * @return              distance between the points

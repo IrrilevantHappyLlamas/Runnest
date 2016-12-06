@@ -30,6 +30,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,12 +48,6 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
     private MapView mMapView = null;
     private MapView mOpponentMapView = null;
 
-    private GoogleMap mGoogleMap = null;
-    private GoogleMap mOpponentGoogleMap = null;
-
-    private Track mTrack = null;
-    private Track mOpponentTrack = null;
-    private boolean win;
 
     private int userColor;
     private int opponentColor;
@@ -67,10 +62,7 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
         return fragment;
     }
 
-    private enum MapType {
-        MyMap,
-        MyOpponentMap
-    }
+    private enum MapType {USER_MAP, OPPONENT_MAP}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -86,13 +78,12 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
 
         if (mChallengeToBeDisplayed != null) {
 
-            mTrack = mChallengeToBeDisplayed.getMyRun().getTrack();
-            mOpponentTrack = mChallengeToBeDisplayed.getOpponentRun().getTrack();
 
             setupMapUI(view, savedInstanceState);
             setupTextUI(view);
-            setupButtonUI(view);
         }
+
+        setupButtonUI(view);
 
         return view;
     }
@@ -115,31 +106,29 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
         // Set title and performances
         switch (mChallengeToBeDisplayed.getType()) {
             case TIME:
-                String goal = timeToDisplay((int)mChallengeToBeDisplayed.getGoal()/1000);
-                challengeType.setText(getString(R.string.time) + getString(R.string.white_space) +
-                        getString(R.string.challenge) + getString(R.string.colon) + getString(R.string.white_space)
-                        + goal);
+                String timeGoal = timeToString((int)mChallengeToBeDisplayed.getGoal()/1000, false);
+                challengeType.setText(getString(R.string.time_challenge) +
+                        getString(R.string.white_space) + timeGoal);
 
-                double user_dist = mChallengeToBeDisplayed.getMyRun().getTrack().getDistance();
+                double user_dist = mChallengeToBeDisplayed.getMyRun().getTrack().getDistance()/1000;
                 userPerf.setText(String.format(Locale.getDefault(), "%.2f", user_dist) +
                         getString(R.string.white_space) + getString(R.string.km));
 
-                double opponent_dist = mChallengeToBeDisplayed.getOpponentRun().getTrack().getDistance();
+                double opponent_dist = mChallengeToBeDisplayed.getOpponentRun().getTrack().getDistance()/1000;
                 opponentPerf.setText(String.format(Locale.getDefault(), "%.2f", opponent_dist) +
                         getString(R.string.white_space) + getString(R.string.km));
 
                 break;
             case DISTANCE:
-                goal = String.valueOf(mChallengeToBeDisplayed.getGoal());
-                challengeType.setText(getString(R.string.distance) + getString(R.string.white_space) +
-                        getString(R.string.challenge) + getString(R.string.colon) + getString(R.string.white_space)
-                        + goal);
+                String distanceGoal = String.format(Locale.getDefault(), "%.2f", mChallengeToBeDisplayed.getGoal());
+                challengeType.setText(getString(R.string.distance_challenge) + getString(R.string.white_space) +
+                        distanceGoal + getString(R.string.white_space) + getString(R.string.km));
 
                 int userTime = (int)mChallengeToBeDisplayed.getMyRun().getDuration();
-                userPerf.setText(timeToDisplay(userTime));
+                userPerf.setText(timeToString(userTime, true));
 
                 int opponentTime = (int)mChallengeToBeDisplayed.getOpponentRun().getDuration();
-                opponentPerf.setText(timeToDisplay(opponentTime));
+                opponentPerf.setText(timeToString(opponentTime, true));
                 break;
         }
         // Set Text colors and results
@@ -184,27 +173,24 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
         t3.setTextColor(color);
     }
 
-    private String timeToDisplay(int time) {
-        int h = time/3600;
-        int min = (time%3600)/60;
-        int sec = ((time%3600)%60);
-
+    private String timeToString(int time, boolean showHours) {
         String toDisplay = "";
-        if(h != 0) {
-            toDisplay += h + "h";
+
+        if(showHours || time >= 3600) {
+            toDisplay += String.format(Locale.getDefault(), "%02d:", TimeUnit.SECONDS.toHours(time));
         }
-        if(min != 0){
-            toDisplay += min + "'";
-        }
-        if(sec != 0) {
-            toDisplay += sec +"''";
-        }
+
+        toDisplay += String.format(Locale.getDefault(), "%02d:%02d",
+                TimeUnit.SECONDS.toMinutes(time) -
+                        TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(time)),
+                TimeUnit.SECONDS.toSeconds(time) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(time)));
 
         return toDisplay;
     }
 
     private void setupButtonUI(View view) {
-        Button runHistoryButton = (Button) view.findViewById(R.id.go_to_run_history);
+        Button runHistoryButton = (Button) view.findViewById(R.id.button_history);
         runHistoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -217,7 +203,7 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
 
         final DBHelper dbHelper = new DBHelper(this.getContext());
 
-        Button deleteRunButton = (Button) view.findViewById(R.id.deleteRunButton);
+        Button deleteRunButton = (Button) view.findViewById(R.id.button_delete);
         deleteRunButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -230,12 +216,12 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
     }
 
     private void setupMapUI(View view, Bundle savedInstanceState) {
-        mCurrentMapType = MapType.MyMap;
-        mMapView = (MapView) view.findViewById(R.id.myMapView);
+        mCurrentMapType = MapType.USER_MAP;
+        mMapView = (MapView) view.findViewById(R.id.user_map);
         mMapView.onCreate(savedInstanceState);
         mMapView.getMapAsync(this);
 
-        mOpponentMapView = (MapView) view.findViewById(R.id.myOpponentMapView);
+        mOpponentMapView = (MapView) view.findViewById(R.id.opponent_map);
         mOpponentMapView.onCreate(savedInstanceState);
     }
 
@@ -250,20 +236,22 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
 
         switch(mCurrentMapType) {
 
-            case MyMap:
-                mGoogleMap = googleMap;
+            case USER_MAP:
+                Track userTrack = mChallengeToBeDisplayed.getMyRun().getTrack();
                 googleMap.setMapStyle(mapStyle);
-                displayTrack(mTrack, mGoogleMap, userColor);
-                displayTrackSetupUI(mGoogleMap);
 
-                mCurrentMapType = MapType.MyOpponentMap;
+                displayTrack(userTrack, googleMap, userColor);
+                displayTrackSetupUI(googleMap);
+
+                mCurrentMapType = MapType.OPPONENT_MAP;
                 mOpponentMapView.getMapAsync(this);
                 break;
-            case MyOpponentMap:
-                mOpponentGoogleMap = googleMap;
+            case OPPONENT_MAP:
+                Track opponentTrack = mChallengeToBeDisplayed.getOpponentRun().getTrack();
                 googleMap.setMapStyle(mapStyle);
-                displayTrack(mOpponentTrack, mOpponentGoogleMap, opponentColor);
-                displayTrackSetupUI(mOpponentGoogleMap);
+
+                displayTrack(opponentTrack, googleMap, opponentColor);
+                displayTrackSetupUI(googleMap);
                 break;
             default:
                 throw new IllegalStateException("unknown map type");

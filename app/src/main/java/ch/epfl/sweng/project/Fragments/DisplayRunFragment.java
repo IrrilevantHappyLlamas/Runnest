@@ -35,6 +35,8 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
 
@@ -44,7 +46,7 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
 
     // Map
     private MapView mMapView = null;
-    private GoogleMap mGoogleMap = null;
+    private GoogleMap mGoogleMap;
 
     public static DisplayRunFragment newInstance(Run runToBeDisplayed) {
         DisplayRunFragment fragment = new DisplayRunFragment();
@@ -68,78 +70,89 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_display_run, container, false);
 
-        mMapView = (MapView) view.findViewById(R.id.mapView);
-        mMapView.onCreate(savedInstanceState);
-        mMapView.getMapAsync(this);
-
+        setupMapUI(view, savedInstanceState);
         if (mRunToBeDisplayed != null) {
-
-            /*
-            Track track = mRunToBeDisplayed.getTrack();
-
-            TableLayout table = (TableLayout) view.findViewById(R.id.table);
-
-            // Name Row
-            TableRow firstRow = new TableRow(this.getContext());
-            createRowElement(firstRow, "Name :");
-            createRowElement(firstRow, mRunToBeDisplayed.getName());
-            table.addView(firstRow);
-
-            // Distance Row
-            TableRow secondRow = new TableRow(this.getContext());
-            createRowElement(secondRow, "Distance :");
-            createRowElement(secondRow,String.valueOf((int)track.getDistance()) + " m");
-            table.addView(secondRow);
-
-            // Duration Row
-            TableRow thirdRow = new TableRow(this.getContext());
-            createRowElement(thirdRow, "Duration :");
-            long minutes = mRunToBeDisplayed.getDuration() / 60;
-            long seconds = mRunToBeDisplayed.getDuration() % 60;
-            createRowElement(thirdRow, minutes + "' " + seconds + "''");
-            table.addView(thirdRow);
-            */
-
-            Button button = (Button) view.findViewById(R.id.go_to_run_history);
-
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    if (mListener != null) {
-                        mListener.onDisplayRunFragmentInteraction();
-                    }
-                }
-            });
-
-            final DBHelper dbHelper = new DBHelper(this.getContext());
-
-            Button deleteRunButton = (Button) view.findViewById(R.id.deleteRunButton);
-            deleteRunButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mListener != null) {
-                        dbHelper.delete(mRunToBeDisplayed);
-                        mListener.onDisplayRunFragmentInteraction();
-                    }
-                }
-            });
+            setupTextUI(view);
         }
+        setupButtonUI(view);
 
         return view;
     }
 
-    private void createRowElement(TableRow row, String text){
-
-        TableRow.LayoutParams layoutParams = new TableRow.LayoutParams();
-        layoutParams.setMargins(10, 50, 20, 10);
-        TextView element = new TextView(this.getContext());
-        element.setText(text);
-        element.setTextSize(20);
-        element.setLayoutParams(layoutParams);
-
-        row.addView(element);
+    private void setupMapUI(View view, Bundle savedInstanceState) {
+        mMapView = (MapView) view.findViewById(R.id.mapView);
+        mMapView.onCreate(savedInstanceState);
+        mMapView.getMapAsync(this);
     }
+
+    private void setupTextUI(View view) {
+        String name = mRunToBeDisplayed.getName();
+        TextView challengeName = ((TextView)view.findViewById(R.id.challenge_name));
+        challengeName.setText(name);
+
+        int duration = (int)mRunToBeDisplayed.getDuration();
+        TextView viewDuration = ((TextView)view.findViewById(R.id.duration_value));
+        viewDuration.setText(timeToString(duration, true));
+
+        double distance = mRunToBeDisplayed.getTrack().getDistance()/1000;
+        TextView viewDistance = ((TextView)view.findViewById(R.id.distance_value));
+        viewDistance.setText(String.format(Locale.getDefault(), "%.2f", distance) +
+                getString(R.string.white_space) + getString(R.string.km));
+
+        int avgPace;
+        if(distance == 0) {
+            avgPace = 0;
+        } else {
+            avgPace = (int)(duration/distance);
+        }
+        TextView viewAvgPace = ((TextView)view.findViewById(R.id.avg_pace_value));
+        viewAvgPace.setText(timeToString(avgPace, false) +
+                getString(R.string.white_space) + getString(R.string.min_over_km));
+    }
+
+    private String timeToString(int time, boolean showHours) {
+        String toDisplay = "";
+
+        if(showHours || time >= 3600) {
+            toDisplay += String.format(Locale.getDefault(), "%02d:", TimeUnit.SECONDS.toHours(time));
+        }
+
+        toDisplay += String.format(Locale.getDefault(), "%02d:%02d",
+                TimeUnit.SECONDS.toMinutes(time) -
+                        TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(time)),
+                TimeUnit.SECONDS.toSeconds(time) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(time)));
+
+        return toDisplay;
+    }
+
+    private void setupButtonUI(View view) {
+        Button button = (Button) view.findViewById(R.id.button_history);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (mListener != null) {
+                    mListener.onDisplayRunFragmentInteraction();
+                }
+            }
+        });
+
+        final DBHelper dbHelper = new DBHelper(this.getContext());
+
+        Button deleteRunButton = (Button) view.findViewById(R.id.button_delete);
+        deleteRunButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    dbHelper.delete(mRunToBeDisplayed);
+                    mListener.onDisplayRunFragmentInteraction();
+                }
+            }
+        });
+    }
+
 
     /**
      * Called when the <code>GoogleMap</code> is ready. Initialize a MapHandler.
