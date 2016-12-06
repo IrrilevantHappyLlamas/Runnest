@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.List;
@@ -72,6 +74,7 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
 
         if (mRunToBeDisplayed != null) {
 
+            /*
             Track track = mRunToBeDisplayed.getTrack();
 
             TableLayout table = (TableLayout) view.findViewById(R.id.table);
@@ -95,6 +98,7 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
             long seconds = mRunToBeDisplayed.getDuration() % 60;
             createRowElement(thirdRow, minutes + "' " + seconds + "''");
             table.addView(thirdRow);
+            */
 
             Button button = (Button) view.findViewById(R.id.go_to_run_history);
 
@@ -145,6 +149,8 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
+        MapStyleOptions mapStyle = MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.map_style_no_label);
+        googleMap.setMapStyle(mapStyle);
 
         displayTrackSetupUI();
         displayTrack();
@@ -180,7 +186,7 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
                 builder.include(latLng);
             }
 
-            mGoogleMap.addPolyline(polylineOptions.color(Color.BLUE));
+            mGoogleMap.addPolyline(polylineOptions.color(ContextCompat.getColor(getContext(), R.color.colorAccent)));
 
             // Center camera on past run
             LatLngBounds bounds = builder.build();

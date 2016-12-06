@@ -1,41 +1,178 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              tools:context="ch.epfl.sweng.project.Fragments.DisplayRunFragment">
 
-    <com.google.android.gms.maps.MapView
-        android:layout_width="wrap_content"
-        android:layout_height="250dp"
-        android:id="@+id/mapView" />
-
-    <TableLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="230dp"
-        android:id="@+id/table"
-        android:orientation="horizontal"
-        android:layout_gravity="bottom|center_vertical">
+        android:layout_height="match_parent"
+        android:layout_marginTop="55dp"
+        android:layout_marginBottom="55dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginStart="5dp">
 
-    </TableLayout>
+        <com.google.android.gms.maps.MapView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/mapView"
+            android:layout_marginBottom="190dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"/>
 
-    <Button
-        android:text="@string/history"
+        <TextView
+            android:text="Running pace:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/relativeLayout"
+            android:layout_centerHorizontal="false"
+            android:id="@+id/v_media"
+            android:paddingBottom="30dp"
+            android:layout_alignParentBottom="true"
+            android:textColor="@color/colorLightGrey"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:paddingLeft="50dp"
+            android:paddingStart="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
+
+        <TextView
+            android:text="Distance: "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/relativeLayout"
+            android:layout_centerHorizontal="false"
+            android:id="@+id/distance"
+            android:paddingBottom="80dp"
+            android:layout_alignParentBottom="true"
+            android:textSize="18sp"
+            android:textColor="@color/colorLightGrey"
+            android:paddingLeft="50dp"
+            android:paddingStart="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
+
+        <TextView
+            android:text="Duration:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/time"
+            android:paddingBottom="130dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="false"
+            android:textSize="18sp"
+            android:textColor="@color/colorLightGrey"
+            android:paddingLeft="50dp"
+            android:paddingStart="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
+
+        <TextView
+            android:text="7.53 km"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/distance_value"
+            android:textSize="18sp"
+            android:textColor="@color/colorLightGrey"
+            android:paddingRight="50dp"
+            android:paddingEnd="50dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:paddingBottom="80dp"/>
+
+        <TextView
+            android:text="35:57"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/time_value"
+            android:textColor="@color/colorLightGrey"
+            android:paddingRight="50dp"
+            android:paddingEnd="50dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:paddingBottom="130dp"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:text="5:03 min/km "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/vm_value"
+            android:textColor="@color/colorLightGrey"
+            android:paddingRight="50dp"
+            android:paddingEnd="50dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:paddingBottom="30dp"
+            android:layout_alignParentBottom="true"
+            android:textSize="18sp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="false"
+        android:layout_gravity="top">
+
+
+        <TextView
+            android:text="Challenge Name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView"
+            android:layout_centerHorizontal="false"
+            android:layout_centerInParent="true"
+            android:textColor="@color/colorLightGrey"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:paddingTop="13dp"/>
+    </RelativeLayout>
+
+
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/go_to_run_history"
-        android:layout_gravity="bottom|left|center_horizontal"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="20dp"
-        tools:ignore="RtlHardcoded"/>
+        android:layout_gravity="bottom"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true">
 
-    <Button
-        android:text="@string/delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/deleteRunButton"
-        android:layout_gravity="bottom|right|center_horizontal"
-        android:layout_marginBottom="20dp"
-        android:layout_marginRight="20dp"
-        tools:ignore="RtlHardcoded"/>
+        <Button
+            android:text="@string/delete"
+            android:layout_width="130dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/deleteRunButton"
+            android:layout_gravity="bottom|end|center_horizontal"
+            android:background="@drawable/button_shape_green"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="5dp"/>
 
-</FrameLayout>
+        <Button
+            android:text="@string/history"
+            android:layout_width="130dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/go_to_run_history"
+            android:layout_gravity="bottom|start|center_horizontal"
+            android:layout_marginLeft="30dp"
+            android:layout_marginStart="30dp"
+            android:background="@drawable/button_shape_green"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="5dp"/>
+    </RelativeLayout>
+
+</RelativeLayout>
