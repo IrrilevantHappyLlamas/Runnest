@@ -1,7 +1,5 @@
 package ch.epfl.sweng.project.Fragments.RunFragments;
 
-import android.graphics.Color;
-
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -17,18 +15,23 @@ public class MapHandler {
     // Constants
     private static final float CAMERA_ZOOM = 16f;
 
-    private GoogleMap mGoogleMap = null;
-    private PolylineOptions mPolylineOptions = null;
+    private GoogleMap googleMap = null;
+    private PolylineOptions polylineOptions = null;
+    private int trackColor;
 
-    public MapHandler(GoogleMap googleMap)  throws IllegalArgumentException {
+
+    //TODO: check sul color
+    public MapHandler(GoogleMap googleMap, int color)  throws IllegalArgumentException {
         if(googleMap == null) {
             throw new IllegalArgumentException("MapHandler constructor: argument cannot be null");
         }
 
-        mGoogleMap = googleMap;
-        mGoogleMap.setLocationSource(null);
+        trackColor = color;
 
-        mPolylineOptions = new PolylineOptions();
+        this.googleMap = googleMap;
+        this.googleMap.setLocationSource(null);
+
+        polylineOptions = new PolylineOptions();
     }
 
     /**
@@ -40,12 +43,12 @@ public class MapHandler {
         if(checkPoint != null) {
 
             LatLng currentLatLng = new LatLng(checkPoint.getLatitude(), checkPoint.getLongitude());
-            mPolylineOptions.add(currentLatLng);
-            mGoogleMap.clear();
-            mGoogleMap.addPolyline(mPolylineOptions.color(Color.BLUE));
+            polylineOptions.add(currentLatLng);
+            googleMap.clear();
+            googleMap.addPolyline(polylineOptions.color(trackColor));
 
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(currentLatLng);
-            mGoogleMap.animateCamera(cameraUpdate);
+            googleMap.animateCamera(cameraUpdate);
         }
     }
 
@@ -55,7 +58,7 @@ public class MapHandler {
      * @throws SecurityException    if app does not have the necessary permissions
      */
     public void startShowingLocation() throws SecurityException {
-            mGoogleMap.setMyLocationEnabled(true);
+            googleMap.setMyLocationEnabled(true);
     }
 
     /**
@@ -64,19 +67,19 @@ public class MapHandler {
      * @throws SecurityException    if app does not have the necessary permissions
      */
     public void stopShowingLocation() throws SecurityException {
-        mGoogleMap.setMyLocationEnabled(false);
+        googleMap.setMyLocationEnabled(false);
     }
 
     /**
      * Define what the user can do during a run and what he can't do.
      */
     public void setupRunningMapUI() {
-        mGoogleMap.setBuildingsEnabled(false);
-        mGoogleMap.setIndoorEnabled(false);
-        mGoogleMap.setTrafficEnabled(false);
-        mGoogleMap.setMinZoomPreference(CAMERA_ZOOM);
+        googleMap.setBuildingsEnabled(false);
+        googleMap.setIndoorEnabled(false);
+        googleMap.setTrafficEnabled(false);
+        googleMap.setMinZoomPreference(CAMERA_ZOOM);
 
-        UiSettings uiSettings = mGoogleMap.getUiSettings();
+        UiSettings uiSettings = googleMap.getUiSettings();
 
         uiSettings.setCompassEnabled(false);
         uiSettings.setIndoorLevelPickerEnabled(false);

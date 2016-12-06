@@ -70,12 +70,12 @@ public class Track {
     }
 
     /**
-     * Getter for the total distance in meters
+     * Getter for the total distance in km
      *
      * @return  total distance
      */
     public float getDistance() {
-        return distance;
+        return distance/1000;
     }
 
     /**
