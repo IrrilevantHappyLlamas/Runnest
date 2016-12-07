@@ -169,11 +169,11 @@
             android:layout_width="130dp"
             android:layout_height="wrap_content"
             android:id="@+id/button_delete"
-            android:layout_gravity="bottom|end|center_horizontal"
+            android:layout_gravity="bottom|right|center_horizontal|end"
             android:background="@drawable/button_shape_green"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentRight="false"
+            android:layout_alignParentEnd="false"
             android:layout_marginRight="40dp"
             android:layout_marginEnd="40dp"
             android:layout_marginBottom="8dp"
@@ -185,16 +185,16 @@
             android:layout_width="130dp"
             android:layout_height="wrap_content"
             android:id="@+id/button_history"
-            android:layout_gravity="bottom|start|center_horizontal"
+            android:layout_gravity="bottom|left|center_horizontal|start"
             android:layout_marginLeft="40dp"
             android:layout_marginStart="40dp"
             android:background="@drawable/button_shape_green"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentLeft="false"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="200dp"
-            android:layout_marginRight="200dp"/>
+            android:layout_marginRight="200dp"
+            android:layout_alignParentStart="true"/>
     </RelativeLayout>
 
 </RelativeLayout>
