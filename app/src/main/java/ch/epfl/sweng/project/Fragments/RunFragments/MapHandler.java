@@ -31,6 +31,9 @@ public class MapHandler {
         this.googleMap = googleMap;
         this.googleMap.setLocationSource(null);
 
+        UiSettings uiSettings = googleMap.getUiSettings();
+        uiSettings.setMyLocationButtonEnabled(false);
+
         polylineOptions = new PolylineOptions();
     }
 

@@ -74,6 +74,11 @@
 
     </LinearLayout>
 
+    <com.google.android.gms.maps.MapView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/mapView" />
+
     <Button
         android:text="@string/stop"
         android:layout_height="wrap_content"
@@ -86,7 +91,7 @@
         android:shadowDx="0"
         android:shadowDy="0"
         android:shadowRadius="5"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="20dp"
         android:layout_width="150dp"/>
 
     <Button
@@ -100,16 +105,11 @@
         android:shadowDx="0"
         android:shadowDy="0"
         android:shadowRadius="5"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="20dp"
         android:layout_width="150dp"/>
 
         <!--android:layout_width="270dp"-->
         <!--android:layout_height="60dp"-->
         <!--android:textSize="30sp"-->
-
-    <com.google.android.gms.maps.MapView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/mapView" />
 
 </FrameLayout>
