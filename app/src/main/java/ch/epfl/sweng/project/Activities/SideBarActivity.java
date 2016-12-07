@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -30,13 +29,10 @@ import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -51,7 +47,6 @@ import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Fragments.AcceptScheduleDialogFragment;
 import ch.epfl.sweng.project.Fragments.ChallengeDialogFragment;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
-import ch.epfl.sweng.project.Fragments.DBUploadFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
 import ch.epfl.sweng.project.Fragments.DisplayChallengeFragment;
 import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
@@ -73,7 +68,6 @@ public class SideBarActivity extends AppCompatActivity
         ProfileFragment.ProfileFragmentInteractionListener,
         RunningMapFragment.RunningMapFragmentInteractionListener,
         DBDownloadFragment.DBDownloadFragmentInteractionListener,
-        DBUploadFragment.DBUploadFragmentInteractionListener,
         RunHistoryFragment.onRunHistoryInteractionListener,
         DisplayUserFragment.OnDisplayUserFragmentInteractionListener,
         MessagesFragment.MessagesFragmentInteractionListener,
@@ -447,7 +441,7 @@ public class SideBarActivity extends AppCompatActivity
     public void onDestroy() {
         super.onDestroy();
         if(((AppRunnest)getApplication()).getUser().isLoggedIn()) {
-            ((AppRunnest) getApplication()).launchEmergencyUpload();
+            ((AppRunnest) getApplication()).launchDatabaseUpload();
         }
     }
 
@@ -455,7 +449,7 @@ public class SideBarActivity extends AppCompatActivity
     public void onPause() {
         super.onPause();
         if(((AppRunnest)getApplication()).getUser().isLoggedIn()) {
-            ((AppRunnest) getApplication()).launchEmergencyUpload();
+            ((AppRunnest) getApplication()).launchDatabaseUpload();
         }
     }
 
@@ -463,7 +457,7 @@ public class SideBarActivity extends AppCompatActivity
     public void onStop() {
         super.onStop();
         if(((AppRunnest)getApplication()).getUser().isLoggedIn()) {
-            ((AppRunnest) getApplication()).launchEmergencyUpload();
+            ((AppRunnest) getApplication()).launchDatabaseUpload();
         }
     }
 
@@ -479,7 +473,8 @@ public class SideBarActivity extends AppCompatActivity
                 .setMessage(message)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        launchFragment(new DBUploadFragment());
+                        ((AppRunnest)getApplication()).launchDatabaseUpload();
+                        logout();
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -489,6 +484,13 @@ public class SideBarActivity extends AppCompatActivity
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+    }
+
+    private void logout() {
+        ((AppRunnest) getApplication()).getUser().logoutStatus();
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        FirebaseAuth.getInstance().signOut();
     }
 
     private void dialogQuitRun(final MenuItem item){
@@ -544,10 +546,6 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public void onDBDownloadFragmentInteraction() {
         launchFragment(new ProfileFragment());
-    }
-
-    @Override
-    public void onDBUploadFragmentInteraction() {
     }
 
     @Override

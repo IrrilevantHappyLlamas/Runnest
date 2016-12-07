@@ -175,6 +175,9 @@ public class RunningMapFragment extends RunFragment {
             firebaseHelper.updateUserStatistics(currentUser.getEmail(), mRun.getDuration(),
                     mRun.getTrack().getDistance(), FirebaseHelper.RunType.SINGLE);
 
+            // upload database
+            ((AppRunnest)getActivity().getApplication()).launchDatabaseUpload();
+
             mListener.onRunningMapFragmentInteraction(new Run(mRun));
         }
     }

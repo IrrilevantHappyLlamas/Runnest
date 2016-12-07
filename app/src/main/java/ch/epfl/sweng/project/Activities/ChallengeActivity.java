@@ -496,7 +496,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         if (!isIntendedActivityExit) {
             // TODO: decide what to do
             //challengeProxy.abortChallenge();
-            ((AppRunnest) getApplication()).launchEmergencyUpload();
+            ((AppRunnest) getApplication()).launchDatabaseUpload();
         }
     }
 
@@ -505,7 +505,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         super.onDestroy();
         if (!isIntendedActivityExit) {
             challengeProxy.abortChallenge();
-            ((AppRunnest) getApplication()).launchEmergencyUpload();
+            ((AppRunnest) getApplication()).launchDatabaseUpload();
         }
     }
 
@@ -566,6 +566,9 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     }
 
     private void goToChallengeRecap(){
+
+        // upload database
+        ((AppRunnest) getApplication()).launchDatabaseUpload();
 
         // Set user as available
         new FirebaseHelper().
