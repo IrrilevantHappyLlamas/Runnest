@@ -16,8 +16,21 @@ import java.util.concurrent.TimeUnit;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Track;
 
+/**
+ * Class that contains all UI methods used from multiple Fragment/Activity.
+ */
 public class UtilsUI {
 
+    /**
+     * Given the time in seconds convert it into a <code>String</code> with the format hh:mm:ss.
+     * If <code>showHours</code> is true always display the hours digit (also if they are 00), otherwise,
+     * if it is false, they are shown only if necessary (not if they are 00).
+     *
+     * @param time          time to convert, in seconds
+     * @param showHours     indicates whether the hours digit must always be shown or not
+     *
+     * @return              time as a <code>String</code> formatted as hh:mm:ss
+     */
     public static String timeToString(int time, boolean showHours) {
         if (time < 0) {
             throw new IllegalArgumentException("Run/Challenge could not have a negative duration");
@@ -38,7 +51,15 @@ public class UtilsUI {
         return toDisplay;
     }
 
-    public static void displayTrackSetupUI(GoogleMap googleMap) {
+    /**
+     * Setup UI elements and gesture of the given <code>GoogleMap</code>. Used for recaps.
+     *
+     * @param googleMap     map to setup
+     */
+    public static void recapDisplayTrackSetupUI(GoogleMap googleMap) {
+        if(googleMap == null) {
+            throw new IllegalArgumentException();
+        }
         googleMap.setBuildingsEnabled(false);
         googleMap.setIndoorEnabled(false);
         googleMap.setTrafficEnabled(false);
@@ -52,7 +73,20 @@ public class UtilsUI {
         uiSettings.setMyLocationButtonEnabled(false);
     }
 
-    public static void displayTrack(Track track, GoogleMap googleMap, int color) {
+    /**
+     * Display the given <code>Track</code> on the given <code>GoogleMap</code>. The argument
+     * <code>color</code> indicates the desired color for the <code>Track</code> to be shown.
+     * Also takes care to center the camera on the displayed <code>Track</code>. Used for recaps
+     *
+     * @param track         <code>Track</code> to be shown
+     * @param googleMap     map where the <code>Track</code> must be shown
+     * @param color         color for the <code>Tarck</code> to be shown
+     */
+    public static void recapDisplayTrack(Track track, GoogleMap googleMap, int color) {
+        //TODO: check color validity, how do we do that?
+        if(track == null || googleMap == null) {
+            throw new IllegalArgumentException();
+        }
 
         if(track.getTotalCheckPoints() != 0) {
 

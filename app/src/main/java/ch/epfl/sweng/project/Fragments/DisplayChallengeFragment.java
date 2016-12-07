@@ -10,28 +10,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 
 import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Model.Challenge;
-import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Track;
 import ch.epfl.sweng.project.UtilsUI;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -226,8 +217,8 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
                 Track userTrack = mChallengeToBeDisplayed.getMyRun().getTrack();
                 googleMap.setMapStyle(mapStyle);
 
-                UtilsUI.displayTrack(userTrack, googleMap, userColor);
-                UtilsUI.displayTrackSetupUI(googleMap);
+                UtilsUI.recapDisplayTrack(userTrack, googleMap, userColor);
+                UtilsUI.recapDisplayTrackSetupUI(googleMap);
 
                 mCurrentMapType = MapType.OPPONENT_MAP;
                 mOpponentMapView.getMapAsync(this);
@@ -236,8 +227,8 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
                 Track opponentTrack = mChallengeToBeDisplayed.getOpponentRun().getTrack();
                 googleMap.setMapStyle(mapStyle);
 
-                UtilsUI.displayTrack(opponentTrack, googleMap, opponentColor);
-                UtilsUI.displayTrackSetupUI(googleMap);
+                UtilsUI.recapDisplayTrack(opponentTrack, googleMap, opponentColor);
+                UtilsUI.recapDisplayTrackSetupUI(googleMap);
                 break;
             default:
                 throw new IllegalStateException("unknown map type");

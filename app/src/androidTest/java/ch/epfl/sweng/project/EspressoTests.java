@@ -236,7 +236,7 @@ public class EspressoTests {
         onView(withId(R.id.stop_run)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
-        onView(withId(R.id.go_to_run_history)).perform(click());
+        onView(withId(R.id.button_history)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
         onView(withId(R.id.list)).check(matches(isDisplayed()));
@@ -295,7 +295,7 @@ public class EspressoTests {
         onView(withId(R.id.stop_run)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
-        onView(withId(R.id.deleteRunButton)).perform(click());
+        onView(withId(R.id.button_delete)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
     }
 

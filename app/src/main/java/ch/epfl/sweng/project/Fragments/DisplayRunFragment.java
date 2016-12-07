@@ -1,7 +1,6 @@
 package ch.epfl.sweng.project.Fragments;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -9,35 +8,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
-import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Database.DBHelper;
-import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.Run;
-import ch.epfl.sweng.project.Model.Track;
-import ch.epfl.sweng.project.Model.CheckPoint;
-import ch.epfl.sweng.project.Model.User;
 import ch.epfl.sweng.project.UtilsUI;
 
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
 
@@ -148,8 +132,8 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
         MapStyleOptions mapStyle = MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.map_style_no_label);
         googleMap.setMapStyle(mapStyle);
 
-        UtilsUI.displayTrackSetupUI(googleMap);
-        UtilsUI.displayTrack(mRunToBeDisplayed.getTrack(), googleMap,
+        UtilsUI.recapDisplayTrackSetupUI(googleMap);
+        UtilsUI.recapDisplayTrack(mRunToBeDisplayed.getTrack(), googleMap,
                 ContextCompat.getColor(getContext(), R.color.colorAccent));
     }
 
