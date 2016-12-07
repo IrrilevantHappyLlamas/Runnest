@@ -20,6 +20,7 @@ import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.Track;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.User;
+import ch.epfl.sweng.project.UtilsUI;
 
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
@@ -46,7 +47,6 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
 
     // Map
     private MapView mMapView = null;
-    private GoogleMap mGoogleMap;
 
     public static DisplayRunFragment newInstance(Run runToBeDisplayed) {
         DisplayRunFragment fragment = new DisplayRunFragment();
@@ -92,7 +92,7 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
 
         int duration = (int)mRunToBeDisplayed.getDuration();
         TextView viewDuration = ((TextView)view.findViewById(R.id.duration_value));
-        viewDuration.setText(timeToString(duration, true));
+        viewDuration.setText(UtilsUI.timeToString(duration, true));
 
         double distance = mRunToBeDisplayed.getTrack().getDistance()/1000;
         TextView viewDistance = ((TextView)view.findViewById(R.id.distance_value));
@@ -106,24 +106,8 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
             avgPace = (int)(duration/distance);
         }
         TextView viewAvgPace = ((TextView)view.findViewById(R.id.avg_pace_value));
-        viewAvgPace.setText(timeToString(avgPace, false) +
+        viewAvgPace.setText(UtilsUI.timeToString(avgPace, false) +
                 getString(R.string.white_space) + getString(R.string.min_over_km));
-    }
-
-    private String timeToString(int time, boolean showHours) {
-        String toDisplay = "";
-
-        if(showHours || time >= 3600) {
-            toDisplay += String.format(Locale.getDefault(), "%02d:", TimeUnit.SECONDS.toHours(time));
-        }
-
-        toDisplay += String.format(Locale.getDefault(), "%02d:%02d",
-                TimeUnit.SECONDS.toMinutes(time) -
-                        TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(time)),
-                TimeUnit.SECONDS.toSeconds(time) -
-                        TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(time)));
-
-        return toDisplay;
     }
 
     private void setupButtonUI(View view) {
@@ -161,52 +145,12 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mGoogleMap = googleMap;
         MapStyleOptions mapStyle = MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.map_style_no_label);
         googleMap.setMapStyle(mapStyle);
 
-        displayTrackSetupUI();
-        displayTrack();
-    }
-
-    private void displayTrackSetupUI() {
-        mGoogleMap.setBuildingsEnabled(false);
-        mGoogleMap.setIndoorEnabled(false);
-        mGoogleMap.setTrafficEnabled(false);
-
-        UiSettings uiSettings = mGoogleMap.getUiSettings();
-
-        uiSettings.setCompassEnabled(false);
-        uiSettings.setIndoorLevelPickerEnabled(false);
-        uiSettings.setMapToolbarEnabled(false);
-        uiSettings.setZoomControlsEnabled(false);
-        uiSettings.setMyLocationButtonEnabled(false);
-    }
-
-    private void displayTrack() {
-
-        Track track = mRunToBeDisplayed.getTrack();
-        if(track.getTotalCheckPoints() != 0) {
-
-            // Build polyline and LatLngBounds
-            PolylineOptions polylineOptions = new PolylineOptions();
-            List<CheckPoint> trackPoints = track.getCheckpoints();
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-
-            for (CheckPoint checkPoint : trackPoints) {
-                LatLng latLng = new LatLng(checkPoint.getLatitude(), checkPoint.getLongitude());
-                polylineOptions.add(latLng);
-                builder.include(latLng);
-            }
-
-            mGoogleMap.addPolyline(polylineOptions.color(ContextCompat.getColor(getContext(), R.color.colorAccent)));
-
-            // Center camera on past run
-            LatLngBounds bounds = builder.build();
-            int padding = 40;
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-            mGoogleMap.animateCamera(cameraUpdate);
-        }
+        UtilsUI.displayTrackSetupUI(googleMap);
+        UtilsUI.displayTrack(mRunToBeDisplayed.getTrack(), googleMap,
+                ContextCompat.getColor(getContext(), R.color.colorAccent));
     }
 
     @Override

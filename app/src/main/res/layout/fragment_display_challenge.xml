@@ -176,7 +176,9 @@
             android:layout_alignParentEnd="true"
             android:layout_marginRight="40dp"
             android:layout_marginEnd="40dp"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="200dp"
+            android:layout_marginStart="200dp"/>
 
         <Button
             android:text="@string/history"
@@ -190,7 +192,9 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="200dp"
+            android:layout_marginRight="200dp"/>
     </RelativeLayout>
 
 </RelativeLayout>

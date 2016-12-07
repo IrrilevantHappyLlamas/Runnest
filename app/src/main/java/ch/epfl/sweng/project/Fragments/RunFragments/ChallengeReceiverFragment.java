@@ -55,12 +55,6 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
     private MapView mMapView = null;
     private MapHandler mMapHandler = null;
 
-    /*
-    public ChallengeReceiverFragment() {
-        // Required empty public constructor
-    }
-    */
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_challenge_receiver, container, false);

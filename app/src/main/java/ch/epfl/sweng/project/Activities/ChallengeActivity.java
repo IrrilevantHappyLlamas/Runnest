@@ -39,6 +39,7 @@ import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.User;
 import ch.epfl.sweng.project.TestProxy;
+import ch.epfl.sweng.project.UtilsUI;
 
 import static ch.epfl.sweng.project.Activities.SideBarActivity.PERMISSION_REQUEST_CODE_FINE_LOCATION;
 
@@ -188,7 +189,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                         opponentTextToShow = getString(R.string.opponent_completed) +
                                 challengeGoal + getString(R.string.km) +
                                 getString(R.string.white_space) + getString(R.string.in) +
-                                transformDuration(opponentDuration);
+                                UtilsUI.timeToString((int)opponentDuration, true);
                         break;
                 }
                 opponentTxt.setText(opponentTextToShow);
@@ -236,7 +237,8 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 userTextToShow = getString(R.string.user_completed) +
                         challengeGoal + getString(R.string.km) +
                         getString(R.string.white_space) + getString(R.string.in) +
-                        transformDuration(((ChallengeSenderFragment)senderFragment).getRun().getDuration());
+                        UtilsUI.timeToString((int)((ChallengeSenderFragment)senderFragment).getRun().getDuration(),
+                                true);
                 break;
         }
         userTxt.setText(userTextToShow);
@@ -281,7 +283,8 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 new CountDownTimer((long)challengeGoal, 1000) {
 
                     public void onTick(long millisUntilFinished) {
-                        String timeLeft = "Time left: " + transformDuration(millisUntilFinished/1000);
+                        String timeLeft = "Time left: " +
+                                UtilsUI.timeToString((int)millisUntilFinished/1000, false);
                         chronometer.setText(timeLeft);
                     }
 
@@ -387,14 +390,6 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
         // Go to recap challenge
         goToChallengeRecap();
-    }
-
-    private String transformDuration(long duration) {
-        if (duration < 0) {
-            throw new IllegalArgumentException("Duration could not be negative");
-        }
-
-        return (duration/60 + "' " + duration%60 + "''");
     }
 
     public ChallengeProxy getChallengeProxy(){
