@@ -62,6 +62,9 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
     private CountDownTimer mLocationChangeSimulation = null;
 
     protected void startRun() {
+        // Prevent sleeping
+        getView().setKeepScreenOn(true);
+
         mRun.start();
 
         mDistance.setVisibility(View.VISIBLE);
@@ -76,6 +79,9 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
     }
 
     protected void stopRun() {
+        // Allow sleeping
+        getView().setKeepScreenOn(true);
+
         mRequestingLocationUpdates = false;
         stopLocationUpdates();
         mRun.stop();
