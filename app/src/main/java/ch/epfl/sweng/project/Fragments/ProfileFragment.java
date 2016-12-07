@@ -73,17 +73,17 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
 
                 double distance = Double.valueOf(statistics[mFirebaseHelper.TOTAL_RUNNING_DISTANCE_INDEX]);
                 String toBeDisplayedDistance = String.valueOf(format.format(distance/1000));
-                ((TextView)view.findViewById(R.id.total_running_distance)).setText(toBeDisplayedDistance);
+                ((TextView)view.findViewById(R.id.total_running_distance)).setText(toBeDisplayedDistance + " km");
 
                 double time = Double.valueOf(statistics[mFirebaseHelper.TOTAL_RUNNING_TIME_INDEX]);
                 String toBeDisplayedTime = String.valueOf(format.format(time/60));
-                ((TextView)view.findViewById(R.id.total_running_time)).setText(toBeDisplayedTime);
+                ((TextView)view.findViewById(R.id.total_running_time)).setText(toBeDisplayedTime + " min");
 
                 String nbRuns = statistics[mFirebaseHelper.TOTAL_NUMBER_OF_RUNS_INDEX];
                 ((TextView)view.findViewById(R.id.nb_runs)).setText(nbRuns + " runs");
-                ((TextView)view.findViewById(R.id.total_number_of_challenges)).setText(statistics[mFirebaseHelper.TOTAL_NUMBER_OF_CHALLENGES_INDEX]);
-                ((TextView)view.findViewById(R.id.total_number_of_won_challenges)).setText(statistics[mFirebaseHelper.TOTAL_NUMBER_OF_WON_CHALLENGES_INDEX]);
-                ((TextView)view.findViewById(R.id.total_number_of_lost_challenges)).setText(statistics[mFirebaseHelper.TOTAL_NUMBER_OF_LOST_CHALLENGES_INDEX]);
+                ((TextView)view.findViewById(R.id.total_number_of_challenges)).setText(statistics[mFirebaseHelper.TOTAL_NUMBER_OF_CHALLENGES_INDEX] + " challenges");
+                ((TextView)view.findViewById(R.id.total_number_of_won_challenges)).setText(statistics[mFirebaseHelper.TOTAL_NUMBER_OF_WON_CHALLENGES_INDEX] + " won");
+                ((TextView)view.findViewById(R.id.total_number_of_lost_challenges)).setText(statistics[mFirebaseHelper.TOTAL_NUMBER_OF_LOST_CHALLENGES_INDEX] + " lost");
 
             }
         });

@@ -73,4 +73,5 @@
     <string name="challenges">challenges</string>
     <string name="lost">lost</string>
     <string name="won">won</string>
+    <string name="_0_challenges">0 challenges</string>
 </resources>

@@ -159,6 +159,7 @@ public class SideBarActivity extends AppCompatActivity
 
 
         runItem = navigationView.getMenu().getItem(1);
+        /*
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,6 +168,7 @@ public class SideBarActivity extends AppCompatActivity
                 onNavigationItemSelected(runItem);
             }
         });
+        */
 
         User account = ((AppRunnest)getApplicationContext()).getUser();
         if (account != null) {
