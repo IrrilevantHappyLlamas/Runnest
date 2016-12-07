@@ -28,6 +28,7 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import java.util.Locale;
 
 import ch.epfl.sweng.project.AppRunnest;
+import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Run;
 
@@ -62,6 +63,7 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
     private CountDownTimer mLocationChangeSimulation = null;
 
     protected void startRun() {
+
         mRun.start();
 
         mDistance.setVisibility(View.VISIBLE);

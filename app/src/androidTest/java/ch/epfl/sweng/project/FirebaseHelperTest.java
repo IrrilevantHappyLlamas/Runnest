@@ -298,6 +298,76 @@ public class FirebaseHelperTest {
         firebaseHelper.getDatabase().child("users").child("uselessUser").removeValue();
     }
 
+    @Test
+    public void setUserAvailableCorrectlySetsStatus() {
+        firebaseHelper.setUserAvailable("Test User", false, true);
+        firebaseHelper.getDatabase().child("users").child("Test User")
+                .child("available")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Assert.assertTrue(dataSnapshot.exists());
+                        Assert.assertTrue((boolean)dataSnapshot.getValue());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void setUserAvailableThrowsNullPointer() {
+        firebaseHelper.setUserAvailable(null , false, true);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void setUserAvailableThrowsIllegalArgument() {
+        firebaseHelper.setUserAvailable("" ,false, true);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void listenUserAvailabilityThrowsNullPointer() {
+        firebaseHelper.listenUserAvailability("Test User", false, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void listenUserAvailabilityThrowsIllegalArgument() {
+        firebaseHelper.listenUserAvailability("" , false, new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    @Test
+    public void listenUserAvailabilityCorrectlyAttachesListener() {
+        firebaseHelper.setUserAvailable("Test User", false, true);
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Assert.assertTrue(dataSnapshot.exists());
+                Assert.assertTrue((boolean)dataSnapshot.getValue());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        firebaseHelper.listenUserAvailability("Test User", listener);
+    }
+
+
+
     /*
     @Test
     public void deletingMessageCorrectlyReadsDatabase() {

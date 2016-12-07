@@ -128,6 +128,10 @@ public class RunningMapFragment extends RunFragment {
 
         if(checkPermission() && mLocationSettingsHandler.checkLocationSettings()) {
 
+            // Set user as unavailable
+            new FirebaseHelper().
+                    setUserAvailable(((AppRunnest) getActivity().getApplication()).getUser().getEmail(), false, false);
+
             // initialize new Run
             @SuppressLint("SimpleDateFormat")
             SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy HH:mm:ss");
@@ -161,6 +165,10 @@ public class RunningMapFragment extends RunFragment {
             dbHelper.insert(mRun);
 
             FirebaseHelper firebaseHelper = new FirebaseHelper();
+
+            // Set user as available
+            firebaseHelper.
+                    setUserAvailable(((AppRunnest) getActivity().getApplication()).getUser().getEmail(), false, true);
 
             //update user statistics
             User currentUser = ((AppRunnest) getActivity().getApplication()).getUser();

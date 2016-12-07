@@ -10,15 +10,21 @@ import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import ch.epfl.sweng.project.AppRunnest;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
+import ch.epfl.sweng.project.Firebase.FirebaseProxy;
 import ch.epfl.sweng.project.Model.Message;
 
 /**
@@ -88,7 +94,28 @@ public class DisplayUserFragment extends Fragment {
             challengeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onDisplayUserFragmentInteraction(name, email);
+                    // TODO: move onClick implementation to profile buttons when they are ready
+                    FirebaseHelper firebaseHelper = new FirebaseHelper();
+                    firebaseHelper.listenUserAvailability(email, true, new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                if ((boolean)dataSnapshot.getValue()) {
+                                    mListener.onDisplayUserFragmentInteraction(name, email);
+                                } else {
+                                    Toast.makeText(getContext(), "User is currently busy, try again later",
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            } else {
+                                throw new DatabaseException("Corrupted available node for user");
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                                throw new DatabaseException("Cannot read available status for user");
+                        }
+                    });
                 }
             });
 

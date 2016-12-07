@@ -111,6 +111,10 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private void extractIntent(Intent intent) {
         Bundle extra = intent.getExtras();
 
+        // Set user as unavailable
+        new FirebaseHelper().
+                setUserAvailable(((AppRunnest) getApplication()).getUser().getEmail(), false, false);
+
         opponentName = extra.getString("opponent");
         owner = extra.getBoolean("owner");
 
@@ -562,6 +566,11 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     }
 
     private void goToChallengeRecap(){
+
+        // Set user as available
+        new FirebaseHelper().
+                setUserAvailable(((AppRunnest) getApplication()).getUser().getEmail(), false, true);
+
         Intent returnIntent = new Intent();
         setResult(SideBarActivity.REQUEST_END_CHALLENGE, returnIntent);
         finish();

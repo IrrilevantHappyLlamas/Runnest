@@ -372,6 +372,49 @@ public class FirebaseHelper {
     }
 
     /**
+     * Sets the available status of a user to true or false. An user with available status set to false cannot be
+     * be challenged.
+     *
+     * @param userMail      mail of the user of which to set the availability status
+     * @param status        value of the status
+     */
+    public void setUserAvailable(String userMail, boolean emailInFirebaseFormat, boolean status) {
+
+        if (userMail == null) {
+            throw new NullPointerException("User mail can't be null");
+        } else if (userMail.isEmpty()) {
+            throw new IllegalArgumentException("User mail can't be empty");
+        }
+
+        String email = emailInFirebaseFormat?userMail:getFireBaseMail(userMail);
+
+        databaseReference.child(USERS_CHILD)
+                .child(email).child("available").setValue(status);
+    }
+
+    /**
+     * Attach a single ValueEventListener to the available status node of an user, to check for it. The listener is
+     * passed as a parameter and is responsible for handling the node value.
+     *
+     * @param userMail      mail of the user of which to listen the availability status
+     * @param listener      listener to attach
+     */
+    public void listenUserAvailability(String userMail, boolean emailInFirebaseFormat, ValueEventListener listener) {
+
+        if (userMail == null || listener == null) {
+            throw new NullPointerException("User mail or the listener can't be null");
+        } else if (userMail.isEmpty()) {
+            throw new IllegalArgumentException("User mail can't be empty");
+        }
+
+        String email = emailInFirebaseFormat?userMail:getFireBaseMail(userMail);
+
+        databaseReference.child(USERS_CHILD)
+                .child(email).child("available")
+                .addListenerForSingleValueEvent(listener);
+    }
+
+    /**
      * Converts the email to allow the firebase storage
      *
      * @return email for firebase
