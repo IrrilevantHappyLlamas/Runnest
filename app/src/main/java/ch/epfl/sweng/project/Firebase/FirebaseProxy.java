@@ -5,8 +5,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Random;
-
 import ch.epfl.sweng.project.Model.ChallengeProxy;
 import ch.epfl.sweng.project.Model.CheckPoint;
 
@@ -23,10 +21,12 @@ public class FirebaseProxy implements ChallengeProxy {
     private String challengeName = null;
     private boolean owner = false;
     private boolean isChallengeTerminated = false;
+    private boolean isChallengeRunning = false;
 
     private boolean firstReadyCallback = true;
     private boolean firstFinishedCallback = true;
     private boolean firstAbortCallback = true;
+    private boolean firstInRoomCallback = true;
     private boolean remoteOpponentFinished = false;
     private boolean localUserFinished = false;
 
@@ -39,6 +39,8 @@ public class FirebaseProxy implements ChallengeProxy {
     private ValueEventListener onFinishedListener = null;
     private ValueEventListener onAbortListener = null;
     private ValueEventListener onDataListener = null;
+    private ValueEventListener inRoomListener = null;
+
 
     /**
      * Public constructor that takes the two opponents names and instantiates the challenge on firebase. It also takes
@@ -70,8 +72,10 @@ public class FirebaseProxy implements ChallengeProxy {
         // Create firebase challenge node if challenge owner
         if (owner) {
             firebaseHelper.addChallengeNode(localUser, remoteOpponent, challengeName);
+            firebaseHelper.setUserStatus(challengeName, localUser, FirebaseHelper.challengeNodeType.IN_ROOM, true);
             setOpponentListeners();
         } else {
+            firebaseHelper.setUserStatus(challengeName, localUser, FirebaseHelper.challengeNodeType.IN_ROOM, true);
             setOpponentListeners();
             checkForPreviousState(FirebaseHelper.challengeNodeType.ABORT);
             checkForPreviousState(FirebaseHelper.challengeNodeType.READY);
@@ -88,6 +92,12 @@ public class FirebaseProxy implements ChallengeProxy {
         firebaseHelper.setUserChallengeListener(challengeName, remoteOpponent, onFinishedListener, FirebaseHelper.challengeNodeType.FINISH);
         firebaseHelper.setUserChallengeListener(challengeName, remoteOpponent, onAbortListener, FirebaseHelper.challengeNodeType.ABORT);
         firebaseHelper.setUserChallengeListener(challengeName, remoteOpponent, onDataListener, FirebaseHelper.challengeNodeType.DATA);
+
+        // If owner, create listener to see when opponent enters room
+        if (owner) {
+            inRoomListener = createInRoomListener();
+            firebaseHelper.setUserChallengeListener(challengeName, remoteOpponent, inRoomListener, FirebaseHelper.challengeNodeType.IN_ROOM);
+        }
     }
 
     private void removeActiveListeners() {
@@ -147,6 +157,13 @@ public class FirebaseProxy implements ChallengeProxy {
         return isChallengeTerminated;
     }
 
+    /**
+     * Deletes the challenge for firebase, to be used only when you are sure to be the last person in the room.
+     */
+    public void deleteChallenge() {
+        firebaseHelper.deleteChallengeNode(challengeName);
+    }
+
     @Override
     public void imReady() {
         if (isChallengeTerminated) {
@@ -161,6 +178,7 @@ public class FirebaseProxy implements ChallengeProxy {
             return;
         }
         firebaseHelper.removeUserChallengeListener(challengeName, remoteOpponent, onReadyListener, FirebaseHelper.challengeNodeType.READY);
+        isChallengeRunning = true;
         onReadyListener = null;
     }
 
@@ -200,7 +218,6 @@ public class FirebaseProxy implements ChallengeProxy {
         firebaseHelper.setUserStatus(challengeName, localUser, FirebaseHelper.challengeNodeType.ABORT, true);
         removeActiveListeners();
         isChallengeTerminated = true;
-        System.out.println("******  LOCAL USER   ******" + localUser);
     }
 
     private ValueEventListener createReadyListener() {
@@ -259,7 +276,7 @@ public class FirebaseProxy implements ChallengeProxy {
                     } else {
                         removeActiveListeners();
                         isChallengeTerminated = true;
-                        firebaseHelper.deleteChallengeNode(challengeName);
+                        deleteChallenge();
                         callbackHandler.hasAborted();
                     }
                 }
@@ -299,7 +316,35 @@ public class FirebaseProxy implements ChallengeProxy {
         };
     }
 
-    private String generateChallengeName(String user1, String user2, String identifier) {
+    private ValueEventListener createInRoomListener() {
+        return new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(firstInRoomCallback) {
+                    firstInRoomCallback = false;
+                } else {
+                    callbackHandler.opponentInRoom();
+                    firebaseHelper.removeUserChallengeListener(challengeName, remoteOpponent, inRoomListener, FirebaseHelper.challengeNodeType.IN_ROOM);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                throw databaseError.toException();
+            }
+        };
+    }
+
+    /**
+     * Utility method to generate the challenge name in the form "userA vs userB id", where "userA" is lexicographically
+     * less than "userB"
+     *
+     * @param user1         first user of the challenge
+     * @param user2         second user of the challenge
+     * @param identifier    challenge identifier
+     * @return              challenge name following the convention
+     */
+    public static String generateChallengeName(String user1, String user2, String identifier) {
 
         String challengeName;
         int namesCompare = user1.compareTo(user2);

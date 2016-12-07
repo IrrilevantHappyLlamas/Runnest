@@ -62,6 +62,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     // ChallengeProxy
     private ChallengeProxy challengeProxy;
     private Boolean owner = false;
+    private Boolean isOpponentThere = false;
     private Boolean opponentReady = false;
     private Boolean userReady = false;
     private Boolean opponentFinished = false;
@@ -207,12 +208,25 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
             @Override
             public void hasAborted() {
-                aborted = true;
-                win = true;
-                ((ChallengeSenderFragment)senderFragment).endChallenge();
-                ((ChallengeReceiverFragment)receiverFragment).stopRun();
-                isIntendedActivityExit = true;
-                endChallenge();
+                if (phase == BEFORE_CHALLENGE) {
+                    Intent returnIntent = new Intent();
+                    setResult(SideBarActivity.REQUEST_STOP_WAITING, returnIntent);
+                    isIntendedActivityExit = true;
+                    finish();
+                } else {
+                    aborted = true;
+                    win = true;
+                    ((ChallengeSenderFragment) senderFragment).endChallenge();
+                    ((ChallengeReceiverFragment) receiverFragment).stopRun();
+                    isIntendedActivityExit = true;
+                    endChallenge();
+                }
+            }
+
+            @Override
+            public void opponentInRoom() {
+                isOpponentThere = true;
+                opponentTxt.setText(R.string.opponent_in_room);
             }
         };
 
@@ -310,6 +324,9 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
         opponentTxt = (TextView) findViewById(R.id.opponentTxt);
         userTxt = (TextView) findViewById(R.id.userTxt);
+        if (!owner) {
+            opponentTxt.setText(R.string.opponent_in_room);
+        }
 
         backToSideBtn = (Button) findViewById(R.id.back_to_side_btn);
         backToSideBtn.setOnClickListener(new View.OnClickListener() {
@@ -388,6 +405,13 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         Challenge challengeToSave = new Challenge(opponentName, challengeType, challengeGoal, result, userRun, opponentRun);
         DBHelper dbHelper = new DBHelper(this);
         dbHelper.insert(challengeToSave);
+
+        // upload database
+        ((AppRunnest) getApplication()).launchDatabaseUpload();
+
+        // Set user as available
+        new FirebaseHelper().
+                setUserAvailable(((AppRunnest) getApplication()).getUser().getEmail(), false, true);
 
         // Go to recap challenge
         goToChallengeRecap();
@@ -488,15 +512,12 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         mGoogleApiClient.connect();
     }
 
-    //TODO: decide if onPause too
-
     @Override
     public void onStop() {
         super.onStop();
         if (!isIntendedActivityExit) {
             // TODO: decide what to do
-            //challengeProxy.abortChallenge();
-            ((AppRunnest) getApplication()).launchDatabaseUpload();
+            // TODO: decide if onPause too
         }
     }
 
@@ -547,8 +568,18 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 .setMessage("Are you sure you want to stop waiting and go back?")
                 .setPositiveButton(R.string.quit, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        //TODO delete challenge from firebase?
-                        challengeProxy.abortChallenge();
+                        if (owner && !isOpponentThere) {
+                            // If you are still in the room alone
+                            challengeProxy.deleteChallenge();
+                        } else {
+                            // If opponent is already here and he needs notification
+                            challengeProxy.abortChallenge();
+                        }
+
+                        // Set user as available
+                        new FirebaseHelper().
+                                setUserAvailable(((AppRunnest) getApplication()).getUser().getEmail(), false, true);
+
                         Intent returnIntent = new Intent();
                         setResult(SideBarActivity.REQUEST_STOP_WAITING, returnIntent);
                         isIntendedActivityExit = true;
@@ -566,13 +597,6 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     }
 
     private void goToChallengeRecap(){
-
-        // upload database
-        ((AppRunnest) getApplication()).launchDatabaseUpload();
-
-        // Set user as available
-        new FirebaseHelper().
-                setUserAvailable(((AppRunnest) getApplication()).getUser().getEmail(), false, true);
 
         Intent returnIntent = new Intent();
         setResult(SideBarActivity.REQUEST_END_CHALLENGE, returnIntent);

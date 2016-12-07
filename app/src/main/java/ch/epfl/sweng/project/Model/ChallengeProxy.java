@@ -7,6 +7,7 @@ public interface ChallengeProxy {
         void isReady();
         void isFinished();
         void hasAborted();
+        void opponentInRoom();
     }
 
     void putData(CheckPoint checkPoint);
@@ -18,4 +19,6 @@ public interface ChallengeProxy {
     void imFinished();
 
     void abortChallenge();
+
+    void deleteChallenge();
 }

@@ -93,6 +93,7 @@ public class FirebaseHelper {
         READY("readyStatus"),
         FINISH("finishStatus"),
         ABORT("abortStatus"),
+        IN_ROOM("in room"),
         DATA("checkpoints");
 
         private final String nodeName;
@@ -444,9 +445,11 @@ public class FirebaseHelper {
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(challengeNodeType.READY.toString()).setValue(false);
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(challengeNodeType.FINISH.toString()).setValue(false);
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(challengeNodeType.ABORT.toString()).setValue(false);
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(challengeNodeType.IN_ROOM.toString()).setValue(false);
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(challengeNodeType.READY.toString()).setValue(false);
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(challengeNodeType.FINISH.toString()).setValue(false);
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(challengeNodeType.ABORT.toString()).setValue(false);
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(challengeNodeType.IN_ROOM.toString()).setValue(false);
     }
 
     /**

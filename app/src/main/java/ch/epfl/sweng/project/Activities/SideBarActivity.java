@@ -32,6 +32,8 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
@@ -44,6 +46,7 @@ import java.util.Stack;
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
+import ch.epfl.sweng.project.Firebase.FirebaseProxy;
 import ch.epfl.sweng.project.Fragments.AcceptScheduleDialogFragment;
 import ch.epfl.sweng.project.Fragments.ChallengeDialogFragment;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
@@ -558,31 +561,33 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public void onMessagesFragmentInteraction(final Message message) {
         requestMessage = message;
-        showRequestDialog();
 
-        //FIXME: correctly check on firebase
-        /*
         if (message.getType() == Message.MessageType.CHALLENGE_REQUEST) {
-            User user = ((AppRunnest) getApplication()).getUser();
-            String nodeName = user.getName() + " " + user.getFamilyName() + "_vs_" + message.getSender();
+            final String challengeName = FirebaseProxy.generateChallengeName( message.getSender(),
+                                                                        message.getAddressee(),
+                                                                        message.getMessage());
             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
-            dbRef.child("challenges").child(nodeName).addListenerForSingleValueEvent(new ValueEventListener() {
+            dbRef.child("challenges").child(challengeName)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
                         showRequestDialog();
                     } else {
-                        //TODO: maybe show dialog that explains ...
+                        Toast.makeText(getBaseContext(), "Opponent has already deleted this challenge",
+                                Toast.LENGTH_LONG).show();
                         FirebaseHelper fbHelper = new FirebaseHelper();
+                        fbHelper.deleteChallengeNode(challengeName);
                         fbHelper.delete(message);
                     }
                 }
 
                 @Override
-                public void onCancelled(DatabaseError databaseError) { }
+                public void onCancelled(DatabaseError databaseError) {
+                    throw databaseError.toException();
+                }
             });
         }
-        */
     }
 
     @Override
@@ -730,7 +735,7 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == REQUEST_STOP_WAITING){
-            Toast.makeText(getApplicationContext(),"You have deleted the challenge",
+            Toast.makeText(getApplicationContext(),"The challenge was deleted",
                     Toast.LENGTH_LONG).show();
         } else if(resultCode == REQUEST_ABORT) {
             Toast.makeText(getApplicationContext(),"You have aborted the challenge",

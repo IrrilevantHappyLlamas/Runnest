@@ -34,6 +34,7 @@
     <string name="waiting_opponent">Waiting for your opponent…</string>
     <string name="user_ready">YOU ARE READY!</string>
     <string name="opponent_ready">Your opponent is READY!</string>
+    <string name="opponent_in_room">Your opponent is there, but he is not ready yet</string>
     <string name="warning_missing_updates">Last update: 30 or more seconds ago!</string>
     <string name="who_runs_faster">Who runs faster?</string>
     <string name="login_app_image">login app image</string>

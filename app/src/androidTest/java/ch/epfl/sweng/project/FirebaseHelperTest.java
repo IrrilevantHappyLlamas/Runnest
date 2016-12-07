@@ -162,6 +162,14 @@ public class FirebaseHelperTest {
                         Assert.assertFalse((boolean)user1.child(FirebaseHelper.challengeNodeType.FINISH.toString()).getValue());
                         Assert.assertTrue(user2.hasChild(FirebaseHelper.challengeNodeType.FINISH.toString()));
                         Assert.assertFalse((boolean)user2.child(FirebaseHelper.challengeNodeType.FINISH.toString()).getValue());
+                        Assert.assertTrue(user1.hasChild(FirebaseHelper.challengeNodeType.ABORT.toString()));
+                        Assert.assertFalse((boolean)user1.child(FirebaseHelper.challengeNodeType.ABORT.toString()).getValue());
+                        Assert.assertTrue(user2.hasChild(FirebaseHelper.challengeNodeType.ABORT.toString()));
+                        Assert.assertFalse((boolean)user2.child(FirebaseHelper.challengeNodeType.ABORT.toString()).getValue());
+                        Assert.assertTrue(user1.hasChild(FirebaseHelper.challengeNodeType.IN_ROOM.toString()));
+                        Assert.assertFalse((boolean)user1.child(FirebaseHelper.challengeNodeType.IN_ROOM.toString()).getValue());
+                        Assert.assertTrue(user2.hasChild(FirebaseHelper.challengeNodeType.IN_ROOM.toString()));
+                        Assert.assertFalse((boolean)user2.child(FirebaseHelper.challengeNodeType.IN_ROOM.toString()).getValue());
                     }
 
                     @Override
@@ -363,7 +371,7 @@ public class FirebaseHelperTest {
             }
         };
 
-        firebaseHelper.listenUserAvailability("Test User", listener);
+        firebaseHelper.listenUserAvailability("Test User", false,  listener);
     }
 
 
