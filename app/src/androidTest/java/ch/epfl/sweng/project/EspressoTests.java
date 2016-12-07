@@ -573,7 +573,7 @@ public class EspressoTests {
     }
 
     @Test
-    public void memoMessage() {
+    public void memoMessageCloseDelete() {
         // Send message
         Message msg1 = new Message("runnest_dot_ihl_at_gmail_dot_com",
                 "Test User",
@@ -607,6 +607,39 @@ public class EspressoTests {
         SystemClock.sleep(WAIT_DURATION);
 
         onView(withText("Delete")).perform(click());
+        SystemClock.sleep(WAIT_DURATION);
+
+        //onView(withId(R.id.readyBtn)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void memoMessageChallenge() {
+        // Send message
+        Message msg1 = new Message("runnest_dot_ihl_at_gmail_dot_com",
+                "Test User",
+                "Runnest IHL",
+                "Test User",
+                Message.MessageType.MEMO,
+                "that's a test",
+                new Date(),
+                Challenge.Type.DISTANCE);
+
+        FirebaseHelper firebaseHelper = new FirebaseHelper();
+        firebaseHelper.send(msg1);
+        SystemClock.sleep(WAIT_DURATION);
+
+        //Tap on the request
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
+        SystemClock.sleep(WAIT_DURATION);
+
+        //Tap on Challenge
+        onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withText("Challenge")).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
         //onView(withId(R.id.readyBtn)).check(matches(isDisplayed()));

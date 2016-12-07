@@ -29,6 +29,7 @@ public class MemoDialogFragment extends DialogFragment {
     private Challenge.Type type;
     private Date scheduledDate;
     private String sender;
+    private String opponentEmail;
     private TextView typeTxt;
     private TextView dateDescriptionTxt;
     private TextView dateTxt;
@@ -41,6 +42,7 @@ public class MemoDialogFragment extends DialogFragment {
     public interface MemoDialogListener {
         void onMemoDialogCloseClick(DialogFragment dialog);
         void onMemoDialogDeleteClick(DialogFragment dialog);
+        void onMemoDialogChallengeClick(DialogFragment dialog);
     }
 
     MemoDialogFragment.MemoDialogListener mListener;
@@ -71,6 +73,11 @@ public class MemoDialogFragment extends DialogFragment {
             public void onClick(DialogInterface dialog, int id) {
 
                         mListener.onMemoDialogDeleteClick(MemoDialogFragment.this);
+            }
+                }).setPositiveButton("Challenge", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                //Start the challenge
+                        mListener.onMemoDialogChallengeClick(MemoDialogFragment.this);
             }
         });
 
@@ -107,6 +114,7 @@ public class MemoDialogFragment extends DialogFragment {
         type = (Challenge.Type)args.get("type");
         scheduledDate = (Date) args.get("date");
         sender = args.getString("sender");
+        opponentEmail = args.getString("opponentEmail");
     }
 
 
@@ -136,5 +144,13 @@ public class MemoDialogFragment extends DialogFragment {
 
     public Date getScheduledDate() {
         return scheduledDate;
+    }
+
+    public String getOpponentEmail() {
+        return opponentEmail;
+    }
+
+    public String getSender() {
+        return sender;
     }
 }
