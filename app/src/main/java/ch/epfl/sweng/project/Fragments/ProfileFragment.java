@@ -29,66 +29,70 @@ import ch.epfl.sweng.project.Model.User;
 public class ProfileFragment extends android.support.v4.app.Fragment {
 
     private ProfileFragmentInteractionListener mProfileListener = null;
-    private FirebaseHelper mFirebaseHelper = null;
-    private User mUser;
+    private String mName = null;
+    private String mEmail = null;
 
+    public static ProfileFragment newInstance(String name, String email) {
+        ProfileFragment fragment = new ProfileFragment();
+        fragment.mName = name;
+        fragment.mEmail = email;
+        return fragment;
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view =  inflater.inflate(R.layout.fragment_profile, container, false);
 
-        mFirebaseHelper = new FirebaseHelper();
-
-        mUser = ((AppRunnest)getActivity().getApplicationContext()).getUser();
-
-        ImageView profilePic = (ImageView)view.findViewById(R.id.photoImg);
-
-        if (!mUser.getPhotoUrl().equals("")) {
-            new DownloadImageTask(profilePic)
-                    .execute(mUser.getPhotoUrl());
+        if (mEmail == null) {
+            User user = ((AppRunnest) getActivity().getApplicationContext()).getUser();
+            setUserStatistics(user.getName(), user.getEmail(), view);
+            setProfileImage(user.getPhotoUrl(), view);
+        } else {
+            setUserStatistics(mName, mEmail, view);
         }
+        return view;
+    }
 
+    private void setProfileImage(String url, View view) {
+        if (!url.equals("")) {
+            ImageView profilePic = (ImageView) view.findViewById(R.id.photoImg);
+            new DownloadImageTask(profilePic).execute(url);
+        }
+    }
 
-        int dimensionInPixel = 100;
-        int dimensionInDp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dimensionInPixel,
-                            getResources().getDisplayMetrics());
-        profilePic.getLayoutParams().height = dimensionInDp;
-        profilePic.getLayoutParams().width = dimensionInDp;
-        profilePic.requestLayout();
-
-        // Display logged profile id
-        String name = mUser.getName();
-        String email = mUser.getEmail();
-
-        ((TextView)view.findViewById(R.id.nameTxt)).setText(name);
-        //((TextView)view.findViewById(R.id.emailTxt)).setText(email);
-
-        mFirebaseHelper.getUserStatistics(mUser.getEmail(), new FirebaseHelper.statisticsHandler() {
+    private void setUserStatistics(final String name, final String email, final View view) {
+        ((TextView) view.findViewById(R.id.nameTxt)).setText(name);
+        final FirebaseHelper firebaseHelper = new FirebaseHelper();
+        firebaseHelper.getUserStatistics(email, new FirebaseHelper.statisticsHandler() {
             @Override
             public void handleRetrievedStatistics(String[] statistics) {
 
-                DecimalFormat format = new DecimalFormat("#.0");
+                DecimalFormat decimalFormat = new DecimalFormat("#.0");
 
-                double distance = Double.valueOf(statistics[mFirebaseHelper.TOTAL_RUNNING_DISTANCE_INDEX]);
-                String toBeDisplayedDistance = String.valueOf(format.format(distance/1000));
-                ((TextView)view.findViewById(R.id.total_running_distance)).setText(toBeDisplayedDistance + " km");
+                double distance = Double.valueOf(statistics[firebaseHelper.TOTAL_RUNNING_DISTANCE_INDEX]);
+                // Transform to km and format with one digit after the coma
+                String toBeDisplayedDistance = String.valueOf(decimalFormat.format(distance / 1000));
+                ((TextView) view.findViewById(R.id.total_running_distance)).setText(toBeDisplayedDistance + " km");
 
-                double time = Double.valueOf(statistics[mFirebaseHelper.TOTAL_RUNNING_TIME_INDEX]);
-                String toBeDisplayedTime = String.valueOf(format.format(time/60));
-                ((TextView)view.findViewById(R.id.total_running_time)).setText(toBeDisplayedTime + " min");
+                double time = Double.valueOf(statistics[firebaseHelper.TOTAL_RUNNING_TIME_INDEX]);
+                int hours = (int) time / 3600;
+                int minutes = (int) (time - hours * 60) / 60;
+                ((TextView) view.findViewById(R.id.total_running_time)).setText(hours + "h " + minutes + "m");
 
-                String nbRuns = statistics[mFirebaseHelper.TOTAL_NUMBER_OF_RUNS_INDEX];
-                ((TextView)view.findViewById(R.id.nb_runs)).setText(nbRuns + " runs");
-                ((TextView)view.findViewById(R.id.total_number_of_challenges)).setText(statistics[mFirebaseHelper.TOTAL_NUMBER_OF_CHALLENGES_INDEX] + " challenges");
-                ((TextView)view.findViewById(R.id.total_number_of_won_challenges)).setText(statistics[mFirebaseHelper.TOTAL_NUMBER_OF_WON_CHALLENGES_INDEX] + " won");
-                ((TextView)view.findViewById(R.id.total_number_of_lost_challenges)).setText(statistics[mFirebaseHelper.TOTAL_NUMBER_OF_LOST_CHALLENGES_INDEX] + " lost");
+                String nbRuns = statistics[firebaseHelper.TOTAL_NUMBER_OF_RUNS_INDEX] + " runs";
+                ((TextView) view.findViewById(R.id.nb_runs)).setText(nbRuns);
 
+                String nbChallenges = statistics[firebaseHelper.TOTAL_NUMBER_OF_CHALLENGES_INDEX] + " challenges";
+                ((TextView) view.findViewById(R.id.total_number_of_challenges)).setText(nbChallenges);
+
+                String nbWon = statistics[firebaseHelper.TOTAL_NUMBER_OF_WON_CHALLENGES_INDEX] + " won";
+                ((TextView) view.findViewById(R.id.total_number_of_won_challenges)).setText(nbWon);
+
+                String nbLost = statistics[firebaseHelper.TOTAL_NUMBER_OF_LOST_CHALLENGES_INDEX] + " lost";
+                ((TextView) view.findViewById(R.id.total_number_of_lost_challenges)).setText(nbLost);
             }
         });
-
-        return view;
     }
 
     @Override

@@ -360,12 +360,15 @@ public class SideBarActivity extends AppCompatActivity
                 //fab.hide();
                 hideSearchBar();
                 launchFragment(new RunningMapFragment());
-            } else if (id == R.id.nav_history) {
-                toolbar.setTitle("History");
-                launchFragment(new RunHistoryFragment());
+            } else if (id == R.id.nav_new_challenge) {
+                toolbar.setTitle("Search someone");
+                launchFragment(new EmptySearchFragment());
             } else if (id == R.id.nav_messages) {
                 toolbar.setTitle("Challenges");
                 launchFragment(new MessagesFragment());
+            } else if (id == R.id.nav_history) {
+                toolbar.setTitle("History");
+                launchFragment(new RunHistoryFragment());
             } else if (id == R.id.nav_logout) {
                 itemStack.pop();
                 dialogLogout();
