@@ -21,7 +21,6 @@ public class FirebaseProxy implements ChallengeProxy {
     private String challengeName = null;
     private boolean owner = false;
     private boolean isChallengeTerminated = false;
-    private boolean isChallengeRunning = false;
 
     private boolean firstReadyCallback = true;
     private boolean firstFinishedCallback = true;
@@ -149,14 +148,6 @@ public class FirebaseProxy implements ChallengeProxy {
         });
     }
 
-    public String getChallengeName() {
-        return challengeName;
-    }
-
-    public boolean isChallengeTerminated() {
-        return isChallengeTerminated;
-    }
-
     /**
      * Deletes the challenge for firebase, to be used only when you are sure to be the last person in the room.
      */
@@ -178,7 +169,6 @@ public class FirebaseProxy implements ChallengeProxy {
             return;
         }
         firebaseHelper.removeUserChallengeListener(challengeName, remoteOpponent, onReadyListener, FirebaseHelper.challengeNodeType.READY);
-        isChallengeRunning = true;
         onReadyListener = null;
     }
 
@@ -345,6 +335,12 @@ public class FirebaseProxy implements ChallengeProxy {
      * @return              challenge name following the convention
      */
     public static String generateChallengeName(String user1, String user2, String identifier) {
+
+        if (user1 == null || user2 == null || identifier == null) {
+            throw new NullPointerException("Challenge name parameters can't be null");
+        } else if (user1.isEmpty() || user2.isEmpty()) {
+            throw new IllegalArgumentException("Users in challenge name can't be empty");
+        }
 
         String challengeName;
         int namesCompare = user1.compareTo(user2);

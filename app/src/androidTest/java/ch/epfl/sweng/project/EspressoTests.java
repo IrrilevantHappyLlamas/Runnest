@@ -163,7 +163,6 @@ public class EspressoTests {
         SideBarActivity listenerTest = mActivityRule.getActivity();
 
         listenerTest.onProfileFragmentInteraction();
-        listenerTest.onDBUploadFragmentInteraction();
     }
 
     @Test
