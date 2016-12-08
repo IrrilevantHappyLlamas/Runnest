@@ -181,15 +181,15 @@ public class FirebaseHelper {
                         Date time = children.child(TIME_CHILD).getValue(Date.class);
 
                         int firstValue = 0;
-                        if(children.hasChild(FIRST_VALUE_CHILD)){
+                        if(children.child(FIRST_VALUE_CHILD).getValue() != null){
                             firstValue = children.child(FIRST_VALUE_CHILD).getValue(Integer.class);
                         }
 
                         int secondValue = 0;
-                        if(children.hasChild(FIRST_VALUE_CHILD)) {
+                        if(children.child(SECOND_VALUE_CHILD).getValue() != null) {
                             secondValue = children.child(SECOND_VALUE_CHILD).getValue(Integer.class);
                         }
-                        
+
                         Challenge.Type challengeType = children.child(CHALLENGE_TYPE_CHILD).getValue(Challenge.Type.class);
                         Message message = new Message(from, forUser, sender, addressee, type, messageText, time, firstValue, secondValue, challengeType);
 
