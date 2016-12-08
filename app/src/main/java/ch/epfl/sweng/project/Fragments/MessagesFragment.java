@@ -6,11 +6,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import ch.epfl.sweng.project.AppRunnest;
@@ -22,10 +24,11 @@ public class MessagesFragment extends ListFragment {
     private FirebaseHelper mFirebaseHelper = null;
     private String mEmail;
     private List<Message> mMessages;
-    private String[] mMessageHeaders;
-
+    private List<HashMap<String, String>> mapToBeAdapted;
     private MessagesFragmentInteractionListener mListener;
-
+    private String[] mapKeys = {"icon", "sender"};
+    private int[] icons = {R.drawable.challenge_white, R.drawable.schedule_white, R.drawable.memo_white, R.drawable.empty_white};
+    private int[] viewIDs = {R.id.icon, R.id.sender};
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,24 +53,39 @@ public class MessagesFragment extends ListFragment {
             mFirebaseHelper.fetchMessages(mEmail, new FirebaseHelper.Handler() {
                 @Override
                 public void handleRetrievedMessages(List<Message> messages) {
-
                     int size = messages.size();
                     mMessages = messages;
+                    mapToBeAdapted = new ArrayList<HashMap<String, String>>();
+
+                    HashMap<String, String> hashMap = new HashMap<String,String>();
 
                     if (size == 0) {
-                        mMessageHeaders = new String[1];
-                        mMessageHeaders[0] = "No message has been received yet";
+                        hashMap.put(mapKeys[1], "No message received.");
+                        hashMap.put(mapKeys[0], Integer.toString(icons[3]));
+                        mapToBeAdapted.add(hashMap);
                     } else {
-
-                        mMessageHeaders = new String[size];
-
                         for (int i = 0; i < size; ++i) {
                             Message currentMessage = messages.get(i);
 
-                            mMessageHeaders[i] = "From: " + currentMessage.getSender() + "\n" + "Type: " + currentMessage.getType();
+                            hashMap = new HashMap<String,String>();
+                            hashMap.put(mapKeys[1], currentMessage.getSender());
+
+                            switch(currentMessage.getType()){
+                                case CHALLENGE_REQUEST:
+                                    hashMap.put(mapKeys[0], Integer.toString(icons[0]));
+                                    break;
+                                case SCHEDULE_REQUEST:
+                                    hashMap.put(mapKeys[0], Integer.toString(icons[1]));
+                                    break;
+                                case MEMO:
+                                    hashMap.put(mapKeys[0], Integer.toString(icons[2]));
+                                    break;
+                                default:
+                                    throw new IllegalStateException("unknown message type");
+                            }
+                            mapToBeAdapted.add(hashMap);
                         }
                     }
-
                     onCreateFollow();
                 }
             });
@@ -78,7 +96,7 @@ public class MessagesFragment extends ListFragment {
      * This method is a follow-up of OnCreateView, taking care of the last settings.
      */
     public void onCreateFollow() {
-        this.setListAdapter(new ArrayAdapter<>(this.getContext(), R.layout.simple_textview, mMessageHeaders));
+        this.setListAdapter(new SimpleAdapter(this.getContext(), mapToBeAdapted, R.layout.messages_listview, mapKeys, viewIDs));
     }
 
     @Override

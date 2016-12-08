@@ -42,6 +42,7 @@ import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.DrawerMatchers.isOpen;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
+import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -580,7 +581,7 @@ public class EspressoTests {
     }
 
     @Test
-    public void memoMessage() {
+    public void memoMessageCloseDelete() {
         // Send message
         Message msg1 = new Message("runnest_dot_ihl_at_gmail_dot_com",
                 "Test User",
@@ -619,6 +620,40 @@ public class EspressoTests {
         //onView(withId(R.id.readyBtn)).check(matches(isDisplayed()));
     }
 
+    @Test
+    public void memoMessageChallenge() {
+        // Send message
+        Message msg1 = new Message("runnest_dot_ihl_at_gmail_dot_com",
+                "Test User",
+                "Runnest IHL",
+                "Test User",
+                Message.MessageType.MEMO,
+                "that's a test",
+                new Date(),
+                Challenge.Type.DISTANCE);
+
+        FirebaseHelper firebaseHelper = new FirebaseHelper();
+        firebaseHelper.send(msg1);
+        SystemClock.sleep(WAIT_DURATION);
+
+        //Tap on the request
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
+        SystemClock.sleep(WAIT_DURATION);
+
+        //Tap on Challenge
+        onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withText("Challenge")).perform(click());
+        SystemClock.sleep(WAIT_DURATION);
+
+        //onView(withId(R.id.readyBtn)).check(matches(isDisplayed()));
+    }
+
+    @Test
     public void navigateToChallengeHistory() {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         SystemClock.sleep(WAIT_DURATION);
@@ -626,31 +661,19 @@ public class EspressoTests {
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run_history));
         SystemClock.sleep(WAIT_DURATION);
 
-        onView(withId(R.id.spinner)).perform(click());
-        SystemClock.sleep(WAIT_DURATION);
-
-        onData(allOf(is(instanceOf(String.class)), is("Challenges"))).perform(click());
+        onView(allOf(withText("Challenge History"), isDescendantOfA(withId(R.id.tabs)))).perform(click());
         SystemClock.sleep(WAIT_DURATION);
     }
 
     @Test
-    public void navigateToSingleRunHistoryWithSpinner() {
+    public void navigateToSingleRunHistory() {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         SystemClock.sleep(WAIT_DURATION);
 
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run_history));
         SystemClock.sleep(WAIT_DURATION);
 
-        onView(withId(R.id.spinner)).perform(click());
-        SystemClock.sleep(WAIT_DURATION);
-
-        onData(allOf(is(instanceOf(String.class)), is("Challenges"))).perform(click());
-        SystemClock.sleep(WAIT_DURATION);
-
-        onView(withId(R.id.spinner)).perform(click());
-        SystemClock.sleep(WAIT_DURATION);
-
-        onData(allOf(is(instanceOf(String.class)), is("Single Runs"))).perform(click());
+        onView(allOf(withText("Run History"), isDescendantOfA(withId(R.id.tabs)))).perform(click());;
         SystemClock.sleep(WAIT_DURATION);
     }
 
@@ -662,10 +685,7 @@ public class EspressoTests {
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run_history));
         SystemClock.sleep(WAIT_DURATION);
 
-        onView(withId(R.id.spinner)).perform(click());
-        SystemClock.sleep(WAIT_DURATION);
-
-        onData(allOf(is(instanceOf(String.class)), is("Challenges"))).perform(click());
+        onView(allOf(withText("Challenge History"), isDescendantOfA(withId(R.id.tabs)))).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
         onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());

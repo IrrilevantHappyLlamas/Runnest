@@ -841,6 +841,7 @@ public class SideBarActivity extends AppCompatActivity
         args.putString("opponent", requestMessage.getFrom());
         args.putString("sender", requestMessage.getSender());
         args.putSerializable("date", requestMessage.getTime());
+        args.putString("opponentEmail", requestMessage.getFrom());
         dialog.setArguments(args);
         dialog.show(getSupportFragmentManager(), "MemoDialogFragment");
     }
@@ -851,5 +852,12 @@ public class SideBarActivity extends AppCompatActivity
     public void onMemoDialogDeleteClick(DialogFragment dialog){
         mFirebaseHelper.delete(requestMessage);
         launchFragment(new MessagesFragment());
+    }
+
+    public void onMemoDialogChallengeClick(DialogFragment dialog){
+        mFirebaseHelper.delete(requestMessage);
+        this.challengedUserName = ((MemoDialogFragment) dialog).getSender();
+        this.challengedUserEmail = ((MemoDialogFragment) dialog).getOpponentEmail();
+        showChallengeDialog();
     }
 }
