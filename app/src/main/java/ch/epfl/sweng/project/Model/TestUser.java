@@ -18,7 +18,7 @@ public class TestUser implements User {
         email = "Test User";
         familyName = "Test User";
         name = "Test User";
-        photoUrl = "";
+        photoUrl = "test";
         firebaseID = "6VauzC82b6YoNfRSo2ft4WFqoCu1";
     }
 

@@ -375,6 +375,13 @@ public class FirebaseHelperTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    public void setOrUpdateProfilePicUrlThrowsExceptionWithNullEmail() {
+        String email = "Test User";
+        firebaseHelper.addOrUpdateUser("Test User", email);
+        firebaseHelper.setOrUpdateProfilePicUrl(null, "http://url.test.ch");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
     public void setOrUpdateProfilePicUrlThrowsExceptionWithEmptyEmail() {
         String email = "Test User";
         firebaseHelper.addOrUpdateUser("Test User", email);
