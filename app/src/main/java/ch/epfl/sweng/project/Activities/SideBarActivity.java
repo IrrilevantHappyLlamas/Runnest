@@ -101,8 +101,6 @@ public class SideBarActivity extends AppCompatActivity
 
     private FirebaseHelper mFirebaseHelper = null;
 
-    //private FloatingActionButton fab;
-
     private NavigationView navigationView;
 
     private Boolean isRunning = false;
@@ -154,18 +152,7 @@ public class SideBarActivity extends AppCompatActivity
         final TextView h2 = (TextView) header.findViewById(R.id.header2_nav_header);
 
         runItem = navigationView.getMenu().getItem(1);
-        /*
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                runItem.setChecked(true);
-                onNavigationItemSelected(runItem);
-            }
-        });
 
-        fab.hide();
-        */
 
         User account = ((AppRunnest)getApplicationContext()).getUser();
         if (account != null) {
@@ -344,7 +331,6 @@ public class SideBarActivity extends AppCompatActivity
                 itemStack.push(item);
             }
 
-            //fab.show();
             showSearchBar();
 
             // Handle navigation view item clicks here.
@@ -355,12 +341,12 @@ public class SideBarActivity extends AppCompatActivity
                 launchFragment(new ProfileFragment());
             } else if (id == R.id.nav_run) {
                 toolbar.setTitle("Run");
-                //fab.hide();
                 hideSearchBar();
                 launchFragment(new RunningMapFragment());
             } else if (id == R.id.nav_new_challenge) {
                 toolbar.setTitle("Search someone");
                 launchFragment(new EmptySearchFragment());
+                //mSearchView.performClick();
             } else if (id == R.id.nav_messages) {
                 toolbar.setTitle("Challenges");
                 launchFragment(new MessagesFragment());

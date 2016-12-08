@@ -1,5 +1,6 @@
 package ch.epfl.sweng.project.Fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -62,7 +63,7 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.fragment_customize_challenge, null);
+        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.fragment_customize_challenge, null);
 
         builder.setCancelable(false);
         // Inflate and set the layout for the dialog

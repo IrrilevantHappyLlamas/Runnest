@@ -11,25 +11,17 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Model.Challenge;
-import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Track;
+import ch.epfl.sweng.project.UtilsUI;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,7 +38,6 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
 
     private MapView mMapView = null;
     private MapView mOpponentMapView = null;
-
 
     private int userColor;
     private int opponentColor;
@@ -105,7 +96,7 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
         // Set title and performances
         switch (mChallengeToBeDisplayed.getType()) {
             case TIME:
-                String timeGoal = timeToString((int)mChallengeToBeDisplayed.getGoal()/1000, false);
+                String timeGoal = UtilsUI.timeToString((int)mChallengeToBeDisplayed.getGoal()/1000, false);
                 challengeType.setText(getString(R.string.time_challenge) +
                         getString(R.string.white_space) + timeGoal);
 
@@ -124,10 +115,12 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
                         distanceGoal + getString(R.string.white_space) + getString(R.string.km));
 
                 int userTime = (int)mChallengeToBeDisplayed.getMyRun().getDuration();
-                userPerformance.setText(timeToString(userTime, true));
+
+                userPerformance.setText(UtilsUI.timeToString(userTime, true));
 
                 int opponentTime = (int)mChallengeToBeDisplayed.getOpponentRun().getDuration();
-                opponentPerformance.setText(timeToString(opponentTime, true));
+                opponentPerformance.setText(UtilsUI.timeToString(opponentTime, true));
+
                 break;
         }
         // Set Text colors and results
@@ -172,21 +165,6 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
         t3.setTextColor(color);
     }
 
-    private String timeToString(int time, boolean showHours) {
-        String toDisplay = "";
-
-        if(showHours || time >= 3600) {
-            toDisplay += String.format(Locale.getDefault(), "%02d:", TimeUnit.SECONDS.toHours(time));
-        }
-
-        toDisplay += String.format(Locale.getDefault(), "%02d:%02d",
-                TimeUnit.SECONDS.toMinutes(time) -
-                        TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(time)),
-                TimeUnit.SECONDS.toSeconds(time) -
-                        TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(time)));
-
-        return toDisplay;
-    }
 
     private void setupButtonUI(View view) {
         Button runHistoryButton = (Button) view.findViewById(R.id.button_history);
@@ -239,8 +217,8 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
                 Track userTrack = mChallengeToBeDisplayed.getMyRun().getTrack();
                 googleMap.setMapStyle(mapStyle);
 
-                displayTrack(userTrack, googleMap, userColor);
-                displayTrackSetupUI(googleMap);
+                UtilsUI.recapDisplayTrack(userTrack, googleMap, userColor);
+                UtilsUI.recapDisplayTrackSetupUI(googleMap);
 
                 mCurrentMapType = MapType.OPPONENT_MAP;
                 mOpponentMapView.getMapAsync(this);
@@ -249,50 +227,11 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
                 Track opponentTrack = mChallengeToBeDisplayed.getOpponentRun().getTrack();
                 googleMap.setMapStyle(mapStyle);
 
-                displayTrack(opponentTrack, googleMap, opponentColor);
-                displayTrackSetupUI(googleMap);
+                UtilsUI.recapDisplayTrack(opponentTrack, googleMap, opponentColor);
+                UtilsUI.recapDisplayTrackSetupUI(googleMap);
                 break;
             default:
                 throw new IllegalStateException("unknown map type");
-        }
-    }
-
-    private void displayTrackSetupUI(GoogleMap googleMap) {
-        googleMap.setBuildingsEnabled(false);
-        googleMap.setIndoorEnabled(false);
-        googleMap.setTrafficEnabled(false);
-
-        UiSettings uiSettings = googleMap.getUiSettings();
-
-        uiSettings.setCompassEnabled(false);
-        uiSettings.setIndoorLevelPickerEnabled(false);
-        uiSettings.setMapToolbarEnabled(false);
-        uiSettings.setZoomControlsEnabled(false);
-        uiSettings.setMyLocationButtonEnabled(false);
-    }
-
-    private void displayTrack(Track track, GoogleMap googleMap, int color) {
-
-        if(track.getTotalCheckPoints() != 0) {
-
-            // Build polyline and LatLngBounds
-            PolylineOptions polylineOptions = new PolylineOptions();
-            List<CheckPoint> trackPoints = track.getCheckpoints();
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-
-            for (CheckPoint checkPoint : trackPoints) {
-                LatLng latLng = new LatLng(checkPoint.getLatitude(), checkPoint.getLongitude());
-                polylineOptions.add(latLng);
-                builder.include(latLng);
-            }
-
-            googleMap.addPolyline(polylineOptions.color(color));
-
-            // Center camera on past run
-            LatLngBounds bounds = builder.build();
-            int padding = 40;
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-            googleMap.animateCamera(cameraUpdate);
         }
     }
 

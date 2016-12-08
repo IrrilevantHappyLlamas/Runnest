@@ -1,46 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_challenge"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="5dp"
+    android:orientation="vertical"
+    android:keepScreenOn="true"
     android:background="@color/backgroundApp"
     tools:context="ch.epfl.sweng.project.Activities.ChallengeActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.PopupOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/challenge_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorAccent"
+            android:popupTheme="@style/AppTheme.PopupOverlay"
+            app:title="Challenge"
+            tools:ignore="UnusedAttribute"/>
+        <!-- app:popupTheme="@style/AppTheme.Runnest.ActionBar" /> -->
+
+    </android.support.design.widget.AppBarLayout>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:text="@string/challenge"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView7"
-            android:textStyle="normal|bold"
-            android:textSize="36sp"
-            android:gravity="center"
-            android:textColor="?attr/colorAccent"/>
+        android:layout_height="match_parent"
+        >
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_centerHorizontal="true"
-            android:layout_height="250dp"
-            android:id="@+id/sender_container">
+            android:id="@+id/sender_container"
+            android:layout_gravity="top"
+            android:layout_weight="3"
+            android:layout_height="0dp"
+            android:background="@drawable/blur_map">
 
-            <TextView
-                android:text="@string/user_ready"
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/userTxt"
                 android:layout_gravity="center"
+                android:background="@drawable/layout_rounded_corners"
+                android:elevation="24dp"
+                android:id="@+id/layout_user_ready"
                 android:visibility="invisible"
-                android:textColor="@android:color/black"/>
+                tools:ignore="UnusedAttribute">
+
+                <ImageView
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:layout_width="50dp"
+                    app:srcCompat="@drawable/ready_opponent"
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/user_status"
+                    tools:ignore="ContentDescription"/>
+
+                <TextView
+                    android:text="@string/user_ready"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/userTxt"
+                    android:layout_gravity="center"
+                    android:padding="20dp"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+
+
 
             <Button
                 android:text="@string/ready"
@@ -48,37 +81,123 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/readyBtn"
                 android:layout_gravity="center_vertical|center_horizontal"
-                android:background="@color/colorAccent"/>
+                android:background="@drawable/button_shape_green"
+                android:elevation="23dp"
+                tools:ignore="UnusedAttribute"/>
 
-            <Button
-                android:text="@string/abort"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/back_to_side_btn"
-                style="@style/Widget.AppCompat.Button.Small"
-                android:background="@color/colorAccent"
-                android:layout_gravity="bottom|left"/>
         </FrameLayout>
 
-        <Chronometer
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/challenge_chronometer"
-            android:gravity="center"
-            />
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/exit"
+                android:id="@+id/back_to_side_btn"
+                android:layout_weight="1"
+                android:scaleType="fitCenter"
+                android:background="@drawable/layout_rounded_corners"
+                android:padding="5dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:elevation="9dp"
+                tools:ignore="ContentDescription,UnusedAttribute"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:layout_margin="15dp"
+                android:background="@drawable/layout_rounded_corners"
+                android:elevation="24dp"
+                tools:ignore="UnusedAttribute">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    app:srcCompat="@drawable/time_white"
+                    android:id="@+id/imageView7"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:layout_height="32dp"
+                    tools:ignore="ContentDescription"/>
+
+                <Chronometer
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/challenge_chronometer"
+                    android:gravity="center"
+                    android:layout_weight="2"
+                    android:text="@string/time_zero"/>
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="0dp"
+                app:srcCompat="@drawable/run2"
+                android:id="@+id/imageView8"
+                android:layout_weight="1"
+                android:background="@drawable/layout_rounded_corners"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="15dp"
+                android:paddingBottom="4dp"
+                android:paddingTop="6dp"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:elevation="24dp"
+                tools:ignore="ContentDescription,UnusedAttribute"/>
+
+        </LinearLayout>
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/receiver_container">
+            android:id="@+id/receiver_container"
+            android:layout_weight="3"
+            android:layout_height="0dp"
+            android:background="@drawable/map_blur2">
 
-            <TextView
-                android:text="@string/waiting_opponent"
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/opponentTxt"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:background="@drawable/layout_rounded_corners"
+                android:elevation="24dp"
+                tools:ignore="UnusedAttribute">
+
+                <ImageView
+                    android:layout_height="50dp"
+                    android:id="@+id/opponent_ready_icon"
+                    android:layout_weight="1"
+                    android:layout_width="50dp"
+                    app:srcCompat="@drawable/ready_opponent"
+                    android:layout_marginLeft="10dp"
+                    tools:ignore="ContentDescription"/>
+
+                <pl.droidsonroids.gif.GifTextView
+                    android:background="@drawable/waiting3"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:id="@+id/opponent_waiting_icon"/>
+
+                <TextView
+                    android:text="@string/waiting_opponent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/opponentTxt"
+                    android:layout_gravity="center"
+                    android:padding="20dp"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+
         </FrameLayout>
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

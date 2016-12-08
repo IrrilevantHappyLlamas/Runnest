@@ -51,6 +51,8 @@ public class RunningMapFragment extends RunFragment {
 
     private RunningMapFragmentInteractionListener mListener = null;
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -114,10 +116,8 @@ public class RunningMapFragment extends RunFragment {
 
         // Live stats
         mChronometer = (Chronometer) view.findViewById(R.id.chronometer);
-        mChronometer.setVisibility(View.INVISIBLE);
 
         mDistance = (TextView) view.findViewById(R.id.distance);
-        mDistance.setVisibility(View.INVISIBLE);
     }
 
 
@@ -138,6 +138,8 @@ public class RunningMapFragment extends RunFragment {
             String runName = dateFormat.format(new Date());
             mRun = new Run(runName);
             super.startRun();
+            // Prevent sleeping
+            getView().setKeepScreenOn(true);
 
             mStartUpdatesButton.setVisibility(View.INVISIBLE);
             mStopUpdatesButton.setVisibility(View.VISIBLE);
@@ -155,6 +157,8 @@ public class RunningMapFragment extends RunFragment {
     private void stopButtonPressed() {
         if (mRequestingLocationUpdates) {
             super.stopRun();
+            // Allow sleeping
+            getView().setKeepScreenOn(false);
 
             setButtonsEnabledState();
             mChronometer.stop();

@@ -16,6 +16,8 @@ public class MapHandler {
     private static final float CAMERA_ZOOM = 16f;
 
     private GoogleMap googleMap = null;
+    private final UiSettings uiSettings;
+
     private PolylineOptions polylineOptions = null;
     private int trackColor;
 
@@ -30,6 +32,10 @@ public class MapHandler {
 
         this.googleMap = googleMap;
         this.googleMap.setLocationSource(null);
+
+        uiSettings = this.googleMap.getUiSettings();
+        uiSettings.setMyLocationButtonEnabled(false);
+        uiSettings.setCompassEnabled(false);
 
         polylineOptions = new PolylineOptions();
     }
@@ -79,14 +85,10 @@ public class MapHandler {
         googleMap.setTrafficEnabled(false);
         googleMap.setMinZoomPreference(CAMERA_ZOOM);
 
-        UiSettings uiSettings = googleMap.getUiSettings();
-
-        uiSettings.setCompassEnabled(false);
         uiSettings.setIndoorLevelPickerEnabled(false);
         uiSettings.setMapToolbarEnabled(false);
         uiSettings.setScrollGesturesEnabled(false);
         uiSettings.setZoomGesturesEnabled(false);
-        uiSettings.setMyLocationButtonEnabled(false);
         uiSettings.setRotateGesturesEnabled(false);
 
         uiSettings.setZoomControlsEnabled(true);
