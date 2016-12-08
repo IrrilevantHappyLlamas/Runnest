@@ -442,18 +442,19 @@ public class EspressoTests {
                 "Runnest IHL",
                 "Test User",
                 Message.MessageType.CHALLENGE_REQUEST,
-                "test 1",
+                "test1",
                 new Date(),
                 1,
                 0,
                 Challenge.Type.DISTANCE);
+
         SystemClock.sleep(WAIT_DURATION);
         Message msg2 = new Message("runnest_dot_ihl_at_gmail_dot_com",
                 "Test User",
                 "Runnest IHL",
                 "Test User",
                 Message.MessageType.CHALLENGE_REQUEST,
-                "test 2",
+                "test2",
                 new Date(),
                 1,
                 0,
@@ -461,6 +462,9 @@ public class EspressoTests {
         FirebaseHelper firebaseHelper = new FirebaseHelper();
         firebaseHelper.send(msg1);
         firebaseHelper.send(msg2);
+        // Instantiate challenges so that messages are clickable
+        firebaseHelper.addChallengeNode("Test User","Runnest IHL" ,"Runnest IHL vs Test User test1");
+        firebaseHelper.addChallengeNode("Test User","Runnest IHL" ,"Runnest IHL vs Test User test2");
         SystemClock.sleep(WAIT_DURATION);
 
         //Tap on the request
@@ -493,6 +497,11 @@ public class EspressoTests {
         SystemClock.sleep(WAIT_DURATION);
 
         onView(withId(R.id.readyBtn)).check(matches(isDisplayed()));
+        SystemClock.sleep(WAIT_DURATION);
+
+        //Delete challenges from firebase
+        firebaseHelper.deleteChallengeNode("Runnest IHL vs Test User test1");
+        firebaseHelper.deleteChallengeNode("Runnest IHL vs Test User test2");
         SystemClock.sleep(WAIT_DURATION);
     }
 
