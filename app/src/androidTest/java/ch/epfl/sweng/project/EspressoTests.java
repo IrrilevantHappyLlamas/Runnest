@@ -55,7 +55,7 @@ import static org.hamcrest.Matchers.is;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class EspressoTests {
 
-    private final int WAIT_DURATION = 500; // Dialogs are bottleneck
+    private final int WAIT_DURATION = 2000; // Dialogs are bottleneck (500ms)
     private final int FIREBASE_DURATION = 3000;
     //TODO: find a way to bound this to setupLocationChangeSimulation value
 
