@@ -146,20 +146,6 @@
         android:paddingBottom="8dp">
 
         <Button
-            android:text="@string/delete"
-            android:layout_width="130dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/button_delete"
-            android:layout_gravity="bottom|right|center_horizontal|end"
-            android:background="@drawable/button_shape_green"
-            android:layout_alignParentBottom="false"
-            android:layout_alignParentRight="false"
-            android:layout_alignParentEnd="false"
-            android:layout_weight="1"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="20dp"/>
-
-        <Button
             android:text="@string/history"
             android:layout_width="130dp"
             android:layout_height="wrap_content"
@@ -170,8 +156,23 @@
             android:layout_alignParentLeft="false"
             android:layout_alignParentStart="false"
             android:layout_weight="1"
-            android:layout_marginRight="40dp"
-            android:layout_marginLeft="20dp"/>
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="40dp"/>
+
+        <Button
+            android:text="@string/delete"
+            android:layout_width="130dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_delete"
+            android:layout_gravity="bottom|right|center_horizontal|end"
+            android:background="@drawable/button_shape_green"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentRight="false"
+            android:layout_alignParentEnd="false"
+            android:layout_weight="1"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="40dp"/>
+
     </LinearLayout>
 
 </RelativeLayout>

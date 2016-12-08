@@ -64,6 +64,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private Challenge.Type challengeType;
     private double challengeGoal;   // time in milliseconds or distance in Km
     private boolean win;
+    private boolean isWinning;
 
     // ChallengeProxy
     private ChallengeProxy challengeProxy;
@@ -166,6 +167,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
             @Override
             public void hasNewData(CheckPoint checkPoint) {
                 ((ChallengeReceiverFragment)receiverFragment).onNewData(checkPoint);
+                updateIsWinning();
             }
 
             @Override
@@ -372,6 +374,13 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
         waitingOpponent = (GifTextView)findViewById(R.id.opponent_waiting_icon);
 
+    }
+
+    public void updateIsWinning() {
+        Run opponentRun = ((ChallengeReceiverFragment)receiverFragment).getRun();
+        Run userRun = ((ChallengeSenderFragment)senderFragment).getRun();
+
+        isWinning = userRun.getTrack().getDistance() >= opponentRun.getTrack().getDistance();
     }
 
     private void endChallenge() {
