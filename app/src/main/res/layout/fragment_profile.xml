@@ -109,7 +109,8 @@
                         android:layout_height="40dp"
                         app:srcCompat="@drawable/timewhite"
                         android:id="@+id/imageView3"
-                        android:layout_marginLeft="10dp"/>
+                        android:layout_marginLeft="10dp"
+                        android:contentDescription="@string/time"/>
 
                     <TextView
                         android:text="@string/_0"
@@ -129,7 +130,9 @@
                         app:srcCompat="@drawable/distancewhite"
                         android:id="@+id/imageView4"
                         android:layout_marginRight="10dp"
-                        android:layout_height="40dp"/>
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="10dp"
+                        android:contentDescription="@string/distance"/>
 
                     <TextView
                         android:text="@string/_0"
@@ -216,7 +219,7 @@
                         android:layout_gravity="center_vertical"
                         android:contentDescription="@string/lost"
                         android:layout_marginRight="10dp"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginLeft="10dp"
                         android:layout_width="40dp"
                         android:layout_height="40dp"/>
 
@@ -244,7 +247,8 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center">
+            android:gravity="center"
+            android:id="@+id/challenge_schedule_buttons">
 
             <Button
                 android:text="@string/challenge"
