@@ -17,9 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorAccent"
-            android:popupTheme="@style/AppTheme.PopupOverlay"
-            tools:ignore="UnusedAttribute"/>
-            <!-- app:popupTheme="@style/AppTheme.Runnest.ActionBar" /> -->
+            app:popupTheme="@style/AppTheme.Runnest.ActionBar" />
 
     </android.support.design.widget.AppBarLayout>
 

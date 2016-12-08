@@ -2,6 +2,7 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
              tools:context="ch.epfl.sweng.project.Fragments.RunFragments.ChallengeReceiverFragment">
 
     <com.google.android.gms.maps.MapView
@@ -9,18 +10,48 @@
         android:layout_height="wrap_content"
         android:id="@+id/mapView" />
 
-    <TextView
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/receiver_distance"
-        android:textSize="30sp"
-        android:textAlignment="center"
-        />
+        android:background="@drawable/layout_rounded_corners"
+        android:layout_marginRight="210dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:elevation="24dp"
+        tools:ignore="UnusedAttribute">
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:layout_height="30dp"
+            android:layout_width="30dp"
+            android:layout_marginLeft="10dp"
+            app:srcCompat="@drawable/distancewhite"
+            tools:ignore="ContentDescription"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/receiver_distance"
+            android:textSize="16sp"
+            android:textAlignment="center"
+            android:text="@string/zero_distance"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"/>
+    </LinearLayout>
+
 
     <TextView
         android:text="@string/warning_missing_updates"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/warning_text"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:background="@drawable/layout_rounded_corners"
+        android:padding="7dp"
+        android:elevation="24dp"
+        tools:ignore="UnusedAttribute"/>
 </FrameLayout>

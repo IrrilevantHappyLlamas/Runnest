@@ -12,7 +12,9 @@
         android:layout_marginEnd="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:layout_marginStart="5dp">
+        android:layout_marginStart="5dp"
+        android:elevation="0dp"
+        tools:ignore="UnusedAttribute">
 
         <com.google.android.gms.maps.MapView
             android:layout_width="match_parent"
@@ -23,7 +25,9 @@
             android:layout_marginEnd="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"/>
+            android:layout_marginTop="5dp"
+            android:elevation="24dp"
+            tools:ignore="UnusedAttribute"/>
 
         <TextView
             android:text="@string/average_pace"
@@ -134,11 +138,12 @@
     </RelativeLayout>
 
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_gravity="bottom"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:paddingBottom="8dp">
 
         <Button
             android:text="@string/delete"
@@ -150,11 +155,9 @@
             android:layout_alignParentBottom="false"
             android:layout_alignParentRight="false"
             android:layout_alignParentEnd="false"
-            android:layout_marginRight="40dp"
-            android:layout_marginEnd="40dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="200dp"
-            android:layout_marginStart="200dp"/>
+            android:layout_weight="1"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="20dp"/>
 
         <Button
             android:text="@string/history"
@@ -162,15 +165,13 @@
             android:layout_height="wrap_content"
             android:id="@+id/button_history"
             android:layout_gravity="bottom|left|center_horizontal|start"
-            android:layout_marginLeft="40dp"
-            android:layout_marginStart="40dp"
             android:background="@drawable/button_shape_green"
             android:layout_alignParentBottom="false"
             android:layout_alignParentLeft="false"
             android:layout_alignParentStart="false"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="200dp"
-            android:layout_marginRight="200dp"/>
-    </RelativeLayout>
+            android:layout_weight="1"
+            android:layout_marginRight="40dp"
+            android:layout_marginLeft="20dp"/>
+    </LinearLayout>
 
 </RelativeLayout>

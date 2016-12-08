@@ -6,7 +6,7 @@
                 android:layout_height="match_parent">
 
     <TextView
-        android:text="Downloading user data ..."
+        android:text="@string/downloading_user_data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Large"

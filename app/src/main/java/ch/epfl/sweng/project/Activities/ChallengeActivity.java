@@ -15,9 +15,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +44,7 @@ import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.User;
 import ch.epfl.sweng.project.TestProxy;
 import ch.epfl.sweng.project.UtilsUI;
+import pl.droidsonroids.gif.GifTextView;
 
 import static ch.epfl.sweng.project.Activities.SideBarActivity.PERMISSION_REQUEST_CODE_FINE_LOCATION;
 
@@ -82,17 +87,22 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private Chronometer chronometer;
     private TextView opponentTxt;
     private TextView userTxt;
-    private Button backToSideBtn;
+    private ImageButton backToSideBtn;
+    private GifTextView waitingOpponent;
+    private ImageView readyOpponent;
+    private LinearLayout layoutUserReady;
 
     //others
     private int phase = BEFORE_CHALLENGE;
     private boolean aborted = false;
+    private ImageView userStatus;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_challenge);
+
 
         extractIntent(getIntent());
         setupGoogleApi();
@@ -163,6 +173,9 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 opponentReady = true;
                 opponentTxt.setText(R.string.opponent_ready);
 
+                findViewById(R.id.opponent_ready_icon).setVisibility(View.VISIBLE);
+                findViewById(R.id.opponent_waiting_icon).setVisibility(View.GONE);
+
                 if(userReady) {
                     startChallenge();
                 }
@@ -222,7 +235,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
     public void imFinished() {
         userFinished = true;
-        userTxt.setVisibility(View.VISIBLE);
+        layoutUserReady.setVisibility(View.VISIBLE);
 
         String userTextToShow = "";
         switch (challengeType) {
@@ -242,6 +255,8 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 break;
         }
         userTxt.setText(userTextToShow);
+        userStatus.setImageDrawable(getResources().getDrawable(R.drawable.finish_icon));
+
 
         fragmentManager.beginTransaction().remove(senderFragment).commitAllowingStateLoss();
 
@@ -258,9 +273,12 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         challengeProxy.startChallenge();
 
         readyBtn.setVisibility(View.GONE);
-        userTxt.setVisibility(View.GONE);
+
+        layoutUserReady.setVisibility(View.GONE);
+        //userTxt.setVisibility(View.GONE);
         opponentTxt.setVisibility(View.GONE);
-        backToSideBtn.setText(R.string.quit);
+        backToSideBtn.setImageDrawable(getResources().getDrawable(R.drawable.give_up1));
+        readyOpponent.setVisibility(View.GONE);
 
         receiverFragment = new ChallengeReceiverFragment();
         fragmentManager.beginTransaction().add(R.id.receiver_container, receiverFragment).commit();
@@ -304,13 +322,18 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     }
 
     private void setupGUI() {
+        ((Toolbar)findViewById(R.id.challenge_toolbar)).setTitle("You vs. " + opponentName);
+
         chronometer = (Chronometer) findViewById(R.id.challenge_chronometer);
-        chronometer.setVisibility(View.INVISIBLE);
+        chronometer.setText("Warm up!");
 
         opponentTxt = (TextView) findViewById(R.id.opponentTxt);
         userTxt = (TextView) findViewById(R.id.userTxt);
 
-        backToSideBtn = (Button) findViewById(R.id.back_to_side_btn);
+        layoutUserReady = (LinearLayout) findViewById(R.id.layout_user_ready);
+        userStatus = (ImageView) findViewById(R.id.user_status);
+
+        backToSideBtn = (ImageButton) findViewById(R.id.back_to_side_btn);
         backToSideBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -333,7 +356,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                     userReady = true;
 
                     readyBtn.setVisibility(View.GONE);
-                    userTxt.setVisibility(View.VISIBLE);
+                    layoutUserReady.setVisibility(View.VISIBLE);
 
                     // In a test session we don't want to wait for the opponent
                     if (opponentReady || ((AppRunnest)getApplication()).isTestSession()){
@@ -342,12 +365,18 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 }
             }
         });
+
+
+        readyOpponent = (ImageView)findViewById(R.id.opponent_ready_icon);
+        readyOpponent.setVisibility(View.GONE);
+
+        waitingOpponent = (GifTextView)findViewById(R.id.opponent_waiting_icon);
+
     }
 
     private void endChallenge() {
         chronometer.stop();
         phase = AFTER_CHALLENGE;
-        backToSideBtn.setText(R.string.back);
         Run opponentRun = ((ChallengeReceiverFragment)receiverFragment).getRun();
         Run userRun = ((ChallengeSenderFragment)senderFragment).getRun();
 
