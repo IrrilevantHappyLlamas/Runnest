@@ -10,17 +10,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-
-import ch.epfl.sweng.project.Database.DBHelper;
-import ch.epfl.sweng.project.Model.Challenge;
-import ch.epfl.sweng.project.Model.CheckPoint;
-import ch.epfl.sweng.project.Model.Track;
-
-import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
@@ -31,6 +25,11 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+
+import ch.epfl.sweng.project.Database.DBHelper;
+import ch.epfl.sweng.project.Model.Challenge;
+import ch.epfl.sweng.project.Model.CheckPoint;
+import ch.epfl.sweng.project.Model.Track;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -93,10 +92,10 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
         // Extract TextView
         TextView challengeType = ((TextView)view.findViewById(R.id.challenge_type));
         TextView userName = (TextView)view.findViewById(R.id.user_name);
-        TextView userPerf = (TextView)view.findViewById(R.id.user_performance);
+        TextView userPerformance = (TextView)view.findViewById(R.id.user_performance);
         TextView userResult = (TextView)view.findViewById(R.id.user_result);
         TextView opponentName = (TextView)view.findViewById(R.id.opponent_name);
-        TextView opponentPerf = (TextView)view.findViewById(R.id.opponent_performance);
+        TextView opponentPerformance = (TextView)view.findViewById(R.id.opponent_performance);
         TextView opponentResult = (TextView)view.findViewById(R.id.opponent_result);
 
         // Set names
@@ -111,11 +110,11 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
                         getString(R.string.white_space) + timeGoal);
 
                 double user_dist = mChallengeToBeDisplayed.getMyRun().getTrack().getDistance()/1000;
-                userPerf.setText(String.format(Locale.getDefault(), "%.2f", user_dist) +
+                userPerformance.setText(String.format(Locale.getDefault(), "%.2f", user_dist) +
                         getString(R.string.white_space) + getString(R.string.km));
 
                 double opponent_dist = mChallengeToBeDisplayed.getOpponentRun().getTrack().getDistance()/1000;
-                opponentPerf.setText(String.format(Locale.getDefault(), "%.2f", opponent_dist) +
+                opponentPerformance.setText(String.format(Locale.getDefault(), "%.2f", opponent_dist) +
                         getString(R.string.white_space) + getString(R.string.km));
 
                 break;
@@ -125,10 +124,10 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
                         distanceGoal + getString(R.string.white_space) + getString(R.string.km));
 
                 int userTime = (int)mChallengeToBeDisplayed.getMyRun().getDuration();
-                userPerf.setText(timeToString(userTime, true));
+                userPerformance.setText(timeToString(userTime, true));
 
                 int opponentTime = (int)mChallengeToBeDisplayed.getOpponentRun().getDuration();
-                opponentPerf.setText(timeToString(opponentTime, true));
+                opponentPerformance.setText(timeToString(opponentTime, true));
                 break;
         }
         // Set Text colors and results
@@ -163,11 +162,11 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
                 break;
         }
 
-        setRunnerTextColor(userName, userPerf, userResult, userColor);
-        setRunnerTextColor(opponentName, opponentPerf, opponentResult, opponentColor);
+        setRunnerTextColor(userName, userPerformance, userResult, userColor);
+        setRunnerTextColor(opponentName, opponentPerformance, opponentResult, opponentColor);
     }
 
-    public void setRunnerTextColor(TextView t1, TextView t2, TextView t3, int color) {
+    private void setRunnerTextColor(TextView t1, TextView t2, TextView t3, int color) {
         t1.setTextColor(color);
         t2.setTextColor(color);
         t3.setTextColor(color);

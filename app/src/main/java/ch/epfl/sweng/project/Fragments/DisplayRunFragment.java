@@ -1,7 +1,6 @@
 package ch.epfl.sweng.project.Fragments;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -9,18 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
-
-import ch.epfl.sweng.project.AppRunnest;
-import ch.epfl.sweng.project.Database.DBHelper;
-import ch.epfl.sweng.project.Firebase.FirebaseHelper;
-import ch.epfl.sweng.project.Model.Run;
-import ch.epfl.sweng.project.Model.Track;
-import ch.epfl.sweng.project.Model.CheckPoint;
-import ch.epfl.sweng.project.Model.User;
-
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.maps.CameraUpdate;
@@ -37,6 +25,11 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+
+import ch.epfl.sweng.project.Database.DBHelper;
+import ch.epfl.sweng.project.Model.CheckPoint;
+import ch.epfl.sweng.project.Model.Run;
+import ch.epfl.sweng.project.Model.Track;
 
 public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
 

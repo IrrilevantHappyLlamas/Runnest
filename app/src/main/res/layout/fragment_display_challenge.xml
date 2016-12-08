@@ -15,7 +15,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/challenge_type"
             android:textAppearance="@style/TextAppearance.AppCompat"
-            android:fontFamily="sans-serif"
             android:textSize="20sp"
             android:layout_alignParentLeft="false"
             android:layout_alignParentStart="false"
