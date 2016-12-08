@@ -70,8 +70,10 @@
     <string name="_0">0</string>
     <string name="_23_runs">23 runs</string>
     <string name="runnest_ihl">Runnest IHL</string>
-    <string name="challenges">challenges</string>
+    <string name="challenges">Challenges</string>
     <string name="lost">lost</string>
     <string name="won">won</string>
     <string name="_0_challenges">0 challenges</string>
+    <string name="history">History</string>
+    <string name="new_challenge">New challenge</string>
 </resources>

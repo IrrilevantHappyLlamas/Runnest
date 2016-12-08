@@ -105,7 +105,7 @@ public class SideBarActivity extends AppCompatActivity
 
     private FirebaseHelper mFirebaseHelper = null;
 
-    private FloatingActionButton fab;
+    //private FloatingActionButton fab;
 
     private NavigationView navigationView;
 
@@ -346,7 +346,7 @@ public class SideBarActivity extends AppCompatActivity
                 itemStack.push(item);
             }
 
-            fab.show();
+            //fab.show();
             showSearchBar();
 
             // Handle navigation view item clicks here.
@@ -357,14 +357,14 @@ public class SideBarActivity extends AppCompatActivity
                 launchFragment(new ProfileFragment());
             } else if (id == R.id.nav_run) {
                 toolbar.setTitle("Run");
-                fab.hide();
+                //fab.hide();
                 hideSearchBar();
                 launchFragment(new RunningMapFragment());
-            } else if (id == R.id.nav_run_history) {
-                toolbar.setTitle("Run History");
+            } else if (id == R.id.nav_history) {
+                toolbar.setTitle("History");
                 launchFragment(new RunHistoryFragment());
             } else if (id == R.id.nav_messages) {
-                toolbar.setTitle("Messages");
+                toolbar.setTitle("Challenges");
                 launchFragment(new MessagesFragment());
             } else if (id == R.id.nav_logout) {
                 itemStack.pop();
