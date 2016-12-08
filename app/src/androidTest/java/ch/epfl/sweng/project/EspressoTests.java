@@ -736,11 +736,12 @@ public class EspressoTests {
 
         onView(withId(R.id.readyBtn)).check(matches(isDisplayed()));
         onView(withId(R.id.readyBtn)).perform(click());
-        SystemClock.sleep(10900);
+        SystemClock.sleep(RUN_DURATION);
 
-        onView(withId(R.id.challenge_chronometer)).check(matches(isDisplayed()));
+        //onView(withId(R.id.challenge_chronometer)).check(matches(isDisplayed()));
 
-        onView(withId(R.id.back_to_side_btn)).check(matches(isDisplayed()));
+        //onView(withId(R.id.back_to_side_btn)).check(matches(isDisplayed()));
+
         onView(withId(R.id.back_to_side_btn)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 

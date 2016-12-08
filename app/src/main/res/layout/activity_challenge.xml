@@ -91,7 +91,8 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:id="@+id/central_challenge_layout">
 
             <ImageButton
                 android:layout_width="0dp"
