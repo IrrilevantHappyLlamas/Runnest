@@ -256,7 +256,7 @@ public class FirebaseHelper {
      * @param url
      */
     public void setOrUpdateProfilePicUrl(String userEmail, final String url) {
-        if (userEmail == null || userEmail.equals("") || url == null || url.equals("")) {
+        if (userEmail.equals("") || url == null || url.equals("")) {
             throw new IllegalArgumentException();
         }
 
