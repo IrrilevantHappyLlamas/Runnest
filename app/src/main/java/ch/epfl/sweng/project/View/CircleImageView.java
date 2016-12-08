@@ -78,12 +78,6 @@ public class CircleImageView extends ImageView {
     private boolean mBorderOverlay;
     private boolean mDisableCircularTransformation;
 
-    public CircleImageView(Context context) {
-        super(context);
-
-        init();
-    }
-
     public CircleImageView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
@@ -110,18 +104,6 @@ public class CircleImageView extends ImageView {
         if (mSetupPending) {
             setup();
             mSetupPending = false;
-        }
-    }
-
-    @Override
-    public ScaleType getScaleType() {
-        return SCALE_TYPE;
-    }
-
-    @Override
-    public void setScaleType(ScaleType scaleType) {
-        if (scaleType != SCALE_TYPE) {
-            throw new IllegalArgumentException(String.format("ScaleType %s not supported.", scaleType));
         }
     }
 
@@ -159,124 +141,6 @@ public class CircleImageView extends ImageView {
     }
 
     @Override
-    public void setPadding(int left, int top, int right, int bottom) {
-        super.setPadding(left, top, right, bottom);
-        setup();
-    }
-
-    @Override
-    public void setPaddingRelative(int start, int top, int end, int bottom) {
-        super.setPaddingRelative(start, top, end, bottom);
-        setup();
-    }
-
-    public int getBorderColor() {
-        return mBorderColor;
-    }
-
-    public void setBorderColor(@ColorInt int borderColor) {
-        if (borderColor == mBorderColor) {
-            return;
-        }
-
-        mBorderColor = borderColor;
-        mBorderPaint.setColor(mBorderColor);
-        invalidate();
-    }
-
-    /**
-     * @deprecated Use {@link #setBorderColor(int)} instead
-     */
-    @Deprecated
-    public void setBorderColorResource(@ColorRes int borderColorRes) {
-        setBorderColor(getContext().getResources().getColor(borderColorRes));
-    }
-
-    /**
-     * Return the color drawn behind the circle-shaped drawable.
-     *
-     * @return The color drawn behind the drawable
-     *
-     * @deprecated Fill color support is going to be removed in the future
-     */
-    @Deprecated
-    public int getFillColor() {
-        return mFillColor;
-    }
-
-    /**
-     * Set a color to be drawn behind the circle-shaped drawable. Note that
-     * this has no effect if the drawable is opaque or no drawable is set.
-     *
-     * @param fillColor The color to be drawn behind the drawable
-     *
-     * @deprecated Fill color support is going to be removed in the future
-     */
-    @Deprecated
-    public void setFillColor(@ColorInt int fillColor) {
-        if (fillColor == mFillColor) {
-            return;
-        }
-
-        mFillColor = fillColor;
-        mFillPaint.setColor(fillColor);
-        invalidate();
-    }
-
-    /**
-     * Set a color to be drawn behind the circle-shaped drawable. Note that
-     * this has no effect if the drawable is opaque or no drawable is set.
-     *
-     * @param fillColorRes The color resource to be resolved to a color and
-     *                     drawn behind the drawable
-     *
-     * @deprecated Fill color support is going to be removed in the future
-     */
-    @Deprecated
-    public void setFillColorResource(@ColorRes int fillColorRes) {
-        setFillColor(getContext().getResources().getColor(fillColorRes));
-    }
-
-    public int getBorderWidth() {
-        return mBorderWidth;
-    }
-
-    public void setBorderWidth(int borderWidth) {
-        if (borderWidth == mBorderWidth) {
-            return;
-        }
-
-        mBorderWidth = borderWidth;
-        setup();
-    }
-
-    public boolean isBorderOverlay() {
-        return mBorderOverlay;
-    }
-
-    public void setBorderOverlay(boolean borderOverlay) {
-        if (borderOverlay == mBorderOverlay) {
-            return;
-        }
-
-        mBorderOverlay = borderOverlay;
-        setup();
-    }
-
-    public boolean isDisableCircularTransformation() {
-        return mDisableCircularTransformation;
-    }
-
-    public void setDisableCircularTransformation(boolean disableCircularTransformation) {
-        if (mDisableCircularTransformation == disableCircularTransformation) {
-            return;
-        }
-
-        mDisableCircularTransformation = disableCircularTransformation;
-        initializeBitmap();
-    }
-
-    @Override
     public void setImageBitmap(Bitmap bm) {
         super.setImageBitmap(bm);
         initializeBitmap();
@@ -292,28 +156,6 @@ public class CircleImageView extends ImageView {
     public void setImageResource(@DrawableRes int resId) {
         super.setImageResource(resId);
         initializeBitmap();
-    }
-
-    @Override
-    public void setImageURI(Uri uri) {
-        super.setImageURI(uri);
-        initializeBitmap();
-    }
-
-    @Override
-    public void setColorFilter(ColorFilter cf) {
-        if (cf == mColorFilter) {
-            return;
-        }
-
-        mColorFilter = cf;
-        applyColorFilter();
-        invalidate();
-    }
-
-    @Override
-    public ColorFilter getColorFilter() {
-        return mColorFilter;
     }
 
     private void applyColorFilter() {

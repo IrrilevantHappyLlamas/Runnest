@@ -59,7 +59,7 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
             setUserStatistics(mName, mEmail, view);
             view.findViewById(R.id.challenge_schedule_buttons).setVisibility(View.VISIBLE);
 
-            ((ImageView) view.findViewById(R.id.photoImg)).setImageResource(R.drawable.profile_head_small);
+            setProfileImage("", view);
 
             view.findViewById(R.id.challenge_button).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -99,9 +99,11 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
     }
 
     private void setProfileImage(String url, View view) {
+        ImageView profilePic = (ImageView) view.findViewById(R.id.photoImg);
         if (!url.equals("")) {
-            ImageView profilePic = (ImageView) view.findViewById(R.id.photoImg);
             new DownloadImageTask(profilePic).execute(url);
+        } else {
+            profilePic.setImageResource(R.drawable.profile_head_small);
         }
     }
 
