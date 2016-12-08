@@ -133,29 +133,29 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
         // Set Text colors and results
         switch (mChallengeToBeDisplayed.getResult()) {
             case WON:
-                userResult.setText(getString(R.string.won));
-                opponentResult.setText(getString(R.string.lost));
+                userResult.setText(getString(R.string.won_caps));
+                opponentResult.setText(getString(R.string.lost_caps));
 
                 userColor = ContextCompat.getColor(getContext(), R.color.wonColor);
                 opponentColor = ContextCompat.getColor(getContext(), R.color.lostColor);
                 break;
             case LOST:
-                userResult.setText(getString(R.string.lost));
-                opponentResult.setText(getString(R.string.won));
+                userResult.setText(getString(R.string.lost_caps));
+                opponentResult.setText(getString(R.string.won_caps));
 
                 userColor = ContextCompat.getColor(getContext(), R.color.lostColor);
                 opponentColor = ContextCompat.getColor(getContext(), R.color.wonColor);
                 break;
             case ABORTED_BY_ME:
-                userResult.setText(getString(R.string.left));
-                opponentResult.setText(getString(R.string.won));
+                userResult.setText(getString(R.string.left_caps));
+                opponentResult.setText(getString(R.string.won_caps));
 
                 userColor = ContextCompat.getColor(getContext(), R.color.lostColor);
                 opponentColor = ContextCompat.getColor(getContext(), R.color.wonColor);
                 break;
             case ABORTED_BY_OTHER:
-                userResult.setText(getString(R.string.won));
-                opponentResult.setText(getString(R.string.left));
+                userResult.setText(getString(R.string.won_caps));
+                opponentResult.setText(getString(R.string.left_caps));
 
                 userColor = ContextCompat.getColor(getContext(), R.color.wonColor);
                 opponentColor = ContextCompat.getColor(getContext(), R.color.lostColor);

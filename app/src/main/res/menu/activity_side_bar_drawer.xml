@@ -8,19 +8,23 @@
             android:title="@string/profile_tab" />
         <item
             android:id="@+id/nav_run"
-            android:icon="@drawable/running_man"
+            android:icon="@drawable/running_man_white"
             android:title="@string/run_tab" />
         <item
-            android:id="@+id/nav_run_history"
-            android:icon="@drawable/history_icon"
-            android:title="@string/run_history" />
+            android:id="@+id/nav_new_challenge"
+            android:icon="@drawable/challenge_small"
+            android:title="@string/new_challenge" />
         <item
             android:id="@+id/nav_messages"
             android:icon="@drawable/messages_icon"
-            android:title="@string/messages" />
+            android:title="@string/challenges" />
+        <item
+            android:id="@+id/nav_history"
+            android:icon="@drawable/history_icon"
+            android:title="@string/history" />
     </group>
 
-    <item android:title="@string/runnest">
+    <item android:title="">
         <menu>
             <item
                 android:id="@+id/nav_logout"

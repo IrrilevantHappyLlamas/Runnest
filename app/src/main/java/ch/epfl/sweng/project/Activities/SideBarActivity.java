@@ -97,11 +97,11 @@ public class SideBarActivity extends AppCompatActivity
     private Fragment mCurrentFragment = null;
     private FragmentManager fragmentManager = null;
     private SearchView mSearchView = null;
-    private MenuItem mSearchViewAsMenuItem = null;
+    public MenuItem mSearchViewAsMenuItem = null;
 
     private FirebaseHelper mFirebaseHelper = null;
 
-    private FloatingActionButton fab;
+    //private FloatingActionButton fab;
 
     private NavigationView navigationView;
 
@@ -153,9 +153,8 @@ public class SideBarActivity extends AppCompatActivity
         TextView h1 = (TextView) header.findViewById(R.id.header1_nav_header);
         final TextView h2 = (TextView) header.findViewById(R.id.header2_nav_header);
 
-
-        // TODO: remove/replace fab
         runItem = navigationView.getMenu().getItem(1);
+        /*
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,7 +163,9 @@ public class SideBarActivity extends AppCompatActivity
                 onNavigationItemSelected(runItem);
             }
         });
+
         fab.hide();
+        */
 
         User account = ((AppRunnest)getApplicationContext()).getUser();
         if (account != null) {
@@ -343,7 +344,6 @@ public class SideBarActivity extends AppCompatActivity
                 itemStack.push(item);
             }
 
-            //TODO
             //fab.show();
             showSearchBar();
 
@@ -355,16 +355,18 @@ public class SideBarActivity extends AppCompatActivity
                 launchFragment(new ProfileFragment());
             } else if (id == R.id.nav_run) {
                 toolbar.setTitle("Run");
-                //TODO
                 //fab.hide();
                 hideSearchBar();
                 launchFragment(new RunningMapFragment());
-            } else if (id == R.id.nav_run_history) {
+            } else if (id == R.id.nav_new_challenge) {
+                toolbar.setTitle("Search someone");
+                launchFragment(new EmptySearchFragment());
+            } else if (id == R.id.nav_messages) {
+                toolbar.setTitle("Challenges");
+                launchFragment(new MessagesFragment());
+            } else if (id == R.id.nav_history) {
                 toolbar.setTitle("History");
                 launchFragment(new RunHistoryFragment());
-            } else if (id == R.id.nav_messages) {
-                toolbar.setTitle("Messages");
-                launchFragment(new MessagesFragment());
             } else if (id == R.id.nav_logout) {
                 itemStack.pop();
                 dialogLogout();
@@ -525,10 +527,6 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onProfileFragmentInteraction() {
-    }
-
-    @Override
     public void onRunningMapFragmentInteraction(Run run) {
         itemStack.push(runItem);
         historyItem.setChecked(true);
@@ -552,7 +550,12 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDisplayUserFragmentInteraction(String challengedUserName, String challengedUserEmail) {
+    public void onDisplayProfileFragmentInteraction(String name, String email) {
+        launchFragment(ProfileFragment.newInstance(name, email));
+    }
+
+    @Override
+    public void onProfileFragmentInteraction(String challengedUserName, String challengedUserEmail) {
         this.challengedUserName = challengedUserName;
         this.challengedUserEmail = challengedUserEmail;
         showChallengeDialog();
@@ -755,7 +758,7 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDisplayUserFragmentInteractionSchedule(String name, String email){
+    public void onProfileFragmentInteractionSchedule(String name, String email){
 
         this.challengedUserName = name;
         this.challengedUserEmail = email;

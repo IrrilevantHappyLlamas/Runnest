@@ -70,15 +70,18 @@
     <string name="sign_in">Sign in</string>
     <string name="min">min</string>
     <string name="_0">0</string>
-    <string name="_23_runs">23 runs</string>
+    <string name="_0_runs">0 runs</string>
     <string name="runnest_ihl">Runnest IHL</string>
-    <string name="challenges">challenges</string>
 
-    <string name="lost">LOST</string>
-    <string name="won">WON</string>
-    <string name="left">LEFT</string>
+    <string name="lost_caps">LOST</string>
+    <string name="won_caps">WON</string>
+    <string name="left_caps">LEFT</string>
     <string name="average_pace">Average pace:</string>
     <string name="distance">Distance:</string>
     <string name="duration">Duration:</string>
     <string name="min_over_km">min/km</string>
+
+    <string name="challenges">Challenges</string>
+    <string name="_0_challenges">0 challenges</string>
+    <string name="new_challenge">New challenge</string>
 </resources>
