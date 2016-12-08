@@ -307,6 +307,9 @@ public class EspressoTests {
         onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
         SystemClock.sleep(WAIT_DURATION);
 
+        onView(withText("Runnest IHL")).perform(click());
+        SystemClock.sleep(WAIT_DURATION);
+
         //TODO: non riesco ad adattarlo al nuovo codice, chiedere a rikka.
         //onView(withId(R.id.table)).check(matches(isDisplayed()));
         //SystemClock.sleep(WAIT_DURATION);
@@ -314,15 +317,15 @@ public class EspressoTests {
         onView(withText(R.string.challenge)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
-        //Tap con cancel
+        //Tap on cancel
         onView(withId(R.id.first_picker)).check(matches(isDisplayed()));
         onView(withText("Cancel")).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
-        //Tap on Challenge! and start a challenge of 1km
         onView(withText(R.string.challenge)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
+        //Tap on Challenge! and start a challenge of 1km
         onView(withText("Challenge!")).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
@@ -337,6 +340,9 @@ public class EspressoTests {
         SystemClock.sleep(WAIT_DURATION);
 
         onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withText("Runnest IHL")).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
         //TODO: non riesco ad adattarlo al nuovo codice, chiedere a rikka.
@@ -369,6 +375,9 @@ public class EspressoTests {
         onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
         SystemClock.sleep(WAIT_DURATION);
 
+        onView(withText("Runnest IHL")).perform(click());
+        SystemClock.sleep(WAIT_DURATION);
+
         //TODO: non riesco ad adattarlo al nuovo codice, chiedere a rikka.
         // onView(withId(R.id.table)).check(matches(isDisplayed()));
         // SystemClock.sleep(WAIT_DURATION);
@@ -389,6 +398,9 @@ public class EspressoTests {
         SystemClock.sleep(WAIT_DURATION);
 
         onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withText("Runnest IHL")).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
         //TODO: non riesco ad adattarlo al nuovo codice, chiedere a rikka.
@@ -415,6 +427,9 @@ public class EspressoTests {
         SystemClock.sleep(WAIT_DURATION);
 
         onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withText("Runnest IHL")).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
         //TODO: non riesco ad adattarlo al nuovo codice, chiedere a rikka.
@@ -672,6 +687,9 @@ public class EspressoTests {
         onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
         SystemClock.sleep(WAIT_DURATION);
 
+        onView(withText("Runnest IHL")).perform(click());
+        SystemClock.sleep(WAIT_DURATION);
+
         onView(withText(R.string.challenge)).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
@@ -702,6 +720,9 @@ public class EspressoTests {
         SystemClock.sleep(WAIT_DURATION);
 
         onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
+        SystemClock.sleep(WAIT_DURATION);
+
+        onView(withText("Runnest IHL")).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
         onView(withText(R.string.challenge)).perform(click());

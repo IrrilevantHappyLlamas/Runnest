@@ -101,7 +101,7 @@ public class SideBarActivity extends AppCompatActivity
     private Fragment mCurrentFragment = null;
     private FragmentManager fragmentManager = null;
     private SearchView mSearchView = null;
-    private MenuItem mSearchViewAsMenuItem = null;
+    public MenuItem mSearchViewAsMenuItem = null;
 
     private FirebaseHelper mFirebaseHelper = null;
 

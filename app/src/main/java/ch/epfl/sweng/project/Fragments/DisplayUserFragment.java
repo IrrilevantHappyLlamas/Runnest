@@ -4,8 +4,12 @@ import android.app.ActionBar;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -14,6 +18,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import ch.epfl.sweng.project.Activities.SideBarActivity;
 import ch.epfl.sweng.project.AppRunnest;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
@@ -86,7 +91,7 @@ public class DisplayUserFragment extends Fragment {
         tableRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                ((SideBarActivity) getActivity()).mSearchViewAsMenuItem.collapseActionView();
                 mListener.onDisplayProfileFragmentInteraction(name, email);
             }
         });
