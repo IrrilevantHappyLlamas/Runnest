@@ -56,7 +56,9 @@ import static org.hamcrest.Matchers.is;
 public class EspressoTests {
 
     private final int WAIT_DURATION = 500; // Dialogs are bottleneck
+    private final int FIREBASE_DURATION = 3000;
     //TODO: find a way to bound this to setupLocationChangeSimulation value
+
     public final int RUN_DURATION = 12500;
 
     @Rule
@@ -153,7 +155,7 @@ public class EspressoTests {
         SystemClock.sleep(WAIT_DURATION);
 
         onView(isAssignableFrom(EditText.class)).perform(typeText("kadfjisadsa"), pressKey(KeyEvent.KEYCODE_ENTER));
-        SystemClock.sleep(WAIT_DURATION);
+        SystemClock.sleep(FIREBASE_DURATION);
 
         onView(withId(R.id.table)).check(matches(isDisplayed()));
         onView(withText("No user found.")).check(matches(isDisplayed()));
