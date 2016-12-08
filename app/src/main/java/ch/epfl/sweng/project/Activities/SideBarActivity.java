@@ -521,10 +521,6 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onProfileFragmentInteraction() {
-    }
-
-    @Override
     public void onRunningMapFragmentInteraction(Run run) {
         itemStack.push(runItem);
         historyItem.setChecked(true);
@@ -552,7 +548,12 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDisplayUserFragmentInteraction(String challengedUserName, String challengedUserEmail) {
+    public void onDisplayProfileFragmentInteraction(String name, String email) {
+        launchFragment(ProfileFragment.newInstance(name, email));
+    }
+
+    @Override
+    public void onProfileFragmentInteraction(String challengedUserName, String challengedUserEmail) {
         this.challengedUserName = challengedUserName;
         this.challengedUserEmail = challengedUserEmail;
         showChallengeDialog();
@@ -753,7 +754,7 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDisplayUserFragmentInteractionSchedule(String name, String email){
+    public void onProfileFragmentInteractionSchedule(String name, String email){
 
         this.challengedUserName = name;
         this.challengedUserEmail = email;

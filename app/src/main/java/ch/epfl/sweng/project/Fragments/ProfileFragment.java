@@ -11,6 +11,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -48,8 +49,26 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
             User user = ((AppRunnest) getActivity().getApplicationContext()).getUser();
             setUserStatistics(user.getName(), user.getEmail(), view);
             setProfileImage(user.getPhotoUrl(), view);
+            view.findViewById(R.id.challenge_schedule_buttons).setVisibility(View.GONE);
         } else {
             setUserStatistics(mName, mEmail, view);
+            view.findViewById(R.id.challenge_schedule_buttons).setVisibility(View.VISIBLE);
+
+            ((ImageView) view.findViewById(R.id.photoImg)).setImageResource(R.drawable.profile_head_small);
+
+            view.findViewById(R.id.challenge_button).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mProfileListener.onProfileFragmentInteraction(mName, mEmail);
+                }
+            });
+
+            view.findViewById(R.id.schedule_button).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mProfileListener.onProfileFragmentInteractionSchedule(mName, mEmail);
+                }
+            });
         }
         return view;
     }
@@ -63,17 +82,16 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
 
     private void setUserStatistics(final String name, final String email, final View view) {
         ((TextView) view.findViewById(R.id.nameTxt)).setText(name);
+
         final FirebaseHelper firebaseHelper = new FirebaseHelper();
         firebaseHelper.getUserStatistics(email, new FirebaseHelper.statisticsHandler() {
             @Override
             public void handleRetrievedStatistics(String[] statistics) {
 
-                DecimalFormat decimalFormat = new DecimalFormat("#.0");
-
                 double distance = Double.valueOf(statistics[firebaseHelper.TOTAL_RUNNING_DISTANCE_INDEX]);
                 // Transform to km and format with one digit after the coma
-                String toBeDisplayedDistance = String.valueOf(decimalFormat.format(distance / 1000));
-                ((TextView) view.findViewById(R.id.total_running_distance)).setText(toBeDisplayedDistance + " km");
+                String distanceToBeDisplayed = new DecimalFormat("#.0").format(distance / 1000) + " km";
+                ((TextView) view.findViewById(R.id.total_running_distance)).setText(distanceToBeDisplayed);
 
                 double time = Double.valueOf(statistics[firebaseHelper.TOTAL_RUNNING_TIME_INDEX]);
                 int hours = (int) time / 3600;
@@ -142,7 +160,8 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
      * Interface for SideBarActivity
      */
     public interface ProfileFragmentInteractionListener {
-        void onProfileFragmentInteraction();
+        void onProfileFragmentInteraction(String challengedUserName, String challengedUserEmail);
+        void onProfileFragmentInteractionSchedule(String challengedUserName, String challengedUserEmail);
     }
 }
 

@@ -92,7 +92,7 @@ public class EspressoTests {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         SystemClock.sleep(WAIT_DURATION);
 
-        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run_history));
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_history));
     }
 
     @Test
@@ -162,7 +162,7 @@ public class EspressoTests {
     public void uselessOnFragmentListenersWork() {
         SideBarActivity listenerTest = mActivityRule.getActivity();
 
-        listenerTest.onProfileFragmentInteraction();
+        listenerTest.onProfileFragmentInteraction("usad", "uids");
         listenerTest.onDBUploadFragmentInteraction();
     }
 
@@ -183,9 +183,9 @@ public class EspressoTests {
     }
 
     @Test
-    public void displayUserOnFragmentListenersWork() {
+    public void displayProfileFragmentListenersWork() {
         SideBarActivity listenerTest = mActivityRule.getActivity();
-        listenerTest.onDisplayUserFragmentInteraction("testName", "test@email.ch");
+        listenerTest.onDisplayProfileFragmentInteraction("testName", "test@email.ch");
     }
 
     @Test
@@ -200,7 +200,7 @@ public class EspressoTests {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         SystemClock.sleep(WAIT_DURATION);
 
-        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run_history));
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_history));
         SystemClock.sleep(WAIT_DURATION);
 
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
@@ -615,7 +615,7 @@ public class EspressoTests {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         SystemClock.sleep(WAIT_DURATION);
 
-        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run_history));
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_history));
         SystemClock.sleep(WAIT_DURATION);
 
         onView(withId(R.id.spinner)).perform(click());
@@ -630,7 +630,7 @@ public class EspressoTests {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         SystemClock.sleep(WAIT_DURATION);
 
-        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run_history));
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_history));
         SystemClock.sleep(WAIT_DURATION);
 
         onView(withId(R.id.spinner)).perform(click());
@@ -651,7 +651,7 @@ public class EspressoTests {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         SystemClock.sleep(WAIT_DURATION);
 
-        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run_history));
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_history));
         SystemClock.sleep(WAIT_DURATION);
 
         onView(withId(R.id.spinner)).perform(click());
