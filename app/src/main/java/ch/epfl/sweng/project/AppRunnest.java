@@ -53,7 +53,7 @@ public class AppRunnest extends MultiDexApplication {
         return testSession;
     }
 
-    public void launchEmergencyUpload() {
+    public void launchDatabaseUpload() {
         DBHelper dbHelper = new DBHelper(this);
         Uri file = Uri.fromFile(dbHelper.getDatabasePath());
         StorageReference storageRef = FirebaseStorage.getInstance()

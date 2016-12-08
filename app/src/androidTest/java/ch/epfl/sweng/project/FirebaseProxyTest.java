@@ -5,6 +5,7 @@ import android.os.SystemClock;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
@@ -44,6 +45,11 @@ public class FirebaseProxyTest {
             public void hasAborted() {
 
             }
+
+            @Override
+            public void opponentInRoom() {
+
+            }
         }, owner, "testID");
     }
 
@@ -79,6 +85,11 @@ public class FirebaseProxyTest {
 
             @Override
             public void hasAborted() {
+
+            }
+
+            @Override
+            public void opponentInRoom() {
 
             }
         }, true, "testID");
@@ -178,5 +189,28 @@ public class FirebaseProxyTest {
         FirebaseProxy proxyOwner = createCorrectProxy(true);
         proxyOwner.abortChallenge();
         proxyOwner.abortChallenge();
+    }
+
+    @Test
+    public void generateChallengeNameWorks() {
+        String challengeName = FirebaseProxy.generateChallengeName("A", "B", "0");
+
+        Assert.assertTrue(challengeName.equals("A vs B 0"));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void generateChallengeNameThrowsNUllPointer() {
+        FirebaseProxy.generateChallengeName("A", "B", null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void generateChallengeNameThrowsIllegalArgument() {
+        FirebaseProxy.generateChallengeName("A", "", "0");
+    }
+
+    @Test
+    public void deleteChallengeWorks() {
+        FirebaseProxy proxy = createCorrectProxy(true);
+        proxy.deleteChallenge();
     }
 }

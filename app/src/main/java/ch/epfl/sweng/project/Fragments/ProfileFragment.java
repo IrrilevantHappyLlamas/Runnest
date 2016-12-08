@@ -11,10 +11,16 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.InputStream;
 import java.text.DecimalFormat;
@@ -28,74 +34,138 @@ import ch.epfl.sweng.project.Model.User;
  */
 public class ProfileFragment extends android.support.v4.app.Fragment {
 
-    private ProfileFragmentInteractionListener mProfileListener = null;
-    private FirebaseHelper mFirebaseHelper = null;
-    private User mUser;
+    private ProfileFragmentInteractionListener mListener = null;
+    private String mName = null;
+    private String mEmail = null;
 
+    public static ProfileFragment newInstance(String name, String email) {
+        ProfileFragment fragment = new ProfileFragment();
+        fragment.mName = name;
+        fragment.mEmail = email;
+        return fragment;
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view =  inflater.inflate(R.layout.fragment_profile, container, false);
 
-        mFirebaseHelper = new FirebaseHelper();
+        final FirebaseHelper firebaseHelper = new FirebaseHelper();
 
-        mUser = ((AppRunnest)getActivity().getApplicationContext()).getUser();
+        if (mEmail == null) {
+            // Handle case self profile
+            User user = ((AppRunnest) getActivity().getApplicationContext()).getUser();
+            setUserStatistics(user.getName(), user.getEmail(), view);
+            String picUrl = user.getPhotoUrl();
+            firebaseHelper.setOrUpdateProfilePicUrl(user.getEmail(), picUrl);
+            setProfileImage(picUrl, view);
+            view.findViewById(R.id.challenge_schedule_buttons).setVisibility(View.GONE);
+        } else {
+            // Handle case others profile
+            setUserStatistics(mName, mEmail, view);
+            view.findViewById(R.id.challenge_schedule_buttons).setVisibility(View.VISIBLE);
 
-        ImageView profilePic = (ImageView)view.findViewById(R.id.photoImg);
+            setProfileImage("", view);
 
-        if (!mUser.getPhotoUrl().equals("")) {
-            new DownloadImageTask(profilePic)
-                    .execute(mUser.getPhotoUrl());
+            firebaseHelper.getProfilePicUrl(mEmail, new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        String url = (String) dataSnapshot.getValue();
+                        setProfileImage(url, view);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            view.findViewById(R.id.challenge_button).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FirebaseHelper firebaseHelper = new FirebaseHelper();
+                    firebaseHelper.listenUserAvailability(mEmail, false, new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                if ((boolean)dataSnapshot.getValue()) {
+                                    mListener.onProfileFragmentInteraction(mName, mEmail);
+                                } else {
+                                    Toast.makeText(getContext(), "User is currently busy, try again later",
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            } else {
+                                throw new DatabaseException("Corrupted available node for user");
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            throw new DatabaseException("Cannot read available status for user");
+                        }
+                    });
+                }
+            });
+
+            view.findViewById(R.id.schedule_button).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onProfileFragmentInteractionSchedule(mName, mEmail);
+                }
+            });
         }
+        return view;
+    }
 
+    private void setProfileImage(String url, View view) {
+        ImageView profilePic = (ImageView) view.findViewById(R.id.photoImg);
+        if (!url.equals("")) {
+            new DownloadImageTask(profilePic).execute(url);
+        } else {
+            profilePic.setImageResource(R.drawable.profile_head_small);
+        }
+    }
 
-        int dimensionInPixel = 100;
-        int dimensionInDp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dimensionInPixel,
-                            getResources().getDisplayMetrics());
-        profilePic.getLayoutParams().height = dimensionInDp;
-        profilePic.getLayoutParams().width = dimensionInDp;
-        profilePic.requestLayout();
+    private void setUserStatistics(final String name, final String email, final View view) {
+        ((TextView) view.findViewById(R.id.nameTxt)).setText(name);
 
-        // Display logged profile id
-        String name = mUser.getName();
-        String email = mUser.getEmail();
-
-        ((TextView)view.findViewById(R.id.nameTxt)).setText(name);
-        //((TextView)view.findViewById(R.id.emailTxt)).setText(email);
-
-        mFirebaseHelper.getUserStatistics(mUser.getEmail(), new FirebaseHelper.statisticsHandler() {
+        final FirebaseHelper firebaseHelper = new FirebaseHelper();
+        firebaseHelper.getUserStatistics(email, new FirebaseHelper.statisticsHandler() {
             @Override
             public void handleRetrievedStatistics(String[] statistics) {
 
-                DecimalFormat format = new DecimalFormat("#.0");
+                double distance = Double.valueOf(statistics[firebaseHelper.TOTAL_RUNNING_DISTANCE_INDEX]);
+                // Transform to km and format with one digit after the coma
+                String distanceToBeDisplayed = new DecimalFormat("#.0").format(distance / 1000) + " km";
+                ((TextView) view.findViewById(R.id.total_running_distance)).setText(distanceToBeDisplayed);
 
-                double distance = Double.valueOf(statistics[mFirebaseHelper.TOTAL_RUNNING_DISTANCE_INDEX]);
-                String toBeDisplayedDistance = String.valueOf(format.format(distance/1000));
-                ((TextView)view.findViewById(R.id.total_running_distance)).setText(toBeDisplayedDistance);
+                double time = Double.valueOf(statistics[firebaseHelper.TOTAL_RUNNING_TIME_INDEX]);
+                int hours = (int) time / 3600;
+                int minutes = (int) (time - hours * 60) / 60;
+                ((TextView) view.findViewById(R.id.total_running_time)).setText(hours + "h " + minutes + "m");
 
-                double time = Double.valueOf(statistics[mFirebaseHelper.TOTAL_RUNNING_TIME_INDEX]);
-                String toBeDisplayedTime = String.valueOf(format.format(time/60));
-                ((TextView)view.findViewById(R.id.total_running_time)).setText(toBeDisplayedTime);
+                String nbRuns = statistics[firebaseHelper.TOTAL_NUMBER_OF_RUNS_INDEX] + " runs";
+                ((TextView) view.findViewById(R.id.nb_runs)).setText(nbRuns);
 
-                String nbRuns = statistics[mFirebaseHelper.TOTAL_NUMBER_OF_RUNS_INDEX];
-                ((TextView)view.findViewById(R.id.nb_runs)).setText(nbRuns + " runs");
-                ((TextView)view.findViewById(R.id.total_number_of_challenges)).setText(statistics[mFirebaseHelper.TOTAL_NUMBER_OF_CHALLENGES_INDEX]);
-                ((TextView)view.findViewById(R.id.total_number_of_won_challenges)).setText(statistics[mFirebaseHelper.TOTAL_NUMBER_OF_WON_CHALLENGES_INDEX]);
-                ((TextView)view.findViewById(R.id.total_number_of_lost_challenges)).setText(statistics[mFirebaseHelper.TOTAL_NUMBER_OF_LOST_CHALLENGES_INDEX]);
+                String nbChallenges = statistics[firebaseHelper.TOTAL_NUMBER_OF_CHALLENGES_INDEX] + " challenges";
+                ((TextView) view.findViewById(R.id.total_number_of_challenges)).setText(nbChallenges);
 
+                String nbWon = statistics[firebaseHelper.TOTAL_NUMBER_OF_WON_CHALLENGES_INDEX] + " won";
+                ((TextView) view.findViewById(R.id.total_number_of_won_challenges)).setText(nbWon);
+
+                String nbLost = statistics[firebaseHelper.TOTAL_NUMBER_OF_LOST_CHALLENGES_INDEX] + " lost";
+                ((TextView) view.findViewById(R.id.total_number_of_lost_challenges)).setText(nbLost);
             }
         });
-
-        return view;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof ProfileFragmentInteractionListener) {
-            mProfileListener = (ProfileFragmentInteractionListener) context;
+            mListener = (ProfileFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -105,7 +175,7 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mProfileListener = null;
+        mListener = null;
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
@@ -138,9 +208,7 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
      * Interface for SideBarActivity
      */
     public interface ProfileFragmentInteractionListener {
-        void onProfileFragmentInteraction();
+        void onProfileFragmentInteraction(String challengedUserName, String challengedUserEmail);
+        void onProfileFragmentInteractionSchedule(String challengedUserName, String challengedUserEmail);
     }
 }
-
-
-

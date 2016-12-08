@@ -5,7 +5,7 @@ import org.junit.Test;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 
 /**
- * Test suite for DBDownloadFragment and DBUploadFragment
+ * Test suite for DBDownloadFragment
  */
 public class DBFragmentsTest {
 

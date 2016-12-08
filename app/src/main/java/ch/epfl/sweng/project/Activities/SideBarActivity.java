@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -29,14 +28,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
-
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -48,20 +45,20 @@ import java.util.Stack;
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
+import ch.epfl.sweng.project.Firebase.FirebaseProxy;
 import ch.epfl.sweng.project.Fragments.AcceptScheduleDialogFragment;
 import ch.epfl.sweng.project.Fragments.ChallengeDialogFragment;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
-import ch.epfl.sweng.project.Fragments.DBUploadFragment;
-import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
 import ch.epfl.sweng.project.Fragments.DisplayChallengeFragment;
+import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
 import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
 import ch.epfl.sweng.project.Fragments.EmptySearchFragment;
 import ch.epfl.sweng.project.Fragments.MemoDialogFragment;
 import ch.epfl.sweng.project.Fragments.MessagesFragment;
+import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RequestDialogFragment;
 import ch.epfl.sweng.project.Fragments.RequestScheduleDialogFragment;
 import ch.epfl.sweng.project.Fragments.RunFragments.RunningMapFragment;
-import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
 import ch.epfl.sweng.project.Model.Challenge;
 import ch.epfl.sweng.project.Model.Message;
@@ -73,7 +70,6 @@ public class SideBarActivity extends AppCompatActivity
         ProfileFragment.ProfileFragmentInteractionListener,
         RunningMapFragment.RunningMapFragmentInteractionListener,
         DBDownloadFragment.DBDownloadFragmentInteractionListener,
-        DBUploadFragment.DBUploadFragmentInteractionListener,
         RunHistoryFragment.onRunHistoryInteractionListener,
         DisplayUserFragment.OnDisplayUserFragmentInteractionListener,
         MessagesFragment.MessagesFragmentInteractionListener,
@@ -101,11 +97,9 @@ public class SideBarActivity extends AppCompatActivity
     private Fragment mCurrentFragment = null;
     private FragmentManager fragmentManager = null;
     private SearchView mSearchView = null;
-    private MenuItem mSearchViewAsMenuItem = null;
+    public MenuItem mSearchViewAsMenuItem = null;
 
     private FirebaseHelper mFirebaseHelper = null;
-
-    private FloatingActionButton fab;
 
     private NavigationView navigationView;
 
@@ -157,16 +151,8 @@ public class SideBarActivity extends AppCompatActivity
         TextView h1 = (TextView) header.findViewById(R.id.header1_nav_header);
         final TextView h2 = (TextView) header.findViewById(R.id.header2_nav_header);
 
-
         runItem = navigationView.getMenu().getItem(1);
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                runItem.setChecked(true);
-                onNavigationItemSelected(runItem);
-            }
-        });
+
 
         User account = ((AppRunnest)getApplicationContext()).getUser();
         if (account != null) {
@@ -176,7 +162,8 @@ public class SideBarActivity extends AppCompatActivity
                 @Override
                 public void handleRetrievedStatistics(String[] statistics) {
                     String nbRuns = statistics[mFirebaseHelper.TOTAL_NUMBER_OF_RUNS_INDEX];
-                    h2.setText(nbRuns + " runs");
+                    String header2Txt = nbRuns + " runs";
+                    h2.setText(header2Txt);
                 }
             });
         }
@@ -344,7 +331,6 @@ public class SideBarActivity extends AppCompatActivity
                 itemStack.push(item);
             }
 
-            fab.show();
             showSearchBar();
 
             // Handle navigation view item clicks here.
@@ -355,15 +341,18 @@ public class SideBarActivity extends AppCompatActivity
                 launchFragment(new ProfileFragment());
             } else if (id == R.id.nav_run) {
                 toolbar.setTitle("Run");
-                fab.hide();
                 hideSearchBar();
                 launchFragment(new RunningMapFragment());
-            } else if (id == R.id.nav_run_history) {
-                toolbar.setTitle("Run History");
-                launchFragment(new RunHistoryFragment());
+            } else if (id == R.id.nav_new_challenge) {
+                toolbar.setTitle("Search someone");
+                launchFragment(new EmptySearchFragment());
+                //mSearchView.performClick();
             } else if (id == R.id.nav_messages) {
-                toolbar.setTitle("Messages");
+                toolbar.setTitle("Challenges");
                 launchFragment(new MessagesFragment());
+            } else if (id == R.id.nav_history) {
+                toolbar.setTitle("History");
+                launchFragment(new RunHistoryFragment());
             } else if (id == R.id.nav_logout) {
                 itemStack.pop();
                 dialogLogout();
@@ -443,7 +432,7 @@ public class SideBarActivity extends AppCompatActivity
     public void onDestroy() {
         super.onDestroy();
         if(((AppRunnest)getApplication()).getUser().isLoggedIn()) {
-            ((AppRunnest) getApplication()).launchEmergencyUpload();
+            ((AppRunnest) getApplication()).launchDatabaseUpload();
         }
     }
 
@@ -451,7 +440,7 @@ public class SideBarActivity extends AppCompatActivity
     public void onPause() {
         super.onPause();
         if(((AppRunnest)getApplication()).getUser().isLoggedIn()) {
-            ((AppRunnest) getApplication()).launchEmergencyUpload();
+            ((AppRunnest) getApplication()).launchDatabaseUpload();
         }
     }
 
@@ -459,7 +448,7 @@ public class SideBarActivity extends AppCompatActivity
     public void onStop() {
         super.onStop();
         if(((AppRunnest)getApplication()).getUser().isLoggedIn()) {
-            ((AppRunnest) getApplication()).launchEmergencyUpload();
+            ((AppRunnest) getApplication()).launchDatabaseUpload();
         }
     }
 
@@ -475,7 +464,8 @@ public class SideBarActivity extends AppCompatActivity
                 .setMessage(message)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        launchFragment(new DBUploadFragment());
+                        ((AppRunnest)getApplication()).launchDatabaseUpload();
+                        logout();
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -485,6 +475,13 @@ public class SideBarActivity extends AppCompatActivity
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+    }
+
+    private void logout() {
+        ((AppRunnest) getApplication()).getUser().logoutStatus();
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        FirebaseAuth.getInstance().signOut();
     }
 
     private void dialogQuitRun(final MenuItem item){
@@ -516,10 +513,6 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onProfileFragmentInteraction() {
-    }
-
-    @Override
     public void onRunningMapFragmentInteraction(Run run) {
         itemStack.push(runItem);
         historyItem.setChecked(true);
@@ -543,11 +536,12 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDBUploadFragmentInteraction() {
+    public void onDisplayProfileFragmentInteraction(String name, String email) {
+        launchFragment(ProfileFragment.newInstance(name, email));
     }
 
     @Override
-    public void onDisplayUserFragmentInteraction(String challengedUserName, String challengedUserEmail) {
+    public void onProfileFragmentInteraction(String challengedUserName, String challengedUserEmail) {
         this.challengedUserName = challengedUserName;
         this.challengedUserEmail = challengedUserEmail;
         showChallengeDialog();
@@ -556,31 +550,33 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public void onMessagesFragmentInteraction(final Message message) {
         requestMessage = message;
-        showRequestDialog();
 
-        //FIXME: correctly check on firebase
-        /*
         if (message.getType() == Message.MessageType.CHALLENGE_REQUEST) {
-            User user = ((AppRunnest) getApplication()).getUser();
-            String nodeName = user.getName() + " " + user.getFamilyName() + "_vs_" + message.getSender();
+            final String challengeName = FirebaseProxy.generateChallengeName( message.getSender(),
+                                                                        message.getAddressee(),
+                                                                        message.getMessage());
             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
-            dbRef.child("challenges").child(nodeName).addListenerForSingleValueEvent(new ValueEventListener() {
+            dbRef.child("challenges").child(challengeName)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
                         showRequestDialog();
                     } else {
-                        //TODO: maybe show dialog that explains ...
+                        Toast.makeText(getBaseContext(), "Opponent has already deleted this challenge",
+                                Toast.LENGTH_LONG).show();
                         FirebaseHelper fbHelper = new FirebaseHelper();
+                        fbHelper.deleteChallengeNode(challengeName);
                         fbHelper.delete(message);
                     }
                 }
 
                 @Override
-                public void onCancelled(DatabaseError databaseError) { }
+                public void onCancelled(DatabaseError databaseError) {
+                    throw databaseError.toException();
+                }
             });
         }
-        */
     }
 
     @Override
@@ -728,7 +724,7 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == REQUEST_STOP_WAITING){
-            Toast.makeText(getApplicationContext(),"You have deleted the challenge",
+            Toast.makeText(getApplicationContext(),"The challenge was deleted",
                     Toast.LENGTH_LONG).show();
         } else if(resultCode == REQUEST_ABORT) {
             Toast.makeText(getApplicationContext(),"You have aborted the challenge",
@@ -748,7 +744,7 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDisplayUserFragmentInteractionSchedule(String name, String email){
+    public void onProfileFragmentInteractionSchedule(String name, String email){
 
         this.challengedUserName = name;
         this.challengedUserEmail = email;
@@ -834,6 +830,7 @@ public class SideBarActivity extends AppCompatActivity
         args.putString("opponent", requestMessage.getFrom());
         args.putString("sender", requestMessage.getSender());
         args.putSerializable("date", requestMessage.getTime());
+        args.putString("opponentEmail", requestMessage.getFrom());
         dialog.setArguments(args);
         dialog.show(getSupportFragmentManager(), "MemoDialogFragment");
     }
@@ -844,5 +841,12 @@ public class SideBarActivity extends AppCompatActivity
     public void onMemoDialogDeleteClick(DialogFragment dialog){
         mFirebaseHelper.delete(requestMessage);
         launchFragment(new MessagesFragment());
+    }
+
+    public void onMemoDialogChallengeClick(DialogFragment dialog){
+        mFirebaseHelper.delete(requestMessage);
+        this.challengedUserName = ((MemoDialogFragment) dialog).getSender();
+        this.challengedUserEmail = ((MemoDialogFragment) dialog).getOpponentEmail();
+        showChallengeDialog();
     }
 }

@@ -56,6 +56,7 @@ public class DBDownloadFragment extends Fragment implements
 
         User currentUser = ((AppRunnest) getActivity().getApplication()).getUser();
         firebaseHelper.addOrUpdateUser(currentUser.getName(), currentUser.getEmail());
+        firebaseHelper.setUserAvailable(currentUser.getEmail(), false, true);
 
         // Try to download remote user database
         try {

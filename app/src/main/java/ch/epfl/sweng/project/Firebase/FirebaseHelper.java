@@ -43,6 +43,7 @@ public class FirebaseHelper {
     private final String TIME_CHILD = "time";
     private final String USERS_CHILD = "users";
     private final String NAME_CHILD = "name";
+    private final String PROFILE_PIC_URL_CHILD = "profile_pic_url";
     private final String STATISTICS_CHILD = "statistics";
     private final String TOTAL_RUNNING_TIME_CHILD = "total_running_time";
     private final String TOTAL_RUNNING_DISTANCE_CHILD = "total_running_distance";
@@ -93,6 +94,7 @@ public class FirebaseHelper {
         READY("readyStatus"),
         FINISH("finishStatus"),
         ABORT("abortStatus"),
+        IN_ROOM("in room"),
         DATA("checkpoints");
 
         private final String nodeName;
@@ -177,8 +179,17 @@ public class FirebaseHelper {
                         Message.MessageType type = children.child(TYPE_CHILD).getValue(Message.MessageType.class);
                         String messageText = children.child(MESSAGE_CHILD).getValue(String.class);
                         Date time = children.child(TIME_CHILD).getValue(Date.class);
-                        int firstValue = children.child(FIRST_VALUE_CHILD).getValue(Integer.class);
-                        int secondValue = children.child(SECOND_VALUE_CHILD).getValue(Integer.class);
+
+                        int firstValue = 0;
+                        if(children.child(FIRST_VALUE_CHILD).getValue() != null){
+                            firstValue = children.child(FIRST_VALUE_CHILD).getValue(Integer.class);
+                        }
+
+                        int secondValue = 0;
+                        if(children.child(SECOND_VALUE_CHILD).getValue() != null) {
+                            secondValue = children.child(SECOND_VALUE_CHILD).getValue(Integer.class);
+                        }
+
                         Challenge.Type challengeType = children.child(CHALLENGE_TYPE_CHILD).getValue(Challenge.Type.class);
                         Message message = new Message(from, forUser, sender, addressee, type, messageText, time, firstValue, secondValue, challengeType);
 
@@ -245,6 +256,50 @@ public class FirebaseHelper {
 
             }
         });
+    }
+
+    /**
+     * Allows to set (or update if already present) the url of your profile picture
+     *
+     * @param userEmail the email of the user whom to set the url
+     * @param url
+     */
+    public void setOrUpdateProfilePicUrl(String userEmail, final String url) {
+        if (userEmail == null || userEmail.equals("") || url == null || url.equals("")) {
+            throw new IllegalArgumentException();
+        }
+
+        final DatabaseReference user = databaseReference.child(USERS_CHILD).child(getFireBaseMail(userEmail));
+        user.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    user.child(PROFILE_PIC_URL_CHILD).setValue(url);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    /**
+     * Allows to get the url of other users profile picture
+     *
+     * @param userEmail email of the user whom to get the profile picture url
+     * @param listener handles the result, the dataSnapshot contains the node with the url
+     */
+    public void getProfilePicUrl(String userEmail, ValueEventListener listener) {
+        if (userEmail == null || userEmail.equals("") || listener == null) {
+            throw new IllegalArgumentException();
+        }
+
+        databaseReference.child(USERS_CHILD)
+                .child(getFireBaseMail(userEmail))
+                .child(PROFILE_PIC_URL_CHILD)
+                .addListenerForSingleValueEvent(listener);
     }
 
     public void updateUserStatistics(String email, final long newTime, final float newDistance, final RunType runType) throws IllegalArgumentException {
@@ -372,6 +427,49 @@ public class FirebaseHelper {
     }
 
     /**
+     * Sets the available status of a user to true or false. An user with available status set to false cannot be
+     * be challenged.
+     *
+     * @param userMail      mail of the user of which to set the availability status
+     * @param status        value of the status
+     */
+    public void setUserAvailable(String userMail, boolean emailInFirebaseFormat, boolean status) {
+
+        if (userMail == null) {
+            throw new NullPointerException("User mail can't be null");
+        } else if (userMail.isEmpty()) {
+            throw new IllegalArgumentException("User mail can't be empty");
+        }
+
+        String email = emailInFirebaseFormat?userMail:getFireBaseMail(userMail);
+
+        databaseReference.child(USERS_CHILD)
+                .child(email).child("available").setValue(status);
+    }
+
+    /**
+     * Attach a single ValueEventListener to the available status node of an user, to check for it. The listener is
+     * passed as a parameter and is responsible for handling the node value.
+     *
+     * @param userMail      mail of the user of which to listen the availability status
+     * @param listener      listener to attach
+     */
+    public void listenUserAvailability(String userMail, boolean emailInFirebaseFormat, ValueEventListener listener) {
+
+        if (userMail == null || listener == null) {
+            throw new NullPointerException("User mail or the listener can't be null");
+        } else if (userMail.isEmpty()) {
+            throw new IllegalArgumentException("User mail can't be empty");
+        }
+
+        String email = emailInFirebaseFormat?userMail:getFireBaseMail(userMail);
+
+        databaseReference.child(USERS_CHILD)
+                .child(email).child("available")
+                .addListenerForSingleValueEvent(listener);
+    }
+
+    /**
      * Converts the email to allow the firebase storage
      *
      * @return email for firebase
@@ -401,9 +499,11 @@ public class FirebaseHelper {
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(challengeNodeType.READY.toString()).setValue(false);
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(challengeNodeType.FINISH.toString()).setValue(false);
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(challengeNodeType.ABORT.toString()).setValue(false);
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user1).child(challengeNodeType.IN_ROOM.toString()).setValue(false);
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(challengeNodeType.READY.toString()).setValue(false);
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(challengeNodeType.FINISH.toString()).setValue(false);
         databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(challengeNodeType.ABORT.toString()).setValue(false);
+        databaseReference.child(CHALLENGES_CHILD).child(challengeName).child(user2).child(challengeNodeType.IN_ROOM.toString()).setValue(false);
     }
 
     /**

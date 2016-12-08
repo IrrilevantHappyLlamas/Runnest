@@ -9,6 +9,6 @@ public class MapHandlerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void constructorMustThrowExceptionWithNullArguments(){
-        new MapHandler(null);
+        new MapHandler(null, 0);
     }
 }

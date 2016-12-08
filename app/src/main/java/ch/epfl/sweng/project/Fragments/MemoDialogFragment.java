@@ -1,5 +1,6 @@
 package ch.epfl.sweng.project.Fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -29,6 +30,7 @@ public class MemoDialogFragment extends DialogFragment {
     private Challenge.Type type;
     private Date scheduledDate;
     private String sender;
+    private String opponentEmail;
     private TextView typeTxt;
     private TextView dateDescriptionTxt;
     private TextView dateTxt;
@@ -41,6 +43,7 @@ public class MemoDialogFragment extends DialogFragment {
     public interface MemoDialogListener {
         void onMemoDialogCloseClick(DialogFragment dialog);
         void onMemoDialogDeleteClick(DialogFragment dialog);
+        void onMemoDialogChallengeClick(DialogFragment dialog);
     }
 
     MemoDialogFragment.MemoDialogListener mListener;
@@ -54,7 +57,7 @@ public class MemoDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.fragment_memo_dialog, null);
+        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.fragment_memo_dialog, null);
 
         builder.setCancelable(false);
         // Inflate and set the layout for the dialog
@@ -71,6 +74,11 @@ public class MemoDialogFragment extends DialogFragment {
             public void onClick(DialogInterface dialog, int id) {
 
                         mListener.onMemoDialogDeleteClick(MemoDialogFragment.this);
+            }
+                }).setPositiveButton("Challenge", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                //Start the challenge
+                        mListener.onMemoDialogChallengeClick(MemoDialogFragment.this);
             }
         });
 
@@ -107,6 +115,7 @@ public class MemoDialogFragment extends DialogFragment {
         type = (Challenge.Type)args.get("type");
         scheduledDate = (Date) args.get("date");
         sender = args.getString("sender");
+        opponentEmail = args.getString("opponentEmail");
     }
 
 
@@ -136,5 +145,13 @@ public class MemoDialogFragment extends DialogFragment {
 
     public Date getScheduledDate() {
         return scheduledDate;
+    }
+
+    public String getOpponentEmail() {
+        return opponentEmail;
+    }
+
+    public String getSender() {
+        return sender;
     }
 }

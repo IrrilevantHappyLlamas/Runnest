@@ -32,7 +32,7 @@ public class UserTest {
         Assert.assertEquals("Test User", testUser.getEmail());
         Assert.assertEquals("Test User", testUser.getFamilyName());
         Assert.assertEquals("Test User", testUser.getName());
-        Assert.assertEquals("", testUser.getPhotoUrl());
+        Assert.assertEquals("test", testUser.getPhotoUrl());
         Assert.assertEquals("6VauzC82b6YoNfRSo2ft4WFqoCu1", testUser.getFirebaseId());
         Assert.assertTrue(testUser.isLoggedIn());
 

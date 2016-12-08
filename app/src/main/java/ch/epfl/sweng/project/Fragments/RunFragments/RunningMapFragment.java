@@ -51,6 +51,8 @@ public class RunningMapFragment extends RunFragment {
 
     private RunningMapFragmentInteractionListener mListener = null;
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -114,10 +116,8 @@ public class RunningMapFragment extends RunFragment {
 
         // Live stats
         mChronometer = (Chronometer) view.findViewById(R.id.chronometer);
-        mChronometer.setVisibility(View.INVISIBLE);
 
         mDistance = (TextView) view.findViewById(R.id.distance);
-        mDistance.setVisibility(View.INVISIBLE);
     }
 
 
@@ -128,12 +128,18 @@ public class RunningMapFragment extends RunFragment {
 
         if(checkPermission() && mLocationSettingsHandler.checkLocationSettings()) {
 
+            // Set user as unavailable
+            new FirebaseHelper().
+                    setUserAvailable(((AppRunnest) getActivity().getApplication()).getUser().getEmail(), false, false);
+
             // initialize new Run
             @SuppressLint("SimpleDateFormat")
             SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy HH:mm:ss");
             String runName = dateFormat.format(new Date());
             mRun = new Run(runName);
             super.startRun();
+            // Prevent sleeping
+            getView().setKeepScreenOn(true);
 
             mStartUpdatesButton.setVisibility(View.INVISIBLE);
             mStopUpdatesButton.setVisibility(View.VISIBLE);
@@ -151,6 +157,8 @@ public class RunningMapFragment extends RunFragment {
     private void stopButtonPressed() {
         if (mRequestingLocationUpdates) {
             super.stopRun();
+            // Allow sleeping
+            getView().setKeepScreenOn(false);
 
             setButtonsEnabledState();
             mChronometer.stop();
@@ -162,10 +170,17 @@ public class RunningMapFragment extends RunFragment {
 
             FirebaseHelper firebaseHelper = new FirebaseHelper();
 
+            // Set user as available
+            firebaseHelper.
+                    setUserAvailable(((AppRunnest) getActivity().getApplication()).getUser().getEmail(), false, true);
+
             //update user statistics
             User currentUser = ((AppRunnest) getActivity().getApplication()).getUser();
             firebaseHelper.updateUserStatistics(currentUser.getEmail(), mRun.getDuration(),
                     mRun.getTrack().getDistance(), FirebaseHelper.RunType.SINGLE);
+
+            // upload database
+            ((AppRunnest)getActivity().getApplication()).launchDatabaseUpload();
 
             mListener.onRunningMapFragmentInteraction(new Run(mRun));
         }

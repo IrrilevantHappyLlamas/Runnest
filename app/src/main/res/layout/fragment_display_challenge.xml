@@ -1,58 +1,199 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="ch.epfl.sweng.project.Fragments.DisplayChallengeFragment">
+                tools:context="ch.epfl.sweng.project.Fragments.DisplayChallengeFragment">
 
-    <com.google.android.gms.maps.MapView
-        android:layout_height="150dp"
-        android:id="@+id/myMapView"
-        android:layout_gravity="top|left"
-        android:layout_width="150dp"/>
-
-    <TableLayout
-        android:layout_height="230dp"
-        android:id="@+id/myTable"
-        android:orientation="horizontal"
-        android:layout_gravity="bottom|left"
-        android:layout_width="150dp">
-
-    </TableLayout>
-
-    <TableLayout
-        android:layout_width="150dp"
-        android:layout_height="230dp"
-        android:id="@+id/myOpponentTable"
-        android:orientation="horizontal"
-        android:layout_gravity="bottom|right">
-
-    </TableLayout>
-
-
-    <Button
-        android:text="@string/go_to_run_history"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/go_to_run_history"
-        android:layout_gravity="bottom|left|center_horizontal"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="20dp"
-        tools:ignore="RtlHardcoded"/>
+        android:layout_marginBottom="55dp"
+        >
 
-    <Button
-        android:text="@string/delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/deleteRunButton"
-        android:layout_gravity="bottom|right|center_horizontal"
-        android:layout_marginBottom="20dp"
-        android:layout_marginRight="20dp"
-        tools:ignore="RtlHardcoded"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/challenge_type"
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textSize="20sp"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentStart="false"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/colorLightGrey"
+            tools:ignore="UnusedAttribute"/>
 
-    <com.google.android.gms.maps.MapView
-        android:layout_height="150dp"
-        android:id="@+id/myOpponentMapView"
-        android:layout_gravity="top|right"
-        android:layout_width="150dp"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="215dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginStart="5dp"
+            android:id="@+id/user_layout">
 
-</FrameLayout>
+            <com.google.android.gms.maps.MapView
+                android:layout_height="170dp"
+                android:id="@+id/user_map"
+                android:layout_gravity="top"
+                android:layout_width="match_parent"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="3dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginEnd="3dp"
+                android:layout_marginStart="3dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/user_name"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="false"
+                android:layout_alignParentLeft="false"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:layout_marginBottom="18dp"
+                android:layout_centerHorizontal="true"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/user_result"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="false"
+                android:textSize="18sp"
+                android:layout_marginBottom="15dp"
+                android:textStyle="normal|bold"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:paddingStart="15dp"
+                android:paddingLeft="15dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/user_performance"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:textSize="18sp"
+                android:paddingRight="15dp"
+                android:layout_marginBottom="15dp"
+                android:paddingEnd="15dp"
+                android:textStyle="normal|bold"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="215dp"
+            android:layout_gravity="bottom"
+            android:id="@+id/opponent_layout"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="55dp">
+
+            <com.google.android.gms.maps.MapView
+                android:layout_height="170dp"
+                android:id="@+id/opponent_map"
+                android:layout_gravity="bottom"
+                android:layout_width="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginBottom="3dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="3dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/opponent_name"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="false"
+                android:layout_alignParentLeft="false"
+                android:textSize="14sp"
+                android:layout_marginTop="18dp"
+                android:layout_centerHorizontal="true"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/opponent_result"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="false"
+                android:textSize="18sp"
+                android:layout_marginTop="15dp"
+                android:textStyle="normal|bold"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:paddingLeft="15dp"
+                android:paddingStart="15dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/opponent_performance"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:textSize="18sp"
+                android:layout_marginTop="15dp"
+                android:paddingRight="15dp"
+                android:paddingEnd="15dp"
+                android:textStyle="normal|bold"/>
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="8dp"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:text="@string/history"
+            android:layout_width="130dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_history"
+            android:layout_gravity="bottom|left|center_horizontal|start"
+            android:layout_marginLeft="40dp"
+            android:background="@drawable/button_shape_green"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentLeft="false"
+            android:layout_marginEnd="20dp"
+            android:layout_weight="1"
+            android:layout_alignParentStart="true"/>
+
+        <Button
+            android:text="@string/delete"
+            android:layout_width="130dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_delete"
+            android:layout_gravity="bottom|right|center_horizontal|end"
+            android:background="@drawable/button_shape_green"
+            android:layout_alignParentRight="false"
+            android:layout_alignParentEnd="false"
+            android:layout_marginEnd="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_weight="1"
+            android:layout_alignParentBottom="false"/>
+    </LinearLayout>
+
+</RelativeLayout>
+

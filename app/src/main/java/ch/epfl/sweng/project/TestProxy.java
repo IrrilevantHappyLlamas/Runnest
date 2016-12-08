@@ -39,4 +39,9 @@ public class TestProxy implements ChallengeProxy {
     public void abortChallenge() {
 
     }
+
+    @Override
+    public void deleteChallenge() {
+
+    }
 }

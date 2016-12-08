@@ -162,6 +162,14 @@ public class FirebaseHelperTest {
                         Assert.assertFalse((boolean)user1.child(FirebaseHelper.challengeNodeType.FINISH.toString()).getValue());
                         Assert.assertTrue(user2.hasChild(FirebaseHelper.challengeNodeType.FINISH.toString()));
                         Assert.assertFalse((boolean)user2.child(FirebaseHelper.challengeNodeType.FINISH.toString()).getValue());
+                        Assert.assertTrue(user1.hasChild(FirebaseHelper.challengeNodeType.ABORT.toString()));
+                        Assert.assertFalse((boolean)user1.child(FirebaseHelper.challengeNodeType.ABORT.toString()).getValue());
+                        Assert.assertTrue(user2.hasChild(FirebaseHelper.challengeNodeType.ABORT.toString()));
+                        Assert.assertFalse((boolean)user2.child(FirebaseHelper.challengeNodeType.ABORT.toString()).getValue());
+                        Assert.assertTrue(user1.hasChild(FirebaseHelper.challengeNodeType.IN_ROOM.toString()));
+                        Assert.assertFalse((boolean)user1.child(FirebaseHelper.challengeNodeType.IN_ROOM.toString()).getValue());
+                        Assert.assertTrue(user2.hasChild(FirebaseHelper.challengeNodeType.IN_ROOM.toString()));
+                        Assert.assertFalse((boolean)user2.child(FirebaseHelper.challengeNodeType.IN_ROOM.toString()).getValue());
                     }
 
                     @Override
@@ -296,6 +304,163 @@ public class FirebaseHelperTest {
         firebaseHelper.getDatabase().child("users").child("uselessUser").removeValue();
         firebaseHelper.addOrUpdateUser("uselessUser", "uselessMail");
         firebaseHelper.getDatabase().child("users").child("uselessUser").removeValue();
+    }
+
+    @Test
+    public void setUserAvailableCorrectlySetsStatus() {
+        firebaseHelper.setUserAvailable("Test User", false, true);
+        firebaseHelper.getDatabase().child("users").child("Test User")
+                .child("available")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Assert.assertTrue(dataSnapshot.exists());
+                        Assert.assertTrue((boolean)dataSnapshot.getValue());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void setUserAvailableThrowsNullPointer() {
+        firebaseHelper.setUserAvailable(null , false, true);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void setUserAvailableThrowsIllegalArgument() {
+        firebaseHelper.setUserAvailable("" ,false, true);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void listenUserAvailabilityThrowsNullPointer() {
+        firebaseHelper.listenUserAvailability("Test User", false, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void listenUserAvailabilityThrowsIllegalArgument() {
+        firebaseHelper.listenUserAvailability("" , false, new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    @Test
+    public void listenUserAvailabilityCorrectlyAttachesListener() {
+        firebaseHelper.setUserAvailable("Test User", false, true);
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Assert.assertTrue(dataSnapshot.exists());
+                Assert.assertTrue((boolean)dataSnapshot.getValue());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        firebaseHelper.listenUserAvailability("Test User", false,  listener);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void setOrUpdateProfilePicUrlThrowsExceptionWithNullEmail() {
+        String email = "Test User";
+        firebaseHelper.addOrUpdateUser("Test User", email);
+        firebaseHelper.setOrUpdateProfilePicUrl(null, "http://url.test.ch");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void setOrUpdateProfilePicUrlThrowsExceptionWithEmptyEmail() {
+        String email = "Test User";
+        firebaseHelper.addOrUpdateUser("Test User", email);
+        firebaseHelper.setOrUpdateProfilePicUrl("", "http://url.test.ch");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void setOrUpdateProfilePicUrlThrowsExceptionWithNullUrl() {
+        String email = "Test User";
+        firebaseHelper.addOrUpdateUser("Test User", email);
+        firebaseHelper.setOrUpdateProfilePicUrl(email, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void setOrUpdateProfilePicUrlThrowsExceptionWithEmptyUrl() {
+        String email = "Test User";
+        firebaseHelper.addOrUpdateUser("Test User", email);
+        firebaseHelper.setOrUpdateProfilePicUrl(email, "");
+    }
+
+    @Test
+    public void canSetOrUpdateProfilePicUrl() {
+        String email = "Test User";
+        firebaseHelper.addOrUpdateUser("Test User", email);
+        firebaseHelper.setOrUpdateProfilePicUrl(email, "http://url.test.ch");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getProfilePicUrlThrowsExceptionWithNullEmail() {
+        String email = "Test User";
+        firebaseHelper.addOrUpdateUser("Test User", email);
+        firebaseHelper.setOrUpdateProfilePicUrl(email, "http://url.test.ch");
+        firebaseHelper.getProfilePicUrl(null, new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {}
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getProfilePicUrlThrowsExceptionWithEmptyEmail() {
+        String email = "Test User";
+        firebaseHelper.addOrUpdateUser("Test User", email);
+        firebaseHelper.setOrUpdateProfilePicUrl(email, "http://url.test.ch");
+        firebaseHelper.getProfilePicUrl("", new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {}
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getProfilePicUrlThrowsExceptionWithNullListener() {
+        String email = "Test User";
+        firebaseHelper.addOrUpdateUser("Test User", email);
+        firebaseHelper.setOrUpdateProfilePicUrl(email, "http://url.test.ch");
+        firebaseHelper.getProfilePicUrl(email, null);
+    }
+
+    @Test
+    public void canGetProfilePicUrl() {
+        String email = "Test User";
+        final String url = "http://url.test.ch";
+        firebaseHelper.addOrUpdateUser("Test User", email);
+        firebaseHelper.setOrUpdateProfilePicUrl(email, url);
+        firebaseHelper.getProfilePicUrl(email, new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String fetchedUrl = (String) dataSnapshot.getValue();
+                Assert.assertTrue(url.equals(fetchedUrl));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     /*

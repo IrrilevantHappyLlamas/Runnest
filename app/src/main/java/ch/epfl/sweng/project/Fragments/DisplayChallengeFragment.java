@@ -1,37 +1,27 @@
 package ch.epfl.sweng.project.Fragments;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
+import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.MapStyleOptions;
+
+import java.util.Locale;
 
 import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Model.Challenge;
-import ch.epfl.sweng.project.Model.CheckPoint;
-import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.Track;
-
-import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.PolylineOptions;
-
-import java.util.List;
+import ch.epfl.sweng.project.UtilsUI;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,11 +39,8 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
     private MapView mMapView = null;
     private MapView mOpponentMapView = null;
 
-    private GoogleMap mGoogleMap = null;
-    private GoogleMap mOpponentGoogleMap = null;
-
-    private Track mTrack = null;
-    private Track mOpponentTrack = null;
+    private int userColor;
+    private int opponentColor;
 
     private MapType mCurrentMapType = null;
 
@@ -65,10 +52,7 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
         return fragment;
     }
 
-    private enum MapType {
-        MyMap,
-        MyOpponentMap
-    }
+    private enum MapType {USER_MAP, OPPONENT_MAP}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,94 +63,145 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_display_challenge, container, false);
 
         if (mChallengeToBeDisplayed != null) {
 
-            mTrack = mChallengeToBeDisplayed.getMyRun().getTrack();
-            mOpponentTrack = mChallengeToBeDisplayed.getOpponentRun().getTrack();
 
-            mCurrentMapType = MapType.MyMap;
-            mMapView = (MapView) view.findViewById(R.id.myMapView);
-            mMapView.onCreate(savedInstanceState);
-            mMapView.getMapAsync(this);
-
-            mCurrentMapType = MapType.MyOpponentMap;
-            mOpponentMapView = (MapView) view.findViewById(R.id.myOpponentMapView);
-            mOpponentMapView.onCreate(savedInstanceState);
-            mOpponentMapView.getMapAsync(this);
-
-            displayRunOnView(mChallengeToBeDisplayed.getMyRun(), view.findViewById(R.id.myTable));
-            displayRunOnView(mChallengeToBeDisplayed.getOpponentRun(), view.findViewById(R.id.myOpponentTable));
-
-            Button button = (Button) view.findViewById(R.id.go_to_run_history);
-
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    if (mListener != null) {
-                        mListener.onDisplayChallengeFragmentInteraction();
-                    }
-                }
-            });
-
-            final DBHelper dbHelper = new DBHelper(this.getContext());
-
-            Button deleteRunButton = (Button) view.findViewById(R.id.deleteRunButton);
-            deleteRunButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mListener != null) {
-                        dbHelper.delete(mChallengeToBeDisplayed);
-                        mListener.onDisplayChallengeFragmentInteraction();
-                    }
-                }
-            });
+            setupMapUI(view, savedInstanceState);
+            setupTextUI(view);
         }
+
+        setupButtonUI(view);
 
         return view;
     }
 
-    private void displayRunOnView(Run run, View view){
+    private void setupTextUI(View view) {
 
-        Track track = run.getTrack();
-        TableLayout table = (TableLayout) view;
+        // Extract TextView
+        TextView challengeType = ((TextView)view.findViewById(R.id.challenge_type));
+        TextView userName = (TextView)view.findViewById(R.id.user_name);
+        TextView userPerformance = (TextView)view.findViewById(R.id.user_performance);
+        TextView userResult = (TextView)view.findViewById(R.id.user_result);
+        TextView opponentName = (TextView)view.findViewById(R.id.opponent_name);
+        TextView opponentPerformance = (TextView)view.findViewById(R.id.opponent_performance);
+        TextView opponentResult = (TextView)view.findViewById(R.id.opponent_result);
 
-        // Name Row
-        TableRow firstRow = new TableRow(this.getContext());
-        createRowElement(firstRow, "Name :");
-        createRowElement(firstRow, run.getName());
-        table.addView(firstRow);
+        // Set names
+        userName.setText(mChallengeToBeDisplayed.getMyRun().getName());
+        opponentName.setText(mChallengeToBeDisplayed.getOpponentRun().getName());
 
-        // Distance Row
-        TableRow secondRow = new TableRow(this.getContext());
-        createRowElement(secondRow, "Distance :");
-        createRowElement(secondRow,String.valueOf((int)track.getDistance()) + " m");
-        table.addView(secondRow);
+        // Set title and performances
+        switch (mChallengeToBeDisplayed.getType()) {
+            case TIME:
+                String timeGoal = UtilsUI.timeToString((int)mChallengeToBeDisplayed.getGoal()/1000, false);
+                challengeType.setText(getString(R.string.time_challenge) +
+                        getString(R.string.white_space) + timeGoal);
 
-        // Duration Row
-        TableRow thirdRow = new TableRow(this.getContext());
-        createRowElement(thirdRow, "Duration :");
-        long minutes = run.getDuration() / 60;
-        long seconds = run.getDuration() % 60;
-        createRowElement(thirdRow, minutes + "' " + seconds + "''");
-        table.addView(thirdRow);
+                double user_dist = mChallengeToBeDisplayed.getMyRun().getTrack().getDistance()/1000;
+                userPerformance.setText(String.format(Locale.getDefault(), "%.2f", user_dist) +
+                        getString(R.string.white_space) + getString(R.string.km));
+
+                double opponent_dist = mChallengeToBeDisplayed.getOpponentRun().getTrack().getDistance()/1000;
+                opponentPerformance.setText(String.format(Locale.getDefault(), "%.2f", opponent_dist) +
+                        getString(R.string.white_space) + getString(R.string.km));
+
+                break;
+            case DISTANCE:
+                String distanceGoal = String.format(Locale.getDefault(), "%.2f", mChallengeToBeDisplayed.getGoal());
+                challengeType.setText(getString(R.string.distance_challenge) + getString(R.string.white_space) +
+                        distanceGoal + getString(R.string.white_space) + getString(R.string.km));
+
+                int userTime = (int)mChallengeToBeDisplayed.getMyRun().getDuration();
+
+                userPerformance.setText(UtilsUI.timeToString(userTime, true));
+
+                int opponentTime = (int)mChallengeToBeDisplayed.getOpponentRun().getDuration();
+                opponentPerformance.setText(UtilsUI.timeToString(opponentTime, true));
+
+                break;
+        }
+        // Set Text colors and results
+        switch (mChallengeToBeDisplayed.getResult()) {
+            case WON:
+                userResult.setText(getString(R.string.won_caps));
+                opponentResult.setText(getString(R.string.lost_caps));
+
+                userColor = ContextCompat.getColor(getContext(), R.color.wonColor);
+                opponentColor = ContextCompat.getColor(getContext(), R.color.lostColor);
+                break;
+            case LOST:
+                userResult.setText(getString(R.string.lost_caps));
+                opponentResult.setText(getString(R.string.won_caps));
+
+                userColor = ContextCompat.getColor(getContext(), R.color.lostColor);
+                opponentColor = ContextCompat.getColor(getContext(), R.color.wonColor);
+                break;
+            case ABORTED_BY_ME:
+                userResult.setText(getString(R.string.left_caps));
+                opponentResult.setText(getString(R.string.won_caps));
+
+                userColor = ContextCompat.getColor(getContext(), R.color.lostColor);
+                opponentColor = ContextCompat.getColor(getContext(), R.color.wonColor);
+                break;
+            case ABORTED_BY_OTHER:
+                userResult.setText(getString(R.string.won_caps));
+                opponentResult.setText(getString(R.string.left_caps));
+
+                userColor = ContextCompat.getColor(getContext(), R.color.wonColor);
+                opponentColor = ContextCompat.getColor(getContext(), R.color.lostColor);
+                break;
+        }
+
+        setRunnerTextColor(userName, userPerformance, userResult, userColor);
+        setRunnerTextColor(opponentName, opponentPerformance, opponentResult, opponentColor);
     }
 
-    private void createRowElement(TableRow row, String text){
-
-        TableRow.LayoutParams layoutParams = new TableRow.LayoutParams();
-        layoutParams.setMargins(10, 50, 20, 10);
-        TextView element = new TextView(this.getContext());
-        element.setText(text);
-        element.setTextSize(20);
-        element.setLayoutParams(layoutParams);
-
-        row.addView(element);
+    private void setRunnerTextColor(TextView t1, TextView t2, TextView t3, int color) {
+        t1.setTextColor(color);
+        t2.setTextColor(color);
+        t3.setTextColor(color);
     }
+
+
+    private void setupButtonUI(View view) {
+        Button runHistoryButton = (Button) view.findViewById(R.id.button_history);
+        runHistoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (mListener != null) {
+                    mListener.onDisplayChallengeFragmentInteraction();
+                }
+            }
+        });
+
+        final DBHelper dbHelper = new DBHelper(this.getContext());
+
+        Button deleteRunButton = (Button) view.findViewById(R.id.button_delete);
+        deleteRunButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    dbHelper.delete(mChallengeToBeDisplayed);
+                    mListener.onDisplayChallengeFragmentInteraction();
+                }
+            }
+        });
+    }
+
+    private void setupMapUI(View view, Bundle savedInstanceState) {
+        mCurrentMapType = MapType.USER_MAP;
+        mMapView = (MapView) view.findViewById(R.id.user_map);
+        mMapView.onCreate(savedInstanceState);
+        mMapView.getMapAsync(this);
+
+        mOpponentMapView = (MapView) view.findViewById(R.id.opponent_map);
+        mOpponentMapView.onCreate(savedInstanceState);
+    }
+
     /**
      * Called when the <code>GoogleMap</code> is ready. Initialize a MapHandler.
      *
@@ -174,60 +209,29 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        MapStyleOptions mapStyle = MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.map_style_no_label);
 
         switch(mCurrentMapType) {
 
-            case MyMap:
-                mGoogleMap = googleMap;
-                displayTrack(mTrack, mGoogleMap);
-                displayTrackSetupUI(mGoogleMap);
+            case USER_MAP:
+                Track userTrack = mChallengeToBeDisplayed.getMyRun().getTrack();
+                googleMap.setMapStyle(mapStyle);
+
+                UtilsUI.recapDisplayTrack(userTrack, googleMap, userColor);
+                UtilsUI.recapDisplayTrackSetupUI(googleMap);
+
+                mCurrentMapType = MapType.OPPONENT_MAP;
+                mOpponentMapView.getMapAsync(this);
                 break;
-            case MyOpponentMap:
-                mOpponentGoogleMap = googleMap;
-                displayTrack(mOpponentTrack, mOpponentGoogleMap);
-                displayTrackSetupUI(mOpponentGoogleMap);
+            case OPPONENT_MAP:
+                Track opponentTrack = mChallengeToBeDisplayed.getOpponentRun().getTrack();
+                googleMap.setMapStyle(mapStyle);
+
+                UtilsUI.recapDisplayTrack(opponentTrack, googleMap, opponentColor);
+                UtilsUI.recapDisplayTrackSetupUI(googleMap);
                 break;
             default:
                 throw new IllegalStateException("unknown map type");
-        }
-    }
-
-    private void displayTrackSetupUI(GoogleMap googleMap) {
-        googleMap.setBuildingsEnabled(false);
-        googleMap.setIndoorEnabled(false);
-        googleMap.setTrafficEnabled(false);
-
-        UiSettings uiSettings = googleMap.getUiSettings();
-
-        uiSettings.setCompassEnabled(false);
-        uiSettings.setIndoorLevelPickerEnabled(false);
-        uiSettings.setMapToolbarEnabled(false);
-        uiSettings.setZoomControlsEnabled(false);
-        uiSettings.setMyLocationButtonEnabled(false);
-    }
-
-    private void displayTrack(Track track, GoogleMap googleMap) {
-
-        if(track.getTotalCheckPoints() != 0) {
-
-            // Build polyline and LatLngBounds
-            PolylineOptions polylineOptions = new PolylineOptions();
-            List<CheckPoint> trackPoints = track.getCheckpoints();
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-
-            for (CheckPoint checkPoint : trackPoints) {
-                LatLng latLng = new LatLng(checkPoint.getLatitude(), checkPoint.getLongitude());
-                polylineOptions.add(latLng);
-                builder.include(latLng);
-            }
-
-            googleMap.addPolyline(polylineOptions.color(Color.BLUE));
-
-            // Center camera on past run
-            LatLngBounds bounds = builder.build();
-            int padding = 40;
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-            googleMap.animateCamera(cameraUpdate);
         }
     }
 

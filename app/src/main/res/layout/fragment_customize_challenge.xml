@@ -13,7 +13,7 @@
         android:paddingTop="10dp">
 
         <TextView
-            android:text="Prepare your challenge"
+            android:text="@string/prepare_your_challenge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/challenge_dlg_title"
@@ -24,7 +24,7 @@
             android:paddingBottom="20dp"/>
 
         <TextView
-            android:text="Competition based on"
+            android:text="@string/competition_based_on"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textView4"
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content">
 
             <Button
-                android:text="Distance"
+                android:text="@string/distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/btn_distance"
@@ -47,7 +47,7 @@
                 android:layout_marginRight="30dp"/>
 
             <Button
-                android:text="Time"
+                android:text="@string/time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/btn_time"
@@ -57,7 +57,7 @@
         </LinearLayout>
 
         <TextView
-            android:text="Set the ..."
+            android:text="@string/set_the"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/txt_set_parameter"
@@ -80,7 +80,7 @@
                 android:layout_marginLeft="20dp"/>
 
             <TextView
-                android:text="h"
+                android:text="@string/h"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:id="@+id/txt_first_unit"
@@ -94,7 +94,7 @@
                 android:layout_weight="1"/>
 
             <TextView
-                android:text="min"
+                android:text="@string/min"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:id="@+id/txt_second_unit"

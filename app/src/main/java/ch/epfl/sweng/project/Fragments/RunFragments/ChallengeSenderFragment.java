@@ -90,6 +90,7 @@ public class ChallengeSenderFragment extends RunFragment {
     public void onLocationChanged(Location location) {
         super.onLocationChanged(location);
         ((ChallengeActivity)getActivity()).getChallengeProxy().putData(new CheckPoint(location));
+        ((ChallengeActivity)getActivity()).updateIsWinning();
     }
 
     /**

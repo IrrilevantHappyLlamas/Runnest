@@ -1,38 +1,26 @@
 package ch.epfl.sweng.project.Fragments;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
-import ch.epfl.sweng.project.AppRunnest;
-import ch.epfl.sweng.project.Database.DBHelper;
-import ch.epfl.sweng.project.Firebase.FirebaseHelper;
-import ch.epfl.sweng.project.Model.Run;
-import ch.epfl.sweng.project.Model.Track;
-import ch.epfl.sweng.project.Model.CheckPoint;
-import ch.epfl.sweng.project.Model.User;
-
-
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.MapStyleOptions;
 
-import java.util.List;
+import java.util.Locale;
+
+import ch.epfl.sweng.project.Database.DBHelper;
+import ch.epfl.sweng.project.Model.Run;
+import ch.epfl.sweng.project.UtilsUI;
 
 public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
 
@@ -42,7 +30,6 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
 
     // Map
     private MapView mMapView = null;
-    private GoogleMap mGoogleMap = null;
 
     public static DisplayRunFragment newInstance(Run runToBeDisplayed) {
         DisplayRunFragment fragment = new DisplayRunFragment();
@@ -66,76 +53,73 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_display_run, container, false);
 
-        mMapView = (MapView) view.findViewById(R.id.mapView);
-        mMapView.onCreate(savedInstanceState);
-        mMapView.getMapAsync(this);
-
+        setupMapUI(view, savedInstanceState);
         if (mRunToBeDisplayed != null) {
-
-            Track track = mRunToBeDisplayed.getTrack();
-
-            TableLayout table = (TableLayout) view.findViewById(R.id.table);
-
-            // Name Row
-            TableRow firstRow = new TableRow(this.getContext());
-            createRowElement(firstRow, "Name :");
-            createRowElement(firstRow, mRunToBeDisplayed.getName());
-            table.addView(firstRow);
-
-            // Distance Row
-            TableRow secondRow = new TableRow(this.getContext());
-            createRowElement(secondRow, "Distance :");
-            createRowElement(secondRow,String.valueOf((int)track.getDistance()) + " m");
-            table.addView(secondRow);
-
-            // Duration Row
-            TableRow thirdRow = new TableRow(this.getContext());
-            createRowElement(thirdRow, "Duration :");
-            long minutes = mRunToBeDisplayed.getDuration() / 60;
-            long seconds = mRunToBeDisplayed.getDuration() % 60;
-            createRowElement(thirdRow, minutes + "' " + seconds + "''");
-            table.addView(thirdRow);
-
-            Button button = (Button) view.findViewById(R.id.go_to_run_history);
-
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    if (mListener != null) {
-                        mListener.onDisplayRunFragmentInteraction();
-                    }
-                }
-            });
-
-            final DBHelper dbHelper = new DBHelper(this.getContext());
-
-            Button deleteRunButton = (Button) view.findViewById(R.id.deleteRunButton);
-            deleteRunButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mListener != null) {
-                        dbHelper.delete(mRunToBeDisplayed);
-                        mListener.onDisplayRunFragmentInteraction();
-                    }
-                }
-            });
+            setupTextUI(view);
         }
+        setupButtonUI(view);
 
         return view;
     }
 
-    private void createRowElement(TableRow row, String text){
-
-        TableRow.LayoutParams layoutParams = new TableRow.LayoutParams();
-        layoutParams.setMargins(10, 50, 20, 10);
-        TextView element = new TextView(this.getContext());
-        element.setText(text);
-        element.setTextSize(20);
-        element.setLayoutParams(layoutParams);
-
-        row.addView(element);
+    private void setupMapUI(View view, Bundle savedInstanceState) {
+        mMapView = (MapView) view.findViewById(R.id.mapView);
+        mMapView.onCreate(savedInstanceState);
+        mMapView.getMapAsync(this);
     }
+
+    private void setupTextUI(View view) {
+        String name = mRunToBeDisplayed.getName();
+        TextView challengeName = ((TextView)view.findViewById(R.id.challenge_name));
+        challengeName.setText(name);
+
+        int duration = (int)mRunToBeDisplayed.getDuration();
+        TextView viewDuration = ((TextView)view.findViewById(R.id.duration_value));
+        viewDuration.setText(UtilsUI.timeToString(duration, true));
+
+        double distance = mRunToBeDisplayed.getTrack().getDistance()/1000;
+        TextView viewDistance = ((TextView)view.findViewById(R.id.distance_value));
+        viewDistance.setText(String.format(Locale.getDefault(), "%.2f", distance) +
+                getString(R.string.white_space) + getString(R.string.km));
+
+        int avgPace;
+        if(distance == 0) {
+            avgPace = 0;
+        } else {
+            avgPace = (int)(duration/distance);
+        }
+        TextView viewAvgPace = ((TextView)view.findViewById(R.id.avg_pace_value));
+        viewAvgPace.setText(UtilsUI.timeToString(avgPace, false) +
+                getString(R.string.white_space) + getString(R.string.min_over_km));
+    }
+
+    private void setupButtonUI(View view) {
+        Button button = (Button) view.findViewById(R.id.button_history);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (mListener != null) {
+                    mListener.onDisplayRunFragmentInteraction();
+                }
+            }
+        });
+
+        final DBHelper dbHelper = new DBHelper(this.getContext());
+
+        Button deleteRunButton = (Button) view.findViewById(R.id.button_delete);
+        deleteRunButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    dbHelper.delete(mRunToBeDisplayed);
+                    mListener.onDisplayRunFragmentInteraction();
+                }
+            }
+        });
+    }
+
 
     /**
      * Called when the <code>GoogleMap</code> is ready. Initialize a MapHandler.
@@ -144,50 +128,12 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mGoogleMap = googleMap;
+        MapStyleOptions mapStyle = MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.map_style_no_label);
+        googleMap.setMapStyle(mapStyle);
 
-        displayTrackSetupUI();
-        displayTrack();
-    }
-
-    private void displayTrackSetupUI() {
-        mGoogleMap.setBuildingsEnabled(false);
-        mGoogleMap.setIndoorEnabled(false);
-        mGoogleMap.setTrafficEnabled(false);
-
-        UiSettings uiSettings = mGoogleMap.getUiSettings();
-
-        uiSettings.setCompassEnabled(false);
-        uiSettings.setIndoorLevelPickerEnabled(false);
-        uiSettings.setMapToolbarEnabled(false);
-        uiSettings.setZoomControlsEnabled(false);
-        uiSettings.setMyLocationButtonEnabled(false);
-    }
-
-    private void displayTrack() {
-
-        Track track = mRunToBeDisplayed.getTrack();
-        if(track.getTotalCheckPoints() != 0) {
-
-            // Build polyline and LatLngBounds
-            PolylineOptions polylineOptions = new PolylineOptions();
-            List<CheckPoint> trackPoints = track.getCheckpoints();
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-
-            for (CheckPoint checkPoint : trackPoints) {
-                LatLng latLng = new LatLng(checkPoint.getLatitude(), checkPoint.getLongitude());
-                polylineOptions.add(latLng);
-                builder.include(latLng);
-            }
-
-            mGoogleMap.addPolyline(polylineOptions.color(Color.BLUE));
-
-            // Center camera on past run
-            LatLngBounds bounds = builder.build();
-            int padding = 40;
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-            mGoogleMap.animateCamera(cameraUpdate);
-        }
+        UtilsUI.recapDisplayTrackSetupUI(googleMap);
+        UtilsUI.recapDisplayTrack(mRunToBeDisplayed.getTrack(), googleMap,
+                ContextCompat.getColor(getContext(), R.color.colorAccent));
     }
 
     @Override

@@ -28,12 +28,13 @@
     <string name="challenge">Challenge</string>
 
     <string name="delete">Delete</string>
-    <string name="go_to_run_history">GO TO RUN HISTORY</string>
+    <string name="history">History</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="waiting_opponent">Waiting for your opponent…</string>
     <string name="user_ready">YOU ARE READY!</string>
     <string name="opponent_ready">Your opponent is READY!</string>
+    <string name="opponent_in_room">Your opponent is warming up…</string>
     <string name="warning_missing_updates">Last update: 30 or more seconds ago!</string>
     <string name="who_runs_faster">Who runs faster?</string>
     <string name="login_app_image">login app image</string>
@@ -55,7 +56,8 @@
     <string name="schedule_request">Schedule Request</string>
     <string name="schedule_your_challenge">Schedule your challenge!</string>
     <string name="choose_the_challenge_type">Choose the challenge type</string>
-    <string name="distance">Distance</string>
+    <string name="distance_challenge">Distance Challenge:</string>
+    <string name="time_challenge">Time Challenge:</string>
     <string name="time">Time</string>
     <string name="choose_the_date">Choose the date!</string>
     <string name="choose_the_time">Choose the time!</string>
@@ -68,9 +70,28 @@
     <string name="sign_in">Sign in</string>
     <string name="min">min</string>
     <string name="_0">0</string>
-    <string name="_23_runs">23 runs</string>
+    <string name="_0_runs">0 runs</string>
     <string name="runnest_ihl">Runnest IHL</string>
-    <string name="challenges">challenges</string>
-    <string name="lost">lost</string>
-    <string name="won">won</string>
+    <string name="lost_caps">LOST</string>
+    <string name="won_caps">WON</string>
+    <string name="left_caps">LEFT</string>
+    <string name="average_pace">Average pace:</string>
+    <string name="distance">Distance:</string>
+    <string name="duration">Duration:</string>
+    <string name="min_over_km">min/km</string>
+    <string name="challenges">Challenges</string>
+    <string name="_0_challenges">0 challenges</string>
+    <string name="new_challenge">New challenge</string>
+    <string name="time_zero">00:00</string>
+    <string name="h">h</string>
+    <string name="zero_distance">0.00 km</string>
+    <string name="set_the">Set the …</string>
+    <string name="x_km">X km</string>
+    <string name="pre_goal">The first one to reach</string>
+    <string name="type">Type</string>
+    <string name="competition_based_on">Competition based on</string>
+    <string name="opponent_challenged_you_on_a_run_based_on">Opponent challenged you on a run based on:</string>
+    <string name="challenge_request">Challenge Request</string>
+    <string name="prepare_your_challenge">Prepare your challenge</string>
+    <string name="downloading_user_data">Downloading user data …</string>
 </resources>

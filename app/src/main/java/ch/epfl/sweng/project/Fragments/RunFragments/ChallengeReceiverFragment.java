@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.MapStyleOptions;
 
 import java.util.Locale;
 
@@ -53,12 +55,6 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
     private MapView mMapView = null;
     private MapHandler mMapHandler = null;
 
-    /*
-    public ChallengeReceiverFragment() {
-        // Required empty public constructor
-    }
-    */
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_challenge_receiver, container, false);
@@ -90,7 +86,7 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
 
     private void updateDisplayedDistance() {
 
-        double distanceToShow = mRun.getTrack().getDistance()/1000.0;
+        double distanceToShow = mRun.getTrack().getDistance()/1000;
 
         switch (((ChallengeActivity)getActivity()).getChallengeType()) {
             case TIME:
@@ -135,7 +131,10 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMapHandler = new MapHandler(googleMap);
+        MapStyleOptions mapStyle = MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.map_style_no_label);
+        googleMap.setMapStyle(mapStyle);
+
+        mMapHandler = new MapHandler(googleMap, ContextCompat.getColor(getContext(), R.color.colorAccent));
         mMapHandler.setupRunningMapUI();
     }
 

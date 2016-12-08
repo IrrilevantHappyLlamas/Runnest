@@ -1,24 +1,38 @@
 package ch.epfl.sweng.project.Fragments;
 
+import android.app.ActionBar;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import ch.epfl.sweng.project.Activities.SideBarActivity;
 import ch.epfl.sweng.project.AppRunnest;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
+import ch.epfl.sweng.project.Firebase.FirebaseProxy;
 import ch.epfl.sweng.project.Model.Message;
 
 /**
@@ -54,58 +68,39 @@ public class DisplayUserFragment extends Fragment {
                 displayFoundUser(view, user.getKey(), user.getValue());
             }
         } else {
-            displayFoundUser(view, null, null);
+            displayFoundUser(view, "No user found.", null);
         }
 
         return view;
     }
 
-    private void displayFoundUser(View view, final String name, final String email) {
-        //TODO: check arguments
+    private void displayFoundUser(final View view, final String name, final String email) {
+        if (view == null || name == null || name.equals("")) {
+            throw new IllegalArgumentException();
+        }
+
         TableLayout table = (TableLayout) view.findViewById(R.id.table);
         TableRow tableRow = new TableRow(this.getContext());
+        //tableRow.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        tableRow.setPadding(20, 20, 20, 5);
+
         TableRow.LayoutParams layoutParams = new TableRow.LayoutParams();
-        layoutParams.setMargins(10, 50, 20, 10);
+        layoutParams.setMargins(50, 40, 40, 40);
 
-        String text = "No user found.";
-        Boolean noUserFound = true;
-        if (name != null) {
-            text = name;
-            noUserFound = false;
-        }
+        TextView nameTextView = new TextView(this.getContext());
+        nameTextView.setText(name);
+        nameTextView.setTextSize(22);
+        nameTextView.setTextColor(getResources().getColor(R.color.cast_expanded_controller_text_color));
+        nameTextView.setLayoutParams(layoutParams);
+        tableRow.addView(nameTextView);
 
-        TextView nameAndEmailTextView = new TextView(this.getContext());
-        nameAndEmailTextView.setText(text);
-        nameAndEmailTextView.setTextSize(16);
-        nameAndEmailTextView.setLayoutParams(layoutParams);
-        tableRow.addView(nameAndEmailTextView);
-
-        if (!noUserFound) {
-            Button challengeButton = new Button(this.getContext());
-            challengeButton.setText(R.string.challenge);
-            //challengeButton.setId(1);
-            challengeButton.setLayoutParams(layoutParams);
-            challengeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mListener.onDisplayUserFragmentInteraction(name, email);
-                }
-            });
-
-            tableRow.addView(challengeButton);
-
-            Button scheduleButton = new Button(this.getContext());
-            scheduleButton.setText(R.string.schedule);
-            scheduleButton.setLayoutParams(layoutParams);
-            scheduleButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mListener.onDisplayUserFragmentInteractionSchedule(name, email);
-                }
-            });
-
-            tableRow.addView(scheduleButton);
-        }
+        tableRow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((SideBarActivity) getActivity()).mSearchViewAsMenuItem.collapseActionView();
+                mListener.onDisplayProfileFragmentInteraction(name, email);
+            }
+        });
 
         table.addView(tableRow);
     }
@@ -129,7 +124,6 @@ public class DisplayUserFragment extends Fragment {
 
 
     public interface OnDisplayUserFragmentInteractionListener {
-        void onDisplayUserFragmentInteraction(String challengedUserName, String challengedUserEmail);
-        void onDisplayUserFragmentInteractionSchedule(String challengedUserName, String challengedUserEmail);
+        void onDisplayProfileFragmentInteraction(String name, String email);
     }
 }

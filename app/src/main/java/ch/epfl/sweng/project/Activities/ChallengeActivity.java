@@ -15,9 +15,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +43,8 @@ import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.User;
 import ch.epfl.sweng.project.TestProxy;
+import ch.epfl.sweng.project.UtilsUI;
+import pl.droidsonroids.gif.GifTextView;
 
 import static ch.epfl.sweng.project.Activities.SideBarActivity.PERMISSION_REQUEST_CODE_FINE_LOCATION;
 
@@ -58,10 +64,12 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private Challenge.Type challengeType;
     private double challengeGoal;   // time in milliseconds or distance in Km
     private boolean win;
+    private boolean isWinning;
 
     // ChallengeProxy
     private ChallengeProxy challengeProxy;
     private Boolean owner = false;
+    private Boolean isOpponentThere = false;
     private Boolean opponentReady = false;
     private Boolean userReady = false;
     private Boolean opponentFinished = false;
@@ -81,17 +89,22 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private Chronometer chronometer;
     private TextView opponentTxt;
     private TextView userTxt;
-    private Button backToSideBtn;
+    private ImageButton backToSideBtn;
+    private GifTextView waitingOpponent;
+    private ImageView readyOpponent;
+    private LinearLayout layoutUserReady;
 
     //others
     private int phase = BEFORE_CHALLENGE;
     private boolean aborted = false;
+    private ImageView userStatus;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_challenge);
+
 
         extractIntent(getIntent());
         setupGoogleApi();
@@ -110,6 +123,10 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
     private void extractIntent(Intent intent) {
         Bundle extra = intent.getExtras();
+
+        // Set user as unavailable
+        new FirebaseHelper().
+                setUserAvailable(((AppRunnest) getApplication()).getUser().getEmail(), false, false);
 
         opponentName = extra.getString("opponent");
         owner = extra.getBoolean("owner");
@@ -155,12 +172,16 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
             @Override
             public void hasNewData(CheckPoint checkPoint) {
                 ((ChallengeReceiverFragment)receiverFragment).onNewData(checkPoint);
+                updateIsWinning();
             }
 
             @Override
             public void isReady() {
                 opponentReady = true;
                 opponentTxt.setText(R.string.opponent_ready);
+
+                findViewById(R.id.opponent_ready_icon).setVisibility(View.VISIBLE);
+                waitingOpponent.setVisibility(View.GONE);
 
                 if(userReady) {
                     startChallenge();
@@ -188,7 +209,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                         opponentTextToShow = getString(R.string.opponent_completed) +
                                 challengeGoal + getString(R.string.km) +
                                 getString(R.string.white_space) + getString(R.string.in) +
-                                transformDuration(opponentDuration);
+                                UtilsUI.timeToString((int)opponentDuration, true);
                         break;
                 }
                 opponentTxt.setText(opponentTextToShow);
@@ -203,12 +224,25 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
             @Override
             public void hasAborted() {
-                aborted = true;
-                win = true;
-                ((ChallengeSenderFragment)senderFragment).endChallenge();
-                ((ChallengeReceiverFragment)receiverFragment).stopRun();
-                isIntendedActivityExit = true;
-                endChallenge();
+                if (phase == BEFORE_CHALLENGE) {
+                    Intent returnIntent = new Intent();
+                    setResult(SideBarActivity.REQUEST_STOP_WAITING, returnIntent);
+                    isIntendedActivityExit = true;
+                    finish();
+                } else {
+                    aborted = true;
+                    win = true;
+                    ((ChallengeSenderFragment) senderFragment).endChallenge();
+                    ((ChallengeReceiverFragment) receiverFragment).stopRun();
+                    isIntendedActivityExit = true;
+                    endChallenge();
+                }
+            }
+
+            @Override
+            public void opponentInRoom() {
+                isOpponentThere = true;
+                opponentTxt.setText(R.string.opponent_in_room);
             }
         };
 
@@ -221,7 +255,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
     public void imFinished() {
         userFinished = true;
-        userTxt.setVisibility(View.VISIBLE);
+        layoutUserReady.setVisibility(View.VISIBLE);
 
         String userTextToShow = "";
         switch (challengeType) {
@@ -234,13 +268,15 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 break;
             case DISTANCE:
                 userTextToShow = getString(R.string.user_completed) +
-                        challengeGoal +
                         challengeGoal + getString(R.string.km) +
                         getString(R.string.white_space) + getString(R.string.in) +
-                        transformDuration(((ChallengeSenderFragment)senderFragment).getRun().getDuration());
+                        UtilsUI.timeToString((int)((ChallengeSenderFragment)senderFragment).getRun().getDuration(),
+                                true);
                 break;
         }
         userTxt.setText(userTextToShow);
+        userStatus.setImageDrawable(getResources().getDrawable(R.drawable.finish_icon));
+
 
         fragmentManager.beginTransaction().remove(senderFragment).commitAllowingStateLoss();
 
@@ -257,9 +293,12 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         challengeProxy.startChallenge();
 
         readyBtn.setVisibility(View.GONE);
-        userTxt.setVisibility(View.GONE);
+
+        layoutUserReady.setVisibility(View.GONE);
+        //userTxt.setVisibility(View.GONE);
         opponentTxt.setVisibility(View.GONE);
-        backToSideBtn.setText(R.string.quit);
+        backToSideBtn.setImageDrawable(getResources().getDrawable(R.drawable.give_up1));
+        readyOpponent.setVisibility(View.GONE);
 
         receiverFragment = new ChallengeReceiverFragment();
         fragmentManager.beginTransaction().add(R.id.receiver_container, receiverFragment).commit();
@@ -282,7 +321,8 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 new CountDownTimer((long)challengeGoal, 1000) {
 
                     public void onTick(long millisUntilFinished) {
-                        String timeLeft = "Time left: " + transformDuration(millisUntilFinished/1000);
+                        String timeLeft = "Time left: " +
+                                UtilsUI.timeToString((int)millisUntilFinished/1000, false);
                         chronometer.setText(timeLeft);
                     }
 
@@ -302,13 +342,21 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     }
 
     private void setupGUI() {
+        ((Toolbar)findViewById(R.id.challenge_toolbar)).setTitle("You vs. " + opponentName);
+
         chronometer = (Chronometer) findViewById(R.id.challenge_chronometer);
-        chronometer.setVisibility(View.INVISIBLE);
+        chronometer.setText("Warm up!");
 
         opponentTxt = (TextView) findViewById(R.id.opponentTxt);
         userTxt = (TextView) findViewById(R.id.userTxt);
+        if (!owner) {
+            opponentTxt.setText(R.string.opponent_in_room);
+        }
 
-        backToSideBtn = (Button) findViewById(R.id.back_to_side_btn);
+        layoutUserReady = (LinearLayout) findViewById(R.id.layout_user_ready);
+        userStatus = (ImageView) findViewById(R.id.user_status);
+
+        backToSideBtn = (ImageButton) findViewById(R.id.back_to_side_btn);
         backToSideBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -331,7 +379,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                     userReady = true;
 
                     readyBtn.setVisibility(View.GONE);
-                    userTxt.setVisibility(View.VISIBLE);
+                    layoutUserReady.setVisibility(View.VISIBLE);
 
                     // In a test session we don't want to wait for the opponent
                     if (opponentReady || ((AppRunnest)getApplication()).isTestSession()){
@@ -340,12 +388,25 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 }
             }
         });
+
+
+        readyOpponent = (ImageView)findViewById(R.id.opponent_ready_icon);
+        readyOpponent.setVisibility(View.GONE);
+
+        waitingOpponent = (GifTextView)findViewById(R.id.opponent_waiting_icon);
+
+    }
+
+    public void updateIsWinning() {
+        Run opponentRun = ((ChallengeReceiverFragment)receiverFragment).getRun();
+        Run userRun = ((ChallengeSenderFragment)senderFragment).getRun();
+
+        isWinning = userRun.getTrack().getDistance() >= opponentRun.getTrack().getDistance();
     }
 
     private void endChallenge() {
         chronometer.stop();
         phase = AFTER_CHALLENGE;
-        backToSideBtn.setText(R.string.back);
         Run opponentRun = ((ChallengeReceiverFragment)receiverFragment).getRun();
         Run userRun = ((ChallengeSenderFragment)senderFragment).getRun();
 
@@ -386,16 +447,15 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         DBHelper dbHelper = new DBHelper(this);
         dbHelper.insert(challengeToSave);
 
+        // upload database
+        ((AppRunnest) getApplication()).launchDatabaseUpload();
+
+        // Set user as available
+        new FirebaseHelper().
+                setUserAvailable(((AppRunnest) getApplication()).getUser().getEmail(), false, true);
+
         // Go to recap challenge
         goToChallengeRecap();
-    }
-
-    private String transformDuration(long duration) {
-        if (duration < 0) {
-            throw new IllegalArgumentException("Duration could not be negative");
-        }
-
-        return (duration/60 + "' " + duration%60 + "''");
     }
 
     public ChallengeProxy getChallengeProxy(){
@@ -485,15 +545,12 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         mGoogleApiClient.connect();
     }
 
-    //TODO: decide if onPause too
-
     @Override
     public void onStop() {
         super.onStop();
         if (!isIntendedActivityExit) {
             // TODO: decide what to do
-            //challengeProxy.abortChallenge();
-            ((AppRunnest) getApplication()).launchEmergencyUpload();
+            // TODO: decide if onPause too
         }
     }
 
@@ -502,7 +559,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         super.onDestroy();
         if (!isIntendedActivityExit) {
             challengeProxy.abortChallenge();
-            ((AppRunnest) getApplication()).launchEmergencyUpload();
+            ((AppRunnest) getApplication()).launchDatabaseUpload();
         }
     }
 
@@ -544,8 +601,18 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 .setMessage("Are you sure you want to stop waiting and go back?")
                 .setPositiveButton(R.string.quit, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        //TODO delete challenge from firebase?
-                        challengeProxy.abortChallenge();
+                        if (owner && !isOpponentThere) {
+                            // If you are still in the room alone
+                            challengeProxy.deleteChallenge();
+                        } else {
+                            // If opponent is already here and he needs notification
+                            challengeProxy.abortChallenge();
+                        }
+
+                        // Set user as available
+                        new FirebaseHelper().
+                                setUserAvailable(((AppRunnest) getApplication()).getUser().getEmail(), false, true);
+
                         Intent returnIntent = new Intent();
                         setResult(SideBarActivity.REQUEST_STOP_WAITING, returnIntent);
                         isIntendedActivityExit = true;
@@ -563,6 +630,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     }
 
     private void goToChallengeRecap(){
+
         Intent returnIntent = new Intent();
         setResult(SideBarActivity.REQUEST_END_CHALLENGE, returnIntent);
         finish();
