@@ -43,6 +43,7 @@ public class FirebaseHelper {
     private final String TIME_CHILD = "time";
     private final String USERS_CHILD = "users";
     private final String NAME_CHILD = "name";
+    private final String PROFILE_PIC_URL_CHILD = "profile_pic_url";
     private final String STATISTICS_CHILD = "statistics";
     private final String TOTAL_RUNNING_TIME_CHILD = "total_running_time";
     private final String TOTAL_RUNNING_DISTANCE_CHILD = "total_running_distance";
@@ -246,6 +247,50 @@ public class FirebaseHelper {
 
             }
         });
+    }
+
+    /**
+     * Allows to set (or update if already present) the url of your profile picture
+     *
+     * @param userEmail the email of the user whom to set the url
+     * @param url
+     */
+    public void setOrUpdateProfilePicUrl(String userEmail, final String url) {
+        if (userEmail == null || userEmail.equals("") || url == null || url.equals("")) {
+            throw new IllegalArgumentException();
+        }
+
+        final DatabaseReference user = databaseReference.child(USERS_CHILD).child(getFireBaseMail(userEmail));
+        user.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    user.child(PROFILE_PIC_URL_CHILD).setValue(url);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    /**
+     * Allows to get the url of other users profile picture
+     *
+     * @param userEmail email of the user whom to get the profile picture url
+     * @param listener handles the result, the dataSnapshot contains the node with the url
+     */
+    public void getProfilePicUrl(String userEmail, ValueEventListener listener) {
+        if (userEmail == null || userEmail.equals("") || listener == null) {
+            throw new IllegalArgumentException();
+        }
+
+        databaseReference.child(USERS_CHILD)
+                .child(getFireBaseMail(userEmail))
+                .child(PROFILE_PIC_URL_CHILD)
+                .addListenerForSingleValueEvent(listener);
     }
 
     public void updateUserStatistics(String email, final long newTime, final float newDistance, final RunType runType) throws IllegalArgumentException {

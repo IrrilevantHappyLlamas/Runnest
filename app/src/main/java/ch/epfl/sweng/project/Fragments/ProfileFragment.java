@@ -50,16 +50,37 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
         // Inflate the layout for this fragment
         final View view =  inflater.inflate(R.layout.fragment_profile, container, false);
 
+        final FirebaseHelper firebaseHelper = new FirebaseHelper();
+
         if (mEmail == null) {
+            // Handle case self profile
             User user = ((AppRunnest) getActivity().getApplicationContext()).getUser();
             setUserStatistics(user.getName(), user.getEmail(), view);
-            setProfileImage(user.getPhotoUrl(), view);
+            String picUrl = user.getPhotoUrl();
+            firebaseHelper.setOrUpdateProfilePicUrl(user.getEmail(), picUrl);
+            setProfileImage(picUrl, view);
             view.findViewById(R.id.challenge_schedule_buttons).setVisibility(View.GONE);
         } else {
+            // Handle case others profile
             setUserStatistics(mName, mEmail, view);
             view.findViewById(R.id.challenge_schedule_buttons).setVisibility(View.VISIBLE);
 
             setProfileImage("", view);
+
+            firebaseHelper.getProfilePicUrl(mEmail, new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        String url = (String) dataSnapshot.getValue();
+                        setProfileImage(url, view);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
 
             view.findViewById(R.id.challenge_button).setOnClickListener(new View.OnClickListener() {
                 @Override

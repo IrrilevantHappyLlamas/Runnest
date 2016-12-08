@@ -374,7 +374,94 @@ public class FirebaseHelperTest {
         firebaseHelper.listenUserAvailability("Test User", false,  listener);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void setOrUpdateProfilePicUrlThrowsExceptionWithNullEmail() {
+        String email = "Test User";
+        firebaseHelper.addOrUpdateUser("Test User", email);
+        firebaseHelper.setOrUpdateProfilePicUrl(null, "http://url.test.ch");
+    }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void setOrUpdateProfilePicUrlThrowsExceptionWithEmptyEmail() {
+        String email = "Test User";
+        firebaseHelper.addOrUpdateUser("Test User", email);
+        firebaseHelper.setOrUpdateProfilePicUrl("", "http://url.test.ch");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void setOrUpdateProfilePicUrlThrowsExceptionWithNullUrl() {
+        String email = "Test User";
+        firebaseHelper.addOrUpdateUser("Test User", email);
+        firebaseHelper.setOrUpdateProfilePicUrl(email, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void setOrUpdateProfilePicUrlThrowsExceptionWithEmptyUrl() {
+        String email = "Test User";
+        firebaseHelper.addOrUpdateUser("Test User", email);
+        firebaseHelper.setOrUpdateProfilePicUrl(email, "");
+    }
+
+    @Test
+    public void canSetOrUpdateProfilePicUrl() {
+        String email = "Test User";
+        firebaseHelper.addOrUpdateUser("Test User", email);
+        firebaseHelper.setOrUpdateProfilePicUrl(email, "http://url.test.ch");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getProfilePicUrlThrowsExceptionWithNullEmail() {
+        String email = "Test User";
+        firebaseHelper.addOrUpdateUser("Test User", email);
+        firebaseHelper.setOrUpdateProfilePicUrl(email, "http://url.test.ch");
+        firebaseHelper.getProfilePicUrl(null, new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {}
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getProfilePicUrlThrowsExceptionWithEmptyEmail() {
+        String email = "Test User";
+        firebaseHelper.addOrUpdateUser("Test User", email);
+        firebaseHelper.setOrUpdateProfilePicUrl(email, "http://url.test.ch");
+        firebaseHelper.getProfilePicUrl("", new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {}
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getProfilePicUrlThrowsExceptionWithNullListener() {
+        String email = "Test User";
+        firebaseHelper.addOrUpdateUser("Test User", email);
+        firebaseHelper.setOrUpdateProfilePicUrl(email, "http://url.test.ch");
+        firebaseHelper.getProfilePicUrl(email, null);
+    }
+
+    @Test
+    public void canGetProfilePicUrl() {
+        String email = "Test User";
+        final String url = "http://url.test.ch";
+        firebaseHelper.addOrUpdateUser("Test User", email);
+        firebaseHelper.setOrUpdateProfilePicUrl(email, url);
+        firebaseHelper.getProfilePicUrl(email, new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String fetchedUrl = (String) dataSnapshot.getValue();
+                Assert.assertTrue(url.equals(fetchedUrl));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     /*
     @Test
