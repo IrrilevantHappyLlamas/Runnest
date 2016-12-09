@@ -588,7 +588,7 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public void onDisplayRunFragmentInteraction() {
         // keep using the stack
-        onNavigationItemSelected(navigationView.getMenu().getItem(2));
+        onNavigationItemSelected(navigationView.getMenu().getItem(4));
     }
 
     /**
@@ -718,7 +718,7 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public void onDisplayChallengeFragmentInteraction() {
         // keep using the stack
-        onNavigationItemSelected(navigationView.getMenu().getItem(2));
+        onNavigationItemSelected(navigationView.getMenu().getItem(4));
     }
 
     @Override
