@@ -71,7 +71,7 @@ public class MessageTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void constructorWithTimeThrowsExceptionWithNullTime() {
-        Message testMessage = new Message("me", "you", "me", "you", Message.MessageType.MY_IP_IS, "Hello, world!", null);
+        Message testMessage = new Message("me", "you", "me", "you", Message.MessageType.MEMO, "Hello, world!", null);
     }
 
     @Test(expected = IllegalArgumentException.class)
