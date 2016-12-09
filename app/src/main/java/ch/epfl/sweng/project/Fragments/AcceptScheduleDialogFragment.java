@@ -114,7 +114,7 @@ public class AcceptScheduleDialogFragment extends DialogFragment {
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
-                    + " must implement RequestDialogListener");
+                    + " must implement AcceptScheduleDialogListener");
         }
     }
 

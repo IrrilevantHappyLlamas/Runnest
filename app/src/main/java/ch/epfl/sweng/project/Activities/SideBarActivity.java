@@ -518,6 +518,11 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onRunningMapFragmentInteraction(Run run) {
+
+        if(run == null){
+            throw new IllegalArgumentException("Invalid argument 'run' on onRunningMapFragmentInteraction method");
+        }
+
         itemStack.push(runItem);
         historyItem.setChecked(true);
         launchFragment(DisplayRunFragment.newInstance(run));
@@ -529,6 +534,11 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onRunHistoryInteraction(Run run) {
+
+        if(run == null){
+            throw new IllegalArgumentException("Invalid argument 'run' on onRunHistoryInteraction method");
+        }
+
         itemStack.push(historyItem);
         launchFragment(DisplayRunFragment.newInstance(run));
     }
@@ -539,6 +549,11 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onChallengeHistoryInteraction(Challenge challenge) {
+
+        if(challenge == null){
+            throw new IllegalArgumentException("Invalid argument 'challenge' on  onChallengeHistoryInteraction method");
+        }
+
         itemStack.push(historyItem);
         launchFragment(DisplayChallengeFragment.newInstance(challenge));
     }
@@ -559,6 +574,11 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onDisplayProfileFragmentInteraction(String name, String email) {
+
+        if(name == null || email == null || name == "" || email == ""){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onMemoDialogChallengeClick method");
+        }
+
         launchFragment(ProfileFragment.newInstance(name, email));
     }
 
@@ -570,6 +590,11 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onProfileFragmentInteraction(String challengedUserName, String challengedUserEmail) {
+
+        if(challengedUserEmail == null || challengedUserName == null || challengedUserEmail == "" || challengedUserName == ""){
+            throw new IllegalArgumentException("Invalid argument(s) 'challengedUserName' and/or 'challengedUserEmail' on onProfileFragmentInteraction method");
+        }
+
         this.challengedUserName = challengedUserName;
         this.challengedUserEmail = challengedUserEmail;
         showChallengeDialog();
@@ -581,6 +606,11 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onMessagesFragmentInteraction(final Message message) {
+
+        if(message == null){
+            throw new IllegalArgumentException("Invalid argument 'message' on onMessagesFragmentInteraction method");
+        }
+
         requestMessage = message;
 
         if (message.getType() == Message.MessageType.CHALLENGE_REQUEST) {
@@ -631,6 +661,11 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onMessagesFragmentScheduleRequestInteraction(Message message) {
+
+        if(message == null){
+            throw new IllegalArgumentException("Invalid argument 'message' on onMessagesFragmentScheduleRequestInteraction method");
+        }
+
         requestMessage = message;
         showAcceptScheduleDialog();
     }
@@ -675,6 +710,10 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public void onChallengeDialogPositiveClick(DialogFragment dialog) {
 
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onChallengeDialogPositiveClick method");
+        }
+
         Challenge.Type challengeType = ((ChallengeDialogFragment)dialog).getType();
         int firstValue = ((ChallengeDialogFragment)dialog).getFirstValue();
         int secondValue = ((ChallengeDialogFragment)dialog).getSecondValue();
@@ -715,6 +754,10 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onChallengeDialogNegativeClick(DialogFragment dialog) {
+
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onChallengeDialogNegativeClick method");
+        }
     }
 
     /**
@@ -723,6 +766,11 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onDialogAcceptClick(DialogFragment dialog) {
+
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onDialogAcceptClick method");
+        }
+
         Challenge.Type challengeType = ((RequestChallengeDialogFragment)dialog).getType();
         mFirebaseHelper.delete(requestMessage);
         int firstValue = ((RequestChallengeDialogFragment)dialog).getFirstValue();
@@ -744,6 +792,11 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onDialogDeclineClick(DialogFragment dialog) {
+
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onDialogDeclineClick method");
+        }
+
         mFirebaseHelper.delete(requestMessage);
         launchFragment(new MessagesFragment());
     }
@@ -754,10 +807,18 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onDialogCancelClick(DialogFragment dialog) {
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onDialogCancelClick method");
+        }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(data == null){
+            throw new IllegalArgumentException("Invalid argument 'data' on onActivityResult method");
+        }
+
         if(resultCode == REQUEST_STOP_WAITING){
             Toast.makeText(getApplicationContext(),"The challenge was deleted",
                     Toast.LENGTH_LONG).show();
@@ -770,6 +831,8 @@ public class SideBarActivity extends AppCompatActivity
             Challenge lastChallenge = challenges.get(challenges.size() - 1);
             onChallengeHistoryInteraction(lastChallenge);
             historyItem.setChecked(true);
+        }else{
+            throw new IllegalArgumentException("Invalid argument 'requestCode' on onActivityResult method");
         }
 
     }
@@ -781,6 +844,11 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onProfileFragmentInteractionSchedule(String name, String email){
+
+        if(name == null || email == null || name == "" || email == ""){
+            throw new IllegalArgumentException("Invalid argument(s) 'name' and/or 'email' on onProfileFragmentInteractionSchedule method");
+        }
+
         this.challengedUserName = name;
         this.challengedUserEmail = email;
         showRequestScheduleDialog();
@@ -797,6 +865,10 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onRequestScheduleDialogPositiveClick(DialogFragment dialog){
+
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onRequestScheduleDialogPositiveClick method");
+        }
 
         Challenge.Type challengeType = ((RequestScheduleDialogFragment)dialog).getType();
 
@@ -820,6 +892,10 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onRequestScheduleDialogNegativeClick(DialogFragment dialog){
+
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onRequestScheduleDialogNegativeClick method");
+        }
     }
 
     /**
@@ -828,6 +904,11 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onAcceptScheduleDialogAcceptClick(DialogFragment dialog){
+
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onAcceptScheduleDialogAcceptClick method");
+        }
+
         Challenge.Type challengeType = ((AcceptScheduleDialogFragment)dialog).getType();
         Date scheduledDate = ((AcceptScheduleDialogFragment)dialog).getScheduledDate();
 
@@ -859,6 +940,11 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onAcceptScheduleDialogDeclineClick(DialogFragment dialog){
+
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onAcceptScheduleDialogChallengeClick method");
+        }
+
         mFirebaseHelper.delete(requestMessage);
         launchFragment(new MessagesFragment());
     }
@@ -869,6 +955,10 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onAcceptScheduleDialogCancelClick(DialogFragment dialog){
+
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onAcceptScheduleDialogClick method");
+        }
     }
 
     /**
@@ -877,6 +967,11 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onMessagesFragmentMemoInteraction(Message message){
+
+        if(message == null){
+            throw new IllegalArgumentException("Invalid argument 'message' on onMessagesFragmentMemoInteraction method");
+        }
+
         requestMessage = message;
         showMemoDialog();
     }
@@ -899,6 +994,10 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onMemoDialogCloseClick(DialogFragment dialog){
+
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onMemoDialogCloseClick method");
+        }
     }
 
     /**
@@ -907,6 +1006,10 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onMemoDialogDeleteClick(DialogFragment dialog){
+
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onMemoDialogDeleteClick method");
+        }
         mFirebaseHelper.delete(requestMessage);
         launchFragment(new MessagesFragment());
     }
@@ -917,6 +1020,11 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onMemoDialogChallengeClick(DialogFragment dialog){
+
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onMemoDialogChallengeClick method");
+        }
+
         mFirebaseHelper.delete(requestMessage);
         this.challengedUserName = ((MemoDialogFragment) dialog).getSender();
         this.challengedUserEmail = ((MemoDialogFragment) dialog).getOpponentEmail();
