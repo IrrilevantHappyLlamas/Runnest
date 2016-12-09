@@ -138,7 +138,10 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
 
                 double distance = Double.valueOf(statistics[firebaseHelper.TOTAL_RUNNING_DISTANCE_INDEX]);
                 // Transform to km and format with one digit after the coma
-                String distanceToBeDisplayed = new DecimalFormat("#.0").format(distance / 1000) + " km";
+                String distanceToBeDisplayed = "0 km";
+                if (distance > 100) {
+                    distanceToBeDisplayed = new DecimalFormat("#.0").format(distance / 1000) + " km";
+                }
                 ((TextView) view.findViewById(R.id.total_running_distance)).setText(distanceToBeDisplayed);
 
                 double time = Double.valueOf(statistics[firebaseHelper.TOTAL_RUNNING_TIME_INDEX]);
