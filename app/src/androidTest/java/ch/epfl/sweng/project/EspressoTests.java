@@ -2,13 +2,11 @@ package ch.epfl.sweng.project;
 
 import android.os.SystemClock;
 import android.support.test.espresso.Espresso;
-import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.contrib.DrawerActions;
 import android.support.test.espresso.contrib.NavigationViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.view.KeyEvent;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
@@ -24,7 +22,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import ch.epfl.sweng.project.Activities.ChallengeActivity;
 import ch.epfl.sweng.project.Activities.SideBarActivity;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
@@ -48,7 +45,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anything;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
 @RunWith(AndroidJUnit4.class)
@@ -175,7 +171,7 @@ public class EspressoTests {
                 "emailReceiver",
                 "tester",
                 "tested",
-                Message.MessageType.CHALLENGE_REQUEST,
+                Message.Type.CHALLENGE_REQUEST,
                 "that's a test",
                 new Date(),
                 1,
@@ -459,7 +455,7 @@ public class EspressoTests {
                 "Test User",
                 "Runnest IHL",
                 "Test User",
-                Message.MessageType.CHALLENGE_REQUEST,
+                Message.Type.CHALLENGE_REQUEST,
                 "test1",
                 new Date(),
                 1,
@@ -471,7 +467,7 @@ public class EspressoTests {
                 "Test User",
                 "Runnest IHL",
                 "Test User",
-                Message.MessageType.CHALLENGE_REQUEST,
+                Message.Type.CHALLENGE_REQUEST,
                 "test2",
                 new Date(),
                 1,
@@ -530,7 +526,7 @@ public class EspressoTests {
                 "Test User",
                 "Runnest IHL",
                 "Test User",
-                Message.MessageType.SCHEDULE_REQUEST,
+                Message.Type.SCHEDULE_REQUEST,
                 "that's a test",
                 new Date(),
                 Challenge.Type.DISTANCE);
@@ -571,7 +567,7 @@ public class EspressoTests {
                 "Test User",
                 "Runnest IHL",
                 "Test User",
-                Message.MessageType.SCHEDULE_REQUEST,
+                Message.Type.SCHEDULE_REQUEST,
                 "that's a test",
                 new Date(),
                 Challenge.Type.DISTANCE);
@@ -604,7 +600,7 @@ public class EspressoTests {
                 "Test User",
                 "Runnest IHL",
                 "Test User",
-                Message.MessageType.MEMO,
+                Message.Type.MEMO,
                 "that's a test",
                 new Date(),
                 Challenge.Type.DISTANCE);
@@ -644,7 +640,7 @@ public class EspressoTests {
                 "Test User",
                 "Runnest IHL",
                 "Test User",
-                Message.MessageType.MEMO,
+                Message.Type.MEMO,
                 "that's a test",
                 new Date(),
                 Challenge.Type.DISTANCE);

@@ -2,10 +2,6 @@ package ch.epfl.sweng.project.Model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.IllegalFormatCodePointException;
-
-import ch.epfl.sweng.project.Activities.ChallengeActivity;
-import ch.epfl.sweng.project.Fragments.ChallengeDialogFragment;
 
 /**
  * This class represents a message that can be sent to the server and retrieved by a user
@@ -15,7 +11,7 @@ public class Message implements Serializable {
     private String to;
     private String sender;
     private String addressee;
-    private MessageType type;
+    private Type type;
     private String message;
     private Date time;
     private int firstValue;
@@ -25,7 +21,7 @@ public class Message implements Serializable {
     /**
      * This enumeration represents all types of messages that can be sent to the server
      */
-    public enum MessageType {
+    public enum Type {
         TEXT, CHALLENGE_REQUEST, CHALLENGE_RESPONSE, SCHEDULE_REQUEST, MEMO
     }
 
@@ -40,7 +36,7 @@ public class Message implements Serializable {
      * @param message the message to be transmitted
      * @throws IllegalArgumentException
      */
-    public Message(String from, String to, String sender, String addressee, MessageType type, String message)
+    public Message(String from, String to, String sender, String addressee, Type type, String message)
             throws IllegalArgumentException
     {
         if (from == null || from.equals("")
@@ -80,7 +76,7 @@ public class Message implements Serializable {
      * @param sentAt the date the message was sent
      * @throws IllegalArgumentException
      */
-    public Message(String from, String to, String sender, String addressee, MessageType type, String message, Date sentAt)
+    public Message(String from, String to, String sender, String addressee, Type type, String message, Date sentAt)
             throws IllegalArgumentException
     {
         this(from, to, sender, addressee, type, message);
@@ -110,7 +106,7 @@ public class Message implements Serializable {
                    String to,
                    String sender,
                    String addressee,
-                   MessageType type,
+                   Type type,
                    String message,
                    Date sentAt,
                    int firstValue,
@@ -119,7 +115,7 @@ public class Message implements Serializable {
             throws IllegalArgumentException
     {
         this(from, to, sender, addressee, type, message, sentAt);
-        if (type != MessageType.CHALLENGE_REQUEST) {
+        if (type != Type.CHALLENGE_REQUEST) {
             throw new IllegalArgumentException("This constructor can be used only for challenge requests");
         }
         if (challengeType == null) {
@@ -148,14 +144,14 @@ public class Message implements Serializable {
                    String to,
                    String sender,
                    String addressee,
-                   MessageType type,
+                   Type type,
                    String message,
                    Date scheduledDate,
                    Challenge.Type challengeType)
             throws IllegalArgumentException
     {
         this(from, to, sender, addressee, type, message, scheduledDate);
-        if (type != MessageType.SCHEDULE_REQUEST && type != MessageType.MEMO) {
+        if (type != Type.SCHEDULE_REQUEST && type != Type.MEMO) {
             throw new IllegalArgumentException("This constructor can be used only for schedules and memos");
         }
         if (challengeType == null) {
@@ -208,7 +204,7 @@ public class Message implements Serializable {
      *
      * @return the type of the message
      */
-    public MessageType getType() {
+    public Type getType() {
         return type;
     }
 

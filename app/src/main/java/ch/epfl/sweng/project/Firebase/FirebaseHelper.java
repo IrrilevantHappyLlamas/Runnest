@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ch.epfl.sweng.project.Activities.ChallengeActivity;
 import ch.epfl.sweng.project.Model.Challenge;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Message;
@@ -176,7 +175,7 @@ public class FirebaseHelper {
                         String from = children.child(FROM_CHILD).getValue(String.class);
                         String sender = children.child(SENDER_CHILD).getValue(String.class);
                         String addressee = children.child(ADDRESSEE_CHILD).getValue(String.class);
-                        Message.MessageType type = children.child(TYPE_CHILD).getValue(Message.MessageType.class);
+                        Message.Type type = children.child(TYPE_CHILD).getValue(Message.Type.class);
                         String messageText = children.child(MESSAGE_CHILD).getValue(String.class);
                         Date time = children.child(TIME_CHILD).getValue(Date.class);
 

@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -551,7 +550,7 @@ public class SideBarActivity extends AppCompatActivity
     public void onMessagesFragmentInteraction(final Message message) {
         requestMessage = message;
 
-        if (message.getType() == Message.MessageType.CHALLENGE_REQUEST) {
+        if (message.getType() == Message.Type.CHALLENGE_REQUEST) {
             final String challengeName = FirebaseProxy.generateChallengeName( message.getSender(),
                                                                         message.getAddressee(),
                                                                         message.getMessage());
@@ -634,7 +633,7 @@ public class SideBarActivity extends AppCompatActivity
         String message = Integer.toString(rndNumber);
         Date timestampId = new Date();
         Message challengeRequestMessage = new Message(from, to, sender, challengedUserName,
-                Message.MessageType.CHALLENGE_REQUEST, message, timestampId, firstValue, secondValue, challengeType);
+                Message.Type.CHALLENGE_REQUEST, message, timestampId, firstValue, secondValue, challengeType);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
         firebaseHelper.send(challengeRequestMessage);
@@ -767,7 +766,7 @@ public class SideBarActivity extends AppCompatActivity
         String sender = ((AppRunnest) getApplication()).getUser().getName();
         String message = "let's schedule a run!";
         Message scheduleRequestMessage = new Message(from, to, sender, challengedUserName,
-                Message.MessageType.SCHEDULE_REQUEST, message, scheduledDate, challengeType);
+                Message.Type.SCHEDULE_REQUEST, message, scheduledDate, challengeType);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
         firebaseHelper.send(scheduleRequestMessage);
@@ -793,11 +792,11 @@ public class SideBarActivity extends AppCompatActivity
 
         // Send message to other user
         Message memoToOpponentMessage = new Message(from, to, sender, addressee,
-                Message.MessageType.MEMO, message, scheduledDate, challengeType);
+                Message.Type.MEMO, message, scheduledDate, challengeType);
 
         // Send message to yourself
         Message memoToMyselfMessage = new Message(to, FirebaseHelper.getFireBaseMail(from), addressee, sender,
-                Message.MessageType.MEMO, message, scheduledDate, challengeType);
+                Message.Type.MEMO, message, scheduledDate, challengeType);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
         firebaseHelper.send(memoToOpponentMessage);
