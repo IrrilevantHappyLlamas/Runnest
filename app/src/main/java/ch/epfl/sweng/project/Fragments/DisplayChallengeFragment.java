@@ -24,25 +24,20 @@ import ch.epfl.sweng.project.Model.Track;
 import ch.epfl.sweng.project.UtilsUI;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link DisplayChallengeFragment.OnDisplayChallengeFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link DisplayChallengeFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * This class displays a Challenge.
  */
 public class DisplayChallengeFragment extends Fragment implements OnMapReadyCallback {
     private static final String CHALLENGE_TO_BE_DISPLAYED = "challenge to be displayed";
-    private DisplayChallengeFragment.OnDisplayChallengeFragmentInteractionListener mListener;
-    private Challenge mChallengeToBeDisplayed;
+    private DisplayChallengeFragment.OnDisplayChallengeFragmentInteractionListener listener;
+    private Challenge challengeToBeDisplayed;
 
-    private MapView mMapView = null;
-    private MapView mOpponentMapView = null;
+    private MapView mapView = null;
+    private MapView opponentMapView = null;
 
     private int userColor;
     private int opponentColor;
 
-    private MapType mCurrentMapType = null;
+    private MapType currentMapType = null;
 
     public static DisplayChallengeFragment newInstance(Challenge challenge) {
         DisplayChallengeFragment fragment = new DisplayChallengeFragment();
@@ -58,7 +53,7 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mChallengeToBeDisplayed = (Challenge) getArguments().getSerializable(CHALLENGE_TO_BE_DISPLAYED);
+            challengeToBeDisplayed = (Challenge) getArguments().getSerializable(CHALLENGE_TO_BE_DISPLAYED);
         }
     }
 
@@ -66,7 +61,7 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_display_challenge, container, false);
 
-        if (mChallengeToBeDisplayed != null) {
+        if (challengeToBeDisplayed != null) {
 
 
             setupMapUI(view, savedInstanceState);
@@ -90,41 +85,42 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
         TextView opponentResult = (TextView)view.findViewById(R.id.opponent_result);
 
         // Set names
-        userName.setText(mChallengeToBeDisplayed.getMyRun().getName());
-        opponentName.setText(mChallengeToBeDisplayed.getOpponentRun().getName());
+        userName.setText(challengeToBeDisplayed.getMyRun().getName());
+        opponentName.setText(challengeToBeDisplayed.getOpponentRun().getName());
 
         // Set title and performances
-        switch (mChallengeToBeDisplayed.getType()) {
+        switch (challengeToBeDisplayed.getType()) {
             case TIME:
-                String timeGoal = UtilsUI.timeToString((int)mChallengeToBeDisplayed.getGoal()/1000, false);
+                String timeGoal = UtilsUI.timeToString((int) challengeToBeDisplayed.getGoal()/1000, false);
                 challengeType.setText(getString(R.string.time_challenge) +
                         getString(R.string.white_space) + timeGoal);
 
-                double user_dist = mChallengeToBeDisplayed.getMyRun().getTrack().getDistance()/1000;
+                double user_dist = challengeToBeDisplayed.getMyRun().getTrack().getDistance()/1000;
                 userPerformance.setText(String.format(Locale.getDefault(), "%.2f", user_dist) +
                         getString(R.string.white_space) + getString(R.string.km));
 
-                double opponent_dist = mChallengeToBeDisplayed.getOpponentRun().getTrack().getDistance()/1000;
+                double opponent_dist = challengeToBeDisplayed.getOpponentRun().getTrack().getDistance()/1000;
                 opponentPerformance.setText(String.format(Locale.getDefault(), "%.2f", opponent_dist) +
                         getString(R.string.white_space) + getString(R.string.km));
 
                 break;
             case DISTANCE:
-                String distanceGoal = String.format(Locale.getDefault(), "%.2f", mChallengeToBeDisplayed.getGoal());
+                String distanceGoal = String.format(Locale.getDefault(), "%.2f", challengeToBeDisplayed.getGoal());
                 challengeType.setText(getString(R.string.distance_challenge) + getString(R.string.white_space) +
                         distanceGoal + getString(R.string.white_space) + getString(R.string.km));
 
-                int userTime = (int)mChallengeToBeDisplayed.getMyRun().getDuration();
+                int userTime = (int) challengeToBeDisplayed.getMyRun().getDuration();
 
                 userPerformance.setText(UtilsUI.timeToString(userTime, true));
 
-                int opponentTime = (int)mChallengeToBeDisplayed.getOpponentRun().getDuration();
+                int opponentTime = (int) challengeToBeDisplayed.getOpponentRun().getDuration();
                 opponentPerformance.setText(UtilsUI.timeToString(opponentTime, true));
 
                 break;
         }
+
         // Set Text colors and results
-        switch (mChallengeToBeDisplayed.getResult()) {
+        switch (challengeToBeDisplayed.getResult()) {
             case WON:
                 userResult.setText(getString(R.string.won_caps));
                 opponentResult.setText(getString(R.string.lost_caps));
@@ -172,8 +168,8 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
             @Override
             public void onClick(View v) {
 
-                if (mListener != null) {
-                    mListener.onDisplayChallengeFragmentInteraction();
+                if (listener != null) {
+                    listener.onDisplayChallengeFragmentInteraction();
                 }
             }
         });
@@ -184,22 +180,22 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
         deleteRunButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mListener != null) {
-                    dbHelper.delete(mChallengeToBeDisplayed);
-                    mListener.onDisplayChallengeFragmentInteraction();
+                if (listener != null) {
+                    dbHelper.delete(challengeToBeDisplayed);
+                    listener.onDisplayChallengeFragmentInteraction();
                 }
             }
         });
     }
 
     private void setupMapUI(View view, Bundle savedInstanceState) {
-        mCurrentMapType = MapType.USER_MAP;
-        mMapView = (MapView) view.findViewById(R.id.user_map);
-        mMapView.onCreate(savedInstanceState);
-        mMapView.getMapAsync(this);
+        currentMapType = MapType.USER_MAP;
+        mapView = (MapView) view.findViewById(R.id.user_map);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
 
-        mOpponentMapView = (MapView) view.findViewById(R.id.opponent_map);
-        mOpponentMapView.onCreate(savedInstanceState);
+        opponentMapView = (MapView) view.findViewById(R.id.opponent_map);
+        opponentMapView.onCreate(savedInstanceState);
     }
 
     /**
@@ -211,20 +207,20 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
     public void onMapReady(GoogleMap googleMap) {
         MapStyleOptions mapStyle = MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.map_style_no_label);
 
-        switch(mCurrentMapType) {
+        switch(currentMapType) {
 
             case USER_MAP:
-                Track userTrack = mChallengeToBeDisplayed.getMyRun().getTrack();
+                Track userTrack = challengeToBeDisplayed.getMyRun().getTrack();
                 googleMap.setMapStyle(mapStyle);
 
                 UtilsUI.recapDisplayTrack(userTrack, googleMap, userColor);
                 UtilsUI.recapDisplayTrackSetupUI(googleMap);
 
-                mCurrentMapType = MapType.OPPONENT_MAP;
-                mOpponentMapView.getMapAsync(this);
+                currentMapType = MapType.OPPONENT_MAP;
+                opponentMapView.getMapAsync(this);
                 break;
             case OPPONENT_MAP:
-                Track opponentTrack = mChallengeToBeDisplayed.getOpponentRun().getTrack();
+                Track opponentTrack = challengeToBeDisplayed.getOpponentRun().getTrack();
                 googleMap.setMapStyle(mapStyle);
 
                 UtilsUI.recapDisplayTrack(opponentTrack, googleMap, opponentColor);
@@ -239,7 +235,7 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnDisplayChallengeFragmentInteractionListener) {
-            mListener = (OnDisplayChallengeFragmentInteractionListener) context;
+            listener = (OnDisplayChallengeFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnDisplayChallengeFragmentInteractionListener");
@@ -249,55 +245,47 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        mMapView.onLowMemory();
-        mOpponentMapView.onLowMemory();
+        mapView.onLowMemory();
+        opponentMapView.onLowMemory();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mMapView.onResume();
-        mOpponentMapView.onResume();
+        mapView.onResume();
+        opponentMapView.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mMapView.onPause();
-        mOpponentMapView.onPause();
+        mapView.onPause();
+        opponentMapView.onPause();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mMapView.onDestroy();
-        mOpponentMapView.onDestroy();
+        mapView.onDestroy();
+        opponentMapView.onDestroy();
     }
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        mMapView.onSaveInstanceState(outState);
-        mOpponentMapView.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
+        opponentMapView.onSaveInstanceState(outState);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        listener = null;
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * interface for the listener of this class.
      */
     public interface OnDisplayChallengeFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onDisplayChallengeFragmentInteraction();
     }
 }

@@ -8,6 +8,7 @@ import android.graphics.Color;
 import java.util.Calendar;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -29,10 +30,7 @@ import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Model.Challenge;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link RequestScheduleDialogFragment.OnRequestScheduleDialogListener} interface
- * to handle interaction events.
+ * This class displays a schedule request dialog.
  */
 public class RequestScheduleDialogFragment extends DialogFragment implements View.OnClickListener {
 
@@ -46,10 +44,9 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
     private Calendar scheduledCalendar;
     Challenge.Type type;
 
-
-    /* The activity that creates an instance of this dialog fragment must
- * implement this interface in order to receive event callbacks.
- * Each method passes the DialogFragment in case the host needs to query it. */
+    /**
+     * interface for the listener of this class.
+     */
     public interface OnRequestScheduleDialogListener {
         void onRequestScheduleDialogPositiveClick(DialogFragment dialog);
         void onRequestScheduleDialogNegativeClick(DialogFragment dialog);
@@ -57,10 +54,7 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
 
     RequestScheduleDialogFragment.OnRequestScheduleDialogListener mListener;
 
-    public RequestScheduleDialogFragment() {
-        // Required empty public constructor
-    }
-
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -167,10 +161,18 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
         mListener = null;
     }
 
+    /**
+     * getter for the challenge type.
+     * @return the challenge type.
+     */
     public Challenge.Type getType() {
         return type;
     }
 
+    /**
+     * getter for scheduled calendar.
+     * @return the scheduled calendar.
+     */
     public Calendar getScheduledCalendar() {
         return scheduledCalendar;
     }

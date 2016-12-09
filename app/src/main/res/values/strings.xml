@@ -94,4 +94,11 @@
     <string name="challenge_request">Challenge Request</string>
     <string name="prepare_your_challenge">Prepare your challenge</string>
     <string name="downloading_user_data">Downloading user data …</string>
+    <string name="set_the_time">Set the time</string>
+    <string name="set_the_distance">Set the distance</string>
+    <string name="m">m</string>
+    <string name="memo">Memo</string>
+    <string name="wins_the_first_one_to_reach">"Wins the first one to reach "</string>
+    <string name="wins_the_one_who_runs_the_most_distance_in">"Wins the one who runs the most distance in "</string>
+    <string name="spaced_h">"h "</string>
 </resources>

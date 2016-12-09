@@ -2,7 +2,7 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="ch.epfl.sweng.project.Fragments.RequestDialogFragment">
+             tools:context="ch.epfl.sweng.project.Fragments.MemoDialogFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
@@ -13,7 +13,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/schedule_request"
+            android:text="@string/memo"
             android:id="@+id/txt_request_title"
             android:textSize="24sp"
             android:textStyle="normal|bold"
