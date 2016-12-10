@@ -74,6 +74,14 @@ public class ChallengeTest {
         Assert.assertTrue(challenge.isWon());
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void setNegativeIdThrowsException() {
+        Run myRun = createTestRun();
+        Run opponentRun = createTestRun();
+        Challenge challenge = new Challenge("someone", Challenge.Type.TIME, 100, Challenge.Result.LOST, myRun, opponentRun);
+        challenge.setId(-123);
+    }
+
     @Test
     public void setters() {
         String opponentName = "someone";

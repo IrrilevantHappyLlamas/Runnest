@@ -127,9 +127,12 @@ public class Challenge implements Serializable {
     /**
      * Setter for the id of the challenge (used when the challenge is retrieved from the local database)
      *
-     * @param id the id of the challenge
+     * @param id the id of the challenge that mus be positive
      */
     public void setId(long id) {
+        if (id < 0) {
+            throw new IllegalArgumentException();
+        }
         this.id = id;
     }
 
