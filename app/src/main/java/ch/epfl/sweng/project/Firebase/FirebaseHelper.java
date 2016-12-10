@@ -190,7 +190,12 @@ public class FirebaseHelper {
                         }
 
                         Challenge.Type challengeType = children.child(CHALLENGE_TYPE_CHILD).getValue(Challenge.Type.class);
-                        Message message = new Message(from, forUser, sender, addressee, type, messageText, time, firstValue, secondValue, challengeType);
+                        Message message;
+                        if (challengeType != null) {
+                            message = new Message(from, forUser, sender, addressee, type, messageText, time, firstValue, secondValue, challengeType);
+                        } else {
+                            message = new Message(from, forUser, sender, addressee, type, messageText, time);
+                        }
 
                         messages.add(message);
                     }

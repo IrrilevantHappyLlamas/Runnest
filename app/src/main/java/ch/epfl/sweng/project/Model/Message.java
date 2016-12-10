@@ -115,9 +115,6 @@ public class Message implements Serializable {
             throws IllegalArgumentException
     {
         this(from, to, sender, addressee, type, message, sentAt);
-        if (type != Type.CHALLENGE_REQUEST) {
-            throw new IllegalArgumentException("This constructor can be used only for challenge requests");
-        }
         if (challengeType == null) {
             throw new IllegalArgumentException("Invalid argument: parameters can't be null nor empty");
         }
