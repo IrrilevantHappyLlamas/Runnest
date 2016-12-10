@@ -69,17 +69,18 @@ public class ChallengeTest {
         Assert.assertTrue(type == challenge.getType());
         Assert.assertEquals(goal, challenge.getGoal(), 0);
         Assert.assertTrue(result == challenge.getResult());
-        Assert.assertTrue(challenge.isWon());
         Assert.assertEquals(myRun.getDuration(), challenge.getMyRun().getDuration());
         Assert.assertEquals(opponentRun.getDuration(), challenge.getOpponentRun().getDuration());
+        Assert.assertTrue(challenge.isWon());
     }
 
     @Test
-    public void setId() {
+    public void setters() {
         String opponentName = "someone";
         Run myRun = createTestRun();
         Run opponentRun = createTestRun();
-        Challenge challenge = new Challenge(opponentName, Challenge.Type.TIME, 100, Challenge.Result.WON, myRun, opponentRun);
+        Challenge challenge = new Challenge(opponentName, Challenge.Type.TIME, 100, Challenge.Result.LOST, myRun, opponentRun);
+        Assert.assertFalse(challenge.isWon());
 
         long id = 1234;
         challenge.setId(id);

@@ -99,7 +99,7 @@ public class MessageTest {
     }
 
     @Test
-    public void gettersReturnSettedValue() {
+    public void getters() {
         String from = "me";
         String to = "you";
         String sender = "me";
