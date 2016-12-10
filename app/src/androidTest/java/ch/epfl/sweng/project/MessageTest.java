@@ -89,7 +89,7 @@ public class MessageTest {
     @Test(expected = IllegalArgumentException.class)
     public void constructorScheduleMemoThrowsExceptionWithNullChallengeType() {
         Date time = new Date();
-        Message testMessage = new Message("me", "you", "me", "you", Message.Type.TEXT, "msg", time, null);
+        Message testMessage = new Message("me", "you", "me", "you", Message.Type.MEMO, "msg", time, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
