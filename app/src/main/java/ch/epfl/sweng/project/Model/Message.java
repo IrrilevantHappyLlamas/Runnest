@@ -5,6 +5,8 @@ import java.util.Date;
 
 /**
  * This class represents a message that can be sent to the server and retrieved by a user
+ *
+ * @author Pablo Pfister
  */
 public class Message implements Serializable {
     private String from;
