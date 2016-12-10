@@ -128,6 +128,7 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
         return builder.create();
     }
 
+    @Override
     public void onClick(View v) {
 
         switch (v.getId()) {

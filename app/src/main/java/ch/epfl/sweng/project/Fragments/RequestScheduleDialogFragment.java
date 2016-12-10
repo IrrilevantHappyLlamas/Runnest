@@ -94,6 +94,7 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
         return builder.create();
     }
 
+    @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
@@ -114,7 +115,7 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
         }
     }
 
-    public void setCurrentDateAndTime(View view) {
+    private void setCurrentDateAndTime(View view) {
 
         datePicker = (DatePicker) view.findViewById(R.id.datePicker);
         timePicker = (TimePicker) view.findViewById(R.id.timePicker);
