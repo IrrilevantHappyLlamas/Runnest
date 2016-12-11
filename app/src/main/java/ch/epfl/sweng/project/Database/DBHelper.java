@@ -18,7 +18,7 @@ import ch.epfl.sweng.project.Model.Track;
 
 /**
  * This class provides methods to interact with a SQLite local database.
- * It allows to store and retrieve Runs.
+ * It allows to store and retrieve Runs and Challenges.
  */
 public class DBHelper extends SQLiteOpenHelper {
     private SQLiteDatabase db;
@@ -37,7 +37,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
     /**
      * The constructor of the class.
-     * @param context
+     *
+     * @param context to use to open or create the database
      */
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -45,10 +46,6 @@ public class DBHelper extends SQLiteOpenHelper {
         db = getWritableDatabase();
     }
 
-    /**
-     * This method creates the tables.
-     * @param db
-     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createEffortsTableQuery = "CREATE TABLE " + RUNS_TABLE_NAME + " ("
@@ -77,12 +74,6 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(createChallengesTableQuery);
     }
 
-    /**
-     * This method updates the database cleaning the tables.
-     * @param db
-     * @param oldVersion number
-     * @param newVersion number
-     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         String dropEffortsTableQuery = "DROP TABLE IF EXISTS " + RUNS_TABLE_NAME;
@@ -98,8 +89,9 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Inserts an Run in the database.
-     * @param run
+     * Insert a Run in the database.
+     *
+     * @param run the run to insert
      * @return true if the insertion was successful, false otherwise
      */
     public boolean insert(Run run) {
@@ -107,8 +99,9 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Inserts an Challenge in the database.
-     * @param challenge
+     * Insert a Challenge in the database.
+     *
+     * @param challenge the challenge to insert
      * @return true if the insertion was successful, false otherwise
      */
     public boolean insert(Challenge challenge) {
@@ -153,9 +146,10 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Inserts an Run in the database marking it as a challenge if needed.
-     * @param run
-     * @param isChallenge denotes if it's a challenge
+     * Insert a Run in the database marking it as a challenge if needed.
+     *
+     * @param run the run to insert
+     * @param isChallenge true if it's part of a challenge, false otherwise
      * @return the id of the inserted run
      */
     private long insert(Run run, boolean isChallenge) {
@@ -189,7 +183,8 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Inserts a checkpoint in the checkpoints table
+     * Insert a checkpoint in the checkpoints table.
+     *
      * @param checkpoint the checkpoint to insert
      * @return the id of the inserted row
      */
@@ -202,7 +197,8 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Deletes a given run
+     * Deletes a given run.
+     *
      * @param run to delete
      * @return true if the deletion was successful
      */
@@ -226,7 +222,8 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Deletes a given challenge
+     * Deletes a given challenge.
+     *
      * @param challenge to delete
      * @return true if the deletion was successful
      */
@@ -244,7 +241,8 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Retrieves all runs present in the database.
+     * Retrieve all runs present in the database.
+     *
      * @return the list of runs present in the database
      */
     public List<Run> fetchAllRuns() {
@@ -266,7 +264,8 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Retrieves all challenges present in the database.
+     * Retrieve all challenges present in the database.
+     *
      * @return the list of challenges present in the database
      */
     public List<Challenge> fetchAllChallenges() {
@@ -315,8 +314,9 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Fetches a specific run from the database given its id
-     * @param id
+     * Retrieve a specific run from the database given its id.
+     *
+     * @param id the id of the run to retrieve
      * @return the run
      */
     private Run fetchRun(long id) {
@@ -347,7 +347,8 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Retrieves a track from the database
+     * Retrieve a track from the database given its starting and ending index.
+     *
      * @param fromId
      * @param toId
      * @return the track
