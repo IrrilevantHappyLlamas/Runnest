@@ -39,6 +39,11 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
 
     private MapType currentMapType = null;
 
+    /**
+     * creates a new instance of this class and initializes some fields
+     * @param challenge the challenge to be displayed.
+     * @return an instance of this class.
+     */
     public static DisplayChallengeFragment newInstance(Challenge challenge) {
         DisplayChallengeFragment fragment = new DisplayChallengeFragment();
         Bundle args = new Bundle();

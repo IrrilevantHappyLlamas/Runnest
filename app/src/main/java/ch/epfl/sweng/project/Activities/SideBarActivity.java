@@ -765,10 +765,10 @@ public class SideBarActivity extends AppCompatActivity
      * @param dialog the Request Challenge Dialog.
      */
     @Override
-    public void onDialogAcceptClick(DialogFragment dialog) {
+    public void onChallengeDialogAcceptClick(DialogFragment dialog) {
 
         if(dialog == null){
-            throw new IllegalArgumentException("Invalid argument 'dialog' on onDialogAcceptClick method");
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onChallengeDialogAcceptClick method");
         }
 
         Challenge.Type challengeType = ((RequestChallengeDialogFragment)dialog).getType();
@@ -791,10 +791,10 @@ public class SideBarActivity extends AppCompatActivity
      * @param dialog the Request Challenge Dialog.
      */
     @Override
-    public void onDialogDeclineClick(DialogFragment dialog) {
+    public void onChallengeDialogDeclineClick(DialogFragment dialog) {
 
         if(dialog == null){
-            throw new IllegalArgumentException("Invalid argument 'dialog' on onDialogDeclineClick method");
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onChallengeDialogDeclineClick method");
         }
 
         mFirebaseHelper.delete(requestMessage);
@@ -806,9 +806,9 @@ public class SideBarActivity extends AppCompatActivity
      * @param dialog the Request Challenge Dialog.
      */
     @Override
-    public void onDialogCancelClick(DialogFragment dialog) {
+    public void onChallengeDialogCancelClick(DialogFragment dialog) {
         if(dialog == null){
-            throw new IllegalArgumentException("Invalid argument 'dialog' on onDialogCancelClick method");
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onChallengeDialogCancelClick method");
         }
     }
 

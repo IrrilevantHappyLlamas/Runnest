@@ -25,6 +25,11 @@ public class DisplayUserFragment extends Fragment {
 
     private OnDisplayUserFragmentInteractionListener listener;
 
+    /**
+     * creates a new instance of this class and initializes some fields
+     * @param foundUsers the results of the user search.
+     * @return an instance of this class.
+     */
     public static DisplayUserFragment newInstance(Map<String, String> foundUsers) {
         DisplayUserFragment fragment = new DisplayUserFragment();
         fragment.foundUsers = new HashMap<>(foundUsers);

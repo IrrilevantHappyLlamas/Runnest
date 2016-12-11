@@ -38,9 +38,9 @@ public class RequestChallengeDialogFragment extends DialogFragment {
      * interface for the listener of this class.
      */
     public interface RequestDialogListener {
-        void onDialogAcceptClick(DialogFragment dialog);
-        void onDialogDeclineClick(DialogFragment dialog);
-        void onDialogCancelClick(DialogFragment dialog);
+        void onChallengeDialogAcceptClick(DialogFragment dialog);
+        void onChallengeDialogDeclineClick(DialogFragment dialog);
+        void onChallengeDialogCancelClick(DialogFragment dialog);
     }
 
     RequestDialogListener mListener;
@@ -63,21 +63,21 @@ public class RequestChallengeDialogFragment extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
 
-                        mListener.onDialogAcceptClick(RequestChallengeDialogFragment.this);
+                        mListener.onChallengeDialogAcceptClick(RequestChallengeDialogFragment.this);
                     }
                 })
                 .setNegativeButton("Decline", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //cancel
                         // Send the positive button event back to the host activity
-                        mListener.onDialogDeclineClick(RequestChallengeDialogFragment.this);
+                        mListener.onChallengeDialogDeclineClick(RequestChallengeDialogFragment.this);
                     }
                 })
                 .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //cancel
                         // Send the positive button event back to the host activity
-                        mListener.onDialogCancelClick(RequestChallengeDialogFragment.this);
+                        mListener.onChallengeDialogCancelClick(RequestChallengeDialogFragment.this);
                     }
                 });
 

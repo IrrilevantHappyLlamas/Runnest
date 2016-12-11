@@ -107,18 +107,18 @@ public class SidebarActivityTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void onDialogAcceptClick() {
-        activity.onDialogAcceptClick(null);
+    public void onChallengeDialogAcceptClick() {
+        activity.onChallengeDialogAcceptClick(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void onDialogDeclineClick() {
-        activity.onDialogDeclineClick(null);
+    public void onChallengeDialogDeclineClick() {
+        activity.onChallengeDialogDeclineClick(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void onDialogCancelClick() {
-        activity.onDialogCancelClick(null);
+    public void onChallengeDialogCancelClick() {
+        activity.onChallengeDialogCancelClick(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
