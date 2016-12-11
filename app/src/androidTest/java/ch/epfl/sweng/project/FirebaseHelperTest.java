@@ -201,7 +201,7 @@ public class FirebaseHelperTest {
 
     @Test
     public void correctlyAddChallengeCheckPoint() {
-        CheckPoint checkPoint = new CheckPoint(100, 100);
+        CheckPoint checkPoint = new CheckPoint(90, 90);
         firebaseHelper.addChallengeCheckPoint(checkPoint, "testChallenge",  "testUser1", 0);
         firebaseHelper.getDatabase().child("challenges").child("testChallenge").child("testUser1")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
