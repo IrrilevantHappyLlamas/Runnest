@@ -223,7 +223,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
             }
 
             @Override
-            public void hasAborted() {
+            public void hasLeft() {
                 if (phase == BEFORE_CHALLENGE) {
                     Intent returnIntent = new Intent();
                     setResult(SideBarActivity.REQUEST_STOP_WAITING, returnIntent);

@@ -42,7 +42,7 @@ public class FirebaseProxyTest {
             }
 
             @Override
-            public void hasAborted() {
+            public void hasLeft() {
 
             }
 
@@ -84,7 +84,7 @@ public class FirebaseProxyTest {
             }
 
             @Override
-            public void hasAborted() {
+            public void hasLeft() {
 
             }
 

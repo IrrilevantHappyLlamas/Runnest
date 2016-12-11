@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An ordinated sequence of checkpoints that models a track
+ * An ordinated sequence of checkpoints that models a track. This class provides methods to manipulate the Track by
+ * adding CheckPoint data to it, retrieve all checkpoints and compute the total distance.
  */
-@SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
 public class Track {
 
     private List<CheckPoint> checkpoints = null;
@@ -15,7 +15,7 @@ public class Track {
 
 
     /**
-     * Constructor which initialize an empty <code>Tarck</code>
+     * Constructor which initialize an empty Track.
      */
     public Track() {
         checkpoints = new ArrayList<>();
@@ -24,11 +24,16 @@ public class Track {
     }
 
     /**
-     * Constructor that takes a starting <code>CheckPoint</code> for the <code>Track</code>
+     * Constructor that takes a starting CheckPoint for the Track.
      *
-     * @param startingPoint     starting point of the <code>Track</code>
+     * @param startingPoint     Starting point of the Track, must be non null.
      */
     public Track(CheckPoint startingPoint) {
+
+        if (startingPoint == null) {
+            throw new IllegalArgumentException("Starting point of a Track can't be null");
+        }
+
         checkpoints = new ArrayList<>();
         checkpoints.add(startingPoint);
         totalCheckPoints = 1;
@@ -36,25 +41,28 @@ public class Track {
     }
 
     /**
-     * Copy constructor
+     * Copy constructor.
      *
-     * @param toCopy    <code>Track</code> to copy
+     * @param toCopy    Track to copy, must be non null.
      */
     public Track(Track toCopy) {
+
+        if (toCopy == null) {
+            throw new IllegalArgumentException("Track to copy can't be null");
+        }
         checkpoints = new ArrayList<>(toCopy.checkpoints);
         totalCheckPoints = toCopy.totalCheckPoints;
         distance = toCopy.distance;
     }
 
     /**
-     * Add a new <code>CheckPoint</code> to the <code>Track</code>. The new point must be non null
+     * Add a new CheckPoint to the Track. The new point must be non null.
      *
-     * @param newPoint  <code>CheckPoint</code> to add
-     * @return          <code>true</code> if the operation succeeds, <code>false</code> otherwise
+     * @param newPoint  CheckPoint to add, must be non null.
      */
-    public boolean add(CheckPoint newPoint) {
+    public void add(CheckPoint newPoint) {
         if (newPoint == null) {
-            return false;
+            throw new IllegalArgumentException("Cannot add a null CheckPoint to a Track");
         }
 
         if (totalCheckPoints > 0) {
@@ -65,41 +73,38 @@ public class Track {
             checkpoints.add(newPoint);
             totalCheckPoints++;
         }
-
-    return true;
     }
 
     /**
-     * Getter for the total distance in meters
+     * Getter for the total distance in meters.
      *
-     * @return  total distance
+     * @return  Total distance in meters.
      */
     public float getDistance() {
         return distance;
     }
 
     /**
-     * Getter for the total number of <code>CheckPoint</code>
+     * Getter for the total number of CheckPoints.
      *
-     * @return  total number of points
+     * @return  Total number of points.
      */
     public int getTotalCheckPoints() {
         return totalCheckPoints;
     }
 
     /**
-     * Getter for the <code>CheckPoint</code> list
+     * Getter for the CheckPoint list.
      *
-     * @return  a list of <code>CheckPoint</code>
+     * @return  A copy of the list of CheckPoints.
      */
     public List<CheckPoint> getCheckpoints() { return new ArrayList<>(checkpoints); }
 
     /**
-     * Getter for the last registered <code>CheckPoint</code>
+     * Getter for the last registered CheckPoint.
      *
-     * @return
+     * @return  Last CheckPoint added or null if the Track is empty.
      */
-    // TODO: handle empty track (else branch)
     public CheckPoint getLastPoint() {
         if (totalCheckPoints != 0) {
             return checkpoints.get(totalCheckPoints - 1);

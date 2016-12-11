@@ -133,7 +133,7 @@ public class FirebaseProxy implements ChallengeProxy {
                         case ABORT: removeActiveListeners();
                                     isChallengeTerminated = true;
                                     firebaseHelper.deleteChallengeNode(challengeName);
-                                    callbackHandler.hasAborted();
+                                    callbackHandler.hasLeft();
                                     break;
                         default: throw new IllegalArgumentException("Cannot check that status node before challenge has started");
                     }
@@ -267,7 +267,7 @@ public class FirebaseProxy implements ChallengeProxy {
                         removeActiveListeners();
                         isChallengeTerminated = true;
                         deleteChallenge();
-                        callbackHandler.hasAborted();
+                        callbackHandler.hasLeft();
                     }
                 }
             }
