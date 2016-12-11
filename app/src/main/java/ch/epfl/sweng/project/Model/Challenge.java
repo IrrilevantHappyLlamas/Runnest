@@ -45,10 +45,10 @@ public class Challenge implements Serializable {
      * @param opponentRun the run of the opponent
      */
     public Challenge(String opponentName, Type type, double goal, Result result, Run myRun, Run opponentRun) {
-        if (opponentName == null || opponentName.equals("")
-                || type == null || goal <= 0
-                || myRun == null || opponentRun == null)
-        {
+        if (opponentName == null || type == null || myRun == null || opponentRun == null) {
+            throw new NullPointerException();
+        }
+        if (opponentName.equals("") || goal <= 0) {
             throw new IllegalArgumentException();
         }
 

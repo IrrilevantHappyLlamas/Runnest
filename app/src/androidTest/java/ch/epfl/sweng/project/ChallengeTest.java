@@ -20,7 +20,7 @@ public class ChallengeTest {
         return testRun;
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void nullOpponentNameThrowsException() {
         Challenge challenge = new Challenge(null, Challenge.Type.DISTANCE, 100, Challenge.Result.WON, createTestRun(), createTestRun());
     }
@@ -30,17 +30,17 @@ public class ChallengeTest {
         Challenge challenge = new Challenge("", Challenge.Type.TIME, 100, Challenge.Result.LOST, createTestRun(), createTestRun());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void nullMyRunThrowsException() {
         Challenge challenge = new Challenge("someone", Challenge.Type.TIME, 100, Challenge.Result.ABORTED_BY_OTHER, null, createTestRun());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void nullOpponentRunThrowsException() {
         Challenge challenge = new Challenge("someone", Challenge.Type.TIME, 100, Challenge.Result.ABORTED_BY_ME, createTestRun(), null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void nullTypeThrowsException() {
         Challenge challenge = new Challenge("someone", null, 100, Challenge.Result.WON, createTestRun(), createTestRun());
     }
