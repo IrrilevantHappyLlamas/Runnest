@@ -37,6 +37,12 @@ public class DBHelperTest {
         dbHelper = new DBHelper(testContext);
     }
 
+    @Test(expected = NullPointerException.class)
+    public void insertNullRunThrowsException() {
+        Run run = null;
+        dbHelper.insert(run);
+    }
+
     @Test
     public void canInsertNewRun() {
         boolean isInserted = dbHelper.insert(createTestRun());
@@ -61,6 +67,12 @@ public class DBHelperTest {
         Assert.assertEquals(10, lastRun.getDuration(), 0);
     }
 
+    @Test(expected = NullPointerException.class)
+    public void deleteNullRunThrowsException() {
+        Run run = null;
+        dbHelper.delete(run);
+    }
+
     @Test
     public void canDeleteRun() {
         List<Run> runs = dbHelper.fetchAllRuns();
@@ -77,6 +89,12 @@ public class DBHelperTest {
 
         runs = dbHelper.fetchAllRuns();
         Assert.assertEquals(initialNbRuns, runs.size());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void insertNullChallengeThrowsException() {
+        Challenge challenge = null;
+        dbHelper.insert(challenge);
     }
 
     @Test
@@ -113,6 +131,12 @@ public class DBHelperTest {
         Assert.assertFalse(last.isWon());
     }
 
+    @Test(expected = NullPointerException.class)
+    public void deleteNullChallengeThrowsException() {
+        Challenge challenge = null;
+        dbHelper.delete(challenge);
+    }
+
     @Test
     public void canDeleteChallenge() {
         List<Challenge> challenges = dbHelper.fetchAllChallenges();
@@ -130,6 +154,16 @@ public class DBHelperTest {
 
         challenges = dbHelper.fetchAllChallenges();
         Assert.assertEquals(initialNbRuns, challenges.size());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void upgradeThrowsExceptionWithNullDB() {
+        dbHelper.onUpgrade(null, 0, 1);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void upgradeThrowsExceptionWithIncoherentVersion() {
+        dbHelper.onUpgrade(dbHelper.getDatabase(), 0, -1);
     }
 
     @Test

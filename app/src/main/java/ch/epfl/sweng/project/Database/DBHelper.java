@@ -78,6 +78,13 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if (db == null) {
+            throw new NullPointerException();
+        }
+        if (oldVersion < 0 || newVersion < oldVersion) {
+            throw new IllegalArgumentException();
+        }
+
         String dropEffortsTableQuery = "DROP TABLE IF EXISTS " + RUNS_TABLE_NAME;
         db.execSQL(dropEffortsTableQuery);
 
@@ -97,6 +104,10 @@ public class DBHelper extends SQLiteOpenHelper {
      * @return true if the insertion was successful, false otherwise
      */
     public boolean insert(Run run) {
+        if (run == null) {
+            throw new NullPointerException();
+        }
+
         return insert(run, false) != -1;
     }
 
@@ -107,6 +118,10 @@ public class DBHelper extends SQLiteOpenHelper {
      * @return true if the insertion was successful, false otherwise
      */
     public boolean insert(Challenge challenge) {
+        if (challenge == null) {
+            throw new NullPointerException();
+        }
+
         String opponentName = challenge.getOpponentName();
         Challenge.Type type = challenge.getType();
         double goal = challenge.getGoal();
@@ -207,6 +222,10 @@ public class DBHelper extends SQLiteOpenHelper {
      * @return true if the deletion was successful
      */
     public boolean delete(Run run) {
+        if (run == null) {
+            throw new NullPointerException();
+        }
+
         long id = run.getId();
         if  (id >= 0) {
             String selectRun = RUNS_COLS[0] + " = " + id;
@@ -232,6 +251,10 @@ public class DBHelper extends SQLiteOpenHelper {
      * @return true if the deletion was successful
      */
     public boolean delete(Challenge challenge) {
+        if (challenge == null) {
+            throw new NullPointerException();
+        }
+
         long id = challenge.getId();
         if  (id >= 0) {
             delete(challenge.getMyRun());
@@ -325,10 +348,6 @@ public class DBHelper extends SQLiteOpenHelper {
      * @return the run
      */
     private Run fetchRun(long id) {
-        if (id < 0) {
-            throw new IllegalArgumentException();
-        }
-
         String selectRun = RUNS_COLS[0] + " = " + id;
         Cursor result = db.query(RUNS_TABLE_NAME, RUNS_COLS, selectRun, null, null, null, null);
         if (result.getCount() == 1) {
