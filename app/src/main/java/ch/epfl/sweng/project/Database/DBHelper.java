@@ -157,7 +157,7 @@ public class DBHelper extends SQLiteOpenHelper {
      * @return the id of the inserted run
      */
     private long insert(Run run, boolean isChallenge) {
-        //insert all checkpoints
+        //insert all checkpoints that form the track
         Track track = run.getTrack();
         List<CheckPoint> checkpoints = track.getCheckpoints();
         long checkpointsFromId = -1;
@@ -173,15 +173,15 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         //insert Run
-        String name = run.getName();
-        ContentValues runContentValues = new ContentValues();
+        ContentValues valuesToInsert = new ContentValues();
         int challenge = isChallenge ? 1 : 0;
-        runContentValues.put(RUNS_COLS[1], challenge);
-        runContentValues.put(RUNS_COLS[2], name);
-        runContentValues.put(RUNS_COLS[3], run.getDuration());
-        runContentValues.put(RUNS_COLS[4], checkpointsFromId);
-        runContentValues.put(RUNS_COLS[5], checkpointsToId);
-        long insertedRun = db.insert(RUNS_TABLE_NAME, null, runContentValues);
+        valuesToInsert.put(RUNS_COLS[1], challenge);
+        valuesToInsert.put(RUNS_COLS[2], run.getName());
+        valuesToInsert.put(RUNS_COLS[3], run.getDuration());
+        valuesToInsert.put(RUNS_COLS[4], checkpointsFromId);
+        valuesToInsert.put(RUNS_COLS[5], checkpointsToId);
+
+        long insertedRun = db.insert(RUNS_TABLE_NAME, null, valuesToInsert);
         run.setId(insertedRun);
         return insertedRun;
     }
@@ -193,11 +193,11 @@ public class DBHelper extends SQLiteOpenHelper {
      * @return the id of the inserted row
      */
     private long insert(CheckPoint checkpoint) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(CHECKPOINTS_COLS[1], checkpoint.getLatitude());
-        contentValues.put(CHECKPOINTS_COLS[2], checkpoint.getLongitude());
+        ContentValues valuesToInsert = new ContentValues();
+        valuesToInsert.put(CHECKPOINTS_COLS[1], checkpoint.getLatitude());
+        valuesToInsert.put(CHECKPOINTS_COLS[2], checkpoint.getLongitude());
 
-        return db.insert(CHECKPOINTS_TABLE_NAME, null, contentValues);
+        return db.insert(CHECKPOINTS_TABLE_NAME, null, valuesToInsert);
     }
 
     /**
@@ -289,8 +289,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
                 double goal = result.getDouble(3);
 
-                boolean isWon = result.getShort(4) == 1;
-                Challenge.Result resultOfTheRun = Challenge.Result.LOST;
+                Challenge.Result resultOfTheRun;
                 switch (result.getShort(4)) {
                     case 0:
                         resultOfTheRun = Challenge.Result.WON;
@@ -304,6 +303,8 @@ public class DBHelper extends SQLiteOpenHelper {
                     case 3:
                         resultOfTheRun = Challenge.Result.ABORTED_BY_OTHER;
                         break;
+                    default:
+                        resultOfTheRun = Challenge.Result.LOST;
                 }
 
                 Run myRun = fetchRun(result.getLong(5));
@@ -353,8 +354,8 @@ public class DBHelper extends SQLiteOpenHelper {
     /**
      * Retrieve a track from the database given its starting and ending index.
      *
-     * @param fromId
-     * @param toId
+     * @param fromId the id of the first checkpoint
+     * @param toId the id of the last checkpoint
      * @return the track
      */
     private Track fetchTrack(long fromId, long toId) {
