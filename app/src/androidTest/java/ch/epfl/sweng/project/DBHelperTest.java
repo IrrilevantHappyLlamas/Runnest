@@ -131,4 +131,10 @@ public class DBHelperTest {
         challenges = dbHelper.fetchAllChallenges();
         Assert.assertEquals(initialNbRuns, challenges.size());
     }
+
+    @Test
+    public void upgrade() {
+        dbHelper.onUpgrade(dbHelper.getDatabase(), 0, 1);
+        Assert.assertTrue(dbHelper.fetchAllRuns().isEmpty());
+    }
 }

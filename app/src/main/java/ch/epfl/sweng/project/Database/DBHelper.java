@@ -19,6 +19,8 @@ import ch.epfl.sweng.project.Model.Track;
 /**
  * This class provides methods to interact with a SQLite local database.
  * It allows to store and retrieve Runs and Challenges.
+ *
+ * @author Pablo Pfister
  */
 public class DBHelper extends SQLiteOpenHelper {
     private SQLiteDatabase db;
@@ -109,7 +111,7 @@ public class DBHelper extends SQLiteOpenHelper {
         Challenge.Type type = challenge.getType();
         double goal = challenge.getGoal();
 
-        int result = 1;
+        int result;
         switch (challenge.getResult()) {
             case WON:
                 result = 0;
@@ -123,20 +125,22 @@ public class DBHelper extends SQLiteOpenHelper {
             case ABORTED_BY_OTHER:
                 result = 3;
                 break;
+            default:
+                result = 1;
         }
 
         long myRunId = insert(challenge.getMyRun(), true);
         long opponentRunId = insert(challenge.getOpponentRun(), true);
 
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(CHALLENGES_COLS[1], opponentName);
-        contentValues.put(CHALLENGES_COLS[2], type.toString());
-        contentValues.put(CHALLENGES_COLS[3], goal);
-        contentValues.put(CHALLENGES_COLS[4], result);
-        contentValues.put(CHALLENGES_COLS[5], myRunId);
-        contentValues.put(CHALLENGES_COLS[6], opponentRunId);
+        ContentValues valuesToInsert = new ContentValues();
+        valuesToInsert.put(CHALLENGES_COLS[1], opponentName);
+        valuesToInsert.put(CHALLENGES_COLS[2], type.toString());
+        valuesToInsert.put(CHALLENGES_COLS[3], goal);
+        valuesToInsert.put(CHALLENGES_COLS[4], result);
+        valuesToInsert.put(CHALLENGES_COLS[5], myRunId);
+        valuesToInsert.put(CHALLENGES_COLS[6], opponentRunId);
 
-        long challengeId = db.insert(CHALLENGES_TABLE_NAME, null, contentValues);
+        long challengeId = db.insert(CHALLENGES_TABLE_NAME, null, valuesToInsert);
         if (challengeId != -1) {
             challenge.setId(challengeId);
             return true;
@@ -379,4 +383,12 @@ public class DBHelper extends SQLiteOpenHelper {
         return mContext.getDatabasePath(DATABASE_NAME);
     }
 
+    /**
+     * Getter for the database
+     *
+     * @return the database
+     */
+    public SQLiteDatabase getDatabase() {
+        return db;
+    }
 }
