@@ -94,4 +94,8 @@
     <string name="challenge_request">Challenge Request</string>
     <string name="prepare_your_challenge">Prepare your challenge</string>
     <string name="downloading_user_data">Downloading user data …</string>
+    <string name="runs">runs</string>
+    <string name="challenges_lowercase">challenges</string>
+    <string name="won">won</string>
+    <string name="lost">lost</string>
 </resources>
