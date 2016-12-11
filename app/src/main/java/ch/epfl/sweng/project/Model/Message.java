@@ -41,13 +41,11 @@ public class Message implements Serializable {
     public Message(String from, String to, String sender, String addressee, Type type, String message)
             throws IllegalArgumentException
     {
-        if (from == null || from.equals("")
-                || to == null || to.equals("")
-                || sender == null || sender.equals("")
-                || addressee == null || addressee.equals("")
-                || type == null
-                || message == null || message.equals("")) {
-            throw new IllegalArgumentException("Invalid argument: parameters can't be null nor empty");
+        if (from == null || to == null || sender == null || addressee == null || type == null || message == null) {
+            throw new NullPointerException();
+        }
+        if (from.equals("") || to.equals("") || sender.equals("") || addressee.equals("") || message.equals("")) {
+            throw new IllegalArgumentException("Invalid argument: parameters can't be empty");
         }
         if (from.equals(to)) {
             throw new IllegalArgumentException("Invalid argument: can't send a message to yourself");
@@ -83,7 +81,7 @@ public class Message implements Serializable {
     {
         this(from, to, sender, addressee, type, message);
         if (sentAt == null) {
-            throw new IllegalArgumentException("Invalid argument: parameters can't be null nor empty");
+            throw new NullPointerException();
         }
 
         this.time = sentAt;
@@ -118,7 +116,7 @@ public class Message implements Serializable {
     {
         this(from, to, sender, addressee, type, message, sentAt);
         if (challengeType == null) {
-            throw new IllegalArgumentException("Invalid argument: parameters can't be null nor empty");
+            throw new NullPointerException();
         }
 
         this.firstValue = firstValue;
@@ -154,7 +152,7 @@ public class Message implements Serializable {
             throw new IllegalArgumentException("This constructor can be used only for schedules and memos");
         }
         if (challengeType == null) {
-            throw new IllegalArgumentException("Invalid argument: parameters can't be null nor empty");
+            throw new NullPointerException();
         }
 
         this.challengeType = challengeType;

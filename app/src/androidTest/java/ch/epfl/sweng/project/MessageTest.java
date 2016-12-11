@@ -16,7 +16,7 @@ public class MessageTest {
         Assert.assertTrue(true);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void defaultConstructorThrowsExceptionWithIllegalTo() {
         Message testMessage = new Message(null, "you", "me", "you", Message.Type.TEXT, "Hello, world!");
     }
@@ -26,7 +26,7 @@ public class MessageTest {
         Message testMessage = new Message("", "you", "me", "you", Message.Type.TEXT, "Hello, world!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void defaultConstructorThrowsExceptionWithIllegalFrom() {
         Message testMessage = new Message("me", null, "me", "you", Message.Type.TEXT, "Hello, world!");
     }
@@ -36,7 +36,7 @@ public class MessageTest {
         Message testMessage = new Message("me", "", "me", "you", Message.Type.TEXT, "Hello, world!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void defaultConstructorThrowsExceptionWithIllegalSender() {
         Message testMessage = new Message("me", "you", null, "you", Message.Type.TEXT, "Hello, world!");
     }
@@ -46,7 +46,7 @@ public class MessageTest {
         Message testMessage = new Message("me", "you", "", "you", Message.Type.TEXT, "Hello, world!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void defaultConstructorThrowsExceptionWithIllegalAddressee() {
         Message testMessage = new Message("me", "you", "me", null, Message.Type.TEXT, "Hello, world!");
     }
@@ -55,12 +55,12 @@ public class MessageTest {
     public void defaultConstructorThrowsExceptionWithEmptyAddresseee() {
         Message testMessage = new Message("me", "you", "me", "", Message.Type.TEXT, "Hello, world!");
     }
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void defaultConstructorThrowsExceptionWithIllegalType() {
         Message testMessage = new Message("me", "you", "me", "you", null, "Hello, world!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void defaultConstructorThrowsExceptionWithIllegalMessage() {
         Message testMessage = new Message("me", "you", "me", "you", Message.Type.CHALLENGE_REQUEST, null);
     }
@@ -70,7 +70,7 @@ public class MessageTest {
         Message testMessage = new Message("me", "you", "me", "you", Message.Type.CHALLENGE_RESPONSE, "");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void constructorWithTimeThrowsExceptionWithNullTime() {
         Message testMessage = new Message("me", "you", "me", "you", Message.Type.MEMO, "Hello, world!", null);
     }
@@ -80,13 +80,13 @@ public class MessageTest {
         Message testMessage = new Message("me", "me", "me", "me", Message.Type.TEXT, "Hello, world!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void constructorChallengeParamsThrowsExceptionWithNullChallengeType() {
         Date time = new Date();
         Message testMessage = new Message("me", "you", "me", "you", Message.Type.TEXT, "msg", time, 0, 1, null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void constructorScheduleMemoThrowsExceptionWithNullChallengeType() {
         Date time = new Date();
         Message testMessage = new Message("me", "you", "me", "you", Message.Type.MEMO, "msg", time, null);
