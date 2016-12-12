@@ -107,28 +107,29 @@ public class ProfileFragment extends Fragment {
                 if (distance > 100) {
                     distanceToBeDisplayed = new DecimalFormat("#.0").format(distance / 1000);
                 }
-                distanceToBeDisplayed += " " + getResources().getString(R.string.km);
+                //Context context = getActivity().getApplicationContext();
+                distanceToBeDisplayed += " km"; // + getResources().getString(R.string.km);
                 ((TextView) view.findViewById(R.id.total_running_distance)).setText(distanceToBeDisplayed);
 
                 double time = Double.valueOf(statistics[firebaseHelper.TOTAL_RUNNING_TIME_INDEX]);
                 int hours = (int) time / 3600;
-                int minutes = (int) (time - hours * 60) / 60;
+                int minutes = (int) (time) / 60 - hours * 60;
                 ((TextView) view.findViewById(R.id.total_running_time)).setText(hours + "h " + minutes + "m");
 
                 String nbRuns = statistics[firebaseHelper.TOTAL_NUMBER_OF_RUNS_INDEX]
-                        + " " + getResources().getString(R.string.runs);
+                        + " runs"; // + getResources().getString(R.string.runs);
                 ((TextView) view.findViewById(R.id.nb_runs)).setText(nbRuns);
 
                 String nbChallenges = statistics[firebaseHelper.TOTAL_NUMBER_OF_CHALLENGES_INDEX]
-                        + " " + getResources().getString(R.string.challenges_lowercase);
+                        + " challenges"; // + getResources().getString(R.string.challenges_lowercase);
                 ((TextView) view.findViewById(R.id.total_number_of_challenges)).setText(nbChallenges);
 
                 String nbWon = statistics[firebaseHelper.TOTAL_NUMBER_OF_WON_CHALLENGES_INDEX]
-                        + " " + getResources().getString(R.string.won);
+                        + " won"; // + getResources().getString(R.string.won);
                 ((TextView) view.findViewById(R.id.total_number_of_won_challenges)).setText(nbWon);
 
                 String nbLost = statistics[firebaseHelper.TOTAL_NUMBER_OF_LOST_CHALLENGES_INDEX]
-                        + " " + getResources().getString(R.string.lost);
+                        + " lost"; // + getResources().getString(R.string.lost);
                 ((TextView) view.findViewById(R.id.total_number_of_lost_challenges)).setText(nbLost);
             }
         });
