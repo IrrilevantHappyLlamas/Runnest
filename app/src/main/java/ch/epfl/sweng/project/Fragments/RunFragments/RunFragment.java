@@ -88,7 +88,7 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
 
     private void setupLocationChangeSimulation() {
         //TODO: find a way to bound 10000 to RUN_DURATION in EspressoTest
-        mLocationChangeSimulation = new CountDownTimer(10000, 500) {
+        mLocationChangeSimulation = new CountDownTimer(5000, 500) {
             private Location location;
             private double lat = 0.001;
             private double lon = 0.001;

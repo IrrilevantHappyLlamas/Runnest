@@ -2,7 +2,8 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="ch.epfl.sweng.project.Fragments.ChallengeDialogFragment">
+             tools:context="ch.epfl.sweng.project.Fragments.ChallengeDialogFragment"
+             android:id="@+id/define_challenge">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -10,7 +11,8 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="10dp">
+        android:paddingTop="10dp"
+        >
 
         <TextView
             android:text="@string/prepare_your_challenge"
