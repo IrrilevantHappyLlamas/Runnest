@@ -1,7 +1,6 @@
 package ch.epfl.sweng.project.Fragments.RunFragments;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -22,6 +21,7 @@ import com.google.android.gms.maps.MapView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import ch.epfl.sweng.project.Activities.SideBarActivity;
 import ch.epfl.sweng.project.AppRunnest;
@@ -30,28 +30,25 @@ import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.User;
 
-
 /**
- * This Fragment represent our simplest kind of run. By implementing <code>RunFragment</code>
+ * This Fragment represent our simplest kind of run. By implementing RunFragment
  * it takes care of showing all necessary information about the run it represents.
  *
- * In particular the <code>Track</code> is shown on a map, as well as the distance the user ran
+ * In particular the Track is shown on a map, as well as the distance the user ran
  * right now and the elapsed time.
  *
- * Also it takes care that, once finished, the <code>Run</code> is stored on the local database.
+ * Also it takes care that, once finished, the Run is stored on the local database.
  */
 public class RunningMapFragment extends RunFragment {
 
     // Live stats
-    private Chronometer mChronometer = null;
+    private Chronometer chronometer = null;
 
     // Buttons
-    private Button mStartUpdatesButton = null;
-    private Button mStopUpdatesButton = null;
+    private Button startUpdatesButton = null;
+    private Button stopUpdatesButton = null;
 
-    private RunningMapFragmentInteractionListener mListener = null;
-
-
+    private RunningMapFragmentInteractionListener listener = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,9 +56,9 @@ public class RunningMapFragment extends RunFragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_running_map, container, false);
 
-        mMapView = (MapView) view.findViewById(R.id.mapView);
-        mMapView.onCreate(savedInstanceState);
-        mMapView.getMapAsync(this); //this is important
+        mapView = (MapView) view.findViewById(R.id.mapView);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this); //this is important
 
         // Location
         setupLocation();
@@ -74,36 +71,36 @@ public class RunningMapFragment extends RunFragment {
 
     private void setupLocation() {
 
-        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
+        googleApiClient = new GoogleApiClient.Builder(getContext())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
-        mRequestingLocationUpdates = false;
-        mLocationSettingsHandler = new LocationSettingsHandler(mGoogleApiClient, getActivity());
-        mLocationSettingsHandler.checkLocationSettings();
+        requestingLocationUpdates = false;
+        locationSettingsHandler = new LocationSettingsHandler(googleApiClient, getActivity());
+        locationSettingsHandler.checkLocationSettings();
     }
 
     /**
      * Setup the two buttons of the fragment: Start and Stop.
      *
-     * @param view <code>View</code> where buttons must be added
+     * @param view  View where buttons must be added.
      */
     private void GUISetup(View view) {
 
         //Buttons
-        mStartUpdatesButton = (Button) view.findViewById(R.id.start_run);
-        mStartUpdatesButton.setVisibility(View.VISIBLE);
-        mStartUpdatesButton.setOnClickListener(new View.OnClickListener() {
+        startUpdatesButton = (Button) view.findViewById(R.id.start_run);
+        startUpdatesButton.setVisibility(View.VISIBLE);
+        startUpdatesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startButtonPressed();
             }
         });
 
-        mStopUpdatesButton = (Button) view.findViewById(R.id.stop_run);
-        mStopUpdatesButton.setVisibility(View.INVISIBLE);
-        mStopUpdatesButton.setOnClickListener(new View.OnClickListener() {
+        stopUpdatesButton = (Button) view.findViewById(R.id.stop_run);
+        stopUpdatesButton.setVisibility(View.INVISIBLE);
+        stopUpdatesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 stopButtonPressed();
@@ -112,41 +109,35 @@ public class RunningMapFragment extends RunFragment {
 
         setButtonsEnabledState();
 
-
-
         // Live stats
-        mChronometer = (Chronometer) view.findViewById(R.id.chronometer);
+        chronometer = (Chronometer) view.findViewById(R.id.chronometer);
 
-        mDistance = (TextView) view.findViewById(R.id.distance);
+        distance = (TextView) view.findViewById(R.id.distance);
     }
 
-
-    /**
-     * Include all actions to perform when Start button is pressed
-     */
     private void startButtonPressed() {
 
-        if(checkPermission() && mLocationSettingsHandler.checkLocationSettings()) {
+        if(checkPermission() && locationSettingsHandler.checkLocationSettings()) {
 
             // Set user as unavailable
             new FirebaseHelper().
                     setUserAvailable(((AppRunnest) getActivity().getApplication()).getUser().getEmail(), false, false);
 
             // initialize new Run
-            @SuppressLint("SimpleDateFormat")
-            SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy HH:mm:ss");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy HH:mm:ss", Locale.ENGLISH);
             String runName = dateFormat.format(new Date());
-            mRun = new Run(runName);
+            run = new Run(runName);
             super.startRun();
             // Prevent sleeping
+            //noinspection ConstantConditions
             getView().setKeepScreenOn(true);
 
-            mStartUpdatesButton.setVisibility(View.INVISIBLE);
-            mStopUpdatesButton.setVisibility(View.VISIBLE);
+            startUpdatesButton.setVisibility(View.INVISIBLE);
+            stopUpdatesButton.setVisibility(View.VISIBLE);
 
-            mChronometer.setVisibility(View.VISIBLE);
-            mChronometer.setBase(SystemClock.elapsedRealtime());
-            mChronometer.start();
+            chronometer.setVisibility(View.VISIBLE);
+            chronometer.setBase(SystemClock.elapsedRealtime());
+            chronometer.start();
 
             ((SideBarActivity)getActivity()).setRunning(true);
 
@@ -155,18 +146,19 @@ public class RunningMapFragment extends RunFragment {
     }
 
     private void stopButtonPressed() {
-        if (mRequestingLocationUpdates) {
+        if (requestingLocationUpdates) {
             super.stopRun();
             // Allow sleeping
+            //noinspection ConstantConditions
             getView().setKeepScreenOn(false);
 
             setButtonsEnabledState();
-            mChronometer.stop();
+            chronometer.stop();
             ((SideBarActivity)getActivity()).setRunning(false);
 
+            // Insert run in database
             DBHelper dbHelper = new DBHelper(getContext());
-            //TODO: verify that insertion has been performed correctly
-            dbHelper.insert(mRun);
+            dbHelper.insert(run);
 
             FirebaseHelper firebaseHelper = new FirebaseHelper();
 
@@ -174,30 +166,30 @@ public class RunningMapFragment extends RunFragment {
             firebaseHelper.
                     setUserAvailable(((AppRunnest) getActivity().getApplication()).getUser().getEmail(), false, true);
 
-            //update user statistics
+            // update user statistics
             User currentUser = ((AppRunnest) getActivity().getApplication()).getUser();
-            firebaseHelper.updateUserStatistics(currentUser.getEmail(), mRun.getDuration(),
-                    mRun.getTrack().getDistance(), FirebaseHelper.RunType.SINGLE);
+            firebaseHelper.updateUserStatistics(currentUser.getEmail(), run.getDuration(),
+                    run.getTrack().getDistance(), FirebaseHelper.RunType.SINGLE);
 
             // upload database
             ((AppRunnest)getActivity().getApplication()).launchDatabaseUpload();
 
-            mListener.onRunningMapFragmentInteraction(new Run(mRun));
+            listener.onRunningMapFragmentInteraction(new Run(run));
         }
     }
 
     private void setButtonsEnabledState() {
-        if (mRequestingLocationUpdates) {
-            mStartUpdatesButton.setEnabled(false);
-            mStopUpdatesButton.setEnabled(true);
+        if (requestingLocationUpdates) {
+            startUpdatesButton.setEnabled(false);
+            stopUpdatesButton.setEnabled(true);
         } else {
-            mStopUpdatesButton.setEnabled(false);
-            mStartUpdatesButton.setEnabled(true);
+            stopUpdatesButton.setEnabled(false);
+            startUpdatesButton.setEnabled(true);
         }
     }
 
     /**
-     * Check <code>ACCESS_FINE_LOCATION</code> permission, if necessary request it.
+     * Check ACCESS_FINE_LOCATION permission, if necessary request it.
      * This check is necessary only with Android 6.0+ and/or SDK 22+
      */
     private boolean checkPermission() {
@@ -219,7 +211,7 @@ public class RunningMapFragment extends RunFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof RunningMapFragmentInteractionListener) {
-            mListener = (RunningMapFragmentInteractionListener) context;
+            listener = (RunningMapFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -229,13 +221,13 @@ public class RunningMapFragment extends RunFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        listener = null;
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        mMapView.onLowMemory();
+        mapView.onLowMemory();
     }
 
     public interface RunningMapFragmentInteractionListener {

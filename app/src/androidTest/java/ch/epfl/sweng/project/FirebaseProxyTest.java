@@ -143,7 +143,7 @@ public class FirebaseProxyTest {
         FirebaseProxy proxyNotOwner = createCorrectProxy(false);
         readyAndStartChallenge(proxyOwner, proxyNotOwner);
         proxyOwner.putData(new CheckPoint(90.0, 90.0));
-        proxyNotOwner.putData(new CheckPoint(90.0, 190.0));
+        proxyNotOwner.putData(new CheckPoint(90.0, 90.0));
     }
 
     @Test(expected = NullPointerException.class)
@@ -173,7 +173,7 @@ public class FirebaseProxyTest {
     public void imFinishedOnTerminatedChallenge() {
         FirebaseProxy proxyOwner = createCorrectProxy(true);
         proxyOwner.abortChallenge();
-        proxyOwner.putData(new CheckPoint(90.0, 90dv .0));
+        proxyOwner.putData(new CheckPoint(90.0, 90.0));
     }
 
     @Test

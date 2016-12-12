@@ -16,8 +16,10 @@
         android:layout_height="wrap_content"
         android:background="@drawable/layout_rounded_corners"
         android:layout_marginRight="210dp"
+        android:layout_marginEnd="210dp"
         android:layout_marginTop="15dp"
         android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
         android:elevation="24dp"
         tools:ignore="UnusedAttribute">
 
@@ -28,6 +30,7 @@
             android:layout_height="30dp"
             android:layout_width="30dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             app:srcCompat="@drawable/distance_white"
             tools:ignore="ContentDescription"/>
 
@@ -40,6 +43,7 @@
             android:text="@string/zero_distance"
             android:layout_gravity="center"
             android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:gravity="center"/>
     </LinearLayout>
 
