@@ -30,9 +30,6 @@ import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.support.annotation.ColorInt;
-import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.util.AttributeSet;
 import android.widget.ImageView;
@@ -75,7 +72,7 @@ public class CircleImageView extends ImageView {
 
     private boolean mReady;
     private boolean mSetupPending;
-    private boolean mBorderOverlay;
+    private final boolean mBorderOverlay;
 
     public CircleImageView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);

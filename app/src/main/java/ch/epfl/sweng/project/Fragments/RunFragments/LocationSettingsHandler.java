@@ -16,8 +16,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 import ch.epfl.sweng.project.AppRunnest;
 
-public class LocationSettingsHandler implements
-        ResultCallback<LocationSettingsResult>{
+public class LocationSettingsHandler implements ResultCallback<LocationSettingsResult> {
 
 
     // Constants
