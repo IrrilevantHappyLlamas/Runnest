@@ -76,7 +76,6 @@ public class CircleImageView extends ImageView {
     private boolean mReady;
     private boolean mSetupPending;
     private boolean mBorderOverlay;
-    private boolean mDisableCircularTransformation;
 
     public CircleImageView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -116,11 +115,6 @@ public class CircleImageView extends ImageView {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (mDisableCircularTransformation) {
-            super.onDraw(canvas);
-            return;
-        }
-
         if (mBitmap == null) {
             return;
         }
@@ -193,11 +187,7 @@ public class CircleImageView extends ImageView {
     }
 
     private void initializeBitmap() {
-        if (mDisableCircularTransformation) {
-            mBitmap = null;
-        } else {
-            mBitmap = getBitmapFromDrawable(getDrawable());
-        }
+        mBitmap = getBitmapFromDrawable(getDrawable());
         setup();
     }
 
