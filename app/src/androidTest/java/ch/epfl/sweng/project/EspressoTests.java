@@ -54,7 +54,7 @@ import static org.hamcrest.Matchers.anything;
 public class EspressoTests {
 
     private static final int UI_TEST_TIMEOUT = 10000;
-    private static final int FIREBASE_DURATION = 2000;
+    private static final int FIREBASE_DURATION = 3000;
     private static final int TIME_CHALLENGE_DURATION = 15000;
 
     //TODO: find a way to bound this to setupLocationChangeSimulation value
@@ -182,10 +182,8 @@ public class EspressoTests {
     @Test
     public void backButtonWorks() {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-
-        //onView(isRoot()).perform(waitForMatch(withId(R.id.nav_history), UI_TEST_TIMEOUT));
-        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_history));
-        onView(isRoot()).perform(waitForMatch(withId(R.id.tabs), UI_TEST_TIMEOUT));
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
+        onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
 
         Espresso.pressBack();
         onView(isRoot()).perform(waitForMatch(withId(R.id.main_layout), UI_TEST_TIMEOUT));
@@ -202,6 +200,9 @@ public class EspressoTests {
     public void startAndStopRun() {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
+
+        //TODO: charge map? connect API client?
+        SystemClock.sleep(FIREBASE_DURATION);
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
         onView(withId(R.id.start_run)).perform(click());
@@ -220,6 +221,9 @@ public class EspressoTests {
     public void startAndAbortRun() {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
+
+        //TODO: charge map? connect API client?
+        SystemClock.sleep(FIREBASE_DURATION);
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
         onView(withId(R.id.start_run)).perform(click());
@@ -251,6 +255,9 @@ public class EspressoTests {
     public void deleteRun() {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
+
+        //TODO: charge map? connect API client?
+        SystemClock.sleep(FIREBASE_DURATION);
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
         onView(withId(R.id.start_run)).perform(click());
