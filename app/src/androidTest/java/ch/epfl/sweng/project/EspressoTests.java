@@ -69,7 +69,7 @@ public class EspressoTests {
     public class Retry implements TestRule {
         private int retryCount;
 
-        public Retry(int retryCount) {
+        private Retry(int retryCount) {
             this.retryCount = retryCount;
         }
 
@@ -251,7 +251,7 @@ public class EspressoTests {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
 
-        //TODO: charge map? connect API client?
+        //TODO: wait API client to connect
         SystemClock.sleep(FIREBASE_DURATION);
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
@@ -272,7 +272,7 @@ public class EspressoTests {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
 
-        //TODO: charge map? connect API client?
+        //TODO: wait API client to connect
         SystemClock.sleep(FIREBASE_DURATION);
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
@@ -306,7 +306,7 @@ public class EspressoTests {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
 
-        //TODO: charge map? connect API client?
+        //TODO: wait API client to connect
         SystemClock.sleep(FIREBASE_DURATION);
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
@@ -376,7 +376,7 @@ public class EspressoTests {
         onView(isRoot()).perform(waitForMatch(withId(R.id.readyBtn), UI_TEST_TIMEOUT));
         onView(withId(R.id.readyBtn)).perform(click());
 
-        //TODO: time challenge
+        //TODO: wait time challenge to finish
         tryIsDisplayed(withId(R.id.button_history), TIME_CHALLENGE_DURATION + UI_TEST_TIMEOUT);
     }
 
@@ -456,7 +456,7 @@ public class EspressoTests {
 
         //Tap on the request
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        //onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
 
         //Tap on Cancel
         onView(isRoot()).perform(waitForMatch(withId(R.id.list), UI_TEST_TIMEOUT));
@@ -550,7 +550,7 @@ public class EspressoTests {
         tryIsDisplayed(withId(android.R.id.button1), UI_TEST_TIMEOUT);
         onView(withText("Accept")).perform(click());
 
-        //TODO: check there is a MEMO?!?
+        //TODO: (for Hakim) how check if there is a MEMO
     }
 
     @Test
