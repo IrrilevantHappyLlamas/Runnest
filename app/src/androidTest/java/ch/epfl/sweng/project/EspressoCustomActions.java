@@ -12,10 +12,13 @@ import org.hamcrest.Matcher;
 
 import java.util.concurrent.TimeoutException;
 
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 
-public class CustomViewActions {
+public class EspressoCustomActions {
 
     public static ViewAction waitForMatch(final Matcher<View> aViewMatcher, final long timeout) {
         return new ViewAction() {
@@ -45,12 +48,10 @@ public class CustomViewActions {
                     }
 
 
-                    //SystemClock.sleep(50);
                     uiController.loopMainThreadForAtLeast(50);
-                    //uiController.loopMainThreadUntilIdle();
                 } while (System.currentTimeMillis() < endTime);
 
-                    //The action has timed out.
+                //The action has timed out.
                 throw new PerformException.Builder()
                         .withActionDescription(getDescription())
                         .withViewDescription("")
@@ -58,5 +59,23 @@ public class CustomViewActions {
                         .build();
             }
         };
+    }
+
+    public static void tryIsDisplayed(final Matcher<View> viewMatcher, long timeout) {
+        final long startTime = System.currentTimeMillis();
+        final long endTime = startTime + timeout;
+
+        do {
+            try {
+                //onView(viewMatcher).perform(click());
+                onView(viewMatcher).check(matches(isDisplayed()));
+                return;
+            } catch (Exception e) {
+                SystemClock.sleep(250);
+            }
+        } while (System.currentTimeMillis() < endTime);
+
+        //Try one last time and throw the Exception
+        onView(viewMatcher).check(matches(isDisplayed()));
     }
 }

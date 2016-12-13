@@ -142,7 +142,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 break;
             case TIME:
                 if(((AppRunnest)getApplication()).isTestSession()) {
-                    challengeGoal = 20000;
+                    challengeGoal = 15000;
                 } else {
                     challengeGoal = firstValue * 3600 * 1000 + secondValue * 60 * 1000;
                 }

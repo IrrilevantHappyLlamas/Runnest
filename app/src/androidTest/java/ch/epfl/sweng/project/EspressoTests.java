@@ -44,7 +44,8 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static ch.epfl.sweng.project.CustomViewActions.waitForMatch;
+import static ch.epfl.sweng.project.EspressoCustomActions.tryIsDisplayed;
+import static ch.epfl.sweng.project.EspressoCustomActions.waitForMatch;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anything;
 
@@ -54,9 +55,10 @@ public class EspressoTests {
 
     private static final int UI_TEST_TIMEOUT = 5000;
     private static final int FIREBASE_DURATION = 2000;
+    private static final int TIME_CHALLENGE_DURATION = 15000;
 
     //TODO: find a way to bound this to setupLocationChangeSimulation value
-    private final int RUN_DURATION = 5100;
+    private final int RUN_DURATION = 5000;
 
     @Rule
     public ActivityTestRule<SideBarActivity> mActivityRule = new ActivityTestRule<>(
@@ -106,7 +108,7 @@ public class EspressoTests {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_logout));
 
-        onView(isRoot()).perform(waitForMatch(withId(android.R.id.button2), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withId(android.R.id.button2), UI_TEST_TIMEOUT);
         onView(withText("OK")).perform(click());
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.sign_in_button), UI_TEST_TIMEOUT));
@@ -132,11 +134,13 @@ public class EspressoTests {
     }
 
     @Test
-    public void searchInexistentUser() {
+    public void searchNonExistentUser() {
         onView(withId(R.id.search)).perform(click());
         onView(isRoot()).perform(waitForMatch(withId(R.id.empty_layout), UI_TEST_TIMEOUT));
-        onView(isAssignableFrom(EditText.class)).perform(typeText("kadfjisadsa"), pressKey(KeyEvent.KEYCODE_ENTER));
-        onView(isRoot()).perform(waitForMatch(withId(R.id.table), UI_TEST_TIMEOUT));
+        onView(isRoot()).perform(waitForMatch(withId(R.id.empty_layout), UI_TEST_TIMEOUT));
+
+        onView(isAssignableFrom(EditText.class)).perform(typeText("NonExistent"), pressKey(KeyEvent.KEYCODE_ENTER));
+        tryIsDisplayed(withText("No user found."), UI_TEST_TIMEOUT);
         onView(withText("No user found.")).check(matches(isDisplayed()));
     }
 
@@ -144,7 +148,7 @@ public class EspressoTests {
     public void uselessOnFragmentListenersWork() {
         SideBarActivity listenerTest = mActivityRule.getActivity();
 
-        listenerTest.onProfileFragmentInteraction("usad", "uids");
+        listenerTest.onProfileFragmentInteraction("test", "test");
     }
 
     @Test
@@ -198,13 +202,12 @@ public class EspressoTests {
     @Test
     public void startAndStopRun() {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-
-        //onView(isRoot()).perform(waitForMatch(withId(R.id.nav_run), UI_TEST_TIMEOUT));
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
         onView(withId(R.id.start_run)).perform(click());
-        //TODO
+
+        //TODO: mocked location
         SystemClock.sleep(RUN_DURATION);
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.stop_run), UI_TEST_TIMEOUT));
@@ -217,27 +220,26 @@ public class EspressoTests {
     @Test
     public void startAndAbortRun() {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-
-        //onView(isRoot()).perform(waitForMatch(withId(R.id.nav_run), UI_TEST_TIMEOUT));
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
         onView(withId(R.id.start_run)).perform(click());
-        //TODO
+
+        //TODO: mocked location
         SystemClock.sleep(RUN_DURATION);
 
         //Press on CANCEL
         pressBack();
-        onView(isRoot()).perform(waitForMatch(withId(android.R.id.button2), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withId(android.R.id.button2), UI_TEST_TIMEOUT);
         onView(withId(android.R.id.button2)).perform(click());
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.stop_run), UI_TEST_TIMEOUT));
 
         pressBack();
-        onView(isRoot()).perform(waitForMatch(withId(android.R.id.button1), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withId(android.R.id.button1), UI_TEST_TIMEOUT);
         onView(withId(android.R.id.button1)).perform(click());
 
-        onView(isRoot()).perform(waitForMatch(withId(R.id.photoImg), UI_TEST_TIMEOUT));
+        onView(isRoot()).perform(waitForMatch(withId(R.id.main_layout), UI_TEST_TIMEOUT));
     }
 
     @Test
@@ -249,14 +251,12 @@ public class EspressoTests {
     @Test
     public void deleteRun() {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-
-        //onView(isRoot()).perform(waitForMatch(withId(R.id.nav_run), UI_TEST_TIMEOUT));
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
         onView(withId(R.id.start_run)).perform(click());
 
-        //TODO
+        //TODO: mocked location
         SystemClock.sleep(RUN_DURATION);
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.stop_run), UI_TEST_TIMEOUT));
@@ -265,105 +265,95 @@ public class EspressoTests {
         onView(isRoot()).perform(waitForMatch(withId(R.id.button_delete), UI_TEST_TIMEOUT));
         onView(withId(R.id.button_delete)).perform(click());
 
-        //TODO: check che siamo in runHistory
+        onView(isRoot()).perform(waitForMatch(withId(R.id.tabs), UI_TEST_TIMEOUT));
     }
 
     @Test
     public void challengeDistanceCancelThenCreate() {
         onView(withId(R.id.search)).perform(click());
         onView(isRoot()).perform(waitForMatch(withId(R.id.empty_layout), UI_TEST_TIMEOUT));
-        onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
+        onView(isAssignableFrom(EditText.class)).perform(typeText("R"), pressKey(KeyEvent.KEYCODE_ENTER));
 
-        //TODO: retrieve users
-        SystemClock.sleep(FIREBASE_DURATION);
-
-        onView(isRoot()).perform(waitForMatch(withId(R.id.table), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withText("Runnest IHL"), UI_TEST_TIMEOUT);
         onView(withText("Runnest IHL")).perform(click());
 
         //Tap on cancel
         onView(isRoot()).perform(waitForMatch(withId(R.id.main_layout), UI_TEST_TIMEOUT));
         onView(withText(R.string.challenge)).perform(click());
 
-        onView(isRoot()).perform(waitForMatch(withId(R.id.define_challenge), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withId(R.id.define_challenge), UI_TEST_TIMEOUT);
         onView(withText("Cancel")).perform(click());
 
         //Tap challenge and create one
         onView(isRoot()).perform(waitForMatch(withId(R.id.main_layout), UI_TEST_TIMEOUT));
         onView(withText(R.string.challenge)).perform(click());
 
-        onView(isRoot()).perform(waitForMatch(withId(R.id.define_challenge), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withId(R.id.define_challenge), UI_TEST_TIMEOUT);
         onView(withText("Challenge!")).perform(click());
 
         //Start Challenge
         onView(isRoot()).perform(waitForMatch(withId(R.id.readyBtn), UI_TEST_TIMEOUT));
         onView(withId(R.id.readyBtn)).perform(click());
-        SystemClock.sleep(RUN_DURATION);
 
-        //TODO: finisce o no? se si check recap
+        //TODO: mocked location
+        tryIsDisplayed(withId(R.id.button_history), RUN_DURATION + UI_TEST_TIMEOUT);
     }
 
     @Test
     public void challengeTime() {
         onView(withId(R.id.search)).perform(click());
         onView(isRoot()).perform(waitForMatch(withId(R.id.empty_layout), UI_TEST_TIMEOUT));
-        onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
+        onView(isAssignableFrom(EditText.class)).perform(typeText("R"), pressKey(KeyEvent.KEYCODE_ENTER));
 
-        //TODO: retrieve users
-        SystemClock.sleep(FIREBASE_DURATION);
-
-        onView(isRoot()).perform(waitForMatch(withId(R.id.table), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withText("Runnest IHL"), UI_TEST_TIMEOUT);
         onView(withText("Runnest IHL")).perform(click());
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.main_layout), UI_TEST_TIMEOUT));
         onView(withText(R.string.challenge)).perform(click());
 
         //Choose a time challenge
-        onView(isRoot()).perform(waitForMatch(withId(R.id.define_challenge), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withId(R.id.define_challenge), UI_TEST_TIMEOUT);
         onView(withId(R.id.btn_time)).perform(click());
         onView(withText("Challenge!")).perform(click());
 
-        //Start Run
+        //Start Challenge
         onView(isRoot()).perform(waitForMatch(withId(R.id.readyBtn), UI_TEST_TIMEOUT));
         onView(withId(R.id.readyBtn)).perform(click());
 
-        //TODO: IMPORTANT: duration of a test time based challenge is 20 seconds
-        SystemClock.sleep(20100);
+        //TODO: time challenge
+        tryIsDisplayed(withId(R.id.button_history), TIME_CHALLENGE_DURATION + UI_TEST_TIMEOUT);
     }
 
     @Test
     public void scheduleRequestCancel() {
         onView(withId(R.id.search)).perform(click());
-        onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
+        onView(isRoot()).perform(waitForMatch(withId(R.id.empty_layout), UI_TEST_TIMEOUT));
+        onView(isAssignableFrom(EditText.class)).perform(typeText("R"), pressKey(KeyEvent.KEYCODE_ENTER));
 
-        //TODO: retrieve users
-        SystemClock.sleep(FIREBASE_DURATION);
-
-        onView(isRoot()).perform(waitForMatch(withId(R.id.table), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withText("Runnest IHL"), UI_TEST_TIMEOUT);
         onView(withText("Runnest IHL")).perform(click());
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.main_layout), UI_TEST_TIMEOUT));
         onView(withText(R.string.schedule)).perform(click());
 
-        onView(isRoot()).perform(waitForMatch(withId(android.R.id.button1), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withId(android.R.id.button1), UI_TEST_TIMEOUT);
         onView(withText("Cancel")).perform(click());
     }
 
     @Test
     public void scheduleRequestDistance() {
         onView(withId(R.id.search)).perform(click());
-        onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
+        onView(isRoot()).perform(waitForMatch(withId(R.id.empty_layout), UI_TEST_TIMEOUT));
+        onView(isAssignableFrom(EditText.class)).perform(typeText("R"), pressKey(KeyEvent.KEYCODE_ENTER));
 
-        //TODO: retrieve users
-        SystemClock.sleep(FIREBASE_DURATION);
-
-        onView(isRoot()).perform(waitForMatch(withId(R.id.table), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withText("Runnest IHL"), UI_TEST_TIMEOUT);
         onView(withText("Runnest IHL")).perform(click());
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.main_layout), UI_TEST_TIMEOUT));
         onView(withText(R.string.schedule)).perform(click());
 
         //Choose a distance challenge
-        onView(isRoot()).perform(waitForMatch(withId(R.id.button_distance), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withId(R.id.button_distance), UI_TEST_TIMEOUT);
         onView(withId(R.id.button_distance)).perform(click());
         onView(withText("Schedule!")).perform(click());
     }
@@ -371,25 +361,21 @@ public class EspressoTests {
     @Test
     public void scheduleRequestTime() {
         onView(withId(R.id.search)).perform(click());
-        onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
+        onView(isRoot()).perform(waitForMatch(withId(R.id.empty_layout), UI_TEST_TIMEOUT));
+        onView(isAssignableFrom(EditText.class)).perform(typeText("R"), pressKey(KeyEvent.KEYCODE_ENTER));
 
-
-        //TODO: retrieve users
-        SystemClock.sleep(FIREBASE_DURATION);
-
-        onView(isRoot()).perform(waitForMatch(withId(R.id.table), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withText("Runnest IHL"), UI_TEST_TIMEOUT);
         onView(withText("Runnest IHL")).perform(click());
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.main_layout), UI_TEST_TIMEOUT));
         onView(withText(R.string.schedule)).perform(click());
 
         //Choose a time challenge
-        onView(isRoot()).perform(waitForMatch(withId(R.id.button_time), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withId(R.id.button_time), UI_TEST_TIMEOUT);
         onView(withId(R.id.button_time)).perform(click());
         onView(withText("Schedule!")).perform(click());
     }
 
-    //TODO: split in two tests (need to delete message in order to do that)
     @Test
     public void challengeRequestCancelAndDecline() {
         // Send message
@@ -414,7 +400,6 @@ public class EspressoTests {
 
         //Tap on the request
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        //onView(isRoot()).perform(waitForMatch(withId(R.id.nav_messages), UI_TEST_TIMEOUT));
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
 
         //Tap on Cancel
@@ -423,13 +408,13 @@ public class EspressoTests {
 
         SystemClock.sleep(FIREBASE_DURATION);
 
-        onView(isRoot()).perform(waitForMatch(withId(R.id.request_layout), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withId(R.id.request_layout), UI_TEST_TIMEOUT);
         onView(withText("Cancel")).perform(click());
 
         //Tap on Decline
         onView(isRoot()).perform(waitForMatch(withId(R.id.list), UI_TEST_TIMEOUT));
         onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());
-        onView(isRoot()).perform(waitForMatch(withId(R.id.request_layout), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withId(R.id.request_layout), UI_TEST_TIMEOUT);
         onView(withText("Decline")).perform(click());
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.list), UI_TEST_TIMEOUT));
@@ -462,13 +447,12 @@ public class EspressoTests {
 
         //Tap on the request
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        //onView(withId(R.id.drawer_layout)).perform(waitForMatch(withId(R.id.nav_messages), UI_TEST_TIMEOUT));
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
         onView(isRoot()).perform(waitForMatch(withId(R.id.list), UI_TEST_TIMEOUT));
         onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());
 
         //Tap on Accept
-        onView(isRoot()).perform(waitForMatch(withId(R.id.request_layout), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withId(R.id.request_layout), UI_TEST_TIMEOUT);
         onView(withText("Accept")).perform(click());
         onView(isRoot()).perform(waitForMatch(withId(R.id.readyBtn), UI_TEST_TIMEOUT));
 
@@ -496,19 +480,18 @@ public class EspressoTests {
 
         //Tap on the request
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        //onView(isRoot()).perform(waitForMatch(withId(R.id.nav_messages), UI_TEST_TIMEOUT));
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
 
         //Tap on Cancel
         onView(isRoot()).perform(waitForMatch(withId(R.id.list), UI_TEST_TIMEOUT));
         onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());
-        onView(isRoot()).perform(waitForMatch(withId(android.R.id.button1), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withId(android.R.id.button1), UI_TEST_TIMEOUT);
         onView(withText("Cancel")).perform(click());
 
         //Tap on Accept
         onView(isRoot()).perform(waitForMatch(withId(R.id.list), UI_TEST_TIMEOUT));
         onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());
-        onView(isRoot()).perform(waitForMatch(withId(android.R.id.button1), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withId(android.R.id.button1), UI_TEST_TIMEOUT);
         onView(withText("Accept")).perform(click());
 
         //TODO: check there is a MEMO?!?
@@ -534,13 +517,12 @@ public class EspressoTests {
 
         //Tap on the request
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        //onView(isRoot()).perform(waitForMatch(withId(R.id.nav_messages), UI_TEST_TIMEOUT));
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
 
         //Tap on Decline
         onView(isRoot()).perform(waitForMatch(withId(R.id.list), UI_TEST_TIMEOUT));
         onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());
-        onView(isRoot()).perform(waitForMatch(withId(android.R.id.button1), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withId(android.R.id.button1), UI_TEST_TIMEOUT);
         onView(withText("Decline")).perform(click());
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.list), UI_TEST_TIMEOUT));
@@ -566,19 +548,18 @@ public class EspressoTests {
 
         //Tap on the request
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        //onView(isRoot()).perform(waitForMatch(withId(R.id.nav_messages), UI_TEST_TIMEOUT));
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
         onView(isRoot()).perform(waitForMatch(withId(R.id.list), UI_TEST_TIMEOUT));
         onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());
 
         //Tap on Close
-        onView(isRoot()).perform(waitForMatch(withId(android.R.id.button1), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withId(android.R.id.button1), UI_TEST_TIMEOUT);
         onView(withText("Close")).perform(click());
 
         //Tap on Delete
         onView(isRoot()).perform(waitForMatch(withId(R.id.list), UI_TEST_TIMEOUT));
         onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());
-        onView(isRoot()).perform(waitForMatch(withId(android.R.id.button1), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withId(android.R.id.button1), UI_TEST_TIMEOUT);
         onView(withText("Delete")).perform(click());
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.list), UI_TEST_TIMEOUT));
@@ -604,23 +585,21 @@ public class EspressoTests {
 
         //Tap on the request
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        //onView(isRoot()).perform(waitForMatch(withId(R.id.nav_messages), UI_TEST_TIMEOUT));
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.list), UI_TEST_TIMEOUT));
         onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());
 
         //Tap on Challenge
-        onView(isRoot()).perform(waitForMatch(withId(android.R.id.button1), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withId(android.R.id.button1), UI_TEST_TIMEOUT);
         onView(withText(R.string.challenge)).perform(click());
 
-        onView(isRoot()).perform(waitForMatch(withId(R.id.btn_time), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withId(R.id.btn_time), UI_TEST_TIMEOUT);
     }
 
     @Test
     public void navigateToChallengeHistory() {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        //onView(isRoot()).perform(waitForMatch(withId(R.id.nav_history), UI_TEST_TIMEOUT));
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_history));
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.tabs), UI_TEST_TIMEOUT));
@@ -630,7 +609,6 @@ public class EspressoTests {
     @Test
     public void navigateToSingleRunHistory() {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        //onView(isRoot()).perform(waitForMatch(withId(R.id.nav_history), UI_TEST_TIMEOUT));
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_history));
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.tabs), UI_TEST_TIMEOUT));
@@ -640,7 +618,6 @@ public class EspressoTests {
     @Test
     public void displayChallenge() {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        //onView(isRoot()).perform(waitForMatch(withId(R.id.nav_history), UI_TEST_TIMEOUT));
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_history));
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.tabs), UI_TEST_TIMEOUT));
@@ -652,36 +629,21 @@ public class EspressoTests {
 
     @Test
     public void challengeQuit() {
-        // Send message
-        Message msg1 = new Message("runnest_dot_ihl_at_gmail_dot_com",
-                "Test User",
-                "Runnest IHL",
-                "Test User",
-                Message.MessageType.CHALLENGE_REQUEST,
-                "test1",
-                new Date(),
-                1,
-                0,
-                Challenge.Type.DISTANCE);
+        onView(withId(R.id.search)).perform(click());
+        onView(isRoot()).perform(waitForMatch(withId(R.id.empty_layout), UI_TEST_TIMEOUT));
+        onView(isAssignableFrom(EditText.class)).perform(typeText("R"), pressKey(KeyEvent.KEYCODE_ENTER));
 
-        FirebaseHelper firebaseHelper = new FirebaseHelper();
-        firebaseHelper.send(msg1);
-        // Instantiate challenges so that messages are clickable
-        firebaseHelper.addChallengeNode("Test User","Runnest IHL" ,"Runnest IHL vs Test User test1");
+        tryIsDisplayed(withText("Runnest IHL"), UI_TEST_TIMEOUT);
+        onView(withText("Runnest IHL")).perform(click());
 
-        //TODO: send messages
-        SystemClock.sleep(FIREBASE_DURATION);
+        //Create challenge
+        onView(isRoot()).perform(waitForMatch(withId(R.id.main_layout), UI_TEST_TIMEOUT));
+        onView(withText(R.string.challenge)).perform(click());
+        tryIsDisplayed(withId(R.id.define_challenge), UI_TEST_TIMEOUT);
+        onView(withId(R.id.btn_time)).perform(click());
+        onView(withText("Challenge!")).perform(click());
 
-        //Tap on the request
-        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        //onView(withId(R.id.drawer_layout)).perform(waitForMatch(withId(R.id.nav_messages), UI_TEST_TIMEOUT));
-        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
-        onView(isRoot()).perform(waitForMatch(withId(R.id.list), UI_TEST_TIMEOUT));
-        onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());
-
-        //Tap on Accept
-        onView(isRoot()).perform(waitForMatch(withId(R.id.request_layout), UI_TEST_TIMEOUT));
-        onView(withText("Accept")).perform(click());
+        //Start Challenge
         onView(isRoot()).perform(waitForMatch(withId(R.id.readyBtn), UI_TEST_TIMEOUT));
         onView(withId(R.id.readyBtn)).perform(click());
 
@@ -690,35 +652,30 @@ public class EspressoTests {
 
         //Quit challenge
         onView(withId(R.id.back_to_side_btn)).perform(click());
-        onView(isRoot()).perform(waitForMatch(withId(android.R.id.button1), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withId(android.R.id.button1), UI_TEST_TIMEOUT);
         onView(withText(R.string.quit)).perform(click());
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.button_history), UI_TEST_TIMEOUT));
-
-        //Delete challenges from firebase
-        firebaseHelper.deleteChallengeNode("Runnest IHL vs Test User test1");
     }
 
     @Test
     public void challengeStopWait() {
         onView(withId(R.id.search)).perform(click());
-        onView(isAssignableFrom(EditText.class)).perform(typeText("Runnest"), pressKey(KeyEvent.KEYCODE_ENTER));
+        onView(isRoot()).perform(waitForMatch(withId(R.id.empty_layout), UI_TEST_TIMEOUT));
+        onView(isAssignableFrom(EditText.class)).perform(typeText("R"), pressKey(KeyEvent.KEYCODE_ENTER));
 
-        //TODO: retrieve users
-        SystemClock.sleep(FIREBASE_DURATION);
-
-        onView(isRoot()).perform(waitForMatch(withId(R.id.table), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withText("Runnest IHL"), UI_TEST_TIMEOUT);
         onView(withText("Runnest IHL")).perform(click());
 
         //Create challenge
         onView(isRoot()).perform(waitForMatch(withId(R.id.main_layout), UI_TEST_TIMEOUT));
         onView(withText(R.string.challenge)).perform(click());
-        onView(isRoot()).perform(waitForMatch(withId(R.id.define_challenge), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withId(R.id.define_challenge), UI_TEST_TIMEOUT);
         onView(withText("Challenge!")).perform(click());
 
         //Quit challenge
         onView(withId(R.id.back_to_side_btn)).perform(click());
-        onView(isRoot()).perform(waitForMatch(withId(android.R.id.button1), UI_TEST_TIMEOUT));
+        tryIsDisplayed(withId(android.R.id.button1), UI_TEST_TIMEOUT);
         onView(withText(R.string.quit)).perform(click());
     }
 }
