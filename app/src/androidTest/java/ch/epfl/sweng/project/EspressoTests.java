@@ -10,7 +10,10 @@ import android.view.KeyEvent;
 import android.widget.EditText;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
@@ -110,6 +113,13 @@ public class EspressoTests {
         ((AppRunnest) mActivityRule.getActivity().getApplication()).setTestSession(true);
         ((AppRunnest) mActivityRule.getActivity().getApplication()).setNetworkHandler();
         onView(isRoot()).perform(waitForMatch(withId(R.id.main_layout), UI_TEST_TIMEOUT));
+    }
+
+    @After
+    public void deleteTestUserMessages() {
+        //TODO: use FirebaseHelper instead
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.child("messages").child("Test User").removeValue();
     }
 
     @Test
@@ -446,7 +456,7 @@ public class EspressoTests {
 
         //Tap on the request
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
+        //onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
 
         //Tap on Cancel
         onView(isRoot()).perform(waitForMatch(withId(R.id.list), UI_TEST_TIMEOUT));
