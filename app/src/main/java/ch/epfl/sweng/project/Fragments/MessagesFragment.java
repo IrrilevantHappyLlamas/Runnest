@@ -102,24 +102,6 @@ public class MessagesFragment extends ListFragment {
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof MessagesFragmentInteractionListener) {
-            listener = (MessagesFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement MessagesFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        listener = null;
-    }
-
-
-    @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         if (!messages.isEmpty()) {
             Message message = messages.get(position);
@@ -137,6 +119,23 @@ public class MessagesFragment extends ListFragment {
                     break;
             }
         }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof MessagesFragmentInteractionListener) {
+            listener = (MessagesFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement MessagesFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
     }
 
     /**
