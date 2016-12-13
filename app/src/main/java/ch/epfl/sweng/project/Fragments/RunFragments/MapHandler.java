@@ -9,10 +9,11 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import ch.epfl.sweng.project.Model.CheckPoint;
 
-
+/**
+ * This class handles a map, it displays it and updates it
+ */
 public class MapHandler {
 
-    // Constants
     private static final float CAMERA_ZOOM = 16f;
 
     private GoogleMap googleMap = null;
@@ -21,14 +22,21 @@ public class MapHandler {
     private PolylineOptions polylineOptions = null;
     private int trackColor;
 
-
-    //TODO: check sul color
-    public MapHandler(GoogleMap googleMap, int color)  throws IllegalArgumentException {
-        if(googleMap == null) {
-            throw new IllegalArgumentException("MapHandler constructor: argument cannot be null");
+    /**
+     * Constructor of the class
+     *
+     * @param googleMap a google map
+     * @param trackColor the color of the track
+     */
+    public MapHandler(GoogleMap googleMap, int trackColor) {
+        if (googleMap == null) {
+            throw new NullPointerException();
+        }
+        if (trackColor < 0) {
+            throw new IllegalArgumentException();
         }
 
-        trackColor = color;
+        this.trackColor = trackColor;
 
         this.googleMap = googleMap;
         this.googleMap.setLocationSource(null);
@@ -41,15 +49,15 @@ public class MapHandler {
     }
 
     /**
-     * Given a new <code>CheckPoint</code>, if non null, update the map and the polyline showed on it.
+     * Given a new CheckPoint, if non null, update the map and the polyline showed on it.
      *
-     * @param checkPoint    a new <code>CheckPoint</code>
+     * @param checkPoint a new CheckPoint
      */
     public void updateMap(CheckPoint checkPoint) {
-        if(checkPoint != null) {
-
+        if (checkPoint != null) {
             LatLng currentLatLng = new LatLng(checkPoint.getLatitude(), checkPoint.getLongitude());
             polylineOptions.add(currentLatLng);
+
             googleMap.clear();
             googleMap.addPolyline(polylineOptions.color(trackColor));
 
@@ -61,16 +69,16 @@ public class MapHandler {
     /**
      * Set "My Location Enabled" to true.
      *
-     * @throws SecurityException    if app does not have the necessary permissions
+     * @throws SecurityException if app does not have the necessary permissions
      */
     public void startShowingLocation() throws SecurityException {
-            googleMap.setMyLocationEnabled(true);
+        googleMap.setMyLocationEnabled(true);
     }
 
     /**
      * Set "My Location Enabled" to false.
      *
-     * @throws SecurityException    if app does not have the necessary permissions
+     * @throws SecurityException if app does not have the necessary permissions
      */
     public void stopShowingLocation() throws SecurityException {
         googleMap.setMyLocationEnabled(false);
@@ -90,7 +98,6 @@ public class MapHandler {
         uiSettings.setScrollGesturesEnabled(false);
         uiSettings.setZoomGesturesEnabled(false);
         uiSettings.setRotateGesturesEnabled(false);
-
         uiSettings.setZoomControlsEnabled(true);
     }
 }

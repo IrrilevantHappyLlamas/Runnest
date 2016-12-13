@@ -12,90 +12,90 @@ public class MessageTest {
 
     @Test
     public void defaultConstructorDontThrowsException() {
-        Message testMessage = new Message("me", "you", "me", "you", Message.Type.TEXT, "Hello, world!");
+        new Message("me", "you", "me", "you", Message.Type.TEXT, "Hello, world!");
         Assert.assertTrue(true);
     }
 
     @Test(expected = NullPointerException.class)
     public void defaultConstructorThrowsExceptionWithIllegalTo() {
-        Message testMessage = new Message(null, "you", "me", "you", Message.Type.TEXT, "Hello, world!");
+        new Message(null, "you", "me", "you", Message.Type.TEXT, "Hello, world!");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void defaultConstructorThrowsExceptionWithEmptyTo() {
-        Message testMessage = new Message("", "you", "me", "you", Message.Type.TEXT, "Hello, world!");
+        new Message("", "you", "me", "you", Message.Type.TEXT, "Hello, world!");
     }
 
     @Test(expected = NullPointerException.class)
     public void defaultConstructorThrowsExceptionWithIllegalFrom() {
-        Message testMessage = new Message("me", null, "me", "you", Message.Type.TEXT, "Hello, world!");
+        new Message("me", null, "me", "you", Message.Type.TEXT, "Hello, world!");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void defaultConstructorThrowsExceptionWithEmptyFrom() {
-        Message testMessage = new Message("me", "", "me", "you", Message.Type.TEXT, "Hello, world!");
+        new Message("me", "", "me", "you", Message.Type.TEXT, "Hello, world!");
     }
 
     @Test(expected = NullPointerException.class)
     public void defaultConstructorThrowsExceptionWithIllegalSender() {
-        Message testMessage = new Message("me", "you", null, "you", Message.Type.TEXT, "Hello, world!");
+        new Message("me", "you", null, "you", Message.Type.TEXT, "Hello, world!");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void defaultConstructorThrowsExceptionWithEmptySender() {
-        Message testMessage = new Message("me", "you", "", "you", Message.Type.TEXT, "Hello, world!");
+        new Message("me", "you", "", "you", Message.Type.TEXT, "Hello, world!");
     }
 
     @Test(expected = NullPointerException.class)
     public void defaultConstructorThrowsExceptionWithIllegalAddressee() {
-        Message testMessage = new Message("me", "you", "me", null, Message.Type.TEXT, "Hello, world!");
+        new Message("me", "you", "me", null, Message.Type.TEXT, "Hello, world!");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void defaultConstructorThrowsExceptionWithEmptyAddresseee() {
-        Message testMessage = new Message("me", "you", "me", "", Message.Type.TEXT, "Hello, world!");
+        new Message("me", "you", "me", "", Message.Type.TEXT, "Hello, world!");
     }
     @Test(expected = NullPointerException.class)
     public void defaultConstructorThrowsExceptionWithIllegalType() {
-        Message testMessage = new Message("me", "you", "me", "you", null, "Hello, world!");
+        new Message("me", "you", "me", "you", null, "Hello, world!");
     }
 
     @Test(expected = NullPointerException.class)
     public void defaultConstructorThrowsExceptionWithIllegalMessage() {
-        Message testMessage = new Message("me", "you", "me", "you", Message.Type.CHALLENGE_REQUEST, null);
+        new Message("me", "you", "me", "you", Message.Type.CHALLENGE_REQUEST, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void defaultConstructorThrowsExceptionWithEmptyMessage() {
-        Message testMessage = new Message("me", "you", "me", "you", Message.Type.CHALLENGE_RESPONSE, "");
+        new Message("me", "you", "me", "you", Message.Type.CHALLENGE_RESPONSE, "");
     }
 
     @Test(expected = NullPointerException.class)
     public void constructorWithTimeThrowsExceptionWithNullTime() {
-        Message testMessage = new Message("me", "you", "me", "you", Message.Type.MEMO, "Hello, world!", null);
+        new Message("me", "you", "me", "you", Message.Type.MEMO, "Hello, world!", null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void cantSendMessageToYourself() {
-        Message testMessage = new Message("me", "me", "me", "me", Message.Type.TEXT, "Hello, world!");
+        new Message("me", "me", "me", "me", Message.Type.TEXT, "Hello, world!");
     }
 
     @Test(expected = NullPointerException.class)
     public void constructorChallengeParamsThrowsExceptionWithNullChallengeType() {
         Date time = new Date();
-        Message testMessage = new Message("me", "you", "me", "you", Message.Type.TEXT, "msg", time, 0, 1, null);
+        new Message("me", "you", "me", "you", Message.Type.TEXT, "msg", time, 0, 1, null);
     }
 
     @Test(expected = NullPointerException.class)
     public void constructorScheduleMemoThrowsExceptionWithNullChallengeType() {
         Date time = new Date();
-        Message testMessage = new Message("me", "you", "me", "you", Message.Type.MEMO, "msg", time, null);
+        new Message("me", "you", "me", "you", Message.Type.MEMO, "msg", time, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void constructorScheduleMemoThrowsExceptionWithIncoherentMessageType() {
         Date time = new Date();
-        Message testMessage = new Message("me", "you", "me", "you", Message.Type.TEXT, "msg", time, Challenge.Type.DISTANCE);
+        new Message("me", "you", "me", "you", Message.Type.TEXT, "msg", time, Challenge.Type.DISTANCE);
     }
 
     @Test

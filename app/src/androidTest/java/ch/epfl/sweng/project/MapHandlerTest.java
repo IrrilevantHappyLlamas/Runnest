@@ -7,8 +7,9 @@ import ch.epfl.sweng.project.Fragments.RunFragments.MapHandler;
 
 public class MapHandlerTest {
 
-    @Test(expected = IllegalArgumentException.class)
-    public void constructorMustThrowExceptionWithNullArguments(){
+    @Test(expected = NullPointerException.class)
+    public void constructorMustThrowExceptionWithNullGoogleMap(){
         new MapHandler(null, 0);
     }
+
 }
