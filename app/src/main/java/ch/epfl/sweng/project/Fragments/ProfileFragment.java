@@ -145,7 +145,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bitmapImage;
+        final ImageView bitmapImage;
 
         public DownloadImageTask(ImageView bmImage) {
             this.bitmapImage = bmImage;
