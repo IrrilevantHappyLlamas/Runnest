@@ -26,16 +26,17 @@ import ch.epfl.sweng.project.Model.Message;
  */
 public class MessagesFragment extends ListFragment {
 
-    private String email;
-    private List<Message> messages;
-    private List<HashMap<String, String>> messagesIconAndSender;
-    private MessagesFragmentInteractionListener listener;
     private final String[] mapKeys = {"icon", "sender"};
     private final int[] icons = {R.drawable.challenge_white,
             R.drawable.schedule_white,
             R.drawable.memo_white,
             R.drawable.empty_white};
     private final int[] viewIDs = {R.id.icon, R.id.sender};
+
+    private String email;
+    private List<Message> messages;
+    private List<HashMap<String, String>> messagesIconAndSender;
+    private MessagesFragmentInteractionListener listener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
