@@ -71,7 +71,7 @@ public class EspressoCustomActions {
                 onView(viewMatcher).check(matches(isDisplayed()));
                 return;
             } catch (Exception e) {
-                SystemClock.sleep(250);
+                SystemClock.sleep(500);
             }
         } while (System.currentTimeMillis() < endTime);
 

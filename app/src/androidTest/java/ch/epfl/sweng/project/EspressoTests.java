@@ -53,7 +53,7 @@ import static org.hamcrest.Matchers.anything;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class EspressoTests {
 
-    private static final int UI_TEST_TIMEOUT = 5000;
+    private static final int UI_TEST_TIMEOUT = 10000;
     private static final int FIREBASE_DURATION = 2000;
     private static final int TIME_CHALLENGE_DURATION = 15000;
 
@@ -71,7 +71,6 @@ public class EspressoTests {
         ((AppRunnest) mActivityRule.getActivity().getApplication()).setNetworkHandler();
         onView(isRoot()).perform(waitForMatch(withId(R.id.main_layout), UI_TEST_TIMEOUT));
     }
-
 
     @Test
     public void aDrawerLayout() {
