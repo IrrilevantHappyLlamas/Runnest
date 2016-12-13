@@ -62,9 +62,7 @@ public class EspressoTests {
     private static final int UI_TEST_TIMEOUT = 10000;
     private static final int FIREBASE_DURATION = 3000;
     private static final int TIME_CHALLENGE_DURATION = 15000;
-
-    //TODO: find a way to bound this to setupLocationChangeSimulation value
-    private final int RUN_DURATION = 5000;
+    private final int MOCK_LOCATION_DURATION = 5000;
 
     public class Retry implements TestRule {
         private int retryCount;
@@ -117,7 +115,7 @@ public class EspressoTests {
 
     @After
     public void deleteTestUserMessages() {
-        //TODO: use FirebaseHelper instead
+        //TODO: evaluate if use FirebaseHelper instead
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         databaseReference.child("messages").child("Test User").removeValue();
     }
@@ -257,8 +255,7 @@ public class EspressoTests {
         onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
         onView(withId(R.id.start_run)).perform(click());
 
-        //TODO: mocked location
-        SystemClock.sleep(RUN_DURATION);
+        SystemClock.sleep(MOCK_LOCATION_DURATION);
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.stop_run), UI_TEST_TIMEOUT));
         onView(withId(R.id.stop_run)).perform(click());
@@ -278,8 +275,7 @@ public class EspressoTests {
         onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
         onView(withId(R.id.start_run)).perform(click());
 
-        //TODO: mocked location
-        SystemClock.sleep(RUN_DURATION);
+        SystemClock.sleep(MOCK_LOCATION_DURATION);
 
         //Press on CANCEL
         pressBack();
@@ -312,8 +308,7 @@ public class EspressoTests {
         onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
         onView(withId(R.id.start_run)).perform(click());
 
-        //TODO: mocked location
-        SystemClock.sleep(RUN_DURATION);
+        SystemClock.sleep(MOCK_LOCATION_DURATION);
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.stop_run), UI_TEST_TIMEOUT));
         onView(withId(R.id.stop_run)).perform(click());
@@ -351,8 +346,7 @@ public class EspressoTests {
         onView(isRoot()).perform(waitForMatch(withId(R.id.readyBtn), UI_TEST_TIMEOUT));
         onView(withId(R.id.readyBtn)).perform(click());
 
-        //TODO: mocked location
-        tryIsDisplayed(withId(R.id.button_history), RUN_DURATION + UI_TEST_TIMEOUT);
+        tryIsDisplayed(withId(R.id.button_history), MOCK_LOCATION_DURATION + UI_TEST_TIMEOUT);
     }
 
     @Test
@@ -376,7 +370,6 @@ public class EspressoTests {
         onView(isRoot()).perform(waitForMatch(withId(R.id.readyBtn), UI_TEST_TIMEOUT));
         onView(withId(R.id.readyBtn)).perform(click());
 
-        //TODO: wait time challenge to finish
         tryIsDisplayed(withId(R.id.button_history), TIME_CHALLENGE_DURATION + UI_TEST_TIMEOUT);
     }
 
@@ -703,8 +696,7 @@ public class EspressoTests {
         onView(isRoot()).perform(waitForMatch(withId(R.id.readyBtn), UI_TEST_TIMEOUT));
         onView(withId(R.id.readyBtn)).perform(click());
 
-        //TODO: mocked location
-        SystemClock.sleep(RUN_DURATION);
+        SystemClock.sleep(MOCK_LOCATION_DURATION);
 
         //Quit challenge
         onView(withId(R.id.back_to_side_btn)).perform(click());
