@@ -58,7 +58,7 @@ import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.RequestDialogFragment;
 import ch.epfl.sweng.project.Fragments.RequestScheduleDialogFragment;
 import ch.epfl.sweng.project.Fragments.RunFragments.RunningMapFragment;
-import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
+import ch.epfl.sweng.project.Fragments.HistoryFragment;
 import ch.epfl.sweng.project.Model.Challenge;
 import ch.epfl.sweng.project.Model.Message;
 import ch.epfl.sweng.project.Model.Run;
@@ -69,7 +69,7 @@ public class SideBarActivity extends AppCompatActivity
         ProfileFragment.ProfileFragmentInteractionListener,
         RunningMapFragment.RunningMapFragmentInteractionListener,
         DBDownloadFragment.DBDownloadFragmentInteractionListener,
-        RunHistoryFragment.onRunHistoryInteractionListener,
+        HistoryFragment.onRunHistoryInteractionListener,
         DisplayUserFragment.OnDisplayUserFragmentInteractionListener,
         MessagesFragment.MessagesFragmentInteractionListener,
         DisplayRunFragment.DisplayRunFragmentInteractionListener,
@@ -351,7 +351,7 @@ public class SideBarActivity extends AppCompatActivity
                 launchFragment(new MessagesFragment());
             } else if (id == R.id.nav_history) {
                 toolbar.setTitle("History");
-                launchFragment(new RunHistoryFragment());
+                launchFragment(new HistoryFragment());
             } else if (id == R.id.nav_logout) {
                 itemStack.pop();
                 dialogLogout();

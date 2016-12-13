@@ -23,7 +23,7 @@ import ch.epfl.sweng.project.Model.Run;
 /**
  * Fragment which serves as run and challenge history tab, where past runs and challenges are displayed in a list
  */
-public class RunHistoryFragment extends Fragment {
+public class HistoryFragment extends Fragment {
 
     private onRunHistoryInteractionListener listener;
     private List<Run> runs;
