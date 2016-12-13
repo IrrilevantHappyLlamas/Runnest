@@ -678,7 +678,7 @@ public class EspressoTests {
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_history));
         SystemClock.sleep(WAIT_DURATION);
 
-        onView(allOf(withText("Challenge History"), isDescendantOfA(withId(R.id.tabs)))).perform(click());
+        onView(allOf(withText("Challenge"), isDescendantOfA(withId(R.id.tabs)))).perform(click());
         SystemClock.sleep(WAIT_DURATION);
     }
 
@@ -690,7 +690,7 @@ public class EspressoTests {
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_history));
         SystemClock.sleep(WAIT_DURATION);
 
-        onView(allOf(withText("Run History"), isDescendantOfA(withId(R.id.tabs)))).perform(click());;
+        onView(allOf(withText("Run"), isDescendantOfA(withId(R.id.tabs)))).perform(click());;
         SystemClock.sleep(WAIT_DURATION);
     }
 
@@ -702,7 +702,7 @@ public class EspressoTests {
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_history));
         SystemClock.sleep(WAIT_DURATION);
 
-        onView(allOf(withText("Challenge History"), isDescendantOfA(withId(R.id.tabs)))).perform(click());
+        onView(allOf(withText("Challenge"), isDescendantOfA(withId(R.id.tabs)))).perform(click());
         SystemClock.sleep(WAIT_DURATION);
 
         onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());

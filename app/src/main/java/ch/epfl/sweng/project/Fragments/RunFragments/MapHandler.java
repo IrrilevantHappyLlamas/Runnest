@@ -32,9 +32,6 @@ public class MapHandler {
         if (googleMap == null) {
             throw new NullPointerException();
         }
-        if (trackColor < 0) {
-            throw new IllegalArgumentException();
-        }
 
         this.trackColor = trackColor;
 
