@@ -250,9 +250,9 @@ public class EspressoTests {
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
 
         //TODO: wait API client to connect
-        //SystemClock.sleep(FIREBASE_DURATION);
+        SystemClock.sleep(FIREBASE_DURATION);
 
-        tryIsDisplayed(withId(R.id.start_run), UI_TEST_TIMEOUT);
+        onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
         onView(withId(R.id.start_run)).perform(click());
 
         SystemClock.sleep(MOCK_LOCATION_DURATION);
@@ -270,9 +270,9 @@ public class EspressoTests {
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
 
         //TODO: wait API client to connect
-        //SystemClock.sleep(FIREBASE_DURATION);
+        SystemClock.sleep(FIREBASE_DURATION);
 
-        tryIsDisplayed(withId(R.id.start_run), UI_TEST_TIMEOUT);
+        onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
         onView(withId(R.id.start_run)).perform(click());
 
         SystemClock.sleep(MOCK_LOCATION_DURATION);
@@ -303,9 +303,9 @@ public class EspressoTests {
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
 
         //TODO: wait API client to connect
-        //SystemClock.sleep(FIREBASE_DURATION);
+        SystemClock.sleep(FIREBASE_DURATION);
 
-        tryIsDisplayed(withId(R.id.start_run), UI_TEST_TIMEOUT);
+        onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
         onView(withId(R.id.start_run)).perform(click());
 
         SystemClock.sleep(MOCK_LOCATION_DURATION);
