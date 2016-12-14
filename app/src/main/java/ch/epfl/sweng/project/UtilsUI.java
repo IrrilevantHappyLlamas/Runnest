@@ -22,6 +22,13 @@ import ch.epfl.sweng.project.Model.Track;
 public class UtilsUI {
 
     /**
+     * Private constructor so that the class can't be instantiated
+     */
+    private UtilsUI() {
+
+    }
+
+    /**
      * Given the time in seconds convert it into a String with the format hh:mm:ss.
      * If showHours is true always display the hours digit (also if they are 00), otherwise,
      * if it is false, they are shown only if necessary (not if they are 00).
