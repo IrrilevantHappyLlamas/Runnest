@@ -186,11 +186,6 @@ public class SideBarActivity extends AppCompatActivity
         handler.post(runnableCode);
     }
 
-    //TODO:
-    public Fragment getmCurrentFragment() {
-        return mCurrentFragment;
-    }
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
