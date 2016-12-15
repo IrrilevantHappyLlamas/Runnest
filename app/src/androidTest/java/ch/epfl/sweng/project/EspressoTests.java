@@ -31,6 +31,7 @@ import java.util.Map;
 import ch.epfl.sweng.project.Activities.SideBarActivity;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
+import ch.epfl.sweng.project.Fragments.RunFragments.RunningMapFragment;
 import ch.epfl.sweng.project.Model.Challenge;
 import ch.epfl.sweng.project.Model.Message;
 import ch.epfl.sweng.project.Model.Run;
@@ -249,10 +250,13 @@ public class EspressoTests {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
 
-        //TODO: wait API client to connect
-        SystemClock.sleep(FIREBASE_DURATION);
-
         onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
+
+        RunningMapFragment fragment = (RunningMapFragment) mActivityRule.getActivity().getmCurrentFragment();
+        while(!fragment.isApiClientConnected()) {
+            SystemClock.sleep(200);
+        }
+
         onView(withId(R.id.start_run)).perform(click());
 
         SystemClock.sleep(MOCK_LOCATION_DURATION);
@@ -269,8 +273,10 @@ public class EspressoTests {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
 
-        //TODO: wait API client to connect
-        SystemClock.sleep(FIREBASE_DURATION);
+        RunningMapFragment fragment = (RunningMapFragment) mActivityRule.getActivity().getmCurrentFragment();
+        while(!fragment.isApiClientConnected()) {
+            SystemClock.sleep(200);
+        }
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
         onView(withId(R.id.start_run)).perform(click());
@@ -302,8 +308,10 @@ public class EspressoTests {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
 
-        //TODO: wait API client to connect
-        SystemClock.sleep(FIREBASE_DURATION);
+        RunningMapFragment fragment = (RunningMapFragment) mActivityRule.getActivity().getmCurrentFragment();
+        while(!fragment.isApiClientConnected()) {
+            SystemClock.sleep(200);
+        }
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
         onView(withId(R.id.start_run)).perform(click());
