@@ -469,7 +469,7 @@ public class SideBarActivity extends AppCompatActivity
             message = "If you logout now, your session progresses will be lost. Logout?";
         }
 
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.DarkDialogs)
                 .setTitle("Logout")
                 .setMessage(message)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -496,7 +496,7 @@ public class SideBarActivity extends AppCompatActivity
 
     private void dialogQuitRun(final MenuItem item){
 
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.DarkDialogs)
                 .setTitle("Quit Run")
                 .setMessage("Are you sure you want to to quit your current run?")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {

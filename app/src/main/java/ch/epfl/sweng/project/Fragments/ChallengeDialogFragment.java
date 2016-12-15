@@ -5,7 +5,9 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -16,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.NumberPicker;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,25 +28,26 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import ch.epfl.sweng.project.Activities.ChallengeActivity;
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Model.Challenge;
+import info.hoang8f.android.segmented.SegmentedGroup;
 
 
-public class ChallengeDialogFragment extends DialogFragment implements View.OnClickListener {
+public class ChallengeDialogFragment extends DialogFragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
+
+    private AlertDialog dialog;
 
     //Challenge type
-    Button distanceBtn;
-    Button timeBtn;
-    Challenge.Type type;
+    private Challenge.Type type;
 
-    TextView setParameter;
+    private NumberPicker firstPicker;
+    private NumberPicker secondPicker;
+    private TextView firstUnit;
+    private TextView secondUnit;
 
-    NumberPicker firstPicker;
-    NumberPicker secondPicker;
-    TextView firstUnit;
-    TextView secondUnit;
-
-    int firstValue;
-    int secondValue;
-
+    private int firstValue;
+    private int secondValue;
+    private SegmentedGroup typeSG;
+    private RadioButton distanceRadio;
+    private RadioButton timeRadio;
 
     /* The activity that creates an instance of this dialog fragment must
  * implement this interface in order to receive event callbacks.
@@ -61,48 +66,24 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
         @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.fragment_customize_challenge, null);
 
         builder.setCancelable(false);
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
-        builder.setView(view)
-                // Add action buttons
-                .setPositiveButton("Challenge!", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        // launch challenge
-                        if(firstValue + secondValue != 0)  {
-                            mListener.onDialogPositiveClick(ChallengeDialogFragment.this);
-                        } else {
-                            if(((AppRunnest)getActivity().getApplicationContext()).isTestSession()){
-                                firstValue = 1;
-                                mListener.onDialogPositiveClick(ChallengeDialogFragment.this);
-                            } else {
-                                Toast.makeText(getContext(), "The goal of the challenge cannot be 0!",
-                                        Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        //cancel
-                        // Send the positive button event back to the host activity
-                        mListener.onDialogNegativeClick(ChallengeDialogFragment.this);
-                    }
-                });
+        builder.setView(view);
 
         firstPicker = (NumberPicker) view.findViewById(R.id.first_picker);
         secondPicker = (NumberPicker) view.findViewById(R.id.second_picker);
-        setParameter = (TextView) view.findViewById(R.id.txt_set_parameter);
         firstUnit = (TextView) view.findViewById(R.id.txt_first_unit);
         secondUnit = (TextView) view.findViewById(R.id.txt_second_unit);
-        distanceBtn = (Button) view.findViewById(R.id.btn_distance);
-        timeBtn = (Button) view.findViewById(R.id.btn_time);
+        typeSG = (SegmentedGroup) view.findViewById(R.id.type_sg);
+        distanceRadio = (RadioButton) view.findViewById(R.id.distance_radio);
+        timeRadio = (RadioButton) view.findViewById(R.id.time_radio);
 
+        typeSG.setOnCheckedChangeListener(this);
+
+        setDividerColor(firstPicker, Color.GREEN);
+        setDividerColor(secondPicker, Color.GREEN);
 
         firstPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
 
@@ -128,94 +109,47 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
             }
         });
 
-        distanceBtn.setOnClickListener(this);
-        timeBtn.setOnClickListener(this);
+        distanceRadio.performClick();
 
-        distanceBtn.performClick();
+        dialog = builder.create();
 
-        return builder.create();
+        view.findViewById(R.id.customize_positive_btn).setOnClickListener(this);
+        view.findViewById(R.id.customize_negative_btn).setOnClickListener(this);
+
+        return dialog;
     }
 
     public void onClick(View v) {
 
         switch (v.getId()) {
-
-            case R.id.btn_distance:
-                distanceBtn.setBackgroundColor(Color.RED);
-                timeBtn.setBackgroundColor(Color.GRAY);
-                setParameter.setText("Set the distance");
-                firstUnit.setText("km");
-                secondUnit.setText("m");
-
-                firstPicker.setValue(0);
-                firstValue = 0;
-                firstPicker.setMinValue(0);
-                firstPicker.setMaxValue(100);
-                firstPicker.setWrapSelectorWheel(true);
-
-
-                String[] meters = new String[10];
-                for(int i=0; i<meters.length; i++) {
-                    meters[i] = Integer.toString((i)*100);
-                }
-                secondPicker.setValue(0);
-                secondValue = 0;
-                secondPicker.setMaxValue(9);
-                secondPicker.setDisplayedValues(meters);
-                secondPicker.setMinValue(0);
-                secondPicker.setMaxValue(9);
-                secondPicker.setWrapSelectorWheel(true);
-
-                /*
-                secondPicker.setMinValue(0);
-                secondPicker.setMaxValue(999);
-                secondPicker.setWrapSelectorWheel(true);*/
-
-                type = Challenge.Type.DISTANCE;
+            case R.id.customize_negative_btn:
+                mListener.onDialogNegativeClick(ChallengeDialogFragment.this);
+                dialog.dismiss();
                 break;
 
-            case R.id.btn_time:
-                distanceBtn.setBackgroundColor(Color.GRAY);
-                timeBtn.setBackgroundColor(Color.RED);
-                setParameter.setText("Set the time");
-                firstUnit.setText("h");
-                secondUnit.setText("min");
-
-                firstPicker.setValue(0);
-                firstValue = 0;
-                firstPicker.setMinValue(0);
-                firstPicker.setMaxValue(10);
-                firstPicker.setWrapSelectorWheel(true);
-
-                String[] minutes = new String[12];
-                for(int i=0; i<minutes.length; i++) {
-                    minutes[i] = Integer.toString((i)*5);
+            case R.id.customize_positive_btn:
+                if(firstValue + secondValue != 0)  {
+                    mListener.onDialogPositiveClick(ChallengeDialogFragment.this);
+                    dialog.dismiss();
+                } else {
+                    if(((AppRunnest)getActivity().getApplicationContext()).isTestSession()){
+                        firstValue = 1;
+                        mListener.onDialogPositiveClick(ChallengeDialogFragment.this);
+                        dialog.dismiss();
+                    } else {
+                        Toast.makeText(getContext(), R.string.challenge_not_null,
+                                Toast.LENGTH_LONG).show();
+                    }
                 }
-                secondPicker.setValue(0);
-                secondValue = 0;
-                secondPicker.setDisplayedValues(minutes);
-                secondPicker.setMinValue(0);
-                secondPicker.setMaxValue(11);
-                secondPicker.setWrapSelectorWheel(true);
 
-                /*
-                secondPicker.setMinValue(0);
-                secondPicker.setMaxValue(59);
-                secondPicker.setWrapSelectorWheel(true);*/
-
-                type = Challenge.Type.TIME;
                 break;
         }
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
     }
-
 
     @Override
     public void onAttach(Activity activity) {
@@ -237,6 +171,77 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
         mListener = null;
     }
 
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+        if(distanceRadio.isChecked()){
+            firstUnit.setText("km");
+            secondUnit.setText("m");
+
+            firstPicker.setValue(0);
+            firstValue = 0;
+            firstPicker.setMinValue(0);
+            firstPicker.setMaxValue(100);
+            firstPicker.setWrapSelectorWheel(true);
+
+            String[] meters = new String[10];
+            for(int i=0; i<meters.length; i++) {
+                meters[i] = Integer.toString((i)*100);
+            }
+            secondPicker.setValue(0);
+            secondValue = 0;
+            secondPicker.setMaxValue(9);
+            secondPicker.setDisplayedValues(meters);
+            secondPicker.setMinValue(0);
+            secondPicker.setMaxValue(9);
+            secondPicker.setWrapSelectorWheel(true);
+
+            type = Challenge.Type.DISTANCE;
+        } else {
+            firstUnit.setText("h");
+            secondUnit.setText("min");
+
+            firstPicker.setValue(0);
+            firstValue = 0;
+            firstPicker.setMinValue(0);
+            firstPicker.setMaxValue(10);
+            firstPicker.setWrapSelectorWheel(true);
+
+            String[] minutes = new String[12];
+            for(int i=0; i<minutes.length; i++) {
+                minutes[i] = Integer.toString((i)*5);
+            }
+            secondPicker.setValue(0);
+            secondValue = 0;
+            secondPicker.setDisplayedValues(minutes);
+            secondPicker.setMinValue(0);
+            secondPicker.setMaxValue(11);
+            secondPicker.setWrapSelectorWheel(true);
+
+            type = Challenge.Type.TIME;
+        }
+    }
+
+    private void setDividerColor(NumberPicker picker, int color) {
+
+        java.lang.reflect.Field[] pickerFields = NumberPicker.class.getDeclaredFields();
+        for (java.lang.reflect.Field pf : pickerFields) {
+            if (pf.getName().equals("mSelectionDivider")) {
+                pf.setAccessible(true);
+                try {
+                    ColorDrawable colorDrawable = new ColorDrawable(color);
+                    pf.set(picker, colorDrawable);
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                } catch (Resources.NotFoundException e) {
+                    e.printStackTrace();
+                }
+                catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
+    }
 
     public Challenge.Type getType() {
         return type;

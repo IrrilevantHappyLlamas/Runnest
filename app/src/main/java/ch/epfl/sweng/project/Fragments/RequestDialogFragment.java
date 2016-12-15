@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +37,8 @@ public class RequestDialogFragment extends DialogFragment implements View.OnClic
     private TextView typeTxt;
     private TextView requestDescriptionTxt;
     private TextView goalTxt;
+    private AlertDialog dialog;
+    private ImageView typeImg;
 
     /* The activity that creates an instance of this dialog fragment must
      * implement this interface in order to receive event callbacks.
@@ -60,40 +63,17 @@ public class RequestDialogFragment extends DialogFragment implements View.OnClic
         @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.fragment_request_dialog, null);
 
         builder.setCancelable(false);
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
-        builder.setView(view)
-                // Add action buttons
-                .setPositiveButton("Accept", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-
-                        mListener.onDialogAcceptClick(RequestDialogFragment.this);
-                    }
-                })
-                .setNegativeButton("Decline", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        //cancel
-                        // Send the positive button event back to the host activity
-                        mListener.onDialogDeclineClick(RequestDialogFragment.this);
-                    }
-                })
-                .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        //cancel
-                        // Send the positive button event back to the host activity
-                        mListener.onDialogCancelClick(RequestDialogFragment.this);
-                    }
-                });
-
-
+        builder.setView(view);
 
         ((TextView)view.findViewById(R.id.txt_requester)).setText(sender + " challenged you on a run based on:");
         typeTxt = (TextView) view.findViewById(R.id.txt_challenge_type);
         requestDescriptionTxt = (TextView) view.findViewById(R.id.txt_request_description);
         goalTxt = (TextView) view.findViewById(R.id.txt_goal);
-
-        typeTxt.setText(type.toString());
+        typeImg = (ImageView) view.findViewById(R.id.type_img);
+        if(type == Challenge.Type.TIME){
+            typeTxt.setText("Time");
+            typeImg.setImageDrawable(getResources().getDrawable(R.drawable.time_white));
+        }
 
         if(type == Challenge.Type.DISTANCE) {
             requestDescriptionTxt.setText("Wins the first one to reach ");
@@ -103,13 +83,31 @@ public class RequestDialogFragment extends DialogFragment implements View.OnClic
             goalTxt.setText(firstValue + "h " + secondValue + "min");
         }
 
-        return builder.create();
+        view.findViewById(R.id.cancel_btn).setOnClickListener(this);
+        view.findViewById(R.id.decline_btn).setOnClickListener(this);
+        view.findViewById(R.id.accept_btn).setOnClickListener(this);
+
+        dialog = builder.create();
+
+        return dialog;
     }
 
     public void onClick(View v) {
 
         switch (v.getId()) {
+            case R.id.cancel_btn:
+                mListener.onDialogCancelClick(RequestDialogFragment.this);
+                dialog.dismiss();
+                break;
 
+            case R.id.decline_btn:
+                mListener.onDialogDeclineClick(RequestDialogFragment.this);
+                dialog.dismiss();
+                break;
+            case R.id.accept_btn:
+                mListener.onDialogAcceptClick(RequestDialogFragment.this);
+                dialog.dismiss();
+                break;
         }
     }
 
