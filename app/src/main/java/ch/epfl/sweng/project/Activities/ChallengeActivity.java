@@ -321,8 +321,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 new CountDownTimer((long)challengeGoal, 1000) {
 
                     public void onTick(long millisUntilFinished) {
-                        String timeLeft = "Time left: " +
-                                UtilsUI.timeToString((int)millisUntilFinished/1000, false);
+                        String timeLeft = UtilsUI.timeToString((int)millisUntilFinished/1000, false);
                         chronometer.setText(timeLeft);
                     }
 
