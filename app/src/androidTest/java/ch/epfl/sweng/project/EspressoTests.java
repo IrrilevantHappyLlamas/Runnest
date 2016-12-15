@@ -250,6 +250,9 @@ public class EspressoTests {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
 
+        //TODO
+        SystemClock.sleep(FIREBASE_DURATION);
+
         onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
         onView(withId(R.id.start_run)).perform(click());
 
@@ -267,8 +270,10 @@ public class EspressoTests {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
 
-        onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
+        //TODO
+        SystemClock.sleep(FIREBASE_DURATION);
 
+        onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
         onView(withId(R.id.start_run)).perform(click());
 
         SystemClock.sleep(MOCK_LOCATION_DURATION);
@@ -298,8 +303,10 @@ public class EspressoTests {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
 
-        onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
+        //TODO
+        SystemClock.sleep(FIREBASE_DURATION);
 
+        onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
         onView(withId(R.id.start_run)).perform(click());
 
         SystemClock.sleep(MOCK_LOCATION_DURATION);
