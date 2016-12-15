@@ -18,6 +18,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.NumberPicker;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -27,6 +29,7 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import ch.epfl.sweng.project.Activities.ChallengeActivity;
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Model.Challenge;
+import info.hoang8f.android.segmented.SegmentedGroup;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,17 +37,18 @@ import ch.epfl.sweng.project.Model.Challenge;
  * {@link RequestScheduleDialogFragment.OnRequestScheduleDialogListener} interface
  * to handle interaction events.
  */
-public class RequestScheduleDialogFragment extends DialogFragment implements View.OnClickListener {
+public class RequestScheduleDialogFragment extends DialogFragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
 
-    //Challenge type
-    Button distanceBtn;
-    Button timeBtn;
+    // Challenge type
+    private SegmentedGroup typeSG;
+    private RadioButton distanceRadio;
 
     DatePicker datePicker;
     TimePicker timePicker;
 
     private Calendar scheduledCalendar;
     Challenge.Type type;
+    private AlertDialog dialog;
 
 
     /* The activity that creates an instance of this dialog fragment must
@@ -73,49 +77,33 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
         builder.setCancelable(false);
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        builder.setView(view)
-                // Add action buttons
-                .setPositiveButton("Schedule!", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
+        builder.setView(view);
 
-                        mListener.onRequestScheduleDialogPositiveClick(RequestScheduleDialogFragment.this);
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+        typeSG = (SegmentedGroup) view.findViewById(R.id.type_sg);
+        distanceRadio = (RadioButton) view.findViewById(R.id.distance_radio);
 
-                        mListener.onRequestScheduleDialogNegativeClick(RequestScheduleDialogFragment.this);
-                    }
-                });
+        typeSG.setOnCheckedChangeListener(this);
+        view.findViewById(R.id.schedule_positive_btn).setOnClickListener(this);
+        view.findViewById(R.id.schedule_negative_btn).setOnClickListener(this);
 
-        distanceBtn = (Button) view.findViewById(R.id.button_distance);
-        timeBtn = (Button) view.findViewById(R.id.button_time);
-
-        distanceBtn.setOnClickListener(this);
-        timeBtn.setOnClickListener(this);
-
-        distanceBtn.performClick();
-
-        return builder.create();
+        distanceRadio.performClick();
+        dialog = builder.create();
+        return dialog;
     }
 
     public void onClick(View v) {
 
         switch (v.getId()) {
-
-            case R.id.button_distance:
-                distanceBtn.setBackgroundColor(Color.RED);
-                timeBtn.setBackgroundColor(Color.GRAY);
-
-                type = Challenge.Type.DISTANCE;
+            case R.id.schedule_negative_btn:
+                mListener.onRequestScheduleDialogNegativeClick(RequestScheduleDialogFragment.this);
+                dialog.dismiss();
                 break;
 
-            case R.id.button_time:
-                distanceBtn.setBackgroundColor(Color.GRAY);
-                timeBtn.setBackgroundColor(Color.RED);
-
-                type = Challenge.Type.TIME;
+            case R.id.schedule_positive_btn:
+                Toast.makeText(getContext(), R.string.challenge_scheduled,
+                        Toast.LENGTH_LONG).show();
+                mListener.onRequestScheduleDialogPositiveClick(RequestScheduleDialogFragment.this);
+                dialog.dismiss();
                 break;
         }
     }
@@ -165,6 +153,15 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+        if(distanceRadio.isChecked()){
+            type = Challenge.Type.DISTANCE;
+        } else {
+            type = Challenge.Type.TIME;
+        }
     }
 
     public Challenge.Type getType() {

@@ -570,7 +570,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
     private void dialogQuitChallenge(){
 
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.DarkDialogs)
                 .setTitle("Quit Challenge")
                 .setMessage("Are you sure you want to to quit your current Challenge?")
                 .setPositiveButton(R.string.quit, new DialogInterface.OnClickListener() {
@@ -585,7 +585,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                         endChallenge();
                     }
                 })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.keep_running, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         //do nothing
                     }
@@ -596,7 +596,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
     private void stopWaitingForOpponent(){
 
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.DarkDialogs)
                 .setTitle("Stop Waiting")
                 .setMessage("Are you sure you want to stop waiting and go back?")
                 .setPositiveButton(R.string.quit, new DialogInterface.OnClickListener() {
@@ -619,7 +619,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                         finish();
                     }
                 })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.wait, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         //do nothing
 
