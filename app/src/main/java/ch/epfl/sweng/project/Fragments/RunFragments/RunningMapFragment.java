@@ -59,15 +59,15 @@ public class RunningMapFragment extends RunFragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_running_map, container, false);
 
+        // Buttons
+        GUISetup(view);
+
         mMapView = (MapView) view.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         mMapView.getMapAsync(this); //this is important
 
         // Location
         setupLocation();
-
-        // Buttons
-        GUISetup(view);
 
         return view;
     }
