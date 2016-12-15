@@ -60,7 +60,8 @@
                     app:srcCompat="@drawable/ready_opponent"
                     android:layout_marginLeft="10dp"
                     android:id="@+id/user_status"
-                    tools:ignore="ContentDescription"/>
+                    tools:ignore="ContentDescription"
+                    android:layout_gravity="center_vertical"/>
 
                 <TextView
                     android:text="@string/user_ready"

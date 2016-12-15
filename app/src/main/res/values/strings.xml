@@ -48,9 +48,9 @@
     <string name="meters">" m"</string>
     <string name="white_space">" "</string>
     <string name="opponent_completed">"Opponent completed "</string>
-    <string name="in">in</string>
+    <string name="in">"in "</string>
     <string name="user_finished">You have Finished!</string>
-    <string name="user_completed">"You have completed "</string>
+    <string name="user_completed">"You completed "</string>
     <string name="on_date">on Date</string>
     <string name="opponent_wants_to_schedule_a_run_based_on">Opponent wants to schedule a run based on:</string>
     <string name="schedule_request">Schedule Request</string>
@@ -98,4 +98,6 @@
     <string name="challenges_lowercase">challenges</string>
     <string name="won">won</string>
     <string name="lost">lost</string>
+    <string name="second_position">2°</string>
+    <string name="first_position">1°</string>
 </resources>
