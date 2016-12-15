@@ -66,6 +66,7 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
     public boolean isApiClientConnected() {
         return apiClientConnected;
     }
+
     protected void startRun() {
         mRun.start();
 
@@ -187,6 +188,8 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        apiClientConnected = true;
+
         MapStyleOptions mapStyle = MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.map_style_no_label);
         googleMap.setMapStyle(mapStyle);
         mMapHandler = new MapHandler(googleMap, ContextCompat.getColor(getContext(), R.color.colorAccent));
@@ -200,8 +203,6 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
      */
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        apiClientConnected = true;
-
         Location location = null;
 
         if (ActivityCompat.checkSelfPermission(getContext(),
