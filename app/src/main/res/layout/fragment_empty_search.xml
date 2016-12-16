@@ -2,7 +2,8 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="ch.epfl.sweng.project.Fragments.EmptySearchFragment">
+             tools:context="ch.epfl.sweng.project.Fragments.EmptySearchFragment"
+             android:id="@+id/empty_layout">
 
     <!-- TODO: Update blank fragment layout -->
 

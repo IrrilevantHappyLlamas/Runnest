@@ -18,8 +18,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="run_history">Run History</string>
     <string name="search_title">search_title</string>
-    <string name="decline">DECLINE</string>
-    <string name="accept">ACCEPT</string>
+    <string name="decline">Decline</string>
+    <string name="accept">Accept</string>
     <string name="km">"km"</string>
     <string name="running_man">Running Man</string>
     <string name="lock_idle_alarm">Lock Idle Alarm</string>
@@ -51,16 +51,16 @@
     <string name="in">in</string>
     <string name="user_finished">You have Finished!</string>
     <string name="user_completed">"You have completed "</string>
-    <string name="on_date">on Date</string>
+    <string name="on_date">On date:</string>
     <string name="opponent_wants_to_schedule_a_run_based_on">Opponent wants to schedule a run based on:</string>
     <string name="schedule_request">Schedule Request</string>
-    <string name="schedule_your_challenge">Schedule your challenge!</string>
+    <string name="schedule_the_challenge">Schedule</string>
     <string name="choose_the_challenge_type">Choose the challenge type</string>
     <string name="distance_challenge">Distance Challenge:</string>
     <string name="time_challenge">Time Challenge:</string>
     <string name="time">Time</string>
-    <string name="choose_the_date">Choose the date!</string>
-    <string name="choose_the_time">Choose the time!</string>
+    <string name="choose_the_date">Choose the date</string>
+    <string name="choose_the_time">Choose the time</string>
     <string name="wants_to_schedule_a_run_based_on">" wants to schedule a run based on"</string>
     <string name="at">At</string>
     <string name="righetta">-</string>
@@ -94,4 +94,15 @@
     <string name="challenge_request">Challenge Request</string>
     <string name="prepare_your_challenge">Prepare your challenge</string>
     <string name="downloading_user_data">Downloading user data …</string>
+    <string name="challenge_scheduled">Challenge scheduled!</string>
+    <string name="challenge_not_null">The goal of the challenge cannot be 0!</string>
+    <string name="wait">Wait</string>
+    <string name="keep_running">Keep Running</string>
+    <string name="set_the_challenge">Set the challenge</string>
+    <string name="distance_type">Distance</string>
+    <string name="date_example">14–12-2016</string>
+    <string name="time_example">12:40</string>
+    <string name="cancel">Cancel</string>
+    <string name="memo">Memo</string>
+    <string name="memo_txt">Remember that you have a challenge based on:</string>
 </resources>

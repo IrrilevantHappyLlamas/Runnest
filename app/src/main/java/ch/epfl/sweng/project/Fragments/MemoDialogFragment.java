@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
@@ -26,7 +27,7 @@ import ch.epfl.sweng.project.Model.Challenge;
  * {@link MemoDialogFragment.MemoDialogListener} interface
  * to handle interaction events.
  */
-public class MemoDialogFragment extends DialogFragment {
+public class MemoDialogFragment extends DialogFragment implements View.OnClickListener {
     private Challenge.Type type;
     private Date scheduledDate;
     private String sender;
@@ -36,6 +37,8 @@ public class MemoDialogFragment extends DialogFragment {
     private TextView dateTxt;
     private TextView timeDescriptionTxt;
     private TextView timeTxt;
+    private ImageView typeImg;
+    private AlertDialog dialog;
 
     /* The activity that creates an instance of this dialog fragment must
      * implement this interface in order to receive event callbacks.
@@ -60,27 +63,7 @@ public class MemoDialogFragment extends DialogFragment {
         @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.fragment_memo_dialog, null);
 
         builder.setCancelable(false);
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
-        builder.setView(view)
-                // Add action buttons
-                .setNeutralButton("Close", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        //cancel
-                        // Send the positive button event back to the host activity
-                        mListener.onMemoDialogCloseClick(MemoDialogFragment.this);
-                    }
-                }).setNegativeButton("Delete", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-
-                        mListener.onMemoDialogDeleteClick(MemoDialogFragment.this);
-            }
-                }).setPositiveButton("Challenge", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                //Start the challenge
-                        mListener.onMemoDialogChallengeClick(MemoDialogFragment.this);
-            }
-        });
+        builder.setView(view);
 
         ((TextView)view.findViewById(R.id.txt_requester)).setText(getString(R.string.you_and) + sender + getString(R.string.scheduled_a_run_based_on));
         typeTxt = (TextView) view.findViewById(R.id.txt_challenge_type);
@@ -88,7 +71,11 @@ public class MemoDialogFragment extends DialogFragment {
         dateTxt = (TextView) view.findViewById(R.id.txt_date);
         timeDescriptionTxt = (TextView) view.findViewById(R.id.txt_time_description);
         timeTxt = (TextView) view.findViewById(R.id.txt_time);
-        typeTxt.setText(type.toString());
+        typeImg = (ImageView) view.findViewById(R.id.type_img);
+        if(type == Challenge.Type.TIME){
+            typeTxt.setText("Time");
+            typeImg.setImageDrawable(getResources().getDrawable(R.drawable.time_white));
+        }
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(scheduledDate);
@@ -97,15 +84,34 @@ public class MemoDialogFragment extends DialogFragment {
         timeDescriptionTxt.setText(getString(R.string.at));
         timeTxt.setText(String.valueOf(calendar.get(Calendar.HOUR_OF_DAY)) + getString((R.string.due_punti)) + String.valueOf(calendar.get(Calendar.MINUTE)));
 
-        return builder.create();
+        dialog = builder.create();
+
+        view.findViewById(R.id.cancel_btn).setOnClickListener(this);
+        view.findViewById(R.id.decline_btn).setOnClickListener(this);
+        view.findViewById(R.id.accept_btn).setOnClickListener(this);
+
+        return dialog;
     }
 
     public void onClick(View v) {
 
         switch (v.getId()) {
+            case R.id.cancel_btn:
+                mListener.onMemoDialogCloseClick(MemoDialogFragment.this);
+                dialog.dismiss();
+                break;
 
+            case R.id.decline_btn:
+                mListener.onMemoDialogDeleteClick(MemoDialogFragment.this);
+                dialog.dismiss();
+                break;
+            case R.id.accept_btn:
+                mListener.onMemoDialogChallengeClick(MemoDialogFragment.this);
+                dialog.dismiss();
+                break;
         }
     }
+
 
 
     @Override

@@ -14,13 +14,16 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
 import java.util.Date;
 
 import ch.epfl.sweng.project.Activities.ChallengeActivity;
+import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Model.Challenge;
 
 /**
@@ -29,7 +32,7 @@ import ch.epfl.sweng.project.Model.Challenge;
  * {@link AcceptScheduleDialogFragment.AcceptScheduleDialogListener} interface
  * to handle interaction events.
  */
-public class AcceptScheduleDialogFragment extends DialogFragment {
+public class AcceptScheduleDialogFragment extends DialogFragment implements View.OnClickListener {
     private Challenge.Type type;
     private Date scheduledDate;
     private String sender;
@@ -38,6 +41,8 @@ public class AcceptScheduleDialogFragment extends DialogFragment {
     private TextView dateTxt;
     private TextView timeDescriptionTxt;
     private TextView timeTxt;
+    private AlertDialog dialog;
+    private ImageView typeImg;
 
     /* The activity that creates an instance of this dialog fragment must
      * implement this interface in order to receive event callbacks.
@@ -64,31 +69,7 @@ public class AcceptScheduleDialogFragment extends DialogFragment {
         builder.setCancelable(false);
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        builder.setView(view)
-                // Add action buttons
-                .setPositiveButton("Accept", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-
-                        mListener.onAcceptScheduleDialogAcceptClick(AcceptScheduleDialogFragment.this);
-                    }
-                })
-                .setNegativeButton("Decline", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        //cancel
-                        // Send the positive button event back to the host activity
-                        mListener.onAcceptScheduleDialogDeclineClick(AcceptScheduleDialogFragment.this);
-                    }
-                })
-                .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        //cancel
-                        // Send the positive button event back to the host activity
-                        mListener.onAcceptScheduleDialogCancelClick(AcceptScheduleDialogFragment.this);
-                    }
-                });
-
-
+        builder.setView(view);
 
         ((TextView)view.findViewById(R.id.txt_requester)).setText(sender + getString(R.string.wants_to_schedule_a_run_based_on));
         typeTxt = (TextView) view.findViewById(R.id.txt_challenge_type);
@@ -96,7 +77,11 @@ public class AcceptScheduleDialogFragment extends DialogFragment {
         dateTxt = (TextView) view.findViewById(R.id.txt_date);
         timeDescriptionTxt = (TextView) view.findViewById(R.id.txt_time_description);
         timeTxt = (TextView) view.findViewById(R.id.txt_time);
-        typeTxt.setText(type.toString());
+        typeImg = (ImageView) view.findViewById(R.id.type_img);
+        if(type == Challenge.Type.TIME){
+            typeTxt.setText("Time");
+            typeImg.setImageDrawable(getResources().getDrawable(R.drawable.time_white));
+        }
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(scheduledDate);
@@ -105,13 +90,31 @@ public class AcceptScheduleDialogFragment extends DialogFragment {
         timeDescriptionTxt.setText(R.string.at);
         timeTxt.setText(String.valueOf(calendar.get(Calendar.HOUR_OF_DAY)) + getString(R.string.due_punti) + String.valueOf(calendar.get(Calendar.MINUTE)));
 
-        return builder.create();
+        dialog = builder.create();
+
+        view.findViewById(R.id.cancel_btn).setOnClickListener(this);
+        view.findViewById(R.id.decline_btn).setOnClickListener(this);
+        view.findViewById(R.id.accept_btn).setOnClickListener(this);
+
+        return dialog;
     }
 
     public void onClick(View v) {
 
         switch (v.getId()) {
+            case R.id.cancel_btn:
+                mListener.onAcceptScheduleDialogCancelClick(AcceptScheduleDialogFragment.this);
+                dialog.dismiss();
+                break;
 
+            case R.id.decline_btn:
+                mListener.onAcceptScheduleDialogDeclineClick(AcceptScheduleDialogFragment.this);
+                dialog.dismiss();
+                break;
+            case R.id.accept_btn:
+                mListener.onAcceptScheduleDialogAcceptClick(AcceptScheduleDialogFragment.this);
+                dialog.dismiss();
+                break;
         }
     }
 

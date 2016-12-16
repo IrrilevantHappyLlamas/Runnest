@@ -95,7 +95,7 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void setupLocationChangeSimulation() {
-        locationChangeSimulation = new CountDownTimer(10000, 500) {
+        locationChangeSimulation = new CountDownTimer(5000, 500) {
             private Location location;
             private double lat = 0.001;
             private double lon = 0.001;

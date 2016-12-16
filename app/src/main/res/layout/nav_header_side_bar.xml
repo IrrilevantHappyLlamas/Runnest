@@ -18,7 +18,8 @@
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         app:srcCompat="@drawable/running_man_white"
         android:contentDescription="@string/desc"
-        android:layout_height="70dp"/>
+        android:layout_height="70dp"
+        android:id="@+id/logo"/>
 
     <TextView
         android:layout_width="match_parent"

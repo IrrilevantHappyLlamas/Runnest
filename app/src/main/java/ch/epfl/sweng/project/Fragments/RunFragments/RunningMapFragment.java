@@ -56,15 +56,15 @@ public class RunningMapFragment extends RunFragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_running_map, container, false);
 
+        // Buttons
+        GUISetup(view);
+
         mapView = (MapView) view.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this); //this is important
 
         // Location
         setupLocation();
-
-        // Buttons
-        GUISetup(view);
 
         return view;
     }
@@ -81,11 +81,6 @@ public class RunningMapFragment extends RunFragment {
         locationSettingsHandler.checkLocationSettings();
     }
 
-    /**
-     * Setup the two buttons of the fragment: Start and Stop.
-     *
-     * @param view  View where buttons must be added.
-     */
     private void GUISetup(View view) {
 
         //Buttons

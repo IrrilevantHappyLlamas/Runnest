@@ -75,6 +75,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private Boolean opponentFinished = false;
     private Boolean userFinished = false;
     private boolean isIntendedActivityExit = false;
+    private boolean initialResume = true;
     private String opponentName;
     private String challengeId;
     private ChallengeProxy.Handler proxyHandler;
@@ -99,12 +100,14 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private boolean aborted = false;
     private ImageView userStatus;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_challenge);
 
+        // Set user as unavailable
+        new FirebaseHelper().
+                setUserAvailable(((AppRunnest) getApplication()).getUser().getEmail(), false, false);
 
         extractIntent(getIntent());
         setupGoogleApi();
@@ -124,10 +127,6 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private void extractIntent(Intent intent) {
         Bundle extra = intent.getExtras();
 
-        // Set user as unavailable
-        new FirebaseHelper().
-                setUserAvailable(((AppRunnest) getApplication()).getUser().getEmail(), false, false);
-
         opponentName = extra.getString("opponent");
         owner = extra.getBoolean("owner");
 
@@ -142,7 +141,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 break;
             case TIME:
                 if(((AppRunnest)getApplication()).isTestSession()) {
-                    challengeGoal = 20000;
+                    challengeGoal = 15000;
                 } else {
                     challengeGoal = firstValue * 3600 * 1000 + secondValue * 60 * 1000;
                 }
@@ -283,7 +282,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         challengeProxy.imFinished();
 
         if (opponentFinished) {
-            isIntendedActivityExit = false;
+            isIntendedActivityExit = true;
             endChallenge();
         }
     }
@@ -450,10 +449,6 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         // upload database
         ((AppRunnest) getApplication()).launchDatabaseUpload();
 
-        // Set user as available
-        new FirebaseHelper().
-                setUserAvailable(((AppRunnest) getApplication()).getUser().getEmail(), false, true);
-
         // Go to recap challenge
         goToChallengeRecap();
     }
@@ -547,20 +542,47 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
     @Override
     public void onStop() {
-        super.onStop();
         if (!isIntendedActivityExit) {
-            // TODO: decide what to do
-            // TODO: decide if onPause too
+            if (phase == BEFORE_CHALLENGE) {
+                abandonBeforeStart();
+            } else {
+                isIntendedActivityExit = true;
+                abandonAfterStart();
+            }
         }
+        super.onStop();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (!isIntendedActivityExit) {
+    private void abandonBeforeStart() {
+        if (owner && !isOpponentThere) {
+            // If you are still in the room alone
+            challengeProxy.deleteChallenge();
+        } else {
+            // If opponent is already here and he needs notification
             challengeProxy.abortChallenge();
-            ((AppRunnest) getApplication()).launchDatabaseUpload();
         }
+
+        // Set user as available
+        new FirebaseHelper().
+                setUserAvailable(((AppRunnest) getApplication()).getUser().getEmail(), false, true);
+
+        Intent returnIntent = new Intent();
+        setResult(SideBarActivity.REQUEST_STOP_WAITING, returnIntent);
+        finish();
+    }
+
+    private void abandonAfterStart() {
+        challengeProxy.abortChallenge();
+        ((ChallengeSenderFragment)senderFragment).endChallenge();
+        ((ChallengeReceiverFragment)receiverFragment).stopRun();
+        aborted = true;
+        win = false;
+
+        // Set user as available
+        new FirebaseHelper().
+                setUserAvailable(((AppRunnest) getApplication()).getUser().getEmail(), false, true);
+        
+        endChallenge();
     }
 
     @Override
@@ -570,22 +592,16 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
     private void dialogQuitChallenge(){
 
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.DarkDialogs)
                 .setTitle("Quit Challenge")
                 .setMessage("Are you sure you want to to quit your current Challenge?")
                 .setPositiveButton(R.string.quit, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        challengeProxy.abortChallenge();
-                        aborted = true;
-                        win = false;
-
-                        ((ChallengeSenderFragment)senderFragment).endChallenge();
-                        ((ChallengeReceiverFragment)receiverFragment).stopRun();
                         isIntendedActivityExit = true;
-                        endChallenge();
+                        abandonAfterStart();
                     }
                 })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.keep_running, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         //do nothing
                     }
@@ -596,30 +612,16 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
     private void stopWaitingForOpponent(){
 
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.DarkDialogs)
                 .setTitle("Stop Waiting")
                 .setMessage("Are you sure you want to stop waiting and go back?")
                 .setPositiveButton(R.string.quit, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        if (owner && !isOpponentThere) {
-                            // If you are still in the room alone
-                            challengeProxy.deleteChallenge();
-                        } else {
-                            // If opponent is already here and he needs notification
-                            challengeProxy.abortChallenge();
-                        }
-
-                        // Set user as available
-                        new FirebaseHelper().
-                                setUserAvailable(((AppRunnest) getApplication()).getUser().getEmail(), false, true);
-
-                        Intent returnIntent = new Intent();
-                        setResult(SideBarActivity.REQUEST_STOP_WAITING, returnIntent);
                         isIntendedActivityExit = true;
-                        finish();
+                        abandonBeforeStart();
                     }
                 })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.wait, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         //do nothing
 

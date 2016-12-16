@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -212,8 +213,15 @@ public class SideBarActivity extends AppCompatActivity
         mSearchView = (SearchView) menu.findItem(R.id.search).getActionView();
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
+        mSearchView.setIconifiedByDefault(true);
+        mSearchView.setFocusable(true);
+        mSearchView.setIconified(false);
+        mSearchView.requestFocusFromTouch();
+        mSearchView.clearFocus();
+
+
         //get the searchBar as a MenuItem (as opposed to as a SearchView)
-        mSearchViewAsMenuItem = (MenuItem) menu.findItem(R.id.search);
+        mSearchViewAsMenuItem = menu.findItem(R.id.search);
 
         //define the behaviour of the searchBar, i.e.
         // that when the searchBar collapses, you go back to the fragment from which you opened it,
@@ -346,7 +354,9 @@ public class SideBarActivity extends AppCompatActivity
             } else if (id == R.id.nav_new_challenge) {
                 toolbar.setTitle("Search someone");
                 launchFragment(new EmptySearchFragment());
-                //mSearchView.performClick();
+
+                mSearchView.setQueryHint("Search someone");
+                mSearchViewAsMenuItem.expandActionView();
             } else if (id == R.id.nav_messages) {
                 toolbar.setTitle("Challenges");
                 launchFragment(new MessagesFragment());
@@ -459,7 +469,7 @@ public class SideBarActivity extends AppCompatActivity
             message = "If you logout now, your session progresses will be lost. Logout?";
         }
 
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.DarkDialogs)
                 .setTitle("Logout")
                 .setMessage(message)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -486,7 +496,7 @@ public class SideBarActivity extends AppCompatActivity
 
     private void dialogQuitRun(final MenuItem item){
 
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.DarkDialogs)
                 .setTitle("Quit Run")
                 .setMessage("Are you sure you want to to quit your current run?")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
