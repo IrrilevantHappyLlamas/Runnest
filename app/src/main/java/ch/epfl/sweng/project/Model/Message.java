@@ -38,17 +38,11 @@ public class Message implements Serializable {
      * @param message the message to be transmitted
      * @throws IllegalArgumentException
      */
-    public Message(String from, String to, String sender, String addressee, Type type, String message)
-            throws IllegalArgumentException
-    {
-        if (from == null || to == null || sender == null || addressee == null || type == null || message == null) {
-            throw new NullPointerException();
-        }
-        if (from.equals("") || to.equals("") || sender.equals("") || addressee.equals("") || message.equals("")) {
-            throw new IllegalArgumentException("Invalid argument: parameters can't be empty");
-        }
-        if (from.equals(to)) {
-            throw new IllegalArgumentException("Invalid argument: can't send a message to yourself");
+    public Message(String from, String to, String sender, String addressee, Type type, String message) {
+        if (from == null || to == null || sender == null || addressee == null || type == null || message == null
+                || from.equals("") || to.equals("") || sender.equals("") || addressee.equals("") || message.equals("")
+                || from.equals(to)) {
+            throw new IllegalArgumentException();
         }
 
         this.from = from;
@@ -76,12 +70,10 @@ public class Message implements Serializable {
      * @param sentAt the date the message was sent
      * @throws IllegalArgumentException
      */
-    public Message(String from, String to, String sender, String addressee, Type type, String message, Date sentAt)
-            throws IllegalArgumentException
-    {
+    public Message(String from, String to, String sender, String addressee, Type type, String message, Date sentAt) {
         this(from, to, sender, addressee, type, message);
         if (sentAt == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
 
         this.time = sentAt;
@@ -112,11 +104,10 @@ public class Message implements Serializable {
                    int firstValue,
                    int secondValue,
                    Challenge.Type challengeType)
-            throws IllegalArgumentException
     {
         this(from, to, sender, addressee, type, message, sentAt);
         if (challengeType == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
 
         this.firstValue = firstValue;
@@ -145,14 +136,13 @@ public class Message implements Serializable {
                    String message,
                    Date scheduledDate,
                    Challenge.Type challengeType)
-            throws IllegalArgumentException
     {
         this(from, to, sender, addressee, type, message, scheduledDate);
         if (type != Type.SCHEDULE_REQUEST && type != Type.MEMO) {
             throw new IllegalArgumentException("This constructor can be used only for schedules and memos");
         }
         if (challengeType == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
 
         this.challengeType = challengeType;

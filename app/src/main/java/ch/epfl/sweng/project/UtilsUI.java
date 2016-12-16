@@ -62,7 +62,7 @@ public class UtilsUI {
      */
     public static void recapDisplayTrackSetupUI(GoogleMap googleMap) {
         if (googleMap == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
 
         googleMap.setBuildingsEnabled(false);
@@ -88,7 +88,7 @@ public class UtilsUI {
      */
     public static void recapDisplayTrack(Track track, GoogleMap googleMap, int color) {
         if(track == null || googleMap == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
 
         if (track.getTotalCheckPoints() != 0) {

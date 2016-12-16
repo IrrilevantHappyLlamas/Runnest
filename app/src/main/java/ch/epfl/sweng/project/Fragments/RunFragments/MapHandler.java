@@ -30,7 +30,7 @@ public class MapHandler {
      */
     public MapHandler(GoogleMap googleMap, int trackColor) {
         if (googleMap == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
 
         this.trackColor = trackColor;

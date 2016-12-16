@@ -37,7 +37,7 @@ public class DBHelperTest {
         dbHelper = new DBHelper(testContext);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void insertNullRunThrowsException() {
         Run run = null;
         dbHelper.insert(run);
@@ -67,7 +67,7 @@ public class DBHelperTest {
         Assert.assertEquals(10, lastRun.getDuration(), 0);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void deleteNullRunThrowsException() {
         Run run = null;
         dbHelper.delete(run);
@@ -91,7 +91,7 @@ public class DBHelperTest {
         Assert.assertEquals(initialNbRuns, runs.size());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void insertNullChallengeThrowsException() {
         Challenge challenge = null;
         dbHelper.insert(challenge);
@@ -131,7 +131,7 @@ public class DBHelperTest {
         Assert.assertFalse(last.isWon());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void deleteNullChallengeThrowsException() {
         Challenge challenge = null;
         dbHelper.delete(challenge);
@@ -156,7 +156,7 @@ public class DBHelperTest {
         Assert.assertEquals(initialNbRuns, challenges.size());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void upgradeThrowsExceptionWithNullDB() {
         dbHelper.onUpgrade(null, 0, 1);
     }

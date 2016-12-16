@@ -39,7 +39,7 @@ public class LocationSettingsHandler implements ResultCallback<LocationSettingsR
      */
     public LocationSettingsHandler(GoogleApiClient googleApiClient, Activity activity) {
         if (googleApiClient == null || activity == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
 
         this.googleApiClient = googleApiClient;

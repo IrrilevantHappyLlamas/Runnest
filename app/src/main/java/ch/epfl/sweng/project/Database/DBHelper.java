@@ -78,10 +78,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (db == null) {
-            throw new NullPointerException();
-        }
-        if (oldVersion < 0 || newVersion < oldVersion) {
+        if (db == null || oldVersion < 0 || newVersion < oldVersion) {
             throw new IllegalArgumentException();
         }
 
@@ -105,7 +102,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public boolean insert(Run run) {
         if (run == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
 
         return insert(run, false) != -1;
@@ -119,7 +116,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public boolean insert(Challenge challenge) {
         if (challenge == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
 
         String opponentName = challenge.getOpponentName();
@@ -223,7 +220,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public boolean delete(Run run) {
         if (run == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
 
         long id = run.getId();
@@ -252,7 +249,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public boolean delete(Challenge challenge) {
         if (challenge == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
 
         long id = challenge.getId();

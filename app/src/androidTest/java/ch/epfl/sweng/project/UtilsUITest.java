@@ -37,17 +37,17 @@ public class UtilsUITest {
         Assert.assertEquals(checkString, timeString);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void recapDisplayTrackSetupUIThrowException() {
         UtilsUI.recapDisplayTrackSetupUI(null);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void recapDisplayTrackThrowExceptionWithNullTrack() {
         UtilsUI.recapDisplayTrack(null, null, 0);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void displayTrackThrowExceptionWithNullMap() {
         UtilsUI.recapDisplayTrack(new Track(), null, 0);
     }

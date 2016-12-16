@@ -20,7 +20,7 @@ public class NetworkHandler {
      */
     public NetworkHandler(Context context) {
         if (context == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         this.context = context;
         connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
