@@ -5,7 +5,7 @@ import ch.epfl.sweng.project.Model.CheckPoint;
 
 /**
  * Challenge proxy for test sessions. It implements only the data transfer functions by delegating to the handler
- * passed during tests. It doesn't implement the behavior to leave or delete challenges, because they will only be
+ * passed during tests. It doesn't implement the behavior to leave or deleteMessage challenges, because they will only be
  * local with this proxy, and tests know when the fake challenge is over, so that behavior is not needed.
  */
 public class TestProxy implements ChallengeProxy {

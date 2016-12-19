@@ -7,9 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -577,7 +575,7 @@ public class SideBarActivity extends AppCompatActivity
                                 Toast.LENGTH_LONG).show();
                         FirebaseHelper fbHelper = new FirebaseHelper();
                         fbHelper.deleteChallengeNode(challengeName);
-                        fbHelper.delete(message);
+                        fbHelper.deleteMessage(message);
                     }
                 }
 
@@ -647,7 +645,7 @@ public class SideBarActivity extends AppCompatActivity
                 Message.MessageType.CHALLENGE_REQUEST, message, timestampId, firstValue, secondValue, challengeType);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
-        firebaseHelper.send(challengeRequestMessage);
+        firebaseHelper.sendMessage(challengeRequestMessage);
 
 
         Intent intent = new Intent(this, ChallengeActivity.class);
@@ -694,7 +692,7 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public void onDialogAcceptClick(DialogFragment dialog) {
         Challenge.Type challengeType = ((RequestDialogFragment)dialog).getType();
-        mFirebaseHelper.delete(requestMessage);
+        mFirebaseHelper.deleteMessage(requestMessage);
         int firstValue = ((RequestDialogFragment)dialog).getFirstValue();
         int secondValue = ((RequestDialogFragment)dialog).getSecondValue();
 
@@ -713,7 +711,7 @@ public class SideBarActivity extends AppCompatActivity
      */
     @Override
     public void onDialogDeclineClick(DialogFragment dialog) {
-        mFirebaseHelper.delete(requestMessage);
+        mFirebaseHelper.deleteMessage(requestMessage);
         launchFragment(new MessagesFragment());
     }
 
@@ -780,7 +778,7 @@ public class SideBarActivity extends AppCompatActivity
                 Message.MessageType.SCHEDULE_REQUEST, message, scheduledDate, challengeType);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
-        firebaseHelper.send(scheduleRequestMessage);
+        firebaseHelper.sendMessage(scheduleRequestMessage);
     }
 
     /**
@@ -810,16 +808,16 @@ public class SideBarActivity extends AppCompatActivity
                 Message.MessageType.MEMO, message, scheduledDate, challengeType);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
-        firebaseHelper.send(memoToOpponentMessage);
-        firebaseHelper.send(memoToMyselfMessage);
+        firebaseHelper.sendMessage(memoToOpponentMessage);
+        firebaseHelper.sendMessage(memoToMyselfMessage);
 
-        mFirebaseHelper.delete(requestMessage);
+        mFirebaseHelper.deleteMessage(requestMessage);
         launchFragment(new MessagesFragment());
     }
 
     @Override
     public void onAcceptScheduleDialogDeclineClick(DialogFragment dialog){
-        mFirebaseHelper.delete(requestMessage);
+        mFirebaseHelper.deleteMessage(requestMessage);
         launchFragment(new MessagesFragment());
     }
 
@@ -849,12 +847,12 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     public void onMemoDialogDeleteClick(DialogFragment dialog){
-        mFirebaseHelper.delete(requestMessage);
+        mFirebaseHelper.deleteMessage(requestMessage);
         launchFragment(new MessagesFragment());
     }
 
     public void onMemoDialogChallengeClick(DialogFragment dialog){
-        mFirebaseHelper.delete(requestMessage);
+        mFirebaseHelper.deleteMessage(requestMessage);
         this.challengedUserName = ((MemoDialogFragment) dialog).getSender();
         this.challengedUserEmail = ((MemoDialogFragment) dialog).getOpponentEmail();
         showChallengeDialog();

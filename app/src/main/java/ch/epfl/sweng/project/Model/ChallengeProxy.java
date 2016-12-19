@@ -45,7 +45,7 @@ public interface ChallengeProxy {
      * Used by the client to input a checkpoint from the local user into the challenge communication system. The client
      * can assume that the proxy will take the right measures to ensure that the data arrives to the opponent.
      *
-     * @param checkPoint    Data the client intends to send to his opponent.
+     * @param checkPoint    Data the client intends to sendMessage to his opponent.
      */
     void putData(CheckPoint checkPoint);
 
@@ -57,23 +57,23 @@ public interface ChallengeProxy {
 
     /**
      * Signal to the opponent that the local user is ready to start the challenge at any moment. It's part of a
-     * "ready handshake" that ensures both parts are ready to send and receive data when the challenge starts.
+     * "ready handshake" that ensures both parts are ready to sendMessage and receive data when the challenge starts.
      */
     void imReady();
 
     /**
-     * Signal to the opponent that the local user has completed his challenge goal and won't send any additional
+     * Signal to the opponent that the local user has completed his challenge goal and won't sendMessage any additional
      * <code>CheckPoint</code>.
      */
     void imFinished();
 
     /**
-     * Signal to the opponent that the local user has left the challenge and won't send any additional data.
+     * Signal to the opponent that the local user has left the challenge and won't sendMessage any additional data.
      */
     void abortChallenge();
 
     /**
-     * Calling this method will cause the proxy to delete challenge data from the underlying communication system.
+     * Calling this method will cause the proxy to deleteMessage challenge data from the underlying communication system.
      * The method should be called only when no user expects any data from the challenge.
      */
     void deleteChallenge();

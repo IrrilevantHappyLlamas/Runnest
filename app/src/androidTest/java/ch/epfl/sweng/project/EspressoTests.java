@@ -31,7 +31,6 @@ import java.util.Map;
 import ch.epfl.sweng.project.Activities.SideBarActivity;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
-import ch.epfl.sweng.project.Fragments.RunFragments.RunningMapFragment;
 import ch.epfl.sweng.project.Model.Challenge;
 import ch.epfl.sweng.project.Model.Message;
 import ch.epfl.sweng.project.Model.Run;
@@ -444,11 +443,11 @@ public class EspressoTests {
                 Challenge.Type.DISTANCE);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
-        firebaseHelper.send(msg1);
+        firebaseHelper.sendMessage(msg1);
         // Instantiate challenges so that messages are clickable
         firebaseHelper.addChallengeNode("Test User","Runnest IHL" ,"Runnest IHL vs Test User test1");
 
-        //TODO: send messages
+        //TODO: sendMessage messages
         SystemClock.sleep(FIREBASE_DURATION);
 
         //Tap on the request
@@ -491,11 +490,11 @@ public class EspressoTests {
                 Challenge.Type.DISTANCE);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
-        firebaseHelper.send(msg1);
+        firebaseHelper.sendMessage(msg1);
         // Instantiate challenges so that messages are clickable
         firebaseHelper.addChallengeNode("Test User","Runnest IHL" ,"Runnest IHL vs Test User test1");
 
-        //TODO: send messages
+        //TODO: sendMessage messages
         SystemClock.sleep(FIREBASE_DURATION);
 
         //Tap on the request
@@ -526,9 +525,9 @@ public class EspressoTests {
                 Challenge.Type.DISTANCE);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
-        firebaseHelper.send(msg1);
+        firebaseHelper.sendMessage(msg1);
 
-        //TODO: send message
+        //TODO: sendMessage message
         SystemClock.sleep(FIREBASE_DURATION);
 
         //Tap on the request
@@ -563,9 +562,9 @@ public class EspressoTests {
                 Challenge.Type.DISTANCE);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
-        firebaseHelper.send(msg1);
+        firebaseHelper.sendMessage(msg1);
 
-        //TODO: send message
+        //TODO: sendMessage message
         SystemClock.sleep(FIREBASE_DURATION);
 
         //Tap on the request
@@ -594,9 +593,9 @@ public class EspressoTests {
                 Challenge.Type.DISTANCE);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
-        firebaseHelper.send(msg1);
+        firebaseHelper.sendMessage(msg1);
 
-        //TODO: send message
+        //TODO: sendMessage message
         SystemClock.sleep(FIREBASE_DURATION);
 
         //Tap on the request
@@ -631,9 +630,9 @@ public class EspressoTests {
                 Challenge.Type.DISTANCE);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
-        firebaseHelper.send(msg1);
+        firebaseHelper.sendMessage(msg1);
 
-        //TODO: send message
+        //TODO: sendMessage message
         SystemClock.sleep(FIREBASE_DURATION);
 
         //Tap on the request

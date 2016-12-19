@@ -130,7 +130,7 @@ public class RequestDialogFragment extends DialogFragment implements View.OnClic
         super.onAttach(activity);
         // Verify that the host activity implements the callback interface
         try {
-            // Instantiate the RequestDialogListener so we can send events to the host
+            // Instantiate the RequestDialogListener so we can sendMessage events to the host
             mListener = (RequestDialogListener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception

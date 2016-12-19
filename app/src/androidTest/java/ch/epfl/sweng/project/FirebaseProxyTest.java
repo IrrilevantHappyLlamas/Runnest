@@ -173,7 +173,7 @@ public class FirebaseProxyTest {
     public void imFinishedOnTerminatedChallenge() {
         FirebaseProxy proxyOwner = createCorrectProxy(true);
         proxyOwner.abortChallenge();
-        proxyOwner.putData(new CheckPoint(90.0, 90.0));
+        proxyOwner.imFinished();
     }
 
     @Test
