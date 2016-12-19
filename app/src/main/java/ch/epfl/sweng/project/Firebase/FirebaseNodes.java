@@ -8,7 +8,13 @@ public class FirebaseNodes {
 
     private FirebaseNodes() {}
 
-    public static final String USERS_NODE = "users";
+    // Root Nodes
+    public static final String USERS = "users";
+    public static final String CHALLENGES = "challenges";
+
+    // Challenge Nodes
+    public static final String LATITUDE = "latitude";
+    public static final String LONGITUDE = "longitude";
 
     public static final String MESSAGES_CHILD = "messages";
     public static final String FROM_CHILD = "from";
@@ -29,4 +35,24 @@ public class FirebaseNodes {
     public static final String TOTAL_NUMBER_OF_CHALLENGES_CHILD = "total_number_of_challenges";
     public static final String TOTAL_NUMBER_OF_WON_CHALLENGES_CHILD = "total_number_of_won_challenges";
     public static final String TOTAL_NUMBER_OF_LOST_CHALLENGES_CHILD = "total_number_of_lost_challenges";
+
+
+    public enum challengeNodeType {
+        READY("readyStatus"),
+        FINISH("finishStatus"),
+        ABORT("abortStatus"),
+        IN_ROOM("in room"),
+        DATA("checkpoints");
+
+        private final String nodeName;
+
+        challengeNodeType(final String nodeName) {
+            this.nodeName = nodeName;
+        }
+
+        @Override
+        public String toString() {
+            return nodeName;
+        }
+    }
 }

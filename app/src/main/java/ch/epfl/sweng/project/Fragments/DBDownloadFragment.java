@@ -100,7 +100,7 @@ public class DBDownloadFragment extends Fragment implements
 
         return FirebaseStorage.getInstance()
                 .getReferenceFromUrl(FIREBASE_STORAGE)
-                .child(FirebaseNodes.USERS_NODE)
+                .child(FirebaseNodes.USERS)
                 .child(((AppRunnest) getActivity().getApplication()).getUser().getFirebaseId());
     }
 
