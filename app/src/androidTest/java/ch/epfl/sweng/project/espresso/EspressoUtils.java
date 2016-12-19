@@ -1,4 +1,4 @@
-package ch.epfl.sweng.project;
+package ch.epfl.sweng.project.espresso;
 
 
 import android.os.SystemClock;
@@ -9,6 +9,9 @@ import android.support.test.espresso.util.TreeIterables;
 import android.view.View;
 
 import org.hamcrest.Matcher;
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
 
 import java.util.concurrent.TimeoutException;
 
@@ -18,7 +21,12 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 
-public class EspressoCustomActions {
+public class EspressoUtils {
+
+    static final int UI_TEST_TIMEOUT = 10000;
+    static final int FIREBASE_DURATION = 3000;
+    static final int TIME_CHALLENGE_DURATION = 15000;
+    static final int MOCK_LOCATION_DURATION = 5000;
 
     public static ViewAction waitForMatch(final Matcher<View> aViewMatcher, final long timeout) {
         return new ViewAction() {
