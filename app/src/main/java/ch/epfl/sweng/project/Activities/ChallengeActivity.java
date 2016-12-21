@@ -416,6 +416,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
             opponentPosition.setText(R.string.second_position);
             userPosition.setText(R.string.first_position);
         }
+        System.out.println(opponentDistance + " " + userDistance);
     }
 
     private void endChallenge() {

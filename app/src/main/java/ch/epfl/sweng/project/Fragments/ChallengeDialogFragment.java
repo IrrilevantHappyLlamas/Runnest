@@ -3,17 +3,14 @@ package ch.epfl.sweng.project.Fragments;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -21,7 +18,6 @@ import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
-import ch.epfl.sweng.project.Activities.ChallengeActivity;
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Model.Challenge;
 
@@ -43,21 +39,17 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
     int firstValue;
     int secondValue;
 
-
-    /* The activity that creates an instance of this dialog fragment must
- * implement this interface in order to receive event callbacks.
- * Each method passes the DialogFragment in case the host needs to query it. */
+    /**
+     * interface for the listener of this class.
+     */
     public interface ChallengeDialogListener {
-        void onDialogPositiveClick(DialogFragment dialog);
-        void onDialogNegativeClick(DialogFragment dialog);
+        void onChallengeDialogPositiveClick(DialogFragment dialog);
+        void onChallengeDialogNegativeClick(DialogFragment dialog);
     }
 
     ChallengeDialogListener mListener;
 
-    public ChallengeDialogFragment() {
-        // Required empty public constructor
-    }
-
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -75,11 +67,11 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
                     public void onClick(DialogInterface dialog, int id) {
                         // launch challenge
                         if(firstValue + secondValue != 0)  {
-                            mListener.onDialogPositiveClick(ChallengeDialogFragment.this);
+                            mListener.onChallengeDialogPositiveClick(ChallengeDialogFragment.this);
                         } else {
                             if(((AppRunnest)getActivity().getApplicationContext()).isTestSession()){
                                 firstValue = 1;
-                                mListener.onDialogPositiveClick(ChallengeDialogFragment.this);
+                                mListener.onChallengeDialogPositiveClick(ChallengeDialogFragment.this);
                             } else {
                                 Toast.makeText(getContext(), "The goal of the challenge cannot be 0!",
                                         Toast.LENGTH_LONG).show();
@@ -91,7 +83,7 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
                     public void onClick(DialogInterface dialog, int id) {
                         //cancel
                         // Send the positive button event back to the host activity
-                        mListener.onDialogNegativeClick(ChallengeDialogFragment.this);
+                        mListener.onChallengeDialogNegativeClick(ChallengeDialogFragment.this);
                     }
                 });
 
@@ -136,6 +128,7 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
         return builder.create();
     }
 
+    @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
@@ -143,9 +136,9 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
             case R.id.btn_distance:
                 distanceBtn.setBackgroundColor(Color.RED);
                 timeBtn.setBackgroundColor(Color.GRAY);
-                setParameter.setText("Set the distance");
-                firstUnit.setText("km");
-                secondUnit.setText("m");
+                setParameter.setText(R.string.set_the_distance);
+                firstUnit.setText(R.string.km);
+                secondUnit.setText(R.string.m);
 
                 firstPicker.setValue(0);
                 firstValue = 0;
@@ -177,9 +170,9 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
             case R.id.btn_time:
                 distanceBtn.setBackgroundColor(Color.GRAY);
                 timeBtn.setBackgroundColor(Color.RED);
-                setParameter.setText("Set the time");
-                firstUnit.setText("h");
-                secondUnit.setText("min");
+                setParameter.setText(R.string.set_the_time);
+                firstUnit.setText(R.string.h);
+                secondUnit.setText(R.string.min);
 
                 firstPicker.setValue(0);
                 firstValue = 0;
@@ -208,14 +201,12 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
         }
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
 
     }
-
 
     @Override
     public void onAttach(Activity activity) {
@@ -237,15 +228,29 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
         mListener = null;
     }
 
-
+    /**
+     * getter for the challenge type.
+     *
+     * @return the challenge type
+     */
     public Challenge.Type getType() {
         return type;
     }
 
+    /**
+     * getter for the second value
+     *
+     * @return the second value
+     */
     public int getSecondValue() {
         return secondValue;
     }
 
+    /**
+     * getter for the first value
+     *
+     * @return the first value
+     */
     public int getFirstValue() {
         return firstValue;
     }
