@@ -152,7 +152,7 @@ public class ChallengeTest extends EspressoTest {
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_history));
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.tabs), UI_TEST_TIMEOUT));
-        onView(allOf(withText("Challenge History"), isDescendantOfA(withId(R.id.tabs)))).perform(click());
+        onView(allOf(withText("Challenges"), isDescendantOfA(withId(R.id.tabs)))).perform(click());
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.list), UI_TEST_TIMEOUT));
         onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());
