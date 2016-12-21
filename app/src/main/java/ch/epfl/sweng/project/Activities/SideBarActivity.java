@@ -460,10 +460,6 @@ public class SideBarActivity extends AppCompatActivity
     private void dialogLogout(){
 
         String message = "Are you sure you want to logout?";
-        if(!((AppRunnest)getApplication()).getNetworkHandler().isConnected()) {
-            message = "If you logout now, your session progresses will be lost. Logout?";
-        }
-
         new AlertDialog.Builder(this, R.style.DarkDialogs)
                 .setTitle("Logout")
                 .setMessage(message)
@@ -829,16 +825,13 @@ public class SideBarActivity extends AppCompatActivity
         if(resultCode == REQUEST_STOP_WAITING){
             Toast.makeText(getApplicationContext(),"The challenge was deleted",
                     Toast.LENGTH_LONG).show();
-        } else if(resultCode == REQUEST_ABORT) {
-            Toast.makeText(getApplicationContext(),"You have aborted the challenge",
-                    Toast.LENGTH_LONG).show();
         } else if(resultCode == REQUEST_END_CHALLENGE) {
             DBHelper dbHelper = new DBHelper(this);
             List<Challenge> challenges = dbHelper.fetchAllChallenges();
             Challenge lastChallenge = challenges.get(challenges.size() - 1);
             onChallengeHistoryInteraction(lastChallenge);
             historyItem.setChecked(true);
-        }else{
+        } else {
             throw new IllegalArgumentException("Invalid argument 'requestCode' on onActivityResult method");
         }
 

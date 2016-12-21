@@ -149,6 +149,7 @@ public class FirebaseHelperTest {
     public void deleteCorrectly() {
         Message msg = createTestMessage();
         firebaseHelper.sendMessage(msg);
+        // Needed to be sure that the sent message appears on firebase
         SystemClock.sleep(2000);
         firebaseHelper.deleteMessage(msg);
     }
@@ -184,8 +185,9 @@ public class FirebaseHelperTest {
     @Test
     public void addNewUser() {
         firebaseHelper.getDatabase().child(FirebaseNodes.USERS).child("uselessUser").removeValue();
+        // Needed to be sure that the sent message appears on firebase
+        SystemClock.sleep(2000);
         firebaseHelper.addOrUpdateUser("uselessUser", "uselessMail");
-        firebaseHelper.getDatabase().child(FirebaseNodes.USERS).child("uselessUser").removeValue();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -372,22 +374,22 @@ public class FirebaseHelperTest {
                         Assert.assertTrue(dataSnapshot.hasChild("testUser2"));
                         DataSnapshot user1 = dataSnapshot.child("testUser1");
                         DataSnapshot user2 = dataSnapshot.child("testUser2");
-                        Assert.assertTrue(user1.hasChild(FirebaseHelper.challengeNodeType.READY.toString()));
-                        Assert.assertFalse((boolean)user1.child(FirebaseHelper.challengeNodeType.READY.toString()).getValue());
-                        Assert.assertTrue(user2.hasChild(FirebaseHelper.challengeNodeType.READY.toString()));
-                        Assert.assertFalse((boolean)user2.child(FirebaseHelper.challengeNodeType.READY.toString()).getValue());
-                        Assert.assertTrue(user1.hasChild(FirebaseHelper.challengeNodeType.FINISH.toString()));
-                        Assert.assertFalse((boolean)user1.child(FirebaseHelper.challengeNodeType.FINISH.toString()).getValue());
-                        Assert.assertTrue(user2.hasChild(FirebaseHelper.challengeNodeType.FINISH.toString()));
-                        Assert.assertFalse((boolean)user2.child(FirebaseHelper.challengeNodeType.FINISH.toString()).getValue());
-                        Assert.assertTrue(user1.hasChild(FirebaseHelper.challengeNodeType.ABORT.toString()));
-                        Assert.assertFalse((boolean)user1.child(FirebaseHelper.challengeNodeType.ABORT.toString()).getValue());
-                        Assert.assertTrue(user2.hasChild(FirebaseHelper.challengeNodeType.ABORT.toString()));
-                        Assert.assertFalse((boolean)user2.child(FirebaseHelper.challengeNodeType.ABORT.toString()).getValue());
-                        Assert.assertTrue(user1.hasChild(FirebaseHelper.challengeNodeType.IN_ROOM.toString()));
-                        Assert.assertFalse((boolean)user1.child(FirebaseHelper.challengeNodeType.IN_ROOM.toString()).getValue());
-                        Assert.assertTrue(user2.hasChild(FirebaseHelper.challengeNodeType.IN_ROOM.toString()));
-                        Assert.assertFalse((boolean)user2.child(FirebaseHelper.challengeNodeType.IN_ROOM.toString()).getValue());
+                        Assert.assertTrue(user1.hasChild(FirebaseNodes.ChallengeStatus.READY.toString()));
+                        Assert.assertFalse((boolean)user1.child(FirebaseNodes.ChallengeStatus.READY.toString()).getValue());
+                        Assert.assertTrue(user2.hasChild(FirebaseNodes.ChallengeStatus.READY.toString()));
+                        Assert.assertFalse((boolean)user2.child(FirebaseNodes.ChallengeStatus.READY.toString()).getValue());
+                        Assert.assertTrue(user1.hasChild(FirebaseNodes.ChallengeStatus.FINISH.toString()));
+                        Assert.assertFalse((boolean)user1.child(FirebaseNodes.ChallengeStatus.FINISH.toString()).getValue());
+                        Assert.assertTrue(user2.hasChild(FirebaseNodes.ChallengeStatus.FINISH.toString()));
+                        Assert.assertFalse((boolean)user2.child(FirebaseNodes.ChallengeStatus.FINISH.toString()).getValue());
+                        Assert.assertTrue(user1.hasChild(FirebaseNodes.ChallengeStatus.ABORT.toString()));
+                        Assert.assertFalse((boolean)user1.child(FirebaseNodes.ChallengeStatus.ABORT.toString()).getValue());
+                        Assert.assertTrue(user2.hasChild(FirebaseNodes.ChallengeStatus.ABORT.toString()));
+                        Assert.assertFalse((boolean)user2.child(FirebaseNodes.ChallengeStatus.ABORT.toString()).getValue());
+                        Assert.assertTrue(user1.hasChild(FirebaseNodes.ChallengeStatus.IN_ROOM.toString()));
+                        Assert.assertFalse((boolean)user1.child(FirebaseNodes.ChallengeStatus.IN_ROOM.toString()).getValue());
+                        Assert.assertTrue(user2.hasChild(FirebaseNodes.ChallengeStatus.IN_ROOM.toString()));
+                        Assert.assertFalse((boolean)user2.child(FirebaseNodes.ChallengeStatus.IN_ROOM.toString()).getValue());
                     }
 
                     @Override
@@ -419,7 +421,10 @@ public class FirebaseHelperTest {
 
     @Test
     public void deleteChallengeNodeWorks() {
-        firebaseHelper.deleteChallengeNode("testChallenge");
+        firebaseHelper.addChallengeNode("testUser1", "testUser2", "testChallenge2");
+        // Needed to be sure that the sent message appears on firebase
+        SystemClock.sleep(2000);
+        firebaseHelper.deleteChallengeNode("testChallenge2");
     }
 
     @Test
@@ -456,9 +461,9 @@ public class FirebaseHelperTest {
 
     @Test
     public void correctlySetUserReady() {
-        firebaseHelper.setUserStatus("testChallenge", "testUser1", FirebaseHelper.challengeNodeType.READY, true);
+        firebaseHelper.setUserStatus("testChallenge", "testUser1", FirebaseNodes.ChallengeStatus.READY, true);
         firebaseHelper.getDatabase().child(FirebaseNodes.CHALLENGES).child("testChallenge")
-                .child("testUser1").child(FirebaseHelper.challengeNodeType.READY.toString())
+                .child("testUser1").child(FirebaseNodes.ChallengeStatus.READY.toString())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -475,45 +480,45 @@ public class FirebaseHelperTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void setUserReadyThrowsIllegalArgumentOnNull() {
-        firebaseHelper.setUserStatus(null, "testUser1", FirebaseHelper.challengeNodeType.READY, true);
+        firebaseHelper.setUserStatus(null, "testUser1", FirebaseNodes.ChallengeStatus.READY, true);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void setUserReadyThrowsIllegalArgumentOnEmpty() {
-        firebaseHelper.setUserStatus("", "testUser1", FirebaseHelper.challengeNodeType.READY, true);
+        firebaseHelper.setUserStatus("", "testUser1", FirebaseNodes.ChallengeStatus.READY, true);
     }
 
     @Test
     public void correctlySetUserListeners() {
-        firebaseHelper.setUserChallengeListener("testChallenge", "testUser1", listener, FirebaseHelper.challengeNodeType.READY);
-        firebaseHelper.setUserChallengeListener("testChallenge", "testUser1", listener, FirebaseHelper.challengeNodeType.FINISH);
-        firebaseHelper.setUserChallengeListener("testChallenge", "testUser1", listener, FirebaseHelper.challengeNodeType.DATA);
+        firebaseHelper.setUserChallengeListener("testChallenge", "testUser1", listener, FirebaseNodes.ChallengeStatus.READY);
+        firebaseHelper.setUserChallengeListener("testChallenge", "testUser1", listener, FirebaseNodes.ChallengeStatus.FINISH);
+        firebaseHelper.setUserChallengeListener("testChallenge", "testUser1", listener, FirebaseNodes.ChallengeStatus.DATA);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void setUserStatusListenerThrowsIllegalArgumentOnNull() {
-        firebaseHelper.setUserChallengeListener("testChallenge", "testUser1", null, FirebaseHelper.challengeNodeType.READY);
+        firebaseHelper.setUserChallengeListener("testChallenge", "testUser1", null, FirebaseNodes.ChallengeStatus.READY);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void setUserStatusListenerThrowsIllegalArgumentOnEmpty() {
-        firebaseHelper.setUserChallengeListener("", "testUser1", listener, FirebaseHelper.challengeNodeType.READY);
+        firebaseHelper.setUserChallengeListener("", "testUser1", listener, FirebaseNodes.ChallengeStatus.READY);
     }
 
     @Test
     public void removeUserListenerWorks() {
-        firebaseHelper.removeUserChallengeListener("testChallenge", "testUser1", listener, FirebaseHelper.challengeNodeType.READY);
-        firebaseHelper.removeUserChallengeListener("testChallenge", "testUser1", listener, FirebaseHelper.challengeNodeType.FINISH);
-        firebaseHelper.removeUserChallengeListener("testChallenge", "testUser1", listener, FirebaseHelper.challengeNodeType.DATA);
+        firebaseHelper.removeUserChallengeListener("testChallenge", "testUser1", listener, FirebaseNodes.ChallengeStatus.READY);
+        firebaseHelper.removeUserChallengeListener("testChallenge", "testUser1", listener, FirebaseNodes.ChallengeStatus.FINISH);
+        firebaseHelper.removeUserChallengeListener("testChallenge", "testUser1", listener, FirebaseNodes.ChallengeStatus.DATA);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void removeUserListenerThrowsIllegalArgumentOnNull() {
-        firebaseHelper.removeUserChallengeListener("testChallenge", "testUser1", null, FirebaseHelper.challengeNodeType.READY);
+        firebaseHelper.removeUserChallengeListener("testChallenge", "testUser1", null, FirebaseNodes.ChallengeStatus.READY);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void removeUserListenerThrowsIllegalArgumentOnEmpty() {
-        firebaseHelper.removeUserChallengeListener("", "testUser1", listener, FirebaseHelper.challengeNodeType.READY);
+        firebaseHelper.removeUserChallengeListener("", "testUser1", listener, FirebaseNodes.ChallengeStatus.READY);
     }
 }

@@ -1,6 +1,11 @@
 package ch.epfl.sweng.project.espresso;
 
+import android.os.SystemClock;
+import android.support.test.espresso.contrib.DrawerActions;
+import android.support.test.espresso.contrib.NavigationViewActions;
 import android.support.test.runner.AndroidJUnit4;
+
+import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -17,6 +22,10 @@ import ch.epfl.sweng.project.Model.Challenge;
 import ch.epfl.sweng.project.Model.Message;
 import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.TrackTest;
+
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
 
 @RunWith(AndroidJUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -68,6 +77,24 @@ public class BackHandTest extends EspressoTest {
     public void displayProfileFragmentListenersWork() {
         SideBarActivity listenerTest = mActivityRule.getActivity();
         listenerTest.onDisplayProfileFragmentInteraction("testName", "test@email.ch");
+    }
+
+    @Test
+    public void runFragmentLifecycleTest() {
+
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
+
+        // Jenkins sleep (1/3)
+        //
+        // Sleep necessary in order to successfully build on Jenkins, I wasn't able to
+        // reproduce the failure in local. After a lot of attempts I decided to keep it.
+        SystemClock.sleep(FIREBASE_DURATION);
+
+        onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
+
+        mActivityRule.getActivity().finish();
+        mActivityRule.getActivity();
     }
 
     @Test

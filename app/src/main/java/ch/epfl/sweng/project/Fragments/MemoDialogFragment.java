@@ -11,12 +11,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
 import java.util.Date;
 
+import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.Challenge;
 
 /**
@@ -94,8 +100,28 @@ public class MemoDialogFragment extends DialogFragment implements View.OnClickLi
                 dialog.dismiss();
                 break;
             case R.id.accept_btn:
-                mListener.onMemoDialogChallengeClick(MemoDialogFragment.this);
-                dialog.dismiss();
+
+                new FirebaseHelper().listenUserAvailability(opponentEmail, false, new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            if ((boolean) dataSnapshot.getValue()) {
+                                mListener.onMemoDialogChallengeClick(MemoDialogFragment.this);
+                                dialog.dismiss();
+                            } else {
+                                Toast.makeText(getContext(), "User is currently busy, try again later",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            throw new DatabaseException("Corrupted available node for user");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        throw new DatabaseException("Cannot read available status for user");
+                    }
+                });
                 break;
         }
     }

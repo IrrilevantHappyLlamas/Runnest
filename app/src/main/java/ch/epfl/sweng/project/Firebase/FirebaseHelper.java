@@ -1,17 +1,18 @@
 package ch.epfl.sweng.project.Firebase;
 
-import com.google.android.gms.gcm.Task;
+import android.support.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.Map;
 
@@ -23,18 +24,18 @@ import ch.epfl.sweng.project.Model.Message;
  * Helper class that provides methods to update and interact with the remote firebase database instance.
  * Offers methods to sendMessage and retrieve messages.
  */
-public class FirebaseHelper {
+public class FirebaseHelper implements OnCompleteListener {
 
     private final DatabaseReference databaseReference;
 
+    // Statistics indexes
     public final int TOTAL_RUNNING_TIME_INDEX = 0;
     public final int TOTAL_RUNNING_DISTANCE_INDEX = 1;
     public final int TOTAL_NUMBER_OF_RUNS_INDEX = 2;
     public final int TOTAL_NUMBER_OF_CHALLENGES_INDEX = 3;
     public final int TOTAL_NUMBER_OF_WON_CHALLENGES_INDEX = 4;
     public final int TOTAL_NUMBER_OF_LOST_CHALLENGES_INDEX = 5;
-
-    public final int NUMBER_OF_STATISTICS = 6;
+    private final int NUMBER_OF_STATISTICS = 6;
 
     //the two following array are useful for iterating on statistical data.
     private final String[] statisticsChildren = {
@@ -55,29 +56,15 @@ public class FirebaseHelper {
             TOTAL_NUMBER_OF_LOST_CHALLENGES_INDEX
     };
 
+    @Override
+    public void onComplete(@NonNull Task task) {
+        //TODO: Cosa facciamo?
+    }
+
     public enum RunType {
         SINGLE,
         CHALLENGE_WON,
         CHALLENGE_LOST
-    }
-
-    public enum challengeNodeType {
-        READY("readyStatus"),
-        FINISH("finishStatus"),
-        ABORT("abortStatus"),
-        IN_ROOM("in room"),
-        DATA("checkpoints");
-
-        private final String nodeName;
-
-        challengeNodeType(final String nodeName) {
-            this.nodeName = nodeName;
-        }
-
-        @Override
-        public String toString() {
-            return nodeName;
-        }
     }
 
     /**
@@ -122,7 +109,7 @@ public class FirebaseHelper {
         messageUpload.put("/" + FirebaseNodes.MEX_SECOND_VALUE, message.getSecondValue());
         messageUpload.put("/" + FirebaseNodes.MEX_TIME, time);
 
-        //TODO : add listener
+        //TODO: listener
         messageRef.updateChildren(messageUpload);
     }
 
@@ -139,7 +126,7 @@ public class FirebaseHelper {
             throw new IllegalArgumentException("Cannot deleteMessage messages for an empty user");
         }
 
-        //TODO : add listener
+        //TODO: listener
         databaseReference.child(FirebaseNodes.MESSAGES).child(user).removeValue();
     }
 
@@ -197,7 +184,6 @@ public class FirebaseHelper {
         });
     }
 
-    // TODO: sleep in corresponding test
     /**
      * Deletes a given message from the server.
      *
@@ -210,7 +196,7 @@ public class FirebaseHelper {
         }
 
         String messageId = message.getUid();
-        // TODO: add listener
+        //TODO: listener
         databaseReference.child(FirebaseNodes.MESSAGES).child(message.getTo()).child(messageId).removeValue();
     }
 
@@ -232,8 +218,8 @@ public class FirebaseHelper {
                     "email length has to be under 100 characters.");
         }
 
-        // TODO: add listener
         final DatabaseReference user = databaseReference.child(FirebaseNodes.USERS).child(getFireBaseMail(email));
+        //TODO: listener
         user.child(FirebaseNodes.NAME).setValue(name);
 
         final DatabaseReference statistics = user.child(FirebaseNodes.STATISTICS);
@@ -249,7 +235,7 @@ public class FirebaseHelper {
                     statisticsUpload.put("/" + FirebaseNodes.TOTAL_NUMBER_OF_WON_CHALLENGES, 0);
                     statisticsUpload.put("/" + FirebaseNodes.TOTAL_NUMBER_OF_LOST_CHALLENGES, 0);
 
-                    //TODO : add listener
+                    //TODO: listener
                     statistics.updateChildren(statisticsUpload);
                 }
             }
@@ -277,6 +263,7 @@ public class FirebaseHelper {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
+                    //TODO: listener
                     user.child(FirebaseNodes.PROFILE_PIC_URL).setValue(url);
                 }
             }
@@ -337,16 +324,20 @@ public class FirebaseHelper {
                     if (dataSnapshot.hasChild(FirebaseNodes.TOTAL_RUNNING_TIME)) {
                         long time = dataSnapshot.child(FirebaseNodes.TOTAL_RUNNING_TIME).getValue(long.class);
                         long updatedTime = time + newTime;
+                        //TODO: listener
                         statistics.child(FirebaseNodes.TOTAL_RUNNING_TIME).setValue(updatedTime);
                     } else {
+                        //TODO: listener
                         statistics.child(FirebaseNodes.TOTAL_RUNNING_TIME).setValue(newTime);
                     }
 
                     if (dataSnapshot.hasChild(FirebaseNodes.TOTAL_RUNNING_DISTANCE)) {
                         float distance = dataSnapshot.child(FirebaseNodes.TOTAL_RUNNING_DISTANCE).getValue(float.class);
                         float updatedDistance = distance + newDistance;
+                        //TODO: listener
                         statistics.child(FirebaseNodes.TOTAL_RUNNING_DISTANCE).setValue(updatedDistance);
                     } else {
+                        //TODO: listener
                         statistics.child(FirebaseNodes.TOTAL_RUNNING_DISTANCE).setValue(newDistance);
                     }
 
@@ -355,8 +346,10 @@ public class FirebaseHelper {
                             if (dataSnapshot.hasChild(FirebaseNodes.TOTAL_NUMBER_OF_RUNS)) {
                                 int numberRuns = dataSnapshot.child(FirebaseNodes.TOTAL_NUMBER_OF_RUNS).getValue(int.class);
                                 int updatedNumberRuns = numberRuns + 1;
+                                //TODO: listener
                                 statistics.child(FirebaseNodes.TOTAL_NUMBER_OF_RUNS).setValue(updatedNumberRuns);
                             } else {
+                                //TODO: listener
                                 statistics.child(FirebaseNodes.TOTAL_NUMBER_OF_RUNS).setValue(1);
                             }
                             break;
@@ -365,8 +358,10 @@ public class FirebaseHelper {
                             if (dataSnapshot.hasChild(FirebaseNodes.TOTAL_NUMBER_OF_WON_CHALLENGES)) {
                                 int numberWonChallenges = dataSnapshot.child(FirebaseNodes.TOTAL_NUMBER_OF_WON_CHALLENGES).getValue(int.class);
                                 int updatedNumberWonChallenges = numberWonChallenges + 1;
+                                //TODO: listener
                                 statistics.child(FirebaseNodes.TOTAL_NUMBER_OF_WON_CHALLENGES).setValue(updatedNumberWonChallenges);
                             } else {
+                                //TODO: listener
                                 statistics.child(FirebaseNodes.TOTAL_NUMBER_OF_WON_CHALLENGES).setValue(1);
                             }
                             break;
@@ -375,8 +370,10 @@ public class FirebaseHelper {
                             if (dataSnapshot.hasChild(FirebaseNodes.TOTAL_NUMBER_OF_LOST_CHALLENGES)) {
                                 int numberLostChallenges = dataSnapshot.child(FirebaseNodes.TOTAL_NUMBER_OF_LOST_CHALLENGES).getValue(int.class);
                                 int updatedNumberWonChallenges = numberLostChallenges + 1;
+                                //TODO: listener
                                 statistics.child(FirebaseNodes.TOTAL_NUMBER_OF_LOST_CHALLENGES).setValue(updatedNumberWonChallenges);
                             } else {
+                                //TODO: listener
                                 statistics.child(FirebaseNodes.TOTAL_NUMBER_OF_LOST_CHALLENGES).setValue(1);
                             }
                             break;
@@ -388,9 +385,11 @@ public class FirebaseHelper {
                 if (dataSnapshot.hasChild(FirebaseNodes.TOTAL_NUMBER_OF_CHALLENGES)) {
                     int numberRuns = dataSnapshot.child(FirebaseNodes.TOTAL_NUMBER_OF_CHALLENGES).getValue(int.class);
                     int updatedNumberRuns = numberRuns + 1;
+                    //TODO: listener
                     statistics.child(FirebaseNodes.TOTAL_NUMBER_OF_CHALLENGES).setValue(updatedNumberRuns);
                 }
                 else{
+                    //TODO: listener
                     statistics.child(FirebaseNodes.TOTAL_NUMBER_OF_CHALLENGES).setValue(1);
                 }
             }
@@ -442,7 +441,7 @@ public class FirebaseHelper {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                databaseError.toException();
+                throw databaseError.toException();
             }
         });
     }
@@ -464,6 +463,7 @@ public class FirebaseHelper {
 
         String email = emailInFirebaseFormat?userMail:getFireBaseMail(userMail);
 
+        //TODO: listener
         databaseReference.child(FirebaseNodes.USERS)
                 .child(email).child(FirebaseNodes.AVAILABLE).setValue(status);
     }
@@ -522,15 +522,21 @@ public class FirebaseHelper {
             throw new IllegalArgumentException("Challenge node parameters can't be empty");
         }
 
-        // TODO: attach listener (and make map update)
-        databaseReference.child(FirebaseNodes.CHALLENGES).child(challengeName).child(user1).child(challengeNodeType.READY.toString()).setValue(false);
-        databaseReference.child(FirebaseNodes.CHALLENGES).child(challengeName).child(user1).child(challengeNodeType.FINISH.toString()).setValue(false);
-        databaseReference.child(FirebaseNodes.CHALLENGES).child(challengeName).child(user1).child(challengeNodeType.ABORT.toString()).setValue(false);
-        databaseReference.child(FirebaseNodes.CHALLENGES).child(challengeName).child(user1).child(challengeNodeType.IN_ROOM.toString()).setValue(false);
-        databaseReference.child(FirebaseNodes.CHALLENGES).child(challengeName).child(user2).child(challengeNodeType.READY.toString()).setValue(false);
-        databaseReference.child(FirebaseNodes.CHALLENGES).child(challengeName).child(user2).child(challengeNodeType.FINISH.toString()).setValue(false);
-        databaseReference.child(FirebaseNodes.CHALLENGES).child(challengeName).child(user2).child(challengeNodeType.ABORT.toString()).setValue(false);
-        databaseReference.child(FirebaseNodes.CHALLENGES).child(challengeName).child(user2).child(challengeNodeType.IN_ROOM.toString()).setValue(false);
+        DatabaseReference challengeRef = databaseReference.child(FirebaseNodes.CHALLENGES).child(challengeName);
+
+        Map<String, Object> challengeUpload = new HashMap<>();
+        challengeUpload.put("/" + user1 + "/" + FirebaseNodes.ChallengeStatus.FINISH, false);
+        challengeUpload.put("/" + user1 + "/" + FirebaseNodes.ChallengeStatus.ABORT, false);
+        challengeUpload.put("/" + user1 + "/" + FirebaseNodes.ChallengeStatus.IN_ROOM, false);
+        challengeUpload.put("/" + user1 + "/" + FirebaseNodes.ChallengeStatus.READY, false);
+        challengeUpload.put("/" + user2 + "/" + FirebaseNodes.ChallengeStatus.FINISH, false);
+        challengeUpload.put("/" + user2 + "/" + FirebaseNodes.ChallengeStatus.ABORT, false);
+        challengeUpload.put("/" + user2 + "/" + FirebaseNodes.ChallengeStatus.IN_ROOM, false);
+        challengeUpload.put("/" + user2 + "/" + FirebaseNodes.ChallengeStatus.ABORT, false);
+
+        //TODO: listener
+        challengeRef.updateChildren(challengeUpload);
+
     }
 
     /**
@@ -546,7 +552,7 @@ public class FirebaseHelper {
             throw new IllegalArgumentException("Challenge name can't be empty");
         }
 
-        // TODO: attach listener
+        //TODO: listener
         databaseReference.child(FirebaseNodes.CHALLENGES).child(challengeName).removeValue();
     }
 
@@ -568,12 +574,13 @@ public class FirebaseHelper {
         }
 
         DatabaseReference checkPointRef = databaseReference.child(FirebaseNodes.CHALLENGES).child(challengeName).child(user)
-                .child(challengeNodeType.DATA.toString()).child(Integer.toString(seqNumber));
+                .child(FirebaseNodes.ChallengeStatus.DATA.toString()).child(Integer.toString(seqNumber));
 
         Map<String, Object> checkPointUpdate = new HashMap<>();
         checkPointUpdate.put("/" + FirebaseNodes.LATITUDE, checkPoint.getLatitude());
         checkPointUpdate.put("/" + FirebaseNodes.LONGITUDE, checkPoint.getLongitude());
 
+        //TODO: listener
         checkPointRef.updateChildren(checkPointUpdate);
     }
 
@@ -587,7 +594,11 @@ public class FirebaseHelper {
      * @param statusNode        Status node type to set.
      * @param status            Status to set.
      */
-    public void setUserStatus(String challengeName, String user, challengeNodeType statusNode, boolean status) {
+    public void setUserStatus(String challengeName,
+                              String user,
+                              FirebaseNodes.ChallengeStatus statusNode,
+                              boolean status)
+    {
 
         if (user == null || challengeName == null) {
             throw new IllegalArgumentException("Challenge node or user parameters can't be null");
@@ -595,7 +606,8 @@ public class FirebaseHelper {
             throw new IllegalArgumentException("Challenge node or user parameters can't be empty");
         }
 
-        if (statusNode != challengeNodeType.DATA) {
+        if (statusNode != FirebaseNodes.ChallengeStatus.DATA) {
+            //TODO: listener
             databaseReference.child(FirebaseNodes.CHALLENGES).child(challengeName).child(user).child(statusNode.toString()).setValue(status);
         }
     }
@@ -609,7 +621,11 @@ public class FirebaseHelper {
      * @param listener          Listener to attach.
      * @param challengeNode     Challenge node to which to attach the listener.
      */
-    public void setUserChallengeListener(String challengeName, String user, ValueEventListener listener, challengeNodeType challengeNode) {
+    public void setUserChallengeListener(String challengeName,
+                                         String user,
+                                         ValueEventListener listener,
+                                         FirebaseNodes.ChallengeStatus challengeNode)
+    {
 
         if (user == null || challengeName == null || listener == null) {
             throw new IllegalArgumentException("Challenge node, user or listener parameters can't be null");
@@ -630,7 +646,10 @@ public class FirebaseHelper {
      * @param listener          Listener to remove.
      * @param nodeType          Node to which the listener is attached.
      */
-    public void removeUserChallengeListener(String challengeName, String user, ValueEventListener listener, challengeNodeType nodeType) {
+    public void removeUserChallengeListener(String challengeName,
+                                            String user,
+                                            ValueEventListener listener,
+                                            FirebaseNodes.ChallengeStatus nodeType) {
 
         if (user == null || challengeName == null || listener == null) {
             throw new IllegalArgumentException("Challenge node, user parameters can't be null");
