@@ -38,8 +38,14 @@ public class RunTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void constructorWithNameThrowsIllegalArgument() {
+    public void constructorWithNameThrowsIllegalArgumentOnEmpty() {
         new Run("");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void constructorWithNameThrowsIllegalArgumentOnNull() {
+        String nullString = null;
+        new Run(nullString);
     }
 
     @Test
@@ -63,6 +69,12 @@ public class RunTest {
         testRun.stop();
 
         Assert.assertNotEquals(testRun.getTrack().getTotalCheckPoints(), testRun2.getTrack().getTotalCheckPoints());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void copyConstructorThrowsIllegalArgumentOnNull() {
+        Run nullRun = null;
+        new Run(nullRun);
     }
 
     @Test

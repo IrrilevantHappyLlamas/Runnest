@@ -93,9 +93,7 @@ public class MessageTest {
 
     @After
     public void deleteTestUserMessages() {
-        //TODO: evaluate if use FirebaseHelper instead
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        databaseReference.child("messages").child("Test User").removeValue();
+        new FirebaseHelper().deleteUserMessages("Test User");
     }
 
     @Test

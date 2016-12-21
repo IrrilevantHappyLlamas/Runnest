@@ -93,6 +93,18 @@ public class TrackTest {
         new Track().add(null);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void copyConstructorThrowsIllegalArgumentOnNull() {
+        Track nullTrack = null;
+        new Track(nullTrack);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void constructorThrowsIllegalArgumentOnNull() {
+        CheckPoint nullCheckpoint = null;
+        new Track(nullCheckpoint);
+    }
+
     @Test
     public void getLastPointWorks() {
         Track testTrack = new Track(buildCheckPoint(90, 90));
