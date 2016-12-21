@@ -90,15 +90,14 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
         viewDistance.setText(String.format(Locale.getDefault(), "%.2f", distance) +
                 getString(R.string.white_space) + getString(R.string.km));
 
-        int avgPace;
-        if(distance == 0) {
-            avgPace = 0;
+        String avgPace;
+        if(distance < 1) {
+            avgPace = "-";
         } else {
-            avgPace = (int)(duration/distance);
+            avgPace = UtilsUI.timeToString((int)(duration/distance), false);
         }
         TextView viewAvgPace = ((TextView)view.findViewById(R.id.avg_pace_value));
-        viewAvgPace.setText(UtilsUI.timeToString(avgPace, false) +
-                getString(R.string.white_space) + getString(R.string.min_over_km));
+        viewAvgPace.setText(avgPace + getString(R.string.white_space) + getString(R.string.min_over_km));
     }
 
     private void setupButtonUI(View view) {
@@ -177,18 +176,6 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
     public void onDetach() {
         super.onDetach();
         listener = null;
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mapView.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mapView.onLowMemory();
     }
 
     /**

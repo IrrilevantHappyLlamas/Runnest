@@ -266,16 +266,4 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
         super.onDestroy();
         mapView.onDestroy();
     }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mapView.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mapView.onLowMemory();
-    }
 }

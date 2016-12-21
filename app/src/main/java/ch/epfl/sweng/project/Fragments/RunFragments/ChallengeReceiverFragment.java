@@ -174,10 +174,4 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
         super.onDestroy();
         mapView.onDestroy();
     }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mapView.onLowMemory();
-    }
 }

@@ -134,4 +134,5 @@
     <string name="wins_the_first_one_to_reach">"Wins the first one to reach "</string>
     <string name="wins_the_one_who_runs_the_most_distance_in">"Wins the one who runs more in "</string>
     <string name="spaced_h">"h "</string>
+    <string name="DBDownload_error_toast">"Failed to retrieve user data, restart app: "</string>
 </resources>

@@ -248,13 +248,6 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
     }
 
     @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mapView.onLowMemory();
-        opponentMapView.onLowMemory();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         mapView.onResume();
@@ -273,12 +266,6 @@ public class DisplayChallengeFragment extends Fragment implements OnMapReadyCall
         super.onDestroy();
         mapView.onDestroy();
         opponentMapView.onDestroy();
-    }
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mapView.onSaveInstanceState(outState);
-        opponentMapView.onSaveInstanceState(outState);
     }
 
     @Override

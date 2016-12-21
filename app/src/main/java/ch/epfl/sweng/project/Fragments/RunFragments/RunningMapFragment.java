@@ -219,12 +219,6 @@ public class RunningMapFragment extends RunFragment {
         listener = null;
     }
 
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mapView.onLowMemory();
-    }
-
     public interface RunningMapFragmentInteractionListener {
         void onRunningMapFragmentInteraction(Run run);
     }

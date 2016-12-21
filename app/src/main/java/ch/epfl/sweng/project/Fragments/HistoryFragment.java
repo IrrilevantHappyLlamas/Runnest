@@ -145,7 +145,8 @@ public class HistoryFragment extends Fragment {
 
                     for (int i = 0; i < challengesSize; ++i) {
                         Challenge challenge = challenges.get(i);
-                        toBeAdapted[i] = "vs " + challenge.getOpponentName() + "  " + wonOrLost(challenge);
+                        String wonOrLost = challenge.isWon() ? "WON" : "LOST";
+                        toBeAdapted[i] = "vs " + challenge.getOpponentName() + "  " + wonOrLost;
                     }
                 }
                 break;
@@ -154,10 +155,6 @@ public class HistoryFragment extends Fragment {
         }
 
         return new ArrayAdapter<>(this.getContext(), R.layout.simple_textview, toBeAdapted);
-    }
-
-    private String wonOrLost(Challenge challenge) {
-        return challenge.isWon() ? "WON" : "LOST";
     }
 
     @Override

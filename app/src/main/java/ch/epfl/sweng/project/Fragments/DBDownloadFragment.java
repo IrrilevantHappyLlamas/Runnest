@@ -130,8 +130,7 @@ public class DBDownloadFragment extends Fragment implements
     }
 
     private void error(Exception e) {
-        Toast.makeText(getContext(), "Failed to retrieve user data, restart app: " + e.getMessage()
-                , Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), getString(R.string.DBDownload_error_toast) + e.getMessage(), Toast.LENGTH_LONG).show();
     }
 
     /**

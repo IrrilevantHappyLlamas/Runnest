@@ -1,7 +1,5 @@
 package ch.epfl.sweng.project.Model;
 
-import android.net.Uri;
-
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -10,12 +8,8 @@ import com.google.firebase.auth.FirebaseAuth;
  */
 public class AuthenticatedUser implements User {
 
-    private String id = null;
-    private String email = null;
-    private String familyName = null;
-    private String name = null;
-    private String photoUrl = null;
     private boolean isLoggedIn = false;
+    private GoogleSignInAccount googleAccount = null;
 
     /**
      * Public constructor for an authenticated user. It takes as a parameter a GoogleSignInAccount
@@ -31,42 +25,33 @@ public class AuthenticatedUser implements User {
                     "without a valid GoogleSignInAccount");
         }
 
+        this.googleAccount = googleAccount;
         loginStatus();
-        id = googleAccount.getId();
-        email = googleAccount.getEmail();
-        familyName = googleAccount.getFamilyName();
-        name = googleAccount.getDisplayName();
-        Uri uri = googleAccount.getPhotoUrl();
-        if (uri != null) {
-            photoUrl = uri.toString();
-        } else {
-            photoUrl = "";
-        }
     }
 
     @Override
     public String getId() {
-        return id;
+        return googleAccount.getId();
     }
 
     @Override
     public String getEmail() {
-        return email;
+        return googleAccount.getEmail();
     }
 
     @Override
     public String getFamilyName() {
-        return familyName;
+        return googleAccount.getFamilyName();
     }
 
     @Override
     public String getName() {
-        return name;
+        return googleAccount.getDisplayName();
     }
 
     @Override
     public String getPhotoUrl() {
-        return photoUrl;
+        return (googleAccount.getPhotoUrl() == null)?"":googleAccount.getPhotoUrl().toString();
     }
 
     @Override
