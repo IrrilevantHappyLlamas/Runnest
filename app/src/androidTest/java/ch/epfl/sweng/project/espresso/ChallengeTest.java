@@ -1,6 +1,7 @@
 package ch.epfl.sweng.project.espresso;
 
 import android.os.SystemClock;
+import android.support.test.espresso.Espresso;
 import android.support.test.espresso.contrib.DrawerActions;
 import android.support.test.espresso.contrib.NavigationViewActions;
 import android.support.test.runner.AndroidJUnit4;
@@ -53,6 +54,7 @@ public class ChallengeTest extends EspressoTest {
         onView(withId(R.id.readyBtn)).perform(click());
 
         tryIsDisplayed(withId(R.id.button_history), TIME_CHALLENGE_DURATION + UI_TEST_TIMEOUT);
+        onView(withId(R.id.button_history)).perform(click());
     }
 
     @Test
@@ -112,6 +114,27 @@ public class ChallengeTest extends EspressoTest {
 
         //Quit
         onView(withId(R.id.back_to_side_btn)).perform(click());
+        tryIsDisplayed(withId(android.R.id.button1), UI_TEST_TIMEOUT);
+        onView(withText(R.string.quit)).perform(click());
+    }
+
+    @Test
+    public void challengePressBackAndQuit() {
+        onView(withId(R.id.search)).perform(click());
+        onView(isRoot()).perform(waitForMatch(withId(R.id.empty_layout), UI_TEST_TIMEOUT));
+        onView(isAssignableFrom(EditText.class)).perform(typeText("R"), pressKey(KeyEvent.KEYCODE_ENTER));
+
+        tryIsDisplayed(withText("Runnest IHL"), UI_TEST_TIMEOUT);
+        onView(withText("Runnest IHL")).perform(click());
+
+        //Create challenge
+        onView(isRoot()).perform(waitForMatch(withId(R.id.main_layout), UI_TEST_TIMEOUT));
+        onView(withText(R.string.challenge)).perform(click());
+        tryIsDisplayed(withId(R.id.define_challenge), UI_TEST_TIMEOUT);
+        onView(withId(R.id.customize_positive_btn)).perform(click());
+
+        //Wait
+        Espresso.pressBack();
         tryIsDisplayed(withId(android.R.id.button1), UI_TEST_TIMEOUT);
         onView(withText(R.string.quit)).perform(click());
     }

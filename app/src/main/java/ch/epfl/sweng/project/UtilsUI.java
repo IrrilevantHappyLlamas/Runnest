@@ -24,9 +24,7 @@ public class UtilsUI {
     /**
      * Private constructor so that the class can't be instantiated
      */
-    private UtilsUI() {
-
-    }
+    private UtilsUI() { }
 
     /**
      * Given the time in seconds convert it into a String with the format hh:mm:ss.

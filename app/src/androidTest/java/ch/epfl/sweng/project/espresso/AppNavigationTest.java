@@ -81,6 +81,14 @@ public class AppNavigationTest extends EspressoTest {
     }
 
     @Test
+    public void navigateToNewChallenge() {
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_new_challenge));
+        onView(isRoot()).perform(waitForMatch(withId(R.id.empty_layout),  UI_TEST_TIMEOUT));
+    }
+
+
+    @Test
     public void navigateToLogout() {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_logout));
@@ -109,9 +117,15 @@ public class AppNavigationTest extends EspressoTest {
     }
 
     @Test
+    public void backButtonCloseDrawer() {
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+        Espresso.pressBack();
+        onView(isRoot()).perform(waitForMatch(withId(R.id.main_layout),  UI_TEST_TIMEOUT));
+    }
+
+    @Test
     public void searchNonExistentUser() {
         onView(withId(R.id.search)).perform(click());
-        onView(isRoot()).perform(waitForMatch(withId(R.id.empty_layout),  UI_TEST_TIMEOUT));
         onView(isRoot()).perform(waitForMatch(withId(R.id.empty_layout),  UI_TEST_TIMEOUT));
 
         onView(isAssignableFrom(EditText.class)).perform(typeText("NonExistent"), pressKey(KeyEvent.KEYCODE_ENTER));
