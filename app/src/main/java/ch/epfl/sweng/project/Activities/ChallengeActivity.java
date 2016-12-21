@@ -240,11 +240,9 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 challengeGoal = firstValue + secondValue / 1000.0;
                 break;
             case TIME:
-                if(((AppRunnest)getApplication()).isTestSession()) {
-                    challengeGoal = 15000;
-                } else {
-                    challengeGoal = firstValue * 3600 * 1000 + secondValue * 60 * 1000;
-                }
+                challengeGoal = ((AppRunnest)getApplication()).isTestSession()?
+                                    15000:
+                                    firstValue * 3600 * 1000 + secondValue * 60 * 1000;
                 break;
         }
     }
@@ -319,13 +317,13 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         setUserAvailable(true);
 
         // Go to recap challenge
-        goToChallengeRecap();
+        goToSidebar(SideBarActivity.REQUEST_END_CHALLENGE);
     }
 
-    private void goToChallengeRecap(){
+    private void goToSidebar(int requestType){
 
         Intent returnIntent = new Intent();
-        setResult(SideBarActivity.REQUEST_END_CHALLENGE, returnIntent);
+        setResult(requestType, returnIntent);
         finish();
     }
 
@@ -405,11 +403,9 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
 
         ChallengeProxy.Handler proxyHandler = createHandler();
 
-        if (((AppRunnest) getApplication()).isTestSession()) {
-            challengeProxy = new TestProxy(proxyHandler);
-        } else {
-            challengeProxy = new FirebaseProxy(userName, opponentName, createHandler(), isOwner, challengeId);
-        }
+        challengeProxy = ((AppRunnest) getApplication()).isTestSession()?
+                            new TestProxy(proxyHandler):
+                            new FirebaseProxy(userName, opponentName, createHandler(), isOwner, challengeId);
     }
 
     private ChallengeProxy.Handler createHandler() {
@@ -472,14 +468,11 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
             public void hasLeft() {
 
                 isIntendedActivityExit = true;
+                challengeProxy.deleteChallenge();
 
                 if (phase == ChallengePhase.BEFORE_CHALLENGE) {
-                    challengeProxy.deleteChallenge();
-                    Intent returnIntent = new Intent();
-                    setResult(SideBarActivity.REQUEST_STOP_WAITING, returnIntent);
-                    finish();
+                    goToSidebar(SideBarActivity.REQUEST_STOP_WAITING);
                 } else {
-                    challengeProxy.deleteChallenge();
                     leavingChallenge = true;
                     challengeWon = true;
                     ((ChallengeSenderFragment) senderFragment).endChallenge();
@@ -533,8 +526,6 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                     stopWaitingForOpponent();
                 } else if(phase == ChallengePhase.DURING_CHALLENGE){
                     dialogQuitChallenge();
-                } else {
-                    goToChallengeRecap();
                 }
             }
         });
