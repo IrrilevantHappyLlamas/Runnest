@@ -156,7 +156,7 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
         super.onAttach(activity);
         // Verify that the host activity implements the callback interface
         try {
-            // Instantiate the ChallengeDialogListener so we can send events to the host
+            // Instantiate the ChallengeDialogListener so we can sendMessage events to the host
             mListener = (ChallengeDialogListener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception

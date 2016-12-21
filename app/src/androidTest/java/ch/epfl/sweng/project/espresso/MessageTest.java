@@ -113,7 +113,7 @@ public class MessageTest {
                 Challenge.Type.DISTANCE);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
-        firebaseHelper.send(msg1);
+        firebaseHelper.sendMessage(msg1);
         // Instantiate challenges so that messages are clickable
         firebaseHelper.addChallengeNode("Test User","Runnest IHL" ,"Runnest IHL vs Test User test1");
 
@@ -160,7 +160,7 @@ public class MessageTest {
                 Challenge.Type.DISTANCE);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
-        firebaseHelper.send(msg1);
+        firebaseHelper.sendMessage(msg1);
         // Instantiate challenges so that messages are clickable
         firebaseHelper.addChallengeNode("Test User","Runnest IHL" ,"Runnest IHL vs Test User test1");
 
@@ -195,7 +195,7 @@ public class MessageTest {
                 Challenge.Type.DISTANCE);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
-        firebaseHelper.send(msg1);
+        firebaseHelper.sendMessage(msg1);
 
         //TODO: send message
         SystemClock.sleep(EspressoUtils.FIREBASE_DURATION);
@@ -232,7 +232,7 @@ public class MessageTest {
                 Challenge.Type.DISTANCE);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
-        firebaseHelper.send(msg1);
+        firebaseHelper.sendMessage(msg1);
 
         //TODO: send message
         SystemClock.sleep(EspressoUtils.FIREBASE_DURATION);
@@ -263,7 +263,7 @@ public class MessageTest {
                 Challenge.Type.DISTANCE);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
-        firebaseHelper.send(msg1);
+        firebaseHelper.sendMessage(msg1);
 
         //TODO: send message
         SystemClock.sleep(EspressoUtils.FIREBASE_DURATION);
@@ -300,7 +300,7 @@ public class MessageTest {
                 Challenge.Type.DISTANCE);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
-        firebaseHelper.send(msg1);
+        firebaseHelper.sendMessage(msg1);
 
         //TODO: send message
         SystemClock.sleep(EspressoUtils.FIREBASE_DURATION);

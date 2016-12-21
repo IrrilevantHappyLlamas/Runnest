@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,20 +26,23 @@ import java.io.OutputStream;
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
+import ch.epfl.sweng.project.Firebase.FirebaseNodes;
 import ch.epfl.sweng.project.Model.User;
 
 /**
  * Fragment that manages download of remote runs.db file the user has on Firebase storage and substitution into
  * local SQLite database.
  */
-@SuppressWarnings("MagicNumber")
 public class DBDownloadFragment extends Fragment implements
         OnSuccessListener<FileDownloadTask.TaskSnapshot>,
         OnFailureListener
 {
-    @SuppressWarnings("FieldCanBeLocal")
-    private final String TAG = "Database Downloader";
     private DBDownloadFragment.DBDownloadFragmentInteractionListener DBDownloadListener = null;
+
+    @SuppressWarnings("FieldCanBeLocal")
+    private final String FIREBASE_STORAGE = "gs://runnest-146309.appspot.com";
+    private final String DB_FILENAME = "runs";
+    private final String DB_EXTENSION = ".db";
 
     private DBHelper dbHelper = null;
     private File downloadedDB = null;
@@ -60,34 +62,13 @@ public class DBDownloadFragment extends Fragment implements
 
         // Try to download remote user database
         try {
-            downloadedDB = File.createTempFile("runs", "db");
+            downloadedDB = File.createTempFile(DB_FILENAME, DB_EXTENSION);
         } catch (IOException e) {
             error(e);
         }
         downloadDatabase();
 
         return view;
-    }
-
-    /**
-     * Issue the file request to Firebase storage, using the currently authenticated Firebase user
-     */
-    private void downloadDatabase() {
-
-        getUserStorageRef().child(dbHelper.getDatabaseName()).getFile(downloadedDB)
-                .addOnSuccessListener(this).addOnFailureListener(this);
-    }
-
-    /**
-     * Returns the reference of the current user's runs database file on the remote Firebase storage
-     *
-     * @return  the Firebase storage reference of the user's runs database
-     */
-    private StorageReference getUserStorageRef() {
-
-      return FirebaseStorage.getInstance()
-                .getReferenceFromUrl("gs://runnest-146309.appspot.com")
-                .child("users").child(((AppRunnest) getActivity().getApplication()).getUser().getFirebaseId());
     }
 
     @Override
@@ -97,27 +78,32 @@ public class DBDownloadFragment extends Fragment implements
         DBDownloadListener.onDBDownloadFragmentInteraction();
     }
 
-    // TODO: eventually catch other Firebase exceptions and handle them properly
-    @SuppressWarnings("OverlyBroadCatchBlock")
     @Override
     public void onFailure(@NonNull Exception e) {
 
         try {
-            writeDBFile(File.createTempFile("runs", "db"));
-        } catch (Exception e1) {
+            writeDBFile(File.createTempFile(DB_FILENAME, DB_EXTENSION));
+        } catch (IOException e1) {
             error(e1);
         }
 
         DBDownloadListener.onDBDownloadFragmentInteraction();
     }
 
-    /**
-     * Write the <code>File</code> passed as argument into the SQLite default database file, overwriting it
-     *
-     * @param newDB     the new database <code>File</code>
-     * @throws IllegalArgumentException
-     */
-    @SuppressWarnings({"IOResourceOpenedButNotSafelyClosed", "resource"})
+    private void downloadDatabase() {
+
+        getUserStorageRef().child(dbHelper.getDatabaseName()).getFile(downloadedDB)
+                .addOnSuccessListener(this).addOnFailureListener(this);
+    }
+
+    private StorageReference getUserStorageRef() {
+
+        return FirebaseStorage.getInstance()
+                .getReferenceFromUrl(FIREBASE_STORAGE)
+                .child(FirebaseNodes.USERS)
+                .child(((AppRunnest) getActivity().getApplication()).getUser().getFirebaseId());
+    }
+
     private void writeDBFile(File newDB) {
 
         if(newDB == null) {
@@ -125,7 +111,6 @@ public class DBDownloadFragment extends Fragment implements
         }
 
         // Not using try-with-resources here because it would break our API requirements
-        //noinspection OverlyBroadCatchBlock
         try {
             InputStream in = new FileInputStream(newDB);
             OutputStream out = new FileOutputStream(dbHelper.getDatabasePath());
@@ -139,19 +124,14 @@ public class DBDownloadFragment extends Fragment implements
             }
             in.close();
             out.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
            error(e);
         }
     }
 
-    /**
-     *  Handles logging of <code>Exceptions</code> that break the database download and substitution process
-     *
-     * @param e     <code>Exception</code> to log
-     */
     private void error(Exception e) {
-        Log.e(TAG, e.getMessage(), e);
-        Toast.makeText(getContext(), "Failed to retrieve user data, restart app", Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), "Failed to retrieve user data, restart app: " + e.getMessage()
+                , Toast.LENGTH_LONG).show();
     }
 
     /**

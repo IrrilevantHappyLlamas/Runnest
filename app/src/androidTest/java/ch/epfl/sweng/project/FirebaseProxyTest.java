@@ -42,7 +42,7 @@ public class FirebaseProxyTest {
             }
 
             @Override
-            public void hasAborted() {
+            public void hasLeft() {
 
             }
 
@@ -60,13 +60,13 @@ public class FirebaseProxyTest {
         proxyNotOwner.abortChallenge();
     }
 
-    @Test(expected = NullPointerException.class)
-    public void constructorThrowsNullPointer() {
+    @Test(expected = IllegalArgumentException.class)
+    public void constructorThrowsIllegalArgumentOnNull() {
         new FirebaseProxy(LOCAL_USER, REMOTE_OPPONENT, null, true, "testID");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void constructorThrowsIllegalArgument() {
+    public void constructorThrowsIllegalArgumentOnEmpty() {
         new FirebaseProxy(LOCAL_USER, "", new ChallengeProxy.Handler() {
             @Override
             public void hasNewData(CheckPoint checkPoint) {
@@ -84,7 +84,7 @@ public class FirebaseProxyTest {
             }
 
             @Override
-            public void hasAborted() {
+            public void hasLeft() {
 
             }
 
@@ -142,12 +142,12 @@ public class FirebaseProxyTest {
         FirebaseProxy proxyOwner = createCorrectProxy(true);
         FirebaseProxy proxyNotOwner = createCorrectProxy(false);
         readyAndStartChallenge(proxyOwner, proxyNotOwner);
-        proxyOwner.putData(new CheckPoint(100.0, 100.0));
-        proxyNotOwner.putData(new CheckPoint(100.0, 100.0));
+        proxyOwner.putData(new CheckPoint(90.0, 90.0));
+        proxyNotOwner.putData(new CheckPoint(90.0, 90.0));
     }
 
-    @Test(expected = NullPointerException.class)
-    public void putDataThrowsNullPointer() {
+    @Test(expected = IllegalArgumentException.class)
+    public void putDataThrowsIllegalArgument() {
         FirebaseProxy proxy = createCorrectProxy(true);
         proxy.putData(null);
     }
@@ -156,7 +156,7 @@ public class FirebaseProxyTest {
     public void putDataOnTerminatedChallenge() {
         FirebaseProxy proxyOwner = createCorrectProxy(true);
         proxyOwner.abortChallenge();
-        proxyOwner.putData(new CheckPoint(100.0, 100.0));
+        proxyOwner.putData(new CheckPoint(90.0, 90.0));
     }
 
     @Test
@@ -173,7 +173,7 @@ public class FirebaseProxyTest {
     public void imFinishedOnTerminatedChallenge() {
         FirebaseProxy proxyOwner = createCorrectProxy(true);
         proxyOwner.abortChallenge();
-        proxyOwner.putData(new CheckPoint(100.0, 100.0));
+        proxyOwner.imFinished();
     }
 
     @Test
@@ -198,13 +198,13 @@ public class FirebaseProxyTest {
         Assert.assertTrue(challengeName.equals("A vs B 0"));
     }
 
-    @Test(expected = NullPointerException.class)
-    public void generateChallengeNameThrowsNUllPointer() {
+    @Test(expected = IllegalArgumentException.class)
+    public void generateChallengeNameThrowsIllegalArgumentOnNull() {
         FirebaseProxy.generateChallengeName("A", "B", null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void generateChallengeNameThrowsIllegalArgument() {
+    public void generateChallengeNameThrowsIllegalArgumentOnEmpty() {
         FirebaseProxy.generateChallengeName("A", "", "0");
     }
 

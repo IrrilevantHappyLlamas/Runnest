@@ -1,32 +1,37 @@
 package ch.epfl.sweng.project.Model;
 
 import android.os.SystemClock;
-import android.view.View;
-import android.widget.Chronometer;
 
-import java.util.Date;
 import java.io.Serializable;
 
 /**
- * Implementation of the run effort, which contains the track and
- * specifications of the run
+ * This class models a Run, which is a named and uniquely identified entity that contains a Track
+ * and methods to get and set its state and values, such as its duration, whether the run is active or stopped. It also
+ * provides methods to update the run with new CheckPoint data.
  */
-@SuppressWarnings("ClassNamingConvention")
 public class Run implements Serializable {
 
-    private String name;
+    private String name = null;
     private Track track = null;
     private long duration;
-    private boolean isRunning;
     private long startTime;
     private long id;
+    private boolean isRunning = false;
 
     /**
-     * Constructor that instantiates a <code>Run</code> with the name passed as argument
+     * Constructor that instantiates a Run with a non-empty name passed as argument. It sets the id to -1
+     * as a default.
      *
-     * @param name  the name of the <code>Run</code>
+     * @param name  Desired name of the Run.
      */
     public Run(String name) {
+
+        if (name == null) {
+            throw new IllegalArgumentException("Run name can't be null");
+        } else if (name.isEmpty()) {
+            throw new IllegalArgumentException("Run name can't be empty");
+        }
+
         this.name = name;
         isRunning = false;
         track = new Track();
@@ -35,17 +40,18 @@ public class Run implements Serializable {
     }
 
     /**
-     * Default constructor, instantiates a <code>Run</code> with default name "tmp"
+     * Default constructor, instantiates a Run with default name "tmp"
      */
     public Run() {
         this("tmp");
     }
 
     /**
-     * Constructor that allows to set the id
+     * Constructor that instantiates a Run with a non-empty name passed as argument. It allows to also
+     * set the id.
      *
-     * @param name the name of the <code>Run</code>
-     * @param id the id of the <code>Run</code>
+     * @param name      Desired name of the Run.
+     * @param id        Desired id of the Run.
      */
     public Run(String name, long id) {
         this(name);
@@ -53,16 +59,20 @@ public class Run implements Serializable {
     }
 
     /**
-     * Copy constructor. The resulting <code>Run</code> is not in running state, independently of the state of the
-     * copied <code>Run</code>
+     * Copy constructor. The resulting Run is not in running state, independently of the state of the
+     * copied Run.
      *
-     * @param toCopy    <code>Run</code> to copy
+     * @param toCopy    Run to copy.
      */
     public Run(Run toCopy) {
+
+        if (toCopy == null) {
+            throw new IllegalArgumentException("Run to copy can't be null");
+        }
+
         name = toCopy.getName();
         track = new Track(toCopy.track);
 
-        //TODO: evaluate where to multiply and divide
         startTime = toCopy.startTime;
         duration = toCopy.getDuration()*1000;
 
@@ -71,9 +81,9 @@ public class Run implements Serializable {
     }
 
     /**
-     * Start the <code>Run</code>.
+     * Start the Run.
      *
-     * @return  true if correctly started, false otherwise
+     * @return  True if correctly started, false otherwise
      */
     public boolean start() {
         if(track.getTotalCheckPoints() == 0) {
@@ -87,19 +97,28 @@ public class Run implements Serializable {
     }
 
     /**
-     * Add a new <code>CheckPoint</code> to the <code>Run</code> if it's active.
+     * Add a new non null CheckPoint to the Run if it's active.
      *
-     * @param newPoint  the new <code>CheckPoint</code> to add
-     * @return  true if correctly updated, false otherwise
+     * @param newPoint  New CheckPoint to add.
+     * @return          True if correctly updated, false otherwise.
      */
     public boolean update(CheckPoint newPoint) {
-        return isRunning && track.add(newPoint);
+
+        if (newPoint == null) {
+            throw new IllegalArgumentException("CheckPoint used to update Run can't be null");
+        }
+
+        if (isRunning) {
+            track.add(newPoint);
+        }
+
+        return isRunning;
     }
 
     /**
-     * Stop a <code>Run</code>.
+     * Stop a Run.
      *
-     * @return  true if correctly stoped, false otherwise
+     * @return  True if correctly stopped, false otherwise.
      */
     public boolean stop() {
         if (isRunning){
@@ -114,9 +133,9 @@ public class Run implements Serializable {
     }
 
     /**
-     * Get the duration of the <code>Run</code> in seconds.
+     * Get the duration of the Run in seconds.
      *
-     * @return  actual duration
+     * @return  Duration in seconds
      */
     public long getDuration() {
         if (isRunning && startTime != -1) {
@@ -126,41 +145,70 @@ public class Run implements Serializable {
         }
     }
 
+    /**
+     * Getter for Run name.
+     *
+     * @return  Run name.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Getter for the Track, a copy is returned to preserve encapsulation.
+     *
+     * @return  Current Track of the Run.
+     */
     public Track getTrack() {
         return new Track(track);
     }
 
+    /**
+     * Getter for the Run active status.
+     *
+     * @return  True if the Run is ongoing, false otherwise.
+     */
     public boolean isRunning() {
         return isRunning;
     }
 
+    /**
+     * Getter for the Id
+     *
+     * @return  Id of the Run.
+     */
     public long getId() { return id; }
 
+    /**
+     * Setter for the Track of the Run, to avoid updating with every CheckPoint manually.
+     *
+     * @param track     Track we wish to set to the Run, must be non null.
+     */
     public void setTrack(Track track) {
-        if(track != null) {
-            this.track = new Track(track);
+        if(track == null) {
+           throw new IllegalArgumentException("Cannot set a null Track to a Run");
         }
+
+        this.track = new Track(track);
     }
 
     /**
-     * Set the duration of the <code>Run</code> from a given value in seconds.
+     * Set the duration of the Run from a given value in seconds.
      *
-     * @param duration  desired duration, must be positive
+     * @param duration  Desired duration, must be positive.
      */
     public void setDuration(long duration) {
-        if(duration >= 0) {
-            this.duration = duration * 1000;
+        if(duration < 0) {
+            throw new IllegalArgumentException("Duration of a Run must be positive");
         }
+
+        this.duration = duration * 1000;
     }
 
     /**
-     * Set the id of the <code>Run</code>
+     * Set the id of the Run.
      *
-     * @param id
+     * @param id    Id to set.
      */
     public void setId(long id) {
         this.id = id;

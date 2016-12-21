@@ -10,10 +10,7 @@ import ch.epfl.sweng.project.Model.Track;
 
 /**
  * Test suite for Run class
- *
- * @author Tobia Albergoni
  */
-@SuppressWarnings("TypeMayBeWeakened")
 public class RunTest {
 
     @Test
@@ -38,6 +35,11 @@ public class RunTest {
         long id = 1234;
         Run testRun3 = new Run(name, id);
         Assert.assertEquals(id, testRun3.getId());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void constructorWithNameThrowsIllegalArgument() {
+        new Run("");
     }
 
     @Test
@@ -72,6 +74,11 @@ public class RunTest {
         Assert.assertFalse(testRun1.isRunning());
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void updateThrowsIllegalArgument() {
+        new Run().update(null);
+    }
+
     @Test
     public void correctlyUpdatesStartedRun() {
         Run testRun1 = new Run();
@@ -104,29 +111,14 @@ public class RunTest {
     }
 
 
-    @Test
-    public void setDurationIgnoreInvalidArgument() {
-        Run testRun = new Run();
-        testRun.setDuration(10);
-        Assert.assertEquals(10, testRun.getDuration());
-
-        testRun.setDuration(-1);
-        Assert.assertEquals(10, testRun.getDuration());
+    @Test(expected = IllegalArgumentException.class)
+    public void setDurationThrowsIllegalArgument() {
+        new Run().setDuration(-1);
     }
 
-    @Test
-    public void setTrackIgnoreInvalidArgument() {
-        Run testRun1 = new Run();
-        testRun1.start();
-        Assert.assertTrue(testRun1.update(TrackTest.buildCheckPoint(1, 1)));
-        Assert.assertTrue(testRun1.isRunning());
-        Assert.assertTrue(testRun1.update(TrackTest.buildCheckPoint(2, 2)));
-
-        Assert.assertNotNull(testRun1.getTrack());
-
-        testRun1.setTrack(null);
-
-        Assert.assertNotNull(testRun1.getTrack());
+    @Test(expected = IllegalArgumentException.class)
+    public void setTrackThrowsIllegalArgument() {
+        new Run().setTrack(null);
     }
 
     @Test

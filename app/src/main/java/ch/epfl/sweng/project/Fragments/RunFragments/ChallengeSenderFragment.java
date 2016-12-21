@@ -20,10 +20,10 @@ import ch.epfl.sweng.project.Model.Run;
 
 /**
  * This Fragment represent the "sender side" of a challenge, i.e. it handles the
- * progress done by the actual user of the device. In order to do that it implements
- * <code>RunFragment</code>.
+ * progress done by the local user of the device. In order to do that it implements
+ * RunFragment.
  *
- * In particular his <code>Track</code> is shown on a map, as well as the distance
+ * In particular his Track is shown on a map, as well as the distance
  * he ran, from when challenge started until now.
  */
 public class ChallengeSenderFragment extends RunFragment {
@@ -32,21 +32,33 @@ public class ChallengeSenderFragment extends RunFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_challenge_sender, container, false);
 
-        mMapView = (MapView) view.findViewById(R.id.mapView);
-        mMapView.onCreate(savedInstanceState);
-        mMapView.getMapAsync(this);
+        mapView = (MapView) view.findViewById(R.id.mapView);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
 
-        mGoogleApiClient = ((ChallengeActivity)getActivity()).getGoogleApiClient();
-        mLocationSettingsHandler = ((ChallengeActivity)getActivity()).getLocationSettingsHandler();
+        googleApiClient = ((ChallengeActivity)getActivity()).getGoogleApiClient();
+        locationSettingsHandler = ((ChallengeActivity)getActivity()).getLocationSettingsHandler();
 
-        mDistance = (TextView) view.findViewById(R.id.sender_distance);
+        distance = (TextView) view.findViewById(R.id.sender_distance);
 
         String userName = ((AppRunnest)getActivity().getApplication()).getUser().getName();
-        mRun = new Run(userName);
+        run = new Run(userName);
 
         return view;
     }
 
+    /**
+     * Getter for the current Run that is being recorded.
+     *
+     * @return              The current Run.
+     */
+    public Run getRun() {
+        return new Run(run);
+    }
+
+    /**
+     * Calling this methods stops the current local run.
+     */
     public void endChallenge(){
         super.stopRun();
     }
@@ -54,14 +66,14 @@ public class ChallengeSenderFragment extends RunFragment {
     @Override
     protected void updateDisplayedDistance() {
 
-        double distanceToShow = mRun.getTrack().getDistance()/1000.0;
+        double distanceToShow = run.getTrack().getDistance()/1000.0;
 
         switch (((ChallengeActivity)getActivity()).getChallengeType()) {
             case TIME:
                 break;
             case DISTANCE:
                 double remainingDistance =  ((ChallengeActivity)getActivity()).getChallengeGoal() -
-                        (mRun.getTrack().getDistance())/1000.0;
+                        (run.getTrack().getDistance())/1000.0;
 
                 if(remainingDistance <= 0.0) {
                     distanceToShow = 0.0;
@@ -74,39 +86,31 @@ public class ChallengeSenderFragment extends RunFragment {
         }
 
         String distanceInKm = String.format(Locale.getDefault(), "%.2f", distanceToShow) + " " + getString(R.string.km);
-        mDistance.setText(distanceInKm);
-    }
-
-    public Run getRun() {
-        return new Run(mRun);
+        distance.setText(distanceInKm);
     }
 
     /**
      * Handle a location update.
      *
-     * @param location      the new <code>Location</code>
+     * @param location      New Location.
      */
     @Override
     public void onLocationChanged(Location location) {
+        // Argument check is delegated to superclass method
         super.onLocationChanged(location);
         ((ChallengeActivity)getActivity()).getChallengeProxy().putData(new CheckPoint(location));
         ((ChallengeActivity)getActivity()).updateIsWinning();
     }
 
     /**
-     * Called when the <code>GoogleMap</code> is ready. Initialize a MapHandler.
+     * Called when the GoogleMap is ready. Initialize a MapHandler.
      *
-     * @param googleMap     the <code>GoogleMap</code>
+     * @param googleMap     The GoogleMap.
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        // Argument check is delegated to superclass method
         super.onMapReady(googleMap);
         startRun();
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mMapView.onLowMemory();
     }
 }

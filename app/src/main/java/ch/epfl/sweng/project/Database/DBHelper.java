@@ -203,7 +203,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     /**
      * Deletes a given run
-     * @param run to delete
+     * @param run to deleteMessage
      * @return true if the deletion was successful
      */
     public boolean delete(Run run) {
@@ -227,7 +227,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     /**
      * Deletes a given challenge
-     * @param challenge to delete
+     * @param challenge to deleteMessage
      * @return true if the deletion was successful
      */
     public boolean delete(Challenge challenge) {

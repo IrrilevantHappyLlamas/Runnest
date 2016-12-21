@@ -130,7 +130,7 @@ public class MemoDialogFragment extends DialogFragment implements View.OnClickLi
         super.onAttach(activity);
         // Verify that the host activity implements the callback interface
         try {
-            // Instantiate the RequestDialogListener so we can send events to the host
+            // Instantiate the RequestDialogListener so we can sendMessage events to the host
             mListener = (MemoDialogFragment.MemoDialogListener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception

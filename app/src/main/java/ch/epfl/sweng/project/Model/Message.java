@@ -52,7 +52,7 @@ public class Message implements Serializable {
             throw new IllegalArgumentException("Invalid argument: parameters can't be null nor empty");
         }
         if (from.equals(to)) {
-            throw new IllegalArgumentException("Invalid argument: can't send a message to yourself");
+            throw new IllegalArgumentException("Invalid argument: can't sendMessage a message to yourself");
         }
 
         this.from = from;

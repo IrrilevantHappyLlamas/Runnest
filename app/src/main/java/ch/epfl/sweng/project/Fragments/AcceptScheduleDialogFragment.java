@@ -134,7 +134,7 @@ public class AcceptScheduleDialogFragment extends DialogFragment implements View
         super.onAttach(activity);
         // Verify that the host activity implements the callback interface
         try {
-            // Instantiate the RequestDialogListener so we can send events to the host
+            // Instantiate the RequestDialogListener so we can sendMessage events to the host
             mListener = (AcceptScheduleDialogFragment.AcceptScheduleDialogListener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception

@@ -34,6 +34,7 @@
     <string name="waiting_opponent">Waiting for your opponent…</string>
     <string name="user_ready">YOU ARE READY!</string>
     <string name="opponent_ready">Your opponent is READY!</string>
+    <string name="chronometer_before_start">Warm up!</string>
     <string name="opponent_in_room">Your opponent is warming up…</string>
     <string name="warning_missing_updates">Last update: 30 or more seconds ago!</string>
     <string name="who_runs_faster">Who runs faster?</string>
@@ -105,4 +106,20 @@
     <string name="cancel">Cancel</string>
     <string name="memo">Memo</string>
     <string name="memo_txt">Remember that you have a challenge based on:</string>
+    <string name="opponent_intent_extra">opponent</string>
+    <string name="owner_intent_extra">isOwner</string>
+    <string name="type_intent_extra">type</string>
+    <string name="msg_id_intent_extra">msgId</string>
+    <string name="first_value_intent_extra">firstValue</string>
+    <string name="second_value_intent_extra">secondValue</string>
+    <string name="chronometer_time_left">"Time left: "</string>
+    <string name="chronometer_time_is_up">Time\'s up!</string>
+    <string name="you_vs">"You vs. "</string>
+    <string name="toast_start_challenge">Now you can start the challenge.</string>
+    <string name="toast_start_challenge_denied">Permission Denied, you cannot start the challenge.</string>
+    <string name="google_api_client_connection_failed">Check your connection or you will be unable to properly continue the challenge</string>
+    <string name="quit_challenge_dialog_title">Quit Challenge</string>
+    <string name="quit_challenge_dialog_question">Are you sure you want to to quit your current Challenge?</string>
+    <string name="stop_waiting_dialog_title">Stop Waiting</string>
+    <string name="stop_waiting_dialog_question">Are you sure you want to stop waiting and go back?</string>
 </resources>
