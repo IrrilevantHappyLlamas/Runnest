@@ -3,50 +3,34 @@ package ch.epfl.sweng.project.Fragments;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import java.util.Calendar;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
+import java.util.Calendar;
 import java.util.Date;
 
-import ch.epfl.sweng.project.Activities.ChallengeActivity;
-import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Model.Challenge;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link AcceptScheduleDialogFragment.AcceptScheduleDialogListener} interface
- * to handle interaction events.
+ * this class display a Dialog which asks the User to accept or decline the tentative scheduling of a challenge.
  */
 public class AcceptScheduleDialogFragment extends DialogFragment implements View.OnClickListener {
     private Challenge.Type type;
     private Date scheduledDate;
     private String sender;
-    private TextView typeTxt;
-    private TextView dateDescriptionTxt;
-    private TextView dateTxt;
-    private TextView timeDescriptionTxt;
-    private TextView timeTxt;
     private AlertDialog dialog;
-    private ImageView typeImg;
 
-    /* The activity that creates an instance of this dialog fragment must
-     * implement this interface in order to receive event callbacks.
-     * Each method passes the DialogFragment in case the host needs to query it. */
+    /**
+     * Interface for the listener of this class.
+     */
     public interface AcceptScheduleDialogListener {
         void onAcceptScheduleDialogAcceptClick(DialogFragment dialog);
         void onAcceptScheduleDialogDeclineClick(DialogFragment dialog);
@@ -55,10 +39,8 @@ public class AcceptScheduleDialogFragment extends DialogFragment implements View
 
     AcceptScheduleDialogFragment.AcceptScheduleDialogListener mListener;
 
-    public AcceptScheduleDialogFragment() {
-        // Required empty public constructor
-    }
-
+    @SuppressLint("SetTextI18n")
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -72,12 +54,12 @@ public class AcceptScheduleDialogFragment extends DialogFragment implements View
         builder.setView(view);
 
         ((TextView)view.findViewById(R.id.txt_requester)).setText(sender + getString(R.string.wants_to_schedule_a_run_based_on));
-        typeTxt = (TextView) view.findViewById(R.id.txt_challenge_type);
-        dateDescriptionTxt = (TextView) view.findViewById(R.id.txt_date_description);
-        dateTxt = (TextView) view.findViewById(R.id.txt_date);
-        timeDescriptionTxt = (TextView) view.findViewById(R.id.txt_time_description);
-        timeTxt = (TextView) view.findViewById(R.id.txt_time);
-        typeImg = (ImageView) view.findViewById(R.id.type_img);
+        TextView typeTxt = (TextView) view.findViewById(R.id.txt_challenge_type);
+        TextView dateDescriptionTxt = (TextView) view.findViewById(R.id.txt_date_description);
+        TextView dateTxt = (TextView) view.findViewById(R.id.txt_date);
+        TextView timeDescriptionTxt = (TextView) view.findViewById(R.id.txt_time_description);
+        TextView timeTxt = (TextView) view.findViewById(R.id.txt_time);
+        ImageView typeImg = (ImageView) view.findViewById(R.id.type_img);
         if(type == Challenge.Type.TIME){
             typeTxt.setText("Time");
             typeImg.setImageDrawable(getResources().getDrawable(R.drawable.time_white));
@@ -99,6 +81,7 @@ public class AcceptScheduleDialogFragment extends DialogFragment implements View
         return dialog;
     }
 
+    @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
@@ -118,7 +101,6 @@ public class AcceptScheduleDialogFragment extends DialogFragment implements View
         }
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,7 +109,6 @@ public class AcceptScheduleDialogFragment extends DialogFragment implements View
         scheduledDate = (Date) args.get("date");
         sender = args.getString("sender");
     }
-
 
     @Override
     public void onAttach(Activity activity) {
@@ -139,7 +120,7 @@ public class AcceptScheduleDialogFragment extends DialogFragment implements View
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
-                    + " must implement RequestDialogListener");
+                    + " must implement AcceptScheduleDialogListener");
         }
     }
 
@@ -149,13 +130,19 @@ public class AcceptScheduleDialogFragment extends DialogFragment implements View
         mListener = null;
     }
 
+    /**
+     * getter for the challenge type.
+     * @return the challenge type
+     */
     public Challenge.Type getType() {
         return type;
     }
 
+    /**
+     * getter for scheduled date.
+     * @return the scheduled date
+     */
     public Date getScheduledDate() {
         return scheduledDate;
     }
-
-
 }

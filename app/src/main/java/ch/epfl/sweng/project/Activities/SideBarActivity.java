@@ -55,10 +55,10 @@ import ch.epfl.sweng.project.Fragments.EmptySearchFragment;
 import ch.epfl.sweng.project.Fragments.MemoDialogFragment;
 import ch.epfl.sweng.project.Fragments.MessagesFragment;
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
-import ch.epfl.sweng.project.Fragments.RequestDialogFragment;
+import ch.epfl.sweng.project.Fragments.RequestChallengeDialogFragment;
 import ch.epfl.sweng.project.Fragments.RequestScheduleDialogFragment;
 import ch.epfl.sweng.project.Fragments.RunFragments.RunningMapFragment;
-import ch.epfl.sweng.project.Fragments.RunHistoryFragment;
+import ch.epfl.sweng.project.Fragments.HistoryFragment;
 import ch.epfl.sweng.project.Model.Challenge;
 import ch.epfl.sweng.project.Model.Message;
 import ch.epfl.sweng.project.Model.Run;
@@ -69,7 +69,7 @@ public class SideBarActivity extends AppCompatActivity
         ProfileFragment.ProfileFragmentInteractionListener,
         RunningMapFragment.RunningMapFragmentInteractionListener,
         DBDownloadFragment.DBDownloadFragmentInteractionListener,
-        RunHistoryFragment.onRunHistoryInteractionListener,
+        HistoryFragment.onRunHistoryInteractionListener,
         DisplayUserFragment.OnDisplayUserFragmentInteractionListener,
         MessagesFragment.MessagesFragmentInteractionListener,
         DisplayRunFragment.DisplayRunFragmentInteractionListener,
@@ -77,9 +77,8 @@ public class SideBarActivity extends AppCompatActivity
         RequestScheduleDialogFragment.OnRequestScheduleDialogListener,
         AcceptScheduleDialogFragment.AcceptScheduleDialogListener,
         MemoDialogFragment.MemoDialogListener,
-        RequestDialogFragment.RequestDialogListener,
-        DisplayChallengeFragment.OnDisplayChallengeFragmentInteractionListener,
-        EmptySearchFragment.OnEmptySearchFragmentInteractionListener
+        RequestChallengeDialogFragment.RequestDialogListener,
+        DisplayChallengeFragment.OnDisplayChallengeFragmentInteractionListener
 {
 
     public static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 1;
@@ -121,8 +120,6 @@ public class SideBarActivity extends AppCompatActivity
     private String challengedUserName = "no Name";
     private String challengedUserEmail = "no eMail";
     private Message requestMessage;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -360,7 +357,7 @@ public class SideBarActivity extends AppCompatActivity
                 launchFragment(new MessagesFragment());
             } else if (id == R.id.nav_history) {
                 toolbar.setTitle("History");
-                launchFragment(new RunHistoryFragment());
+                launchFragment(new HistoryFragment());
             } else if (id == R.id.nav_logout) {
                 itemStack.pop();
                 dialogLogout();
@@ -516,50 +513,116 @@ public class SideBarActivity extends AppCompatActivity
     }
 
 
+    /**
+     * Set to true if the user is running, to false otherwise.
+     * @param running the state of the user.
+     */
     public void setRunning(Boolean running) {
         isRunning = running;
     }
 
+    /**
+     * Display run info after the run ended.
+     * @param run the displayed run.
+     */
     @Override
     public void onRunningMapFragmentInteraction(Run run) {
+
+        if(run == null){
+            throw new IllegalArgumentException("Invalid argument 'run' on onRunningMapFragmentInteraction method");
+        }
+
         itemStack.push(runItem);
         historyItem.setChecked(true);
         launchFragment(DisplayRunFragment.newInstance(run));
     }
 
+    /**
+     * Click on a run from the Run History.
+     * @param run the chosen run.
+     */
     @Override
     public void onRunHistoryInteraction(Run run) {
+
+        if(run == null){
+            throw new IllegalArgumentException("Invalid argument 'run' on onRunHistoryInteraction method");
+        }
+
         itemStack.push(historyItem);
         launchFragment(DisplayRunFragment.newInstance(run));
     }
 
+    /**
+     * Click on a challenge from Challenge history.
+     * @param challenge the chosen challenge.
+     */
+    @Override
     public void onChallengeHistoryInteraction(Challenge challenge) {
+
+        if(challenge == null){
+            throw new IllegalArgumentException("Invalid argument 'challenge' on  onChallengeHistoryInteraction method");
+        }
+
         itemStack.push(historyItem);
         launchFragment(DisplayChallengeFragment.newInstance(challenge));
     }
 
+    /**
+     * launches the profile fragment after login.
+     */
     @Override
     public void onDBDownloadFragmentInteraction() {
         launchFragment(new ProfileFragment());
     }
 
+    /**
+     * Click on a username during a user search.
+     *
+     * @param name the username.
+     * @param email the Email of the user.
+     */
     @Override
     public void onDisplayProfileFragmentInteraction(String name, String email) {
+
+        if(name == null || email == null || name.equals("") || email.equals("")){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onMemoDialogChallengeClick method");
+        }
+
         launchFragment(ProfileFragment.newInstance(name, email));
     }
 
+    /**
+     * Click "Challenge' from another user profile.
+     *
+     * @param challengedUserName the name of the other user.
+     * @param challengedUserEmail the email of the other user.
+     */
     @Override
     public void onProfileFragmentInteraction(String challengedUserName, String challengedUserEmail) {
+
+        if(challengedUserEmail == null || challengedUserName == null || challengedUserEmail.equals("") || challengedUserName.equals("")){
+            throw new IllegalArgumentException("Invalid argument(s) 'challengedUserName' and/or 'challengedUserEmail' on onProfileFragmentInteraction method");
+        }
+
         this.challengedUserName = challengedUserName;
         this.challengedUserEmail = challengedUserEmail;
         showChallengeDialog();
     }
 
+    /**
+     * click on a Challenge Request message from the Challenges tab.
+     * @param message the Challenge Request Message.
+     */
     @Override
     public void onMessagesFragmentInteraction(final Message message) {
+
+        if(message == null){
+            throw new IllegalArgumentException("Invalid argument 'message' on onMessagesFragmentInteraction method");
+        }
+
         requestMessage = message;
 
-        if (message.getType() == Message.MessageType.CHALLENGE_REQUEST) {
+        if (message.getType() == Message.Type.CHALLENGE_REQUEST) {
             final String challengeName = FirebaseProxy.generateChallengeName( message.getSender(),
                                                                         message.getAddressee(),
                                                                         message.getMessage());
@@ -569,13 +632,14 @@ public class SideBarActivity extends AppCompatActivity
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
-                        showRequestDialog();
+                        showRequestChallengeDialog();
                     } else {
                         Toast.makeText(getBaseContext(), "Opponent has already deleted this challenge",
                                 Toast.LENGTH_LONG).show();
                         FirebaseHelper fbHelper = new FirebaseHelper();
                         fbHelper.deleteChallengeNode(challengeName);
                         fbHelper.deleteMessage(message);
+                        launchFragment(new MessagesFragment());
                     }
                 }
 
@@ -587,12 +651,46 @@ public class SideBarActivity extends AppCompatActivity
         }
     }
 
+    public void showRequestChallengeDialog() {
+        DialogFragment dialog = new RequestChallengeDialogFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("type", requestMessage.getChallengeType());
+        args.putInt("firstValue", requestMessage.getFirstValue());
+        args.putInt("secondValue", requestMessage.getSecondValue());
+        args.putString("sender", requestMessage.getSender());
+
+        dialog.setArguments(args);
+        dialog.show(getSupportFragmentManager(), "RequestChallengeDialogFragment");
+    }
+
+    /**
+     * click on a Schedule Request message from the Challenges tab.
+     * @param message the Schedule Request Message.
+     */
     @Override
     public void onMessagesFragmentScheduleRequestInteraction(Message message) {
+
+        if(message == null){
+            throw new IllegalArgumentException("Invalid argument 'message' on onMessagesFragmentScheduleRequestInteraction method");
+        }
+
         requestMessage = message;
         showAcceptScheduleDialog();
     }
 
+    private void showAcceptScheduleDialog() {
+        DialogFragment dialog = new AcceptScheduleDialogFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("type", requestMessage.getChallengeType());
+        args.putString("sender", requestMessage.getSender());
+        args.putSerializable("date", requestMessage.getTime());
+        dialog.setArguments(args);
+        dialog.show(getSupportFragmentManager(), "AcceptScheduleDialogFragment");
+    }
+
+    /**
+     * manages callbacks from onDisplayRunFragment.
+     */
     @Override
     public void onDisplayRunFragmentInteraction() {
         // keep using the stack
@@ -600,33 +698,29 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     /**
-     * Dialog for customize challenge.
+     * manages callbacks from onDisplayChallengeFragment.
      */
-    public void showChallengeDialog() {
+    @Override
+    public void onDisplayChallengeFragmentInteraction() {
+        // keep using the stack
+        onNavigationItemSelected(navigationView.getMenu().getItem(4));
+    }
+
+    private void showChallengeDialog() {
         DialogFragment dialog = new ChallengeDialogFragment();
         dialog.show(getSupportFragmentManager(), "ChallengeDialogFragment");
     }
 
-    public void showRequestScheduleDialog() {
-        DialogFragment dialog = new RequestScheduleDialogFragment();
-        dialog.show(getSupportFragmentManager(), "RequestScheduleDialogFragment");
-    }
-
-    public void showAcceptScheduleDialog() {
-        DialogFragment dialog = new AcceptScheduleDialogFragment();
-        Bundle args = new Bundle();
-        args.putSerializable("type", requestMessage.getChallengeType());
-        args.putString("sender", requestMessage.getSender());
-        args.putSerializable("date", requestMessage.getTime());
-        dialog.setArguments(args);
-        dialog.show(getSupportFragmentManager(), "RequestDialogFragment");
-    }
-
     /**
-     * Click "challenge!" from the customize challenge dialog.
+     * click 'Accept' in a Challenge Dialog.
+     * @param dialog the Challenge Dialog.
      */
     @Override
-    public void onDialogPositiveClick(DialogFragment dialog) {
+    public void onChallengeDialogPositiveClick(DialogFragment dialog) {
+
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onChallengeDialogPositiveClick method");
+        }
 
         Challenge.Type challengeType = ((ChallengeDialogFragment)dialog).getType();
         int firstValue = ((ChallengeDialogFragment)dialog).getFirstValue();
@@ -642,7 +736,7 @@ public class SideBarActivity extends AppCompatActivity
         String message = Integer.toString(rndNumber);
         Date timestampId = new Date();
         Message challengeRequestMessage = new Message(from, to, sender, challengedUserName,
-                Message.MessageType.CHALLENGE_REQUEST, message, timestampId, firstValue, secondValue, challengeType);
+                Message.Type.CHALLENGE_REQUEST, message, timestampId, firstValue, secondValue, challengeType);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
         firebaseHelper.sendMessage(challengeRequestMessage);
@@ -655,7 +749,6 @@ public class SideBarActivity extends AppCompatActivity
         intent.putExtra("owner", true);
         intent.putExtra("opponent", challengedUserName);
         intent.putExtra("msgId", message);
-        //startActivity(intent);
 
         mSearchView.setQuery("", false);
         //TODO define result code
@@ -663,38 +756,32 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     /**
-     * Click "cancel" from the customize challenge dialog.
+     * click 'Cancel' in a Challenge Dialog.
+     * @param dialog the Challenge Dialog.
      */
     @Override
-    public void onDialogNegativeClick(DialogFragment dialog) {
+    public void onChallengeDialogNegativeClick(DialogFragment dialog) {
 
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onChallengeDialogNegativeClick method");
+        }
     }
 
     /**
-     * Dialog for a challenge request.
-     */
-    public void showRequestDialog() {
-        DialogFragment dialog = new RequestDialogFragment();
-        Bundle args = new Bundle();
-        args.putSerializable("type", requestMessage.getChallengeType());
-        args.putInt("firstValue", requestMessage.getFirstValue());
-        args.putInt("secondValue", requestMessage.getSecondValue());
-        args.putString("opponent", requestMessage.getFrom());
-        args.putString("sender", requestMessage.getSender());
-
-        dialog.setArguments(args);
-        dialog.show(getSupportFragmentManager(), "RequestDialogFragment");
-    }
-
-    /**
-     * Click "Accept" from the request challenge dialog.
+     * click 'Accept' in a Request Challenge Dialog.
+     * @param dialog the Request Challenge Dialog.
      */
     @Override
-    public void onDialogAcceptClick(DialogFragment dialog) {
-        Challenge.Type challengeType = ((RequestDialogFragment)dialog).getType();
+    public void onChallengeDialogAcceptClick(DialogFragment dialog) {
+
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onChallengeDialogAcceptClick method");
+        }
+
+        Challenge.Type challengeType = ((RequestChallengeDialogFragment)dialog).getType();
         mFirebaseHelper.deleteMessage(requestMessage);
-        int firstValue = ((RequestDialogFragment)dialog).getFirstValue();
-        int secondValue = ((RequestDialogFragment)dialog).getSecondValue();
+        int firstValue = ((RequestChallengeDialogFragment)dialog).getFirstValue();
+        int secondValue = ((RequestChallengeDialogFragment)dialog).getSecondValue();
 
         Intent intent = new Intent(this, ChallengeActivity.class);
         intent.putExtra("type", challengeType);
@@ -707,30 +794,38 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     /**
-     * Click "Decline" from the request challenge dialog.
+     * click 'Decline' in a Request Challenge Dialog.
+     * @param dialog the Request Challenge Dialog.
      */
     @Override
-    public void onDialogDeclineClick(DialogFragment dialog) {
+    public void onChallengeDialogDeclineClick(DialogFragment dialog) {
+
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onChallengeDialogDeclineClick method");
+        }
+
         mFirebaseHelper.deleteMessage(requestMessage);
         launchFragment(new MessagesFragment());
     }
 
     /**
-     * Click "Cancel" from the request challenge dialog.
+     * click 'Cancel' in a Request Challenge Dialog.
+     * @param dialog the Request Challenge Dialog.
      */
     @Override
-    public void onDialogCancelClick(DialogFragment dialog) {
-
-    }
-
-    @Override
-    public void onDisplayChallengeFragmentInteraction() {
-        // keep using the stack
-        onNavigationItemSelected(navigationView.getMenu().getItem(4));
+    public void onChallengeDialogCancelClick(DialogFragment dialog) {
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onChallengeDialogCancelClick method");
+        }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(data == null){
+            throw new IllegalArgumentException("Invalid argument 'data' on onActivityResult method");
+        }
+
         if(resultCode == REQUEST_STOP_WAITING){
             Toast.makeText(getApplicationContext(),"The challenge was deleted",
                     Toast.LENGTH_LONG).show();
@@ -743,27 +838,44 @@ public class SideBarActivity extends AppCompatActivity
             Challenge lastChallenge = challenges.get(challenges.size() - 1);
             onChallengeHistoryInteraction(lastChallenge);
             historyItem.setChecked(true);
+        }else{
+            throw new IllegalArgumentException("Invalid argument 'requestCode' on onActivityResult method");
         }
 
     }
 
-    @Override
-    public void onEmptySearchFragmentInteraction(){
-    }
-
+    /**
+     * Click 'schedule' on another user profile fragment.
+     * @param name the name of the other user
+     * @param email the mail of the other user
+     */
     @Override
     public void onProfileFragmentInteractionSchedule(String name, String email){
+
+        if(name == null || email == null || name.equals("") || email.equals("")){
+            throw new IllegalArgumentException("Invalid argument(s) 'name' and/or 'email' on onProfileFragmentInteractionSchedule method");
+        }
 
         this.challengedUserName = name;
         this.challengedUserEmail = email;
         showRequestScheduleDialog();
     }
 
+    private void showRequestScheduleDialog() {
+        DialogFragment dialog = new RequestScheduleDialogFragment();
+        dialog.show(getSupportFragmentManager(), "RequestScheduleDialogFragment");
+    }
+
     /**
-     *Click "Schedule!" on the request schedule dialog
+     * click 'Accept' in a Request Schedule Dialog.
+     * @param dialog the Request Schedule Dialog.
      */
     @Override
     public void onRequestScheduleDialogPositiveClick(DialogFragment dialog){
+
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onRequestScheduleDialogPositiveClick method");
+        }
 
         Challenge.Type challengeType = ((RequestScheduleDialogFragment)dialog).getType();
 
@@ -775,21 +887,35 @@ public class SideBarActivity extends AppCompatActivity
         String sender = ((AppRunnest) getApplication()).getUser().getName();
         String message = "let's schedule a run!";
         Message scheduleRequestMessage = new Message(from, to, sender, challengedUserName,
-                Message.MessageType.SCHEDULE_REQUEST, message, scheduledDate, challengeType);
+                Message.Type.SCHEDULE_REQUEST, message, scheduledDate, challengeType);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
         firebaseHelper.sendMessage(scheduleRequestMessage);
     }
 
     /**
-     * Click "Cancel" from the request schedule dialog.
+     * click 'Decline' in a Request Schedule Dialog.
+     * @param dialog the Request Schedule Dialog.
      */
     @Override
     public void onRequestScheduleDialogNegativeClick(DialogFragment dialog){
+
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onRequestScheduleDialogNegativeClick method");
+        }
     }
 
+    /**
+     * click 'Accept' in an Accept Schedule Dialog.
+     * @param dialog the Accept Schedule Dialog.
+     */
     @Override
     public void onAcceptScheduleDialogAcceptClick(DialogFragment dialog){
+
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onAcceptScheduleDialogAcceptClick method");
+        }
+
         Challenge.Type challengeType = ((AcceptScheduleDialogFragment)dialog).getType();
         Date scheduledDate = ((AcceptScheduleDialogFragment)dialog).getScheduledDate();
 
@@ -801,11 +927,11 @@ public class SideBarActivity extends AppCompatActivity
 
         // Send message to other user
         Message memoToOpponentMessage = new Message(from, to, sender, addressee,
-                Message.MessageType.MEMO, message, scheduledDate, challengeType);
+                Message.Type.MEMO, message, scheduledDate, challengeType);
 
         // Send message to yourself
         Message memoToMyselfMessage = new Message(to, FirebaseHelper.getFireBaseMail(from), addressee, sender,
-                Message.MessageType.MEMO, message, scheduledDate, challengeType);
+                Message.Type.MEMO, message, scheduledDate, challengeType);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
         firebaseHelper.sendMessage(memoToOpponentMessage);
@@ -815,23 +941,48 @@ public class SideBarActivity extends AppCompatActivity
         launchFragment(new MessagesFragment());
     }
 
+    /**
+     * click 'Decline' in an Accept Schedule Dialog.
+     * @param dialog the Accept Schedule Dialog.
+     */
     @Override
     public void onAcceptScheduleDialogDeclineClick(DialogFragment dialog){
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onAcceptScheduleDialogChallengeClick method");
+        }
+
         mFirebaseHelper.deleteMessage(requestMessage);
         launchFragment(new MessagesFragment());
     }
 
+    /**
+     * click 'Cancel' in an Accept Schedule Dialog.
+     * @param dialog the Accept Schedule Dialog.
+     */
     @Override
     public void onAcceptScheduleDialogCancelClick(DialogFragment dialog){
+
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onAcceptScheduleDialogClick method");
+        }
     }
 
+    /**
+     * click on a Memo message from the Challenges tab.
+     * @param message the clicked message.
+     */
     @Override
     public void onMessagesFragmentMemoInteraction(Message message){
+
+        if(message == null){
+            throw new IllegalArgumentException("Invalid argument 'message' on onMessagesFragmentMemoInteraction method");
+        }
+
         requestMessage = message;
         showMemoDialog();
     }
 
-    public void showMemoDialog(){
+    private void showMemoDialog(){
         DialogFragment dialog = new MemoDialogFragment();
         Bundle args = new Bundle();
         args.putSerializable("type", requestMessage.getChallengeType());
@@ -843,15 +994,41 @@ public class SideBarActivity extends AppCompatActivity
         dialog.show(getSupportFragmentManager(), "MemoDialogFragment");
     }
 
+    /**
+     * click 'Close'in the Memo Dialog.
+     * @param dialog the Memo Dialog.
+     */
+    @Override
     public void onMemoDialogCloseClick(DialogFragment dialog){
+
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onMemoDialogCloseClick method");
+        }
     }
 
+    /**
+     * click 'Delete' in the Memo Dialog.
+     * @param dialog the Memo Dialog.
+     */
+    @Override
     public void onMemoDialogDeleteClick(DialogFragment dialog){
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onMemoDialogDeleteClick method");
+        }
         mFirebaseHelper.deleteMessage(requestMessage);
         launchFragment(new MessagesFragment());
     }
 
+    /**
+     * click 'Challenge' in the memoDialog.
+     * @param dialog the Memo Dialog.
+     */
+    @Override
     public void onMemoDialogChallengeClick(DialogFragment dialog){
+        if(dialog == null){
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onMemoDialogChallengeClick method");
+        }
+
         mFirebaseHelper.deleteMessage(requestMessage);
         this.challengedUserName = ((MemoDialogFragment) dialog).getSender();
         this.challengedUserEmail = ((MemoDialogFragment) dialog).getOpponentEmail();

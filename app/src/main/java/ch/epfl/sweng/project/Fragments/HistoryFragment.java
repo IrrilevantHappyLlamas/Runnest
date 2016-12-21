@@ -21,26 +21,17 @@ import ch.epfl.sweng.project.Model.Challenge;
 import ch.epfl.sweng.project.Model.Run;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link RunHistoryFragment.onRunHistoryInteractionListener} interface
- * to handle interaction events.
+ * Fragment which serves as run and challenge history tab, where past runs and challenges are displayed in a list
  */
-public class RunHistoryFragment extends Fragment {
+public class HistoryFragment extends Fragment {
 
-    private onRunHistoryInteractionListener mListener;
+    private onRunHistoryInteractionListener listener;
     private List<Run> runs;
     private List<Challenge> challenges;
-    private ArrayAdapter<String> runsAdapter;
-    private ArrayAdapter<String> challengesAdapter;
-    private TabLayout tabLayout;
     private ListView listView;
 
     private enum RunType {
         SINGLE_RUN, CHALLENGE
-    }
-    public RunHistoryFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -49,24 +40,34 @@ public class RunHistoryFragment extends Fragment {
 
         listView = (ListView) view.findViewById(R.id.list);
 
-        tabLayout = (TabLayout) view.findViewById(R.id.tabs);
-        tabLayout.setTabTextColors(ContextCompat.getColor(getContext(), R.color.wonColor), ContextCompat.getColor(getContext(), R.color.wonColor));
+        setTabLayout(view);
 
+        DBHelper dbHelper = new DBHelper(this.getContext());
+        runs = dbHelper.fetchAllRuns();
+        challenges = dbHelper.fetchAllChallenges();
+
+        switchDisplayedListView(RunType.SINGLE_RUN);
+
+        return view;
+    }
+
+    private void setTabLayout(View view) {
+        TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tabs);
+        tabLayout.setTabTextColors(ContextCompat.getColor(getContext(), R.color.wonColor),
+                ContextCompat.getColor(getContext(), R.color.wonColor));
 
         TabLayout.Tab runTab = tabLayout.newTab();
-        runTab.setText("Run History");
+        runTab.setText("Runs");
         tabLayout.addTab(runTab, true);
 
         TabLayout.Tab challengeTab = tabLayout.newTab();
-        challengeTab.setText("Challenge History");
+        challengeTab.setText("Challenges");
         tabLayout.addTab(challengeTab);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-
-                switch(tab.getPosition()) {
-
+                switch (tab.getPosition()) {
                     case 0:
                         switchDisplayedListView(RunType.SINGLE_RUN);
                         break;
@@ -88,25 +89,82 @@ public class RunHistoryFragment extends Fragment {
 
             }
         });
+    }
 
-        DBHelper dbHelper = new DBHelper(this.getContext());
+    private void switchDisplayedListView(RunType runType) {
+        switch (runType) {
+            case SINGLE_RUN:
+                listView.setAdapter(createAdapter(runType));
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        if (!runs.isEmpty()) {
+                            listener.onRunHistoryInteraction(runs.get(position));
+                        }
+                    }
+                });
+                break;
+            case CHALLENGE:
+                listView.setAdapter(createAdapter(runType));
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        if (!challenges.isEmpty()) {
+                            listener.onChallengeHistoryInteraction(challenges.get(position));
+                        }
+                    }
+                });
+                break;
+            default:
+                throw new IllegalStateException("Illegal runType state.");
+        }
+    }
 
-        runs = dbHelper.fetchAllRuns();
-        runsAdapter = createAdapter(RunType.SINGLE_RUN);
+    private ArrayAdapter<String> createAdapter(RunType runType) {
+        String[] toBeAdapted;
 
-        challenges = dbHelper.fetchAllChallenges();
-        challengesAdapter = createAdapter(RunType.CHALLENGE);
+        switch (runType) {
+            case SINGLE_RUN:
+                if (runs.isEmpty()) {
+                    toBeAdapted = new String[]{"No run recorded."};
+                } else {
+                    int runsSize = runs.size();
+                    toBeAdapted = new String[runsSize];
 
-        switchDisplayedListView(RunType.SINGLE_RUN);
+                    for (int i = 0; i < runsSize; ++i) {
+                        toBeAdapted[i] = runs.get(i).getName();
+                    }
+                }
+                break;
+            case CHALLENGE:
+                if (challenges.isEmpty()) {
+                    toBeAdapted = new String[]{"No challenge recorded."};
+                } else {
+                    int challengesSize = challenges.size();
+                    toBeAdapted = new String[challengesSize];
 
-        return view;
+                    for (int i = 0; i < challengesSize; ++i) {
+                        Challenge challenge = challenges.get(i);
+                        toBeAdapted[i] = "vs " + challenge.getOpponentName() + "  " + wonOrLost(challenge);
+                    }
+                }
+                break;
+            default:
+                throw new IllegalStateException("Illegal runType state.");
+        }
+
+        return new ArrayAdapter<>(this.getContext(), R.layout.simple_textview, toBeAdapted);
+    }
+
+    private String wonOrLost(Challenge challenge) {
+        return challenge.isWon() ? "WON" : "LOST";
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof onRunHistoryInteractionListener) {
-            mListener = (onRunHistoryInteractionListener) context;
+            listener = (onRunHistoryInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -116,93 +174,12 @@ public class RunHistoryFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        listener = null;
     }
 
-    public void onNothingSelected(AdapterView<?> parent) {
-       switchDisplayedListView(RunType.SINGLE_RUN);
-    }
-
-    private void switchDisplayedListView(RunType runType){
-
-        switch(runType) {
-
-            case SINGLE_RUN:
-                listView.setAdapter(runsAdapter);
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        if (!runs.isEmpty()) {
-                            mListener.onRunHistoryInteraction(runs.get(position));
-                        }
-                    }
-                });
-                break;
-            case CHALLENGE:
-                listView.setAdapter(challengesAdapter);
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        if (!challenges.isEmpty()) {
-                            mListener.onChallengeHistoryInteraction(challenges.get(position));
-                        }
-                    }
-                });
-                break;
-            default:
-                throw new IllegalStateException("Illegal runType state.");
-        }
-    }
-
-
-    private ArrayAdapter<String> createAdapter(RunType runType){
-
-        String[] toBeAdapted;
-
-        switch(runType) {
-            case SINGLE_RUN:
-                if(runs.isEmpty()) {
-                    toBeAdapted = new String[]{"No run recorded."};
-                }
-                else{
-                    toBeAdapted = new String[runs.size()];
-
-                    for (int i = 0; i < runs.size(); ++i) {
-                        toBeAdapted[i] = runs.get(i).getName();
-                    }
-                }
-                break;
-            case CHALLENGE:
-                if(challenges.isEmpty()) {
-                    toBeAdapted = new String[]{"No challenge recorded."};
-                }
-                else{
-                    toBeAdapted = new String[challenges.size()];
-
-                    for (int i = 0; i < challenges.size(); ++i) {
-                        toBeAdapted[i] = "vs " + challenges.get(i).getOpponentName() + "  " + determineWOrLString(challenges.get(i));
-                    }
-                }
-                break;
-            default:
-                throw new IllegalStateException("Illegal runType state.");
-        }
-
-        return new ArrayAdapter<String>(this.getContext(), R.layout.simple_textview, toBeAdapted);
-    }
-
-    private String determineWOrLString(Challenge challenge){
-
-        String result;
-        if(challenge.isWon()){
-            result = "WON";
-        }
-        else{
-            result = "LOST";
-        }
-
-        return result;
-    }
+    /**
+     * Interface for SideBarActivity
+     */
     public interface onRunHistoryInteractionListener {
         void onRunHistoryInteraction(Run run);
         void onChallengeHistoryInteraction(Challenge challenge);

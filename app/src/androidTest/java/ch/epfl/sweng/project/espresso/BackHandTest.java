@@ -55,7 +55,7 @@ public class BackHandTest extends EspressoTest {
                 "emailReceiver",
                 "tester",
                 "tested",
-                Message.MessageType.CHALLENGE_REQUEST,
+                Message.Type.CHALLENGE_REQUEST,
                 "that's a test",
                 new Date(),
                 1,

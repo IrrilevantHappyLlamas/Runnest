@@ -3,11 +3,10 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              xmlns:app="http://schemas.android.com/apk/res-auto"
-             tools:context="ch.epfl.sweng.project.Fragments.RequestDialogFragment"
+             tools:context="ch.epfl.sweng.project.Fragments.RequestChallengeDialogFragment"
              android:id="@+id/request_layout"
              android:background="@color/backgroundApp">
 
-    <!-- TODO: Update blank fragment layout -->
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"

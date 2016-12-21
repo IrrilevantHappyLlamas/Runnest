@@ -12,16 +12,14 @@
 
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/layout_rounded_corners"
-        android:layout_marginRight="210dp"
-        android:layout_marginEnd="210dp"
         android:layout_marginTop="15dp"
         android:layout_marginLeft="15dp"
-        android:layout_marginStart="15dp"
         android:elevation="24dp"
-        tools:ignore="UnusedAttribute">
+        tools:ignore="UnusedAttribute"
+        android:layout_marginStart="15dp">
 
         <ImageView
             android:id="@+id/imageView4"
@@ -30,9 +28,9 @@
             android:layout_height="30dp"
             android:layout_width="30dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
             app:srcCompat="@drawable/distance_white"
-            tools:ignore="ContentDescription"/>
+            tools:ignore="ContentDescription"
+            android:layout_marginStart="10dp"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -43,8 +41,30 @@
             android:text="@string/zero_distance"
             android:layout_gravity="center"
             android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:gravity="center"/>
+
+            android:gravity="center"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/backgroundApp"/>
+
+        <View
+            android:layout_height="match_parent"
+            android:layout_width="1dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@android:color/darker_gray"/>
+
+        <TextView
+            android:text="@string/second_position"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/position_indicator_receiver"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:textSize="16sp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/backgroundApp"/>
+
     </LinearLayout>
 
 

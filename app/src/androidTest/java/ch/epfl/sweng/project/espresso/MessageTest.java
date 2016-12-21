@@ -36,7 +36,7 @@ public class MessageTest extends EspressoTest {
         new FirebaseHelper().deleteUserMessages("Test User");
     }
 
-    private void sendTestMessage(Message.MessageType messageType, boolean createChallenge) {
+    private void sendTestMessage(Message.Type messageType, boolean createChallenge) {
         // Send message
         Message msg1 = new Message("runnest_dot_ihl_at_gmail_dot_com",
                 "Test User",
@@ -64,7 +64,7 @@ public class MessageTest extends EspressoTest {
     @Test
     public void challengeRequestCancelAndDecline() {
         // Send message
-        sendTestMessage(Message.MessageType.CHALLENGE_REQUEST, true);
+        sendTestMessage(Message.Type.CHALLENGE_REQUEST, true);
 
         //Tap on the request
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
@@ -94,7 +94,7 @@ public class MessageTest extends EspressoTest {
     @Test
     public void challengeRequestAccept() {
         // Send message
-        sendTestMessage(Message.MessageType.CHALLENGE_REQUEST, true);
+        sendTestMessage(Message.Type.CHALLENGE_REQUEST, true);
 
         //Tap on the request
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
@@ -114,7 +114,7 @@ public class MessageTest extends EspressoTest {
     @Test
     public void scheduleMessageCancelAndAccept() {
         // Send message
-        sendTestMessage(Message.MessageType.SCHEDULE_REQUEST, false);
+        sendTestMessage(Message.Type.SCHEDULE_REQUEST, false);
 
         //Tap on the request
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
@@ -138,7 +138,7 @@ public class MessageTest extends EspressoTest {
     @Test
     public void scheduleMessageDecline() {
         // Send message
-        sendTestMessage(Message.MessageType.SCHEDULE_REQUEST, false);
+        sendTestMessage(Message.Type.SCHEDULE_REQUEST, false);
 
         //Tap on the request
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
@@ -156,7 +156,7 @@ public class MessageTest extends EspressoTest {
     @Test
     public void memoMessageCloseDelete() {
         // Send message
-        sendTestMessage(Message.MessageType.MEMO, false);
+        sendTestMessage(Message.Type.MEMO, false);
 
         //Tap on the request
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
@@ -180,7 +180,7 @@ public class MessageTest extends EspressoTest {
     @Test
     public void memoMessageChallenge() {
         // Send message
-        sendTestMessage(Message.MessageType.MEMO, false);
+        sendTestMessage(Message.Type.MEMO, false);
 
         //Tap on the request
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());

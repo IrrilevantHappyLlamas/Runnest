@@ -3,8 +3,9 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              xmlns:app="http://schemas.android.com/apk/res-auto"
-             tools:context="ch.epfl.sweng.project.Fragments.RequestDialogFragment"
+             tools:context="ch.epfl.sweng.project.Fragments.AcceptScheduleDialogFragment"
              android:background="@color/backgroundApp">
+
 
     <LinearLayout
         android:orientation="vertical"

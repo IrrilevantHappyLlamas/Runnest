@@ -3,58 +3,44 @@ package ch.epfl.sweng.project.Fragments;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.NumberPicker;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
-import ch.epfl.sweng.project.Activities.ChallengeActivity;
 import ch.epfl.sweng.project.Model.Challenge;
 
 
-public class RequestDialogFragment extends DialogFragment implements View.OnClickListener {
+public class RequestChallengeDialogFragment extends DialogFragment implements View.OnClickListener {
 
 
     private Challenge.Type type;
     private int firstValue;
     private int secondValue;
-    private String opponent;
     private String sender;
-    private TextView typeTxt;
-    private TextView requestDescriptionTxt;
-    private TextView goalTxt;
-    private AlertDialog dialog;
-    private ImageView typeImg;
 
-    /* The activity that creates an instance of this dialog fragment must
-     * implement this interface in order to receive event callbacks.
-     * Each method passes the DialogFragment in case the host needs to query it. */
+    private AlertDialog dialog;
+
+
+    /**
+     * interface for the listener of this class.
+     */
     public interface RequestDialogListener {
-        void onDialogAcceptClick(DialogFragment dialog);
-        void onDialogDeclineClick(DialogFragment dialog);
-        void onDialogCancelClick(DialogFragment dialog);
+        void onChallengeDialogAcceptClick(DialogFragment dialog);
+        void onChallengeDialogDeclineClick(DialogFragment dialog);
+        void onChallengeDialogCancelClick(DialogFragment dialog);
     }
 
     RequestDialogListener mListener;
 
-    public RequestDialogFragment() {
-        // Required empty public constructor
-    }
-
+    @SuppressLint("SetTextI18n")
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -66,21 +52,22 @@ public class RequestDialogFragment extends DialogFragment implements View.OnClic
         builder.setView(view);
 
         ((TextView)view.findViewById(R.id.txt_requester)).setText(sender + " challenged you on a run based on:");
-        typeTxt = (TextView) view.findViewById(R.id.txt_challenge_type);
-        requestDescriptionTxt = (TextView) view.findViewById(R.id.txt_request_description);
-        goalTxt = (TextView) view.findViewById(R.id.txt_goal);
-        typeImg = (ImageView) view.findViewById(R.id.type_img);
+        TextView typeTxt = (TextView) view.findViewById(R.id.txt_challenge_type);
+        TextView requestDescriptionTxt = (TextView) view.findViewById(R.id.txt_request_description);
+        TextView goalTxt = (TextView) view.findViewById(R.id.txt_goal);
+        ImageView typeImg = (ImageView) view.findViewById(R.id.type_img);
         if(type == Challenge.Type.TIME){
             typeTxt.setText("Time");
             typeImg.setImageDrawable(getResources().getDrawable(R.drawable.time_white));
         }
 
+
         if(type == Challenge.Type.DISTANCE) {
-            requestDescriptionTxt.setText("Wins the first one to reach ");
-            goalTxt.setText((firstValue + secondValue/1000.0) + "km");
+            requestDescriptionTxt.setText(R.string.wins_the_first_one_to_reach);
+            goalTxt.setText((firstValue + (secondValue / 1000.0)) + "km");
         } else {
-            requestDescriptionTxt.setText("Wins the one who runs the most distance in ");
-            goalTxt.setText(firstValue + "h " + secondValue + "min");
+            requestDescriptionTxt.setText(R.string.wins_the_one_who_runs_the_most_distance_in);
+            goalTxt.setText(firstValue + getString(R.string.spaced_h) + secondValue + R.string.min);
         }
 
         view.findViewById(R.id.cancel_btn).setOnClickListener(this);
@@ -92,25 +79,25 @@ public class RequestDialogFragment extends DialogFragment implements View.OnClic
         return dialog;
     }
 
+    @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
             case R.id.cancel_btn:
-                mListener.onDialogCancelClick(RequestDialogFragment.this);
+                mListener.onChallengeDialogCancelClick(RequestChallengeDialogFragment.this);
                 dialog.dismiss();
                 break;
 
             case R.id.decline_btn:
-                mListener.onDialogDeclineClick(RequestDialogFragment.this);
+                mListener.onChallengeDialogDeclineClick(RequestChallengeDialogFragment.this);
                 dialog.dismiss();
                 break;
             case R.id.accept_btn:
-                mListener.onDialogAcceptClick(RequestDialogFragment.this);
+                mListener.onChallengeDialogAcceptClick(RequestChallengeDialogFragment.this);
                 dialog.dismiss();
                 break;
         }
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -119,11 +106,9 @@ public class RequestDialogFragment extends DialogFragment implements View.OnClic
         type = (Challenge.Type)args.get("type");
         firstValue = args.getInt("firstValue");
         secondValue = args.getInt("secondValue");
-        opponent = args.getString("opponent");
         sender = args.getString("sender");
 
     }
-
 
     @Override
     public void onAttach(Activity activity) {
@@ -145,20 +130,30 @@ public class RequestDialogFragment extends DialogFragment implements View.OnClic
         mListener = null;
     }
 
+    /**
+     * getter for the challenge type.
+     *
+     * @return the challenge type.
+     */
     public Challenge.Type getType() {
         return type;
     }
 
-    public int getFirstValue() {
-        return firstValue;
-    }
-
+    /**
+     * getter for the second value.
+     *
+     * @return the second value.
+     */
     public int getSecondValue() {
         return secondValue;
     }
 
-    public String getOpponent() {
-        return opponent;
+    /**
+     * getter for the first value.
+     *
+     * @return the first value.
+     */
+    public int getFirstValue() {
+        return firstValue;
     }
-
 }

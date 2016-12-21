@@ -15,7 +15,6 @@ import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.Map;
 
-import ch.epfl.sweng.project.Activities.ChallengeActivity;
 import ch.epfl.sweng.project.Model.Challenge;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Message;
@@ -169,7 +168,7 @@ public class FirebaseHelper {
                         String from = children.child(FirebaseNodes.MEX_FROM).getValue(String.class);
                         String sender = children.child(FirebaseNodes.MEX_SENDER).getValue(String.class);
                         String addressee = children.child(FirebaseNodes.MEX_ADDRESSEE).getValue(String.class);
-                        Message.MessageType type = children.child(FirebaseNodes.MEX_TYPE).getValue(Message.MessageType.class);
+                        Message.Type type = children.child(FirebaseNodes.MEX_TYPE).getValue(Message.Type.class);
                         String messageText = children.child(FirebaseNodes.MEX).getValue(String.class);
                         Date time = children.child(FirebaseNodes.MEX_TIME).getValue(Date.class);
                         Challenge.Type challengeType = children.child(FirebaseNodes.MEX_CHALLENGE_TYPE).getValue(Challenge.Type.class);

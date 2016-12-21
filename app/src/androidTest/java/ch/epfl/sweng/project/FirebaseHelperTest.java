@@ -44,7 +44,7 @@ public class FirebaseHelperTest {
                 TEST_USER,
                 "Tester",
                 "Tested",
-                Message.MessageType.CHALLENGE_REQUEST,
+                Message.Type.CHALLENGE_REQUEST,
                 "This is a test",
                 new Date(),
                 1,

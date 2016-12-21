@@ -100,7 +100,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_challenge);
 
-       setUserAvailable(false);
+        setUserAvailable(false);
 
         // Setup Challenge
         extractIntent(getIntent());
@@ -178,10 +178,26 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
      * the current winner calculation must be redone.
      */
     public void updateIsWinning() {
+        TextView opponentPosition = (TextView) findViewById(R.id.position_indicator_receiver);
+        TextView userPosition = (TextView) findViewById(R.id.position_indicator_sender);
+
         Run opponentRun = ((ChallengeReceiverFragment)receiverFragment).getRun();
         Run userRun = ((ChallengeSenderFragment)senderFragment).getRun();
 
-        isWinning = userRun.getTrack().getDistance() >= opponentRun.getTrack().getDistance();
+        float opponentDistance = opponentRun.getTrack().getDistance();
+        float userDistance = userRun.getTrack().getDistance();
+
+        if (opponentDistance == userDistance) {
+            opponentPosition.setText(R.string.righetta);
+            userPosition.setText(R.string.righetta);
+        } else if (opponentDistance > userDistance) {
+            opponentPosition.setText(R.string.first_position);
+            userPosition.setText(R.string.second_position);
+        } else {
+            opponentPosition.setText(R.string.second_position);
+            userPosition.setText(R.string.first_position);
+        }
+        System.out.println(opponentDistance + " " + userDistance);
     }
 
     /**

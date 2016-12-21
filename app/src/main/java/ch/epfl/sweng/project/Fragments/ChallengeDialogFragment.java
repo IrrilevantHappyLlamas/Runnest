@@ -3,20 +3,15 @@ package ch.epfl.sweng.project.Fragments;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -25,7 +20,6 @@ import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
-import ch.epfl.sweng.project.Activities.ChallengeActivity;
 import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Model.Challenge;
 import info.hoang8f.android.segmented.SegmentedGroup;
@@ -42,27 +36,24 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
     private NumberPicker secondPicker;
     private TextView firstUnit;
     private TextView secondUnit;
-
     private int firstValue;
     private int secondValue;
     private SegmentedGroup typeSG;
     private RadioButton distanceRadio;
+    //TODO: Rick a cosa serve?
     private RadioButton timeRadio;
 
-    /* The activity that creates an instance of this dialog fragment must
- * implement this interface in order to receive event callbacks.
- * Each method passes the DialogFragment in case the host needs to query it. */
+    /**
+     * interface for the listener of this class.
+     */
     public interface ChallengeDialogListener {
-        void onDialogPositiveClick(DialogFragment dialog);
-        void onDialogNegativeClick(DialogFragment dialog);
+        void onChallengeDialogPositiveClick(DialogFragment dialog);
+        void onChallengeDialogNegativeClick(DialogFragment dialog);
     }
 
     ChallengeDialogListener mListener;
 
-    public ChallengeDialogFragment() {
-        // Required empty public constructor
-    }
-
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -71,6 +62,7 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
 
         builder.setCancelable(false);
         builder.setView(view);
+
 
         firstPicker = (NumberPicker) view.findViewById(R.id.first_picker);
         secondPicker = (NumberPicker) view.findViewById(R.id.second_picker);
@@ -119,22 +111,23 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
         return dialog;
     }
 
+    @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
             case R.id.customize_negative_btn:
-                mListener.onDialogNegativeClick(ChallengeDialogFragment.this);
+                mListener.onChallengeDialogNegativeClick(ChallengeDialogFragment.this);
                 dialog.dismiss();
                 break;
 
             case R.id.customize_positive_btn:
                 if(firstValue + secondValue != 0)  {
-                    mListener.onDialogPositiveClick(ChallengeDialogFragment.this);
+                    mListener.onChallengeDialogPositiveClick(ChallengeDialogFragment.this);
                     dialog.dismiss();
                 } else {
                     if(((AppRunnest)getActivity().getApplicationContext()).isTestSession()){
                         firstValue = 1;
-                        mListener.onDialogPositiveClick(ChallengeDialogFragment.this);
+                        mListener.onChallengeDialogPositiveClick(ChallengeDialogFragment.this);
                         dialog.dismiss();
                     } else {
                         Toast.makeText(getContext(), R.string.challenge_not_null,
@@ -243,14 +236,29 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
         }
     }
 
+    /**
+     * getter for the challenge type.
+     *
+     * @return the challenge type
+     */
     public Challenge.Type getType() {
         return type;
     }
 
+    /**
+     * getter for the second value
+     *
+     * @return the second value
+     */
     public int getSecondValue() {
         return secondValue;
     }
 
+    /**
+     * getter for the first value
+     *
+     * @return the first value
+     */
     public int getFirstValue() {
         return firstValue;
     }

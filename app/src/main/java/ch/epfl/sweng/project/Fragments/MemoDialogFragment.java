@@ -3,10 +3,9 @@ package ch.epfl.sweng.project.Fragments;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,31 +17,22 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 import java.util.Calendar;
 import java.util.Date;
 
-import ch.epfl.sweng.project.Activities.ChallengeActivity;
 import ch.epfl.sweng.project.Model.Challenge;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MemoDialogFragment.MemoDialogListener} interface
- * to handle interaction events.
+ * This class displays a memo Dialog which reminds the user of a scheduled challenge.
  */
 public class MemoDialogFragment extends DialogFragment implements View.OnClickListener {
     private Challenge.Type type;
     private Date scheduledDate;
     private String sender;
     private String opponentEmail;
-    private TextView typeTxt;
-    private TextView dateDescriptionTxt;
-    private TextView dateTxt;
-    private TextView timeDescriptionTxt;
-    private TextView timeTxt;
-    private ImageView typeImg;
+
     private AlertDialog dialog;
 
-    /* The activity that creates an instance of this dialog fragment must
-     * implement this interface in order to receive event callbacks.
-     * Each method passes the DialogFragment in case the host needs to query it. */
+    /**
+     * interface for the listener of this class.
+     */
     public interface MemoDialogListener {
         void onMemoDialogCloseClick(DialogFragment dialog);
         void onMemoDialogDeleteClick(DialogFragment dialog);
@@ -51,10 +41,7 @@ public class MemoDialogFragment extends DialogFragment implements View.OnClickLi
 
     MemoDialogFragment.MemoDialogListener mListener;
 
-    public MemoDialogFragment() {
-        // Required empty public constructor
-    }
-
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -66,12 +53,12 @@ public class MemoDialogFragment extends DialogFragment implements View.OnClickLi
         builder.setView(view);
 
         ((TextView)view.findViewById(R.id.txt_requester)).setText(getString(R.string.you_and) + sender + getString(R.string.scheduled_a_run_based_on));
-        typeTxt = (TextView) view.findViewById(R.id.txt_challenge_type);
-        dateDescriptionTxt = (TextView) view.findViewById(R.id.txt_date_description);
-        dateTxt = (TextView) view.findViewById(R.id.txt_date);
-        timeDescriptionTxt = (TextView) view.findViewById(R.id.txt_time_description);
-        timeTxt = (TextView) view.findViewById(R.id.txt_time);
-        typeImg = (ImageView) view.findViewById(R.id.type_img);
+        TextView typeTxt = (TextView) view.findViewById(R.id.txt_challenge_type);
+        TextView dateDescriptionTxt = (TextView) view.findViewById(R.id.txt_date_description);
+        TextView dateTxt = (TextView) view.findViewById(R.id.txt_date);
+        TextView timeDescriptionTxt = (TextView) view.findViewById(R.id.txt_time_description);
+        TextView timeTxt = (TextView) view.findViewById(R.id.txt_time);
+        ImageView typeImg = (ImageView) view.findViewById(R.id.type_img);
         if(type == Challenge.Type.TIME){
             typeTxt.setText("Time");
             typeImg.setImageDrawable(getResources().getDrawable(R.drawable.time_white));
@@ -93,6 +80,7 @@ public class MemoDialogFragment extends DialogFragment implements View.OnClickLi
         return dialog;
     }
 
+    @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
@@ -112,8 +100,6 @@ public class MemoDialogFragment extends DialogFragment implements View.OnClickLi
         }
     }
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,7 +109,6 @@ public class MemoDialogFragment extends DialogFragment implements View.OnClickLi
         sender = args.getString("sender");
         opponentEmail = args.getString("opponentEmail");
     }
-
 
     @Override
     public void onAttach(Activity activity) {
@@ -135,7 +120,7 @@ public class MemoDialogFragment extends DialogFragment implements View.OnClickLi
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
-                    + " must implement RequestDialogListener");
+                    + " must implement MemoDialogListener");
         }
     }
 
@@ -145,18 +130,26 @@ public class MemoDialogFragment extends DialogFragment implements View.OnClickLi
         mListener = null;
     }
 
+    /**
+     * getter for the challenge type.
+     * @return the challenge type.
+     */
     public Challenge.Type getType() {
         return type;
     }
 
-    public Date getScheduledDate() {
-        return scheduledDate;
-    }
-
+    /**
+     * getter for the opponent mail.
+     * @return the opponent mail.
+     */
     public String getOpponentEmail() {
         return opponentEmail;
     }
 
+    /**
+     * getter for the sender address.
+     * @return the sender address.
+     */
     public String getSender() {
         return sender;
     }

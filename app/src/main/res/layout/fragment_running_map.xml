@@ -11,14 +11,16 @@
         android:background="@drawable/layout_rounded_corners"
         android:layout_margin="20dp"
         android:elevation="24dp"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:gravity="center"
         tools:ignore="UnusedAttribute">
 
         <LinearLayout
             android:orientation="horizontal"
-            android:layout_height="match_parent"
-            android:layout_width="150dp">
+            android:layout_height="wrap_content"
+            android:layout_width="150dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp">
 
             <ImageView
                 android:layout_width="71dp"
@@ -53,10 +55,11 @@
 
         <LinearLayout
             android:orientation="horizontal"
-            android:layout_height="match_parent"
-            android:gravity="end"
+            android:layout_height="wrap_content"
+            android:gravity="right"
             android:layout_width="150dp"
-            tools:ignore="UseCompoundDrawables">
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp">
 
             <ImageView
                 android:layout_width="66dp"

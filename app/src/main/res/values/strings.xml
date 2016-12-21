@@ -49,10 +49,10 @@
     <string name="meters">" m"</string>
     <string name="white_space">" "</string>
     <string name="opponent_completed">"Opponent completed "</string>
-    <string name="in">in</string>
+    <string name="in">"in "</string>
     <string name="user_finished">You have Finished!</string>
-    <string name="user_completed">"You have completed "</string>
-    <string name="on_date">On date:</string>
+    <string name="user_completed">"You completed "</string>
+    <string name="on_date">on Date</string>
     <string name="opponent_wants_to_schedule_a_run_based_on">Opponent wants to schedule a run based on:</string>
     <string name="schedule_request">Schedule Request</string>
     <string name="schedule_the_challenge">Schedule</string>
@@ -119,7 +119,19 @@
     <string name="toast_start_challenge_denied">Permission Denied, you cannot start the challenge.</string>
     <string name="google_api_client_connection_failed">Check your connection or you will be unable to properly continue the challenge</string>
     <string name="quit_challenge_dialog_title">Quit Challenge</string>
-    <string name="quit_challenge_dialog_question">Are you sure you want to to quit your current Challenge?</string>
+    <string name="quit_challenge_dialog_question">Are you sure you want to quit your current Challenge?</string>
     <string name="stop_waiting_dialog_title">Stop Waiting</string>
     <string name="stop_waiting_dialog_question">Are you sure you want to stop waiting and go back?</string>
+    <string name="runs">runs</string>
+    <string name="challenges_lowercase">challenges</string>
+    <string name="won">won</string>
+    <string name="lost">lost</string>
+    <string name="second_position">2°</string>
+    <string name="first_position">1°</string>
+    <string name="set_the_time">Set the time</string>
+    <string name="set_the_distance">Set the distance</string>
+    <string name="m">m</string>
+    <string name="wins_the_first_one_to_reach">"Wins the first one to reach "</string>
+    <string name="wins_the_one_who_runs_the_most_distance_in">"Wins the one who runs more in "</string>
+    <string name="spaced_h">"h "</string>
 </resources>

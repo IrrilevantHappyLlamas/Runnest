@@ -8,6 +8,7 @@ import android.graphics.Color;
 import java.util.Calendar;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -32,10 +33,7 @@ import ch.epfl.sweng.project.Model.Challenge;
 import info.hoang8f.android.segmented.SegmentedGroup;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link RequestScheduleDialogFragment.OnRequestScheduleDialogListener} interface
- * to handle interaction events.
+ * This class displays a schedule request dialog.
  */
 public class RequestScheduleDialogFragment extends DialogFragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
 
@@ -50,10 +48,9 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
     Challenge.Type type;
     private AlertDialog dialog;
 
-
-    /* The activity that creates an instance of this dialog fragment must
- * implement this interface in order to receive event callbacks.
- * Each method passes the DialogFragment in case the host needs to query it. */
+    /**
+     * interface for the listener of this class.
+     */
     public interface OnRequestScheduleDialogListener {
         void onRequestScheduleDialogPositiveClick(DialogFragment dialog);
         void onRequestScheduleDialogNegativeClick(DialogFragment dialog);
@@ -61,10 +58,7 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
 
     RequestScheduleDialogFragment.OnRequestScheduleDialogListener mListener;
 
-    public RequestScheduleDialogFragment() {
-        // Required empty public constructor
-    }
-
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -91,6 +85,7 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
         return dialog;
     }
 
+    @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
@@ -108,7 +103,7 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
         }
     }
 
-    public void setCurrentDateAndTime(View view) {
+    private void setCurrentDateAndTime(View view) {
 
         datePicker = (DatePicker) view.findViewById(R.id.datePicker);
         timePicker = (TimePicker) view.findViewById(R.id.timePicker);
@@ -164,10 +159,18 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
         }
     }
 
+    /**
+     * getter for the challenge type.
+     * @return the challenge type.
+     */
     public Challenge.Type getType() {
         return type;
     }
 
+    /**
+     * getter for scheduled calendar.
+     * @return the scheduled calendar.
+     */
     public Calendar getScheduledCalendar() {
         return scheduledCalendar;
     }
