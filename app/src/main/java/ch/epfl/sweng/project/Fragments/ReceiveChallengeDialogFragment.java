@@ -14,30 +14,32 @@ import android.widget.TextView;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
-import java.util.Calendar;
-import java.util.Date;
-
 import ch.epfl.sweng.project.Model.Challenge;
 
 /**
- * this class display a Dialog which asks the User to accept or decline the tentative scheduling of a challenge.
+ * this class display a Dialog which asks the User to accept or decline a challenge.
  */
-public class AcceptScheduleDialogFragment extends DialogFragment implements View.OnClickListener {
+public class ReceiveChallengeDialogFragment extends DialogFragment implements View.OnClickListener {
+
+
     private Challenge.Type type;
-    private Date scheduledDate;
+    private int firstValue;
+    private int secondValue;
     private String sender;
+
     private AlertDialog dialog;
 
+
     /**
-     * Interface for the listener of this class.
+     * interface for the listener of this class.
      */
-    public interface AcceptScheduleDialogListener {
-        void onAcceptScheduleDialogAcceptClick(DialogFragment dialog);
-        void onAcceptScheduleDialogDeclineClick(DialogFragment dialog);
-        void onAcceptScheduleDialogCancelClick(DialogFragment dialog);
+    public interface ReceiveChallengeDialogListener {
+        void onReceiveChallengeDialogAcceptClick(DialogFragment dialog);
+        void onReceiveChallengeDialogDeclineClick(DialogFragment dialog);
+        void onReceiveChallengeDialogCancelClick(DialogFragment dialog);
     }
 
-    AcceptScheduleDialogFragment.AcceptScheduleDialogListener mListener;
+    ReceiveChallengeDialogListener mListener;
 
     @SuppressLint("SetTextI18n")
     @NonNull
@@ -46,37 +48,35 @@ public class AcceptScheduleDialogFragment extends DialogFragment implements View
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.fragment_accept_schedule_dialog, null);
+        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.fragment_request_dialog, null);
 
         builder.setCancelable(false);
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
         builder.setView(view);
 
-        ((TextView)view.findViewById(R.id.txt_requester)).setText(sender + getString(R.string.wants_to_schedule_a_run_based_on));
+        ((TextView)view.findViewById(R.id.txt_requester)).setText(sender + " challenged you on a run based on:");
         TextView typeTxt = (TextView) view.findViewById(R.id.txt_challenge_type);
-        TextView dateDescriptionTxt = (TextView) view.findViewById(R.id.txt_date_description);
-        TextView dateTxt = (TextView) view.findViewById(R.id.txt_date);
-        TextView timeDescriptionTxt = (TextView) view.findViewById(R.id.txt_time_description);
-        TextView timeTxt = (TextView) view.findViewById(R.id.txt_time);
+        TextView requestDescriptionTxt = (TextView) view.findViewById(R.id.txt_request_description);
+        TextView goalTxt = (TextView) view.findViewById(R.id.txt_goal);
         ImageView typeImg = (ImageView) view.findViewById(R.id.type_img);
         if(type == Challenge.Type.TIME){
             typeTxt.setText("Time");
             typeImg.setImageDrawable(getResources().getDrawable(R.drawable.time_white));
         }
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(scheduledDate);
-        dateDescriptionTxt.setText(getString(R.string.on_date));
-        dateTxt.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)) + getString(R.string.righetta) + String.valueOf(calendar.get(Calendar.MONTH)+1) + getString(R.string.righetta) + String.valueOf(calendar.get(Calendar.YEAR)));
-        timeDescriptionTxt.setText(R.string.at);
-        timeTxt.setText(String.valueOf(calendar.get(Calendar.HOUR_OF_DAY)) + getString(R.string.due_punti) + String.valueOf(calendar.get(Calendar.MINUTE)));
 
-        dialog = builder.create();
+        if(type == Challenge.Type.DISTANCE) {
+            requestDescriptionTxt.setText(R.string.wins_the_first_one_to_reach);
+            goalTxt.setText((firstValue + (secondValue / 1000.0)) + "km");
+        } else {
+            requestDescriptionTxt.setText(R.string.wins_the_one_who_runs_the_most_distance_in);
+            goalTxt.setText(firstValue + getString(R.string.spaced_h) + secondValue + R.string.min);
+        }
 
         view.findViewById(R.id.cancel_btn).setOnClickListener(this);
         view.findViewById(R.id.decline_btn).setOnClickListener(this);
         view.findViewById(R.id.accept_btn).setOnClickListener(this);
+
+        dialog = builder.create();
 
         return dialog;
     }
@@ -86,16 +86,16 @@ public class AcceptScheduleDialogFragment extends DialogFragment implements View
 
         switch (v.getId()) {
             case R.id.cancel_btn:
-                mListener.onAcceptScheduleDialogCancelClick(AcceptScheduleDialogFragment.this);
+                mListener.onReceiveChallengeDialogCancelClick(ReceiveChallengeDialogFragment.this);
                 dialog.dismiss();
                 break;
 
             case R.id.decline_btn:
-                mListener.onAcceptScheduleDialogDeclineClick(AcceptScheduleDialogFragment.this);
+                mListener.onReceiveChallengeDialogDeclineClick(ReceiveChallengeDialogFragment.this);
                 dialog.dismiss();
                 break;
             case R.id.accept_btn:
-                mListener.onAcceptScheduleDialogAcceptClick(AcceptScheduleDialogFragment.this);
+                mListener.onReceiveChallengeDialogAcceptClick(ReceiveChallengeDialogFragment.this);
                 dialog.dismiss();
                 break;
         }
@@ -106,8 +106,10 @@ public class AcceptScheduleDialogFragment extends DialogFragment implements View
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         type = (Challenge.Type)args.get("type");
-        scheduledDate = (Date) args.get("date");
+        firstValue = args.getInt("firstValue");
+        secondValue = args.getInt("secondValue");
         sender = args.getString("sender");
+
     }
 
     @Override
@@ -115,12 +117,12 @@ public class AcceptScheduleDialogFragment extends DialogFragment implements View
         super.onAttach(activity);
         // Verify that the host activity implements the callback interface
         try {
-            // Instantiate the RequestDialogListener so we can sendMessage events to the host
-            mListener = (AcceptScheduleDialogFragment.AcceptScheduleDialogListener) activity;
+            // Instantiate the ReceiveChallengeDialogListener so we can sendMessage events to the host
+            mListener = (ReceiveChallengeDialogListener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
-                    + " must implement AcceptScheduleDialogListener");
+                    + " must implement ReceiveChallengeDialogListener");
         }
     }
 
@@ -132,17 +134,28 @@ public class AcceptScheduleDialogFragment extends DialogFragment implements View
 
     /**
      * getter for the challenge type.
-     * @return the challenge type
+     *
+     * @return the challenge type.
      */
     public Challenge.Type getType() {
         return type;
     }
 
     /**
-     * getter for scheduled date.
-     * @return the scheduled date
+     * getter for the second value.
+     *
+     * @return the second value.
      */
-    public Date getScheduledDate() {
-        return scheduledDate;
+    public int getSecondValue() {
+        return secondValue;
+    }
+
+    /**
+     * getter for the first value.
+     *
+     * @return the first value.
+     */
+    public int getFirstValue() {
+        return firstValue;
     }
 }

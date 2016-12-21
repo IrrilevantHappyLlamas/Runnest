@@ -45,8 +45,8 @@ import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Firebase.FirebaseProxy;
-import ch.epfl.sweng.project.Fragments.AcceptScheduleDialogFragment;
-import ch.epfl.sweng.project.Fragments.ChallengeDialogFragment;
+import ch.epfl.sweng.project.Fragments.ReceiveScheduleDialogFragment;
+import ch.epfl.sweng.project.Fragments.SendChallengeDialogFragment;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 import ch.epfl.sweng.project.Fragments.DisplayChallengeFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
@@ -55,8 +55,8 @@ import ch.epfl.sweng.project.Fragments.EmptySearchFragment;
 import ch.epfl.sweng.project.Fragments.MemoDialogFragment;
 import ch.epfl.sweng.project.Fragments.MessagesFragment;
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
-import ch.epfl.sweng.project.Fragments.RequestChallengeDialogFragment;
-import ch.epfl.sweng.project.Fragments.RequestScheduleDialogFragment;
+import ch.epfl.sweng.project.Fragments.ReceiveChallengeDialogFragment;
+import ch.epfl.sweng.project.Fragments.SendScheduleDialogFragment;
 import ch.epfl.sweng.project.Fragments.RunFragments.RunningMapFragment;
 import ch.epfl.sweng.project.Fragments.HistoryFragment;
 import ch.epfl.sweng.project.Model.Challenge;
@@ -73,11 +73,11 @@ public class SideBarActivity extends AppCompatActivity
         DisplayUserFragment.OnDisplayUserFragmentInteractionListener,
         MessagesFragment.MessagesFragmentInteractionListener,
         DisplayRunFragment.DisplayRunFragmentInteractionListener,
-        ChallengeDialogFragment.ChallengeDialogListener,
-        RequestScheduleDialogFragment.OnRequestScheduleDialogListener,
-        AcceptScheduleDialogFragment.AcceptScheduleDialogListener,
+        SendChallengeDialogFragment.SendChallengeDialogListener,
+        SendScheduleDialogFragment.SendScheduleDialogListener,
+        ReceiveScheduleDialogFragment.ReceiveScheduleDialogListener,
         MemoDialogFragment.MemoDialogListener,
-        RequestChallengeDialogFragment.RequestDialogListener,
+        ReceiveChallengeDialogFragment.ReceiveChallengeDialogListener,
         DisplayChallengeFragment.OnDisplayChallengeFragmentInteractionListener
 {
 
@@ -652,7 +652,7 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     public void showRequestChallengeDialog() {
-        DialogFragment dialog = new RequestChallengeDialogFragment();
+        DialogFragment dialog = new ReceiveChallengeDialogFragment();
         Bundle args = new Bundle();
         args.putSerializable("type", requestMessage.getChallengeType());
         args.putInt("firstValue", requestMessage.getFirstValue());
@@ -660,7 +660,7 @@ public class SideBarActivity extends AppCompatActivity
         args.putString("sender", requestMessage.getSender());
 
         dialog.setArguments(args);
-        dialog.show(getSupportFragmentManager(), "RequestChallengeDialogFragment");
+        dialog.show(getSupportFragmentManager(), "ReceiveChallengeDialogFragment");
     }
 
     /**
@@ -679,13 +679,13 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     private void showAcceptScheduleDialog() {
-        DialogFragment dialog = new AcceptScheduleDialogFragment();
+        DialogFragment dialog = new ReceiveScheduleDialogFragment();
         Bundle args = new Bundle();
         args.putSerializable("type", requestMessage.getChallengeType());
         args.putString("sender", requestMessage.getSender());
         args.putSerializable("date", requestMessage.getTime());
         dialog.setArguments(args);
-        dialog.show(getSupportFragmentManager(), "AcceptScheduleDialogFragment");
+        dialog.show(getSupportFragmentManager(), "ReceiveScheduleDialogFragment");
     }
 
     /**
@@ -707,8 +707,8 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     private void showChallengeDialog() {
-        DialogFragment dialog = new ChallengeDialogFragment();
-        dialog.show(getSupportFragmentManager(), "ChallengeDialogFragment");
+        DialogFragment dialog = new SendChallengeDialogFragment();
+        dialog.show(getSupportFragmentManager(), "SendChallengeDialogFragment");
     }
 
     /**
@@ -716,15 +716,15 @@ public class SideBarActivity extends AppCompatActivity
      * @param dialog the Challenge Dialog.
      */
     @Override
-    public void onChallengeDialogPositiveClick(DialogFragment dialog) {
+    public void onSendChallengeDialogPositiveClick(DialogFragment dialog) {
 
         if(dialog == null){
-            throw new IllegalArgumentException("Invalid argument 'dialog' on onChallengeDialogPositiveClick method");
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onSendChallengeDialogPositiveClick method");
         }
 
-        Challenge.Type challengeType = ((ChallengeDialogFragment)dialog).getType();
-        int firstValue = ((ChallengeDialogFragment)dialog).getFirstValue();
-        int secondValue = ((ChallengeDialogFragment)dialog).getSecondValue();
+        Challenge.Type challengeType = ((SendChallengeDialogFragment)dialog).getType();
+        int firstValue = ((SendChallengeDialogFragment)dialog).getFirstValue();
+        int secondValue = ((SendChallengeDialogFragment)dialog).getSecondValue();
 
         // Send message
         String from = ((AppRunnest) getApplication()).getUser().getEmail();
@@ -760,10 +760,10 @@ public class SideBarActivity extends AppCompatActivity
      * @param dialog the Challenge Dialog.
      */
     @Override
-    public void onChallengeDialogNegativeClick(DialogFragment dialog) {
+    public void onSendChallengeDialogNegativeClick(DialogFragment dialog) {
 
         if(dialog == null){
-            throw new IllegalArgumentException("Invalid argument 'dialog' on onChallengeDialogNegativeClick method");
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onSendChallengeDialogNegativeClick method");
         }
     }
 
@@ -772,16 +772,16 @@ public class SideBarActivity extends AppCompatActivity
      * @param dialog the Request Challenge Dialog.
      */
     @Override
-    public void onChallengeDialogAcceptClick(DialogFragment dialog) {
+    public void onReceiveChallengeDialogAcceptClick(DialogFragment dialog) {
 
         if(dialog == null){
-            throw new IllegalArgumentException("Invalid argument 'dialog' on onChallengeDialogAcceptClick method");
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onReceiveChallengeDialogAcceptClick method");
         }
 
-        Challenge.Type challengeType = ((RequestChallengeDialogFragment)dialog).getType();
+        Challenge.Type challengeType = ((ReceiveChallengeDialogFragment)dialog).getType();
         mFirebaseHelper.deleteMessage(requestMessage);
-        int firstValue = ((RequestChallengeDialogFragment)dialog).getFirstValue();
-        int secondValue = ((RequestChallengeDialogFragment)dialog).getSecondValue();
+        int firstValue = ((ReceiveChallengeDialogFragment)dialog).getFirstValue();
+        int secondValue = ((ReceiveChallengeDialogFragment)dialog).getSecondValue();
 
         Intent intent = new Intent(this, ChallengeActivity.class);
         intent.putExtra("type", challengeType);
@@ -798,10 +798,10 @@ public class SideBarActivity extends AppCompatActivity
      * @param dialog the Request Challenge Dialog.
      */
     @Override
-    public void onChallengeDialogDeclineClick(DialogFragment dialog) {
+    public void onReceiveChallengeDialogDeclineClick(DialogFragment dialog) {
 
         if(dialog == null){
-            throw new IllegalArgumentException("Invalid argument 'dialog' on onChallengeDialogDeclineClick method");
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onReceiveChallengeDialogDeclineClick method");
         }
 
         mFirebaseHelper.deleteMessage(requestMessage);
@@ -813,9 +813,9 @@ public class SideBarActivity extends AppCompatActivity
      * @param dialog the Request Challenge Dialog.
      */
     @Override
-    public void onChallengeDialogCancelClick(DialogFragment dialog) {
+    public void onReceiveChallengeDialogCancelClick(DialogFragment dialog) {
         if(dialog == null){
-            throw new IllegalArgumentException("Invalid argument 'dialog' on onChallengeDialogCancelClick method");
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onReceiveChallengeDialogCancelClick method");
         }
     }
 
@@ -862,8 +862,8 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     private void showRequestScheduleDialog() {
-        DialogFragment dialog = new RequestScheduleDialogFragment();
-        dialog.show(getSupportFragmentManager(), "RequestScheduleDialogFragment");
+        DialogFragment dialog = new SendScheduleDialogFragment();
+        dialog.show(getSupportFragmentManager(), "SendRequestScheduleDialogFragment");
     }
 
     /**
@@ -871,15 +871,15 @@ public class SideBarActivity extends AppCompatActivity
      * @param dialog the Request Schedule Dialog.
      */
     @Override
-    public void onRequestScheduleDialogPositiveClick(DialogFragment dialog){
+    public void onSendScheduleDialogPositiveClick(DialogFragment dialog){
 
         if(dialog == null){
-            throw new IllegalArgumentException("Invalid argument 'dialog' on onRequestScheduleDialogPositiveClick method");
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onSendScheduleDialogPositiveClick method");
         }
 
-        Challenge.Type challengeType = ((RequestScheduleDialogFragment)dialog).getType();
+        Challenge.Type challengeType = ((SendScheduleDialogFragment)dialog).getType();
 
-        Date scheduledDate = ((RequestScheduleDialogFragment)dialog).getScheduledCalendar().getTime();
+        Date scheduledDate = ((SendScheduleDialogFragment)dialog).getScheduledCalendar().getTime();
 
         // Send message
         String from = ((AppRunnest) getApplication()).getUser().getEmail();
@@ -898,10 +898,10 @@ public class SideBarActivity extends AppCompatActivity
      * @param dialog the Request Schedule Dialog.
      */
     @Override
-    public void onRequestScheduleDialogNegativeClick(DialogFragment dialog){
+    public void onSendScheduleDialogNegativeClick(DialogFragment dialog){
 
         if(dialog == null){
-            throw new IllegalArgumentException("Invalid argument 'dialog' on onRequestScheduleDialogNegativeClick method");
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onSendScheduleDialogNegativeClick method");
         }
     }
 
@@ -910,14 +910,14 @@ public class SideBarActivity extends AppCompatActivity
      * @param dialog the Accept Schedule Dialog.
      */
     @Override
-    public void onAcceptScheduleDialogAcceptClick(DialogFragment dialog){
+    public void onReceiveScheduleDialogAcceptClick(DialogFragment dialog){
 
         if(dialog == null){
-            throw new IllegalArgumentException("Invalid argument 'dialog' on onAcceptScheduleDialogAcceptClick method");
+            throw new IllegalArgumentException("Invalid argument 'dialog' on onReceiveScheduleDialogAcceptClick method");
         }
 
-        Challenge.Type challengeType = ((AcceptScheduleDialogFragment)dialog).getType();
-        Date scheduledDate = ((AcceptScheduleDialogFragment)dialog).getScheduledDate();
+        Challenge.Type challengeType = ((ReceiveScheduleDialogFragment)dialog).getType();
+        Date scheduledDate = ((ReceiveScheduleDialogFragment)dialog).getScheduledDate();
 
         String from = ((AppRunnest) getApplication()).getUser().getEmail();
         String to = FirebaseHelper.getFireBaseMail(requestMessage.getFrom());
@@ -946,7 +946,7 @@ public class SideBarActivity extends AppCompatActivity
      * @param dialog the Accept Schedule Dialog.
      */
     @Override
-    public void onAcceptScheduleDialogDeclineClick(DialogFragment dialog){
+    public void onReceiveScheduleDialogDeclineClick(DialogFragment dialog){
         if(dialog == null){
             throw new IllegalArgumentException("Invalid argument 'dialog' on onAcceptScheduleDialogChallengeClick method");
         }
@@ -960,7 +960,7 @@ public class SideBarActivity extends AppCompatActivity
      * @param dialog the Accept Schedule Dialog.
      */
     @Override
-    public void onAcceptScheduleDialogCancelClick(DialogFragment dialog){
+    public void onReceiveScheduleDialogCancelClick(DialogFragment dialog){
 
         if(dialog == null){
             throw new IllegalArgumentException("Invalid argument 'dialog' on onAcceptScheduleDialogClick method");

@@ -20,39 +20,40 @@ import java.util.Date;
 import ch.epfl.sweng.project.Model.Challenge;
 
 /**
- * This class displays a memo Dialog which reminds the user of a scheduled challenge.
+ * this class display a Dialog which asks the User to accept or decline the tentative scheduling of a challenge.
  */
-public class MemoDialogFragment extends DialogFragment implements View.OnClickListener {
+public class ReceiveScheduleDialogFragment extends DialogFragment implements View.OnClickListener {
     private Challenge.Type type;
     private Date scheduledDate;
     private String sender;
-    private String opponentEmail;
-
     private AlertDialog dialog;
 
     /**
-     * interface for the listener of this class.
+     * Interface for the listener of this class.
      */
-    public interface MemoDialogListener {
-        void onMemoDialogCloseClick(DialogFragment dialog);
-        void onMemoDialogDeleteClick(DialogFragment dialog);
-        void onMemoDialogChallengeClick(DialogFragment dialog);
+    public interface ReceiveScheduleDialogListener {
+        void onReceiveScheduleDialogAcceptClick(DialogFragment dialog);
+        void onReceiveScheduleDialogDeclineClick(DialogFragment dialog);
+        void onReceiveScheduleDialogCancelClick(DialogFragment dialog);
     }
 
-    MemoDialogFragment.MemoDialogListener mListener;
+    ReceiveScheduleDialogListener mListener;
 
+    @SuppressLint("SetTextI18n")
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.fragment_memo_dialog, null);
+        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.fragment_accept_schedule_dialog, null);
 
         builder.setCancelable(false);
+        // Inflate and set the layout for the dialog
+        // Pass null as the parent view because its going in the dialog layout
         builder.setView(view);
 
-        ((TextView)view.findViewById(R.id.txt_requester)).setText(getString(R.string.you_and) + sender + getString(R.string.scheduled_a_run_based_on));
+        ((TextView)view.findViewById(R.id.txt_requester)).setText(sender + getString(R.string.wants_to_schedule_a_run_based_on));
         TextView typeTxt = (TextView) view.findViewById(R.id.txt_challenge_type);
         TextView dateDescriptionTxt = (TextView) view.findViewById(R.id.txt_date_description);
         TextView dateTxt = (TextView) view.findViewById(R.id.txt_date);
@@ -68,8 +69,8 @@ public class MemoDialogFragment extends DialogFragment implements View.OnClickLi
         calendar.setTime(scheduledDate);
         dateDescriptionTxt.setText(getString(R.string.on_date));
         dateTxt.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)) + getString(R.string.righetta) + String.valueOf(calendar.get(Calendar.MONTH)+1) + getString(R.string.righetta) + String.valueOf(calendar.get(Calendar.YEAR)));
-        timeDescriptionTxt.setText(getString(R.string.at));
-        timeTxt.setText(String.valueOf(calendar.get(Calendar.HOUR_OF_DAY)) + getString((R.string.due_punti)) + String.valueOf(calendar.get(Calendar.MINUTE)));
+        timeDescriptionTxt.setText(R.string.at);
+        timeTxt.setText(String.valueOf(calendar.get(Calendar.HOUR_OF_DAY)) + getString(R.string.due_punti) + String.valueOf(calendar.get(Calendar.MINUTE)));
 
         dialog = builder.create();
 
@@ -85,16 +86,16 @@ public class MemoDialogFragment extends DialogFragment implements View.OnClickLi
 
         switch (v.getId()) {
             case R.id.cancel_btn:
-                mListener.onMemoDialogCloseClick(MemoDialogFragment.this);
+                mListener.onReceiveScheduleDialogCancelClick(ReceiveScheduleDialogFragment.this);
                 dialog.dismiss();
                 break;
 
             case R.id.decline_btn:
-                mListener.onMemoDialogDeleteClick(MemoDialogFragment.this);
+                mListener.onReceiveScheduleDialogDeclineClick(ReceiveScheduleDialogFragment.this);
                 dialog.dismiss();
                 break;
             case R.id.accept_btn:
-                mListener.onMemoDialogChallengeClick(MemoDialogFragment.this);
+                mListener.onReceiveScheduleDialogAcceptClick(ReceiveScheduleDialogFragment.this);
                 dialog.dismiss();
                 break;
         }
@@ -107,7 +108,6 @@ public class MemoDialogFragment extends DialogFragment implements View.OnClickLi
         type = (Challenge.Type)args.get("type");
         scheduledDate = (Date) args.get("date");
         sender = args.getString("sender");
-        opponentEmail = args.getString("opponentEmail");
     }
 
     @Override
@@ -116,11 +116,11 @@ public class MemoDialogFragment extends DialogFragment implements View.OnClickLi
         // Verify that the host activity implements the callback interface
         try {
             // Instantiate the ReceiveChallengeDialogListener so we can sendMessage events to the host
-            mListener = (MemoDialogFragment.MemoDialogListener) activity;
+            mListener = (ReceiveScheduleDialogListener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
-                    + " must implement MemoDialogListener");
+                    + " must implement ReceiveScheduleDialogListener");
         }
     }
 
@@ -132,25 +132,17 @@ public class MemoDialogFragment extends DialogFragment implements View.OnClickLi
 
     /**
      * getter for the challenge type.
-     * @return the challenge type.
+     * @return the challenge type
      */
     public Challenge.Type getType() {
         return type;
     }
 
     /**
-     * getter for the opponent mail.
-     * @return the opponent mail.
+     * getter for scheduled date.
+     * @return the scheduled date
      */
-    public String getOpponentEmail() {
-        return opponentEmail;
-    }
-
-    /**
-     * getter for the sender address.
-     * @return the sender address.
-     */
-    public String getSender() {
-        return sender;
+    public Date getScheduledDate() {
+        return scheduledDate;
     }
 }

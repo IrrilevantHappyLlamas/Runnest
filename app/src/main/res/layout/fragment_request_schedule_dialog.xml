@@ -3,7 +3,7 @@
               xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="ch.epfl.sweng.project.Fragments.RequestScheduleDialogFragment">
+             tools:context="ch.epfl.sweng.project.Fragments.SendScheduleDialogFragment">
 
     <!-- TODO: Update blank fragment layout -->
 

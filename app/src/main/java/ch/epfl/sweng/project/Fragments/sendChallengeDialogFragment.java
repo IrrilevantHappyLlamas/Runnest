@@ -24,8 +24,10 @@ import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Model.Challenge;
 import info.hoang8f.android.segmented.SegmentedGroup;
 
-
-public class ChallengeDialogFragment extends DialogFragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
+/**
+ * this class display a dialog that allows to send a challenge request.
+ */
+public class SendChallengeDialogFragment extends DialogFragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
 
     private AlertDialog dialog;
 
@@ -38,20 +40,17 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
     private TextView secondUnit;
     private int firstValue;
     private int secondValue;
-    private SegmentedGroup typeSG;
     private RadioButton distanceRadio;
-    //TODO: Rick a cosa serve?
-    private RadioButton timeRadio;
 
     /**
      * interface for the listener of this class.
      */
-    public interface ChallengeDialogListener {
-        void onChallengeDialogPositiveClick(DialogFragment dialog);
-        void onChallengeDialogNegativeClick(DialogFragment dialog);
+    public interface SendChallengeDialogListener {
+        void onSendChallengeDialogPositiveClick(DialogFragment dialog);
+        void onSendChallengeDialogNegativeClick(DialogFragment dialog);
     }
 
-    ChallengeDialogListener mListener;
+    SendChallengeDialogListener mListener;
 
     @NonNull
     @Override
@@ -68,9 +67,8 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
         secondPicker = (NumberPicker) view.findViewById(R.id.second_picker);
         firstUnit = (TextView) view.findViewById(R.id.txt_first_unit);
         secondUnit = (TextView) view.findViewById(R.id.txt_second_unit);
-        typeSG = (SegmentedGroup) view.findViewById(R.id.type_sg);
+        SegmentedGroup typeSG = (SegmentedGroup) view.findViewById(R.id.type_sg);
         distanceRadio = (RadioButton) view.findViewById(R.id.distance_radio);
-        timeRadio = (RadioButton) view.findViewById(R.id.time_radio);
 
         typeSG.setOnCheckedChangeListener(this);
 
@@ -116,18 +114,18 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
 
         switch (v.getId()) {
             case R.id.customize_negative_btn:
-                mListener.onChallengeDialogNegativeClick(ChallengeDialogFragment.this);
+                mListener.onSendChallengeDialogNegativeClick(SendChallengeDialogFragment.this);
                 dialog.dismiss();
                 break;
 
             case R.id.customize_positive_btn:
                 if(firstValue + secondValue != 0)  {
-                    mListener.onChallengeDialogPositiveClick(ChallengeDialogFragment.this);
+                    mListener.onSendChallengeDialogPositiveClick(SendChallengeDialogFragment.this);
                     dialog.dismiss();
                 } else {
                     if(((AppRunnest)getActivity().getApplicationContext()).isTestSession()){
                         firstValue = 1;
-                        mListener.onChallengeDialogPositiveClick(ChallengeDialogFragment.this);
+                        mListener.onSendChallengeDialogPositiveClick(SendChallengeDialogFragment.this);
                         dialog.dismiss();
                     } else {
                         Toast.makeText(getContext(), R.string.challenge_not_null,
@@ -149,12 +147,12 @@ public class ChallengeDialogFragment extends DialogFragment implements View.OnCl
         super.onAttach(activity);
         // Verify that the host activity implements the callback interface
         try {
-            // Instantiate the ChallengeDialogListener so we can sendMessage events to the host
-            mListener = (ChallengeDialogListener) activity;
+            // Instantiate the SendChallengeDialogListener so we can sendMessage events to the host
+            mListener = (SendChallengeDialogListener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
-                    + " must implement ChallengeDialogListener");
+                    + " must implement SendChallengeDialogListener");
         }
     }
 

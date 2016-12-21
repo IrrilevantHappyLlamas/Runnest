@@ -63,17 +63,17 @@ public class SidebarActivityTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void onAcceptScheduleDialogAcceptClick() {
-        activity.onAcceptScheduleDialogAcceptClick(null);
+        activity.onReceiveScheduleDialogAcceptClick(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void onAcceptScheduleDialogCancelClick() {
-        activity.onAcceptScheduleDialogCancelClick(null);
+        activity.onReceiveScheduleDialogCancelClick(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void onAcceptScheduleDialogDeclineClick() {
-        activity.onAcceptScheduleDialogDeclineClick(null);
+        activity.onReceiveScheduleDialogDeclineClick(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -88,12 +88,12 @@ public class SidebarActivityTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void onChallengeDialogNegativeClick() {
-        activity.onChallengeDialogNegativeClick(null);
+        activity.onSendChallengeDialogNegativeClick(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void onChallengeDialogPositiveClick() {
-        activity.onChallengeDialogPositiveClick(null);
+        activity.onSendChallengeDialogPositiveClick(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -108,27 +108,27 @@ public class SidebarActivityTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void onChallengeDialogAcceptClick() {
-        activity.onChallengeDialogAcceptClick(null);
+        activity.onReceiveChallengeDialogAcceptClick(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void onChallengeDialogDeclineClick() {
-        activity.onChallengeDialogDeclineClick(null);
+        activity.onReceiveChallengeDialogDeclineClick(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void onChallengeDialogCancelClick() {
-        activity.onChallengeDialogCancelClick(null);
+        activity.onReceiveChallengeDialogCancelClick(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void onRequestScheduleDialogPositiveClick() {
-        activity.onRequestScheduleDialogPositiveClick(null);
+        activity.onSendScheduleDialogPositiveClick(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void onRequestScheduleDialogNegativeClick() {
-        activity.onRequestScheduleDialogNegativeClick(null);
+        activity.onSendScheduleDialogNegativeClick(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
