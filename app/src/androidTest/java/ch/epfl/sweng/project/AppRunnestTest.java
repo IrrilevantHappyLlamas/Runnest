@@ -43,4 +43,11 @@ public class AppRunnestTest {
         testApp.setTestSession(false);
         Assert.assertFalse(testApp.isTestSession());
     }
+
+    @Test
+    public void getApiClientWorks() {
+        AppRunnest testApp = new AppRunnest();
+
+        Assert.assertNull(testApp.getApiClient());
+    }
 }
