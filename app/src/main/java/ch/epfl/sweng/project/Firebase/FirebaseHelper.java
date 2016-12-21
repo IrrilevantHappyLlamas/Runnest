@@ -118,6 +118,7 @@ public class FirebaseHelper {
         messageUpload.put("/" + FirebaseNodes.MEX_ADDRESSEE, message.getAddressee());
         messageUpload.put("/" + FirebaseNodes.MEX, message.getMessage());
         messageUpload.put("/" + FirebaseNodes.MEX_CHALLENGE_TYPE, message.getChallengeType());
+        messageUpload.put("/" + FirebaseNodes.MEX_TYPE, message.getType());
         messageUpload.put("/" + FirebaseNodes.MEX_FIRST_VALUE, message.getFirstValue());
         messageUpload.put("/" + FirebaseNodes.MEX_SECOND_VALUE, message.getSecondValue());
         messageUpload.put("/" + FirebaseNodes.MEX_TIME, time);
