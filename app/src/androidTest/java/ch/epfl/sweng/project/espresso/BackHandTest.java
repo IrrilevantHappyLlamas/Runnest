@@ -72,12 +72,14 @@ public class BackHandTest extends EspressoTest {
 
 
     //TODO: do we really need this test?
+    /*
     @Test
     public void displayUserFragmentCanBeInstanced() {
         Map<String, String> map = new HashMap<>();
         map.put("testId", "testName");
         DisplayUserFragment.newInstance(map);
     }
+    */
 
     @Test
     public void lifecycleTest() {

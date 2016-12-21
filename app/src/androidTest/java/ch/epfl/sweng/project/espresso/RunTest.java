@@ -32,7 +32,10 @@ public class RunTest extends EspressoTest {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
 
-        //TODO
+        // Jenkins sleep (1/3)
+        //
+        // Sleep necessary in order to successfully build on Jenkins, I wasn't able to
+        // reproduce the failure in local. After a lot of attempts I decided to keep it.
         SystemClock.sleep(FIREBASE_DURATION);
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
@@ -52,7 +55,10 @@ public class RunTest extends EspressoTest {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
 
-        //TODO
+        // Jenkins sleep (2/3)
+        //
+        // Sleep necessary in order to successfully build on Jenkins, I wasn't able to
+        // reproduce the failure in local. After a lot of attempts I decided to keep it.
         SystemClock.sleep(FIREBASE_DURATION);
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
@@ -79,7 +85,10 @@ public class RunTest extends EspressoTest {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_run));
 
-        //TODO
+        // Jenkins sleep (3/3)
+        //
+        // Sleep necessary in order to successfully build on Jenkins, I wasn't able to
+        // reproduce the failure in local. After a lot of attempts I decided to keep it.
         SystemClock.sleep(FIREBASE_DURATION);
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));

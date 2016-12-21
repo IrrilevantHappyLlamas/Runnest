@@ -38,7 +38,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 abstract class EspressoTest {
 
-    public class Retry implements TestRule {
+    private class Retry implements TestRule {
         private int retryCount;
 
         private Retry(int retryCount) {
@@ -85,10 +85,10 @@ abstract class EspressoTest {
         onView(isRoot()).perform(waitForMatch(withId(R.id.main_layout), EspressoTest.UI_TEST_TIMEOUT));
     }
 
-    protected static final int UI_TEST_TIMEOUT = 10000;
-    protected static final int FIREBASE_DURATION = 3000;
-    protected static final int TIME_CHALLENGE_DURATION = 15000;
-    protected static final int MOCK_LOCATION_DURATION = 5000;
+    static final int UI_TEST_TIMEOUT = 10000;
+    static final int FIREBASE_DURATION = 3000;
+    static final int TIME_CHALLENGE_DURATION = 15000;
+    static final int MOCK_LOCATION_DURATION = 5000;
 
     public static ViewAction waitForMatch(final Matcher<View> aViewMatcher, final long timeout) {
         return new ViewAction() {

@@ -57,7 +57,7 @@ public class MessageTest extends EspressoTest {
             firebaseHelper.addChallengeNode("Test User", "Runnest IHL", "Runnest IHL vs Test User test1");
         }
 
-        //TODO: send messages
+        // Needed to be sure that the sent message appears on firebase
         SystemClock.sleep(FIREBASE_DURATION);
     }
 
