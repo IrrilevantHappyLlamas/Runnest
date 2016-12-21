@@ -46,7 +46,7 @@ import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Firebase.FirebaseProxy;
 import ch.epfl.sweng.project.Fragments.ReceiveScheduleDialogFragment;
-import ch.epfl.sweng.project.Fragments.SendChallengeDialogFragment;
+import ch.epfl.sweng.project.Fragments.sendChallengeDialogFragment;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 import ch.epfl.sweng.project.Fragments.DisplayChallengeFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
@@ -73,7 +73,7 @@ public class SideBarActivity extends AppCompatActivity
         DisplayUserFragment.OnDisplayUserFragmentInteractionListener,
         MessagesFragment.MessagesFragmentInteractionListener,
         DisplayRunFragment.DisplayRunFragmentInteractionListener,
-        SendChallengeDialogFragment.SendChallengeDialogListener,
+        sendChallengeDialogFragment.SendChallengeDialogListener,
         SendScheduleDialogFragment.SendScheduleDialogListener,
         ReceiveScheduleDialogFragment.ReceiveScheduleDialogListener,
         MemoDialogFragment.MemoDialogListener,
@@ -707,8 +707,8 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     private void showChallengeDialog() {
-        DialogFragment dialog = new SendChallengeDialogFragment();
-        dialog.show(getSupportFragmentManager(), "SendChallengeDialogFragment");
+        DialogFragment dialog = new sendChallengeDialogFragment();
+        dialog.show(getSupportFragmentManager(), "sendChallengeDialogFragment");
     }
 
     /**
@@ -722,9 +722,9 @@ public class SideBarActivity extends AppCompatActivity
             throw new IllegalArgumentException("Invalid argument 'dialog' on onSendChallengeDialogPositiveClick method");
         }
 
-        Challenge.Type challengeType = ((SendChallengeDialogFragment)dialog).getType();
-        int firstValue = ((SendChallengeDialogFragment)dialog).getFirstValue();
-        int secondValue = ((SendChallengeDialogFragment)dialog).getSecondValue();
+        Challenge.Type challengeType = ((sendChallengeDialogFragment)dialog).getType();
+        int firstValue = ((sendChallengeDialogFragment)dialog).getFirstValue();
+        int secondValue = ((sendChallengeDialogFragment)dialog).getSecondValue();
 
         // Send message
         String from = ((AppRunnest) getApplication()).getUser().getEmail();
