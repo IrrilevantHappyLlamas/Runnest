@@ -74,9 +74,8 @@ public final class LoginActivity extends AppCompatActivity
 
     private void handleSignInResult(GoogleSignInResult result) {
         if (result.isSuccess()) {
-            GoogleSignInAccount acct = result.getSignInAccount();
-            ((AppRunnest)getApplication()).setUser(new AuthenticatedUser(acct));
-            firebaseAuthWithGoogle(acct);
+            ((AppRunnest)getApplication()).setUser(new AuthenticatedUser(result.getSignInAccount()));
+            firebaseAuthWithGoogle(result.getSignInAccount());
         } else {
             loginFailed();
         }
@@ -84,16 +83,12 @@ public final class LoginActivity extends AppCompatActivity
 
     private void startSideBarActivity() {
         // Start SideBarActivity
-        Intent sideBarIntent = new Intent(this, SideBarActivity.class);
-        startActivity(sideBarIntent);
+        startActivity(new Intent(this, SideBarActivity.class));
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
 
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-
-        firebaseAuth.signInWithCredential(credential)
+        FirebaseAuth.getInstance().signInWithCredential(GoogleAuthProvider.getCredential(acct.getIdToken(), null))
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -109,8 +104,7 @@ public final class LoginActivity extends AppCompatActivity
     }
 
     private void signIn() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(((AppRunnest)getApplication()).getApiClient());
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        startActivityForResult(Auth.GoogleSignInApi.getSignInIntent(((AppRunnest)getApplication()).getApiClient()), RC_SIGN_IN);
     }
 
     private void signOut() {
@@ -145,8 +139,7 @@ public final class LoginActivity extends AppCompatActivity
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            handleSignInResult(result);
+            handleSignInResult(Auth.GoogleSignInApi.getSignInResultFromIntent(data));
         } else {
             loginFailed();
         }
