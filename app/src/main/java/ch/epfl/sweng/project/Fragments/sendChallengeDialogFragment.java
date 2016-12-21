@@ -57,7 +57,7 @@ public class SendChallengeDialogFragment extends DialogFragment implements View.
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.fragment_customize_challenge, null);
+        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.fragment_send_challenge_dialog, null);
 
         builder.setCancelable(false);
         builder.setView(view);

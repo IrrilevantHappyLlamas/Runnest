@@ -46,7 +46,7 @@ public class ReceiveScheduleDialogFragment extends DialogFragment implements Vie
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.fragment_accept_schedule_dialog, null);
+        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.fragment_receive_schedule_dialog, null);
 
         builder.setCancelable(false);
         // Inflate and set the layout for the dialog

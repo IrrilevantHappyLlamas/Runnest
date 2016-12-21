@@ -48,7 +48,7 @@ public class ReceiveChallengeDialogFragment extends DialogFragment implements Vi
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.fragment_request_dialog, null);
+        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.fragment_receive_challenge_dialog, null);
 
         builder.setCancelable(false);
         builder.setView(view);
