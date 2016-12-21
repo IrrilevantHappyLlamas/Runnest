@@ -94,12 +94,14 @@ public class MessagesFragment extends ListFragment {
     }
 
     private void onCreateFollow() {
-        SimpleAdapter listAdapter = new SimpleAdapter(this.getContext(),
-                messagesIconAndSender,
-                R.layout.messages_listview,
-                mapKeys,
-                viewIDs);
-        this.setListAdapter(listAdapter);
+        if(this.getContext() != null){
+            SimpleAdapter listAdapter = new SimpleAdapter(this.getContext(),
+                    messagesIconAndSender,
+                    R.layout.messages_listview,
+                    mapKeys,
+                    viewIDs);
+            this.setListAdapter(listAdapter);
+        }
     }
 
     @Override
