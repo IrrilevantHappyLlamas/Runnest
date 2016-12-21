@@ -70,17 +70,6 @@ public class BackHandTest extends EspressoTest {
         listenerTest.onDisplayProfileFragmentInteraction("testName", "test@email.ch");
     }
 
-
-    //TODO: do we really need this test?
-    /*
-    @Test
-    public void displayUserFragmentCanBeInstanced() {
-        Map<String, String> map = new HashMap<>();
-        map.put("testId", "testName");
-        DisplayUserFragment.newInstance(map);
-    }
-    */
-
     @Test
     public void lifecycleTest() {
         mActivityRule.getActivity().finish();
