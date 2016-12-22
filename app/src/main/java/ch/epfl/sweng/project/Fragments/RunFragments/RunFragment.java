@@ -61,6 +61,15 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
     private MapHandler mapHandler = null;
     private CountDownTimer locationChangeSimulation = null;
 
+    /**
+     * Getter for the LocationSettingsHandler of this RunFragment.
+     *
+     * @return      The LocationSettingsHandler of this class.
+     */
+    public LocationSettingsHandler getLocationSettingsHandler() {
+        return locationSettingsHandler;
+    }
+
     protected void startRun() {
         run.start();
 

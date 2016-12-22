@@ -75,7 +75,7 @@ public class DisplayUserFragment extends Fragment {
         tableRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((SideBarActivity) getActivity()).mSearchViewAsMenuItem.collapseActionView();
+                ((SideBarActivity) getActivity()).searchViewAsMenuItem.collapseActionView();
                 listener.onDisplayProfileFragmentInteraction(name, email);
             }
         });

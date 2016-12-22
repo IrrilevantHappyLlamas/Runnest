@@ -92,10 +92,12 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
 
         String avgPace = "-";
         if(distance >= 1) {
-            avgPace = UtilsUI.timeToString((int)(duration/distance), false);
+            avgPace = UtilsUI.timeToString((int)(duration/distance), false) +
+                    getString(R.string.white_space) +
+                    getString(R.string.min_over_km);
         }
         TextView viewAvgPace = ((TextView)view.findViewById(R.id.avg_pace_value));
-        viewAvgPace.setText(avgPace + getString(R.string.white_space) + getString(R.string.min_over_km));
+        viewAvgPace.setText(avgPace);
     }
 
     private void setupButtonUI(View view) {
