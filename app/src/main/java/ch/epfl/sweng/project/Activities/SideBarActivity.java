@@ -302,6 +302,7 @@ public class SideBarActivity extends AppCompatActivity
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
+                    throw databaseError.toException();
                 }
             });
             return true;

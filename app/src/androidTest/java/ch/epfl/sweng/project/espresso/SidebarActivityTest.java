@@ -1,9 +1,11 @@
-package ch.epfl.sweng.project;
+package ch.epfl.sweng.project.espresso;
 
 import android.content.Intent;
 import android.os.SystemClock;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+
+import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -13,6 +15,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
 import ch.epfl.sweng.project.Activities.SideBarActivity;
+
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static ch.epfl.sweng.project.espresso.EspressoTest.waitForMatch;
 
 @RunWith(AndroidJUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -27,7 +34,7 @@ public class SidebarActivityTest {
     @Before
     public void setUpApp() {
         activity = activityRule.getActivity();
-        SystemClock.sleep(1000);
+        onView(isRoot()).perform(waitForMatch(withId(R.id.main_layout), EspressoTest.UI_TEST_TIMEOUT));
     }
 
 

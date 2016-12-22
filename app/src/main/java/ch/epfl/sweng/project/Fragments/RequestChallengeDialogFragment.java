@@ -223,7 +223,7 @@ public class RequestChallengeDialogFragment extends DialogFragment implements Vi
                     pf.set(picker, colorDrawable);
                 } catch (Exception e) {
                     e.printStackTrace();
-                } 
+                }
                 break;
             }
         }
