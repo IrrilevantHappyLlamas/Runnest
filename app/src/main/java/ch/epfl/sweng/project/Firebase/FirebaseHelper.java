@@ -510,7 +510,7 @@ public class FirebaseHelper {
         challengeUpload.put("/" + user2 + "/" + FirebaseNodes.ChallengeStatus.FINISH, false);
         challengeUpload.put("/" + user2 + "/" + FirebaseNodes.ChallengeStatus.ABORT, false);
         challengeUpload.put("/" + user2 + "/" + FirebaseNodes.ChallengeStatus.IN_ROOM, false);
-        challengeUpload.put("/" + user2 + "/" + FirebaseNodes.ChallengeStatus.ABORT, false);
+        challengeUpload.put("/" + user2 + "/" + FirebaseNodes.ChallengeStatus.READY, false);
 
         challengeRef.updateChildren(challengeUpload);
     }
