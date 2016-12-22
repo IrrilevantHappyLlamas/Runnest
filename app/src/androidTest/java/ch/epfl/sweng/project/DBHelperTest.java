@@ -74,6 +74,13 @@ public class DBHelperTest {
     }
 
     @Test
+    public void deleteInvalidIdRunReturnFalse() {
+        Run run = createTestRun();
+
+        Assert.assertFalse(dbHelper.delete(run));
+    }
+
+    @Test
     public void canDeleteRun() {
         List<Run> runs = dbHelper.fetchAllRuns();
         int initialNbRuns = runs.size();
@@ -135,6 +142,18 @@ public class DBHelperTest {
     public void deleteNullChallengeThrowsException() {
         Challenge challenge = null;
         dbHelper.delete(challenge);
+    }
+
+    @Test
+    public void deleteInvalidIdChallengeReturnFalse() {
+        String opponentName = "someone";
+        Challenge.Type type = Challenge.Type.DISTANCE;
+        double goal = 1.3;
+        Run run1 = createTestRun();
+        Run run2 = createTestRun();
+        Challenge challenge = new Challenge(opponentName, type, goal, Challenge.Result.LOST, run1, run2);
+
+        Assert.assertFalse(dbHelper.delete(challenge));
     }
 
     @Test

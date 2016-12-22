@@ -123,7 +123,7 @@ public class DBHelper extends SQLiteOpenHelper {
         Challenge.Type type = challenge.getType();
         double goal = challenge.getGoal();
 
-        int result;
+        int result = 1;
         switch (challenge.getResult()) {
             case WON:
                 result = 0;
@@ -138,7 +138,6 @@ public class DBHelper extends SQLiteOpenHelper {
                 result = 3;
                 break;
             default:
-                result = 1;
         }
 
         long myRunId = insert(challenge.getMyRun(), true);
@@ -213,14 +212,9 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-<<<<<<< HEAD
-     * Deletes a given run
-     * @param run to deleteMessage
-=======
      * Deletes a given run.
      *
      * @param run to delete
->>>>>>> origin/sprint11Pablo
      * @return true if the deletion was successful
      */
     public boolean delete(Run run) {
@@ -247,14 +241,9 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-<<<<<<< HEAD
-     * Deletes a given challenge
-     * @param challenge to deleteMessage
-=======
      * Deletes a given challenge.
      *
      * @param challenge to delete
->>>>>>> origin/sprint11Pablo
      * @return true if the deletion was successful
      */
     public boolean delete(Challenge challenge) {
@@ -319,7 +308,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
                 double goal = result.getDouble(3);
 
-                Challenge.Result resultOfTheRun;
+                Challenge.Result resultOfTheRun = Challenge.Result.LOST;
                 switch (result.getShort(4)) {
                     case 0:
                         resultOfTheRun = Challenge.Result.WON;
@@ -334,7 +323,6 @@ public class DBHelper extends SQLiteOpenHelper {
                         resultOfTheRun = Challenge.Result.ABORTED_BY_OTHER;
                         break;
                     default:
-                        resultOfTheRun = Challenge.Result.LOST;
                 }
 
                 Run myRun = fetchRun(result.getLong(5));
@@ -358,23 +346,20 @@ public class DBHelper extends SQLiteOpenHelper {
         String selectRun = RUNS_COLS[0] + " = " + id;
         Cursor result = db.query(RUNS_TABLE_NAME, RUNS_COLS, selectRun, null, null, null, null);
         if (result.getCount() == 1) {
-            while (result.moveToNext()) {
-                String name = result.getString(2);
-                long duration = Long.parseLong(result.getString(3));
-                long fromId = result.getLong(4);
-                long toId = result.getLong(5);
-                Track track = fetchTrack(fromId, toId);
-                Run run = new Run(name, id);
-                run.setTrack(track);
-                run.setDuration(duration);
+            result.moveToNext();
+            String name = result.getString(2);
+            long duration = Long.parseLong(result.getString(3));
+            long fromId = result.getLong(4);
+            long toId = result.getLong(5);
+            Track track = fetchTrack(fromId, toId);
+            Run run = new Run(name, id);
+            run.setTrack(track);
+            run.setDuration(duration);
 
-                return run;
-            }
+            return run;
         } else {
             throw new NoSuchElementException();
         }
-
-        return null;
     }
 
     /**
