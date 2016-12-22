@@ -26,7 +26,7 @@ import info.hoang8f.android.segmented.SegmentedGroup;
 /**
  * this class display a dialog that allows to send a schedule request.
  */
-public class SendScheduleDialogFragment extends DialogFragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
+public class RequestScheduleDialogFragment extends DialogFragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
 
     // Challenge type
     private SegmentedGroup typeSG;
@@ -81,14 +81,14 @@ public class SendScheduleDialogFragment extends DialogFragment implements View.O
 
         switch (v.getId()) {
             case R.id.schedule_negative_btn:
-                mListener.onSendScheduleDialogNegativeClick(SendScheduleDialogFragment.this);
+                mListener.onSendScheduleDialogNegativeClick(RequestScheduleDialogFragment.this);
                 dialog.dismiss();
                 break;
 
             case R.id.schedule_positive_btn:
                 Toast.makeText(getContext(), R.string.challenge_scheduled,
                         Toast.LENGTH_LONG).show();
-                mListener.onSendScheduleDialogPositiveClick(SendScheduleDialogFragment.this);
+                mListener.onSendScheduleDialogPositiveClick(RequestScheduleDialogFragment.this);
                 dialog.dismiss();
                 break;
         }

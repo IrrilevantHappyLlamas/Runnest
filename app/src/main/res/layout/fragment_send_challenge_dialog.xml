@@ -3,7 +3,7 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="ch.epfl.sweng.project.Fragments.SendChallengeDialogFragment"
+             tools:context="ch.epfl.sweng.project.Fragments.RequestChallengeDialogFragment"
              android:id="@+id/define_challenge"
              android:background="@color/backgroundApp">
 
