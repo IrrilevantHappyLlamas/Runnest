@@ -85,7 +85,7 @@ public class ProfileFragment extends Fragment {
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-
+                    throw databaseError.toException();
                 }
             });
 
@@ -191,7 +191,7 @@ public class ProfileFragment extends Fragment {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        throw new DatabaseException("Cannot read available status for user");
+                        throw databaseError.toException();
                     }
                 });
             }

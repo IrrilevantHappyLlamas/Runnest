@@ -69,7 +69,7 @@ public class ReceiveChallengeDialogFragment extends DialogFragment implements Vi
             goalTxt.setText((firstValue + (secondValue / 1000.0)) + "km");
         } else {
             requestDescriptionTxt.setText(R.string.wins_the_one_who_runs_the_most_distance_in);
-            goalTxt.setText(firstValue + getString(R.string.spaced_h) + secondValue + R.string.min);
+            goalTxt.setText(firstValue + getString(R.string.spaced_h) + secondValue + getString(R.string.min));
         }
 
         view.findViewById(R.id.cancel_btn).setOnClickListener(this);

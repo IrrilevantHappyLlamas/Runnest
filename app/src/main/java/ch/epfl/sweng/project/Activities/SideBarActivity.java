@@ -46,7 +46,7 @@ import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Firebase.FirebaseProxy;
 import ch.epfl.sweng.project.Fragments.ReceiveScheduleDialogFragment;
-import ch.epfl.sweng.project.Fragments.SendChallengeDialogFragment;
+import ch.epfl.sweng.project.Fragments.RequestChallengeDialogFragment;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 import ch.epfl.sweng.project.Fragments.DisplayChallengeFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
@@ -56,7 +56,7 @@ import ch.epfl.sweng.project.Fragments.MemoDialogFragment;
 import ch.epfl.sweng.project.Fragments.MessagesFragment;
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.ReceiveChallengeDialogFragment;
-import ch.epfl.sweng.project.Fragments.SendScheduleDialogFragment;
+import ch.epfl.sweng.project.Fragments.RequestScheduleDialogFragment;
 import ch.epfl.sweng.project.Fragments.RunFragments.RunningMapFragment;
 import ch.epfl.sweng.project.Fragments.HistoryFragment;
 import ch.epfl.sweng.project.Model.Challenge;
@@ -73,8 +73,8 @@ public class SideBarActivity extends AppCompatActivity
         DisplayUserFragment.OnDisplayUserFragmentInteractionListener,
         MessagesFragment.MessagesFragmentInteractionListener,
         DisplayRunFragment.DisplayRunFragmentInteractionListener,
-        SendChallengeDialogFragment.SendChallengeDialogListener,
-        SendScheduleDialogFragment.SendScheduleDialogListener,
+        RequestChallengeDialogFragment.SendChallengeDialogListener,
+        RequestScheduleDialogFragment.SendScheduleDialogListener,
         ReceiveScheduleDialogFragment.ReceiveScheduleDialogListener,
         MemoDialogFragment.MemoDialogListener,
         ReceiveChallengeDialogFragment.ReceiveChallengeDialogListener,
@@ -703,8 +703,8 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     private void showChallengeDialog() {
-        DialogFragment dialog = new SendChallengeDialogFragment();
-        dialog.show(getSupportFragmentManager(), "SendChallengeDialogFragment");
+        DialogFragment dialog = new RequestChallengeDialogFragment();
+        dialog.show(getSupportFragmentManager(), "RequestChallengeDialogFragment");
     }
 
     /**
@@ -718,9 +718,9 @@ public class SideBarActivity extends AppCompatActivity
             throw new IllegalArgumentException("Invalid argument 'dialog' on onSendChallengeDialogPositiveClick method");
         }
 
-        Challenge.Type challengeType = ((SendChallengeDialogFragment)dialog).getType();
-        int firstValue = ((SendChallengeDialogFragment)dialog).getFirstValue();
-        int secondValue = ((SendChallengeDialogFragment)dialog).getSecondValue();
+        Challenge.Type challengeType = ((RequestChallengeDialogFragment)dialog).getType();
+        int firstValue = ((RequestChallengeDialogFragment)dialog).getFirstValue();
+        int secondValue = ((RequestChallengeDialogFragment)dialog).getSecondValue();
 
         // Send message
         String from = ((AppRunnest) getApplication()).getUser().getEmail();
@@ -864,7 +864,7 @@ public class SideBarActivity extends AppCompatActivity
     }
 
     private void showRequestScheduleDialog() {
-        DialogFragment dialog = new SendScheduleDialogFragment();
+        DialogFragment dialog = new RequestScheduleDialogFragment();
         dialog.show(getSupportFragmentManager(), "SendRequestScheduleDialogFragment");
     }
 
@@ -879,9 +879,9 @@ public class SideBarActivity extends AppCompatActivity
             throw new IllegalArgumentException("Invalid argument 'dialog' on onSendScheduleDialogPositiveClick method");
         }
 
-        Challenge.Type challengeType = ((SendScheduleDialogFragment)dialog).getType();
+        Challenge.Type challengeType = ((RequestScheduleDialogFragment)dialog).getType();
 
-        Date scheduledDate = ((SendScheduleDialogFragment)dialog).getScheduledCalendar().getTime();
+        Date scheduledDate = ((RequestScheduleDialogFragment)dialog).getScheduledCalendar().getTime();
 
         // Send message
         String from = ((AppRunnest) getApplication()).getUser().getEmail();

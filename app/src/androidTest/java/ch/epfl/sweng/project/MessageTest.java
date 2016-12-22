@@ -123,7 +123,8 @@ public class MessageTest {
         Assert.assertEquals(secondValue, message.getSecondValue());
         Assert.assertEquals(challengeType, message.getChallengeType());
 
-        String expectedId = from.hashCode() + "_" + time.hashCode();
-        Assert.assertTrue(expectedId.equals(message.getUid()));
+        int expectedId = 200;
+        message.setUid(expectedId);
+        Assert.assertTrue(expectedId == message.getUid());
     }
 }
