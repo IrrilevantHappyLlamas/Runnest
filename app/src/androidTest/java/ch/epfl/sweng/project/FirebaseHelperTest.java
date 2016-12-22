@@ -57,11 +57,6 @@ public class FirebaseHelperTest {
         firebaseHelper = new FirebaseHelper();
     }
 
-    @After
-    public void deleteTestUserMessages() {
-        //firebaseHelper.deleteUserMessages(TEST_USER);
-    }
-
     @Test
     public void databaseCorrectInstantiationAndRootOrganization() {
         firebaseHelper.getDatabase().addListenerForSingleValueEvent(new ValueEventListener() {
@@ -269,6 +264,19 @@ public class FirebaseHelperTest {
     @Test(expected = IllegalArgumentException.class)
     public void updateUserStatisticThrowsIllegalArgumentOnEmpty() {
         firebaseHelper.updateUserStatistics("", (long)10, (float)10, FirebaseHelper.RunType.SINGLE);
+    }
+
+    @Test
+    public void updateUserMissingStatistics() {
+        firebaseHelper.getDatabase().child(FirebaseNodes.USERS).child("UserWithoutStatistics")
+                .child(FirebaseNodes.STATISTICS).child("non existing statistic").setValue(0);
+        firebaseHelper.updateUserStatistics("UserWithoutStatistics", 1, 1, FirebaseHelper.RunType.SINGLE);
+        firebaseHelper.updateUserStatistics("UserWithoutStatistics", 1, 1, FirebaseHelper.RunType.CHALLENGE_LOST);
+        firebaseHelper.updateUserStatistics("UserWithoutStatistics", 1, 1, FirebaseHelper.RunType.CHALLENGE_WON);
+        // Needed to be sure that the sent message appears on firebase
+        SystemClock.sleep(2000);
+        firebaseHelper.getDatabase().child(FirebaseNodes.USERS).child("UserWithoutStatistics")
+                .child(FirebaseNodes.STATISTICS).removeValue();
     }
 
     @Test(expected = IllegalArgumentException.class)

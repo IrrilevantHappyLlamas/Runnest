@@ -24,7 +24,7 @@ import ch.epfl.sweng.project.Model.Message;
  * Helper class that provides methods to update and interact with the remote firebase database instance.
  * Offers methods to sendMessage and retrieve messages.
  */
-public class FirebaseHelper implements OnCompleteListener {
+public class FirebaseHelper {
 
     private final DatabaseReference databaseReference;
 
@@ -55,11 +55,6 @@ public class FirebaseHelper implements OnCompleteListener {
             TOTAL_NUMBER_OF_WON_CHALLENGES_INDEX,
             TOTAL_NUMBER_OF_LOST_CHALLENGES_INDEX
     };
-
-    @Override
-    public void onComplete(@NonNull Task task) {
-        //TODO: Cosa facciamo?
-    }
 
     public enum RunType {
         SINGLE,
@@ -109,7 +104,6 @@ public class FirebaseHelper implements OnCompleteListener {
         messageUpload.put("/" + FirebaseNodes.MEX_SECOND_VALUE, message.getSecondValue());
         messageUpload.put("/" + FirebaseNodes.MEX_TIME, time);
 
-        //TODO: listener
         messageRef.updateChildren(messageUpload);
     }
 
@@ -126,7 +120,6 @@ public class FirebaseHelper implements OnCompleteListener {
             throw new IllegalArgumentException("Cannot deleteMessage messages for an empty user");
         }
 
-        //TODO: listener
         databaseReference.child(FirebaseNodes.MESSAGES).child(user).removeValue();
     }
 
@@ -196,7 +189,6 @@ public class FirebaseHelper implements OnCompleteListener {
         }
 
         String messageId = message.getUid();
-        //TODO: listener
         databaseReference.child(FirebaseNodes.MESSAGES).child(message.getTo()).child(messageId).removeValue();
     }
 
@@ -219,7 +211,6 @@ public class FirebaseHelper implements OnCompleteListener {
         }
 
         final DatabaseReference user = databaseReference.child(FirebaseNodes.USERS).child(getFireBaseMail(email));
-        //TODO: listener
         user.child(FirebaseNodes.NAME).setValue(name);
 
         final DatabaseReference statistics = user.child(FirebaseNodes.STATISTICS);
@@ -235,7 +226,6 @@ public class FirebaseHelper implements OnCompleteListener {
                     statisticsUpload.put("/" + FirebaseNodes.TOTAL_NUMBER_OF_WON_CHALLENGES, 0);
                     statisticsUpload.put("/" + FirebaseNodes.TOTAL_NUMBER_OF_LOST_CHALLENGES, 0);
 
-                    //TODO: listener
                     statistics.updateChildren(statisticsUpload);
                 }
             }
@@ -263,7 +253,6 @@ public class FirebaseHelper implements OnCompleteListener {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    //TODO: listener
                     user.child(FirebaseNodes.PROFILE_PIC_URL).setValue(url);
                 }
             }
@@ -293,7 +282,6 @@ public class FirebaseHelper implements OnCompleteListener {
                 .addListenerForSingleValueEvent(listener);
     }
 
-    // TODO: listener ovunque....?
     /**
      * Updates a user's statistics after a run or challenge.
      *
@@ -324,20 +312,16 @@ public class FirebaseHelper implements OnCompleteListener {
                     if (dataSnapshot.hasChild(FirebaseNodes.TOTAL_RUNNING_TIME)) {
                         long time = dataSnapshot.child(FirebaseNodes.TOTAL_RUNNING_TIME).getValue(long.class);
                         long updatedTime = time + newTime;
-                        //TODO: listener
                         statistics.child(FirebaseNodes.TOTAL_RUNNING_TIME).setValue(updatedTime);
                     } else {
-                        //TODO: listener
                         statistics.child(FirebaseNodes.TOTAL_RUNNING_TIME).setValue(newTime);
                     }
 
                     if (dataSnapshot.hasChild(FirebaseNodes.TOTAL_RUNNING_DISTANCE)) {
                         float distance = dataSnapshot.child(FirebaseNodes.TOTAL_RUNNING_DISTANCE).getValue(float.class);
                         float updatedDistance = distance + newDistance;
-                        //TODO: listener
                         statistics.child(FirebaseNodes.TOTAL_RUNNING_DISTANCE).setValue(updatedDistance);
                     } else {
-                        //TODO: listener
                         statistics.child(FirebaseNodes.TOTAL_RUNNING_DISTANCE).setValue(newDistance);
                     }
 
@@ -346,10 +330,8 @@ public class FirebaseHelper implements OnCompleteListener {
                             if (dataSnapshot.hasChild(FirebaseNodes.TOTAL_NUMBER_OF_RUNS)) {
                                 int numberRuns = dataSnapshot.child(FirebaseNodes.TOTAL_NUMBER_OF_RUNS).getValue(int.class);
                                 int updatedNumberRuns = numberRuns + 1;
-                                //TODO: listener
                                 statistics.child(FirebaseNodes.TOTAL_NUMBER_OF_RUNS).setValue(updatedNumberRuns);
                             } else {
-                                //TODO: listener
                                 statistics.child(FirebaseNodes.TOTAL_NUMBER_OF_RUNS).setValue(1);
                             }
                             break;
@@ -358,10 +340,8 @@ public class FirebaseHelper implements OnCompleteListener {
                             if (dataSnapshot.hasChild(FirebaseNodes.TOTAL_NUMBER_OF_WON_CHALLENGES)) {
                                 int numberWonChallenges = dataSnapshot.child(FirebaseNodes.TOTAL_NUMBER_OF_WON_CHALLENGES).getValue(int.class);
                                 int updatedNumberWonChallenges = numberWonChallenges + 1;
-                                //TODO: listener
                                 statistics.child(FirebaseNodes.TOTAL_NUMBER_OF_WON_CHALLENGES).setValue(updatedNumberWonChallenges);
                             } else {
-                                //TODO: listener
                                 statistics.child(FirebaseNodes.TOTAL_NUMBER_OF_WON_CHALLENGES).setValue(1);
                             }
                             break;
@@ -370,10 +350,8 @@ public class FirebaseHelper implements OnCompleteListener {
                             if (dataSnapshot.hasChild(FirebaseNodes.TOTAL_NUMBER_OF_LOST_CHALLENGES)) {
                                 int numberLostChallenges = dataSnapshot.child(FirebaseNodes.TOTAL_NUMBER_OF_LOST_CHALLENGES).getValue(int.class);
                                 int updatedNumberWonChallenges = numberLostChallenges + 1;
-                                //TODO: listener
                                 statistics.child(FirebaseNodes.TOTAL_NUMBER_OF_LOST_CHALLENGES).setValue(updatedNumberWonChallenges);
                             } else {
-                                //TODO: listener
                                 statistics.child(FirebaseNodes.TOTAL_NUMBER_OF_LOST_CHALLENGES).setValue(1);
                             }
                             break;
@@ -385,11 +363,9 @@ public class FirebaseHelper implements OnCompleteListener {
                 if (dataSnapshot.hasChild(FirebaseNodes.TOTAL_NUMBER_OF_CHALLENGES)) {
                     int numberRuns = dataSnapshot.child(FirebaseNodes.TOTAL_NUMBER_OF_CHALLENGES).getValue(int.class);
                     int updatedNumberRuns = numberRuns + 1;
-                    //TODO: listener
                     statistics.child(FirebaseNodes.TOTAL_NUMBER_OF_CHALLENGES).setValue(updatedNumberRuns);
                 }
                 else{
-                    //TODO: listener
                     statistics.child(FirebaseNodes.TOTAL_NUMBER_OF_CHALLENGES).setValue(1);
                 }
             }
@@ -429,10 +405,9 @@ public class FirebaseHelper implements OnCompleteListener {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     for(int i = 0; i < NUMBER_OF_STATISTICS; ++i) {
+                        userStatistics[statisticsIndexes[i]] = null;
                         if (dataSnapshot.hasChild(statisticsChildren[i])) {
                             userStatistics[statisticsIndexes[i]] = String.valueOf(dataSnapshot.child(statisticsChildren[i]).getValue());
-                        } else {
-                            userStatistics[statisticsIndexes[i]] = null;
                         }
                     }
                     handler.handleRetrievedStatistics(userStatistics);
@@ -463,7 +438,6 @@ public class FirebaseHelper implements OnCompleteListener {
 
         String email = emailInFirebaseFormat?userMail:getFireBaseMail(userMail);
 
-        //TODO: listener
         databaseReference.child(FirebaseNodes.USERS)
                 .child(email).child(FirebaseNodes.AVAILABLE).setValue(status);
     }
@@ -534,7 +508,6 @@ public class FirebaseHelper implements OnCompleteListener {
         challengeUpload.put("/" + user2 + "/" + FirebaseNodes.ChallengeStatus.IN_ROOM, false);
         challengeUpload.put("/" + user2 + "/" + FirebaseNodes.ChallengeStatus.ABORT, false);
 
-        //TODO: listener
         challengeRef.updateChildren(challengeUpload);
 
     }
@@ -552,7 +525,6 @@ public class FirebaseHelper implements OnCompleteListener {
             throw new IllegalArgumentException("Challenge name can't be empty");
         }
 
-        //TODO: listener
         databaseReference.child(FirebaseNodes.CHALLENGES).child(challengeName).removeValue();
     }
 
@@ -580,7 +552,6 @@ public class FirebaseHelper implements OnCompleteListener {
         checkPointUpdate.put("/" + FirebaseNodes.LATITUDE, checkPoint.getLatitude());
         checkPointUpdate.put("/" + FirebaseNodes.LONGITUDE, checkPoint.getLongitude());
 
-        //TODO: listener
         checkPointRef.updateChildren(checkPointUpdate);
     }
 
@@ -607,7 +578,6 @@ public class FirebaseHelper implements OnCompleteListener {
         }
 
         if (statusNode != FirebaseNodes.ChallengeStatus.DATA) {
-            //TODO: listener
             databaseReference.child(FirebaseNodes.CHALLENGES).child(challengeName).child(user).child(statusNode.toString()).setValue(status);
         }
     }

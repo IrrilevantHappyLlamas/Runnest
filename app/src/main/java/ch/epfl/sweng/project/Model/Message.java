@@ -247,6 +247,6 @@ public class Message implements Serializable {
      * @return the message's unique id
      */
     public String getUid() {
-        return from.hashCode() + "_" + time.hashCode();
+        return from.hashCode() + "_" + time.toString().hashCode();
     }
 }
