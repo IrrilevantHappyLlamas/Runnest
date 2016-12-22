@@ -1,0 +1,185 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             tools:context="ch.epfl.sweng.project.Fragments.ReceiveScheduleDialogFragment"
+             android:background="@color/backgroundApp">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/layout_rounded_corners"
+            android:layout_margin="15dp">
+
+            <ImageView
+                android:layout_height="48dp"
+                app:srcCompat="@drawable/schedule_white"
+                android:id="@+id/imageView9"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="15dp"
+                android:layout_width="40dp"/>
+
+            <TextView
+                android:text="@string/schedule_request"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/challenge_dlg_title"
+                android:textStyle="normal|bold"
+                android:textSize="24sp"
+                android:gravity="center"
+                android:elevation="19dp"
+                android:layout_weight="1"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+
+        <TextView
+            android:text="@string/opponent_wants_to_schedule_a_run_based_on"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_requester"
+            android:textSize="18sp"
+            android:layout_margin="20dp"
+            android:textColor="@android:color/white"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/layout_rounded_corners"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <ImageView
+                android:layout_width="63dp"
+                app:srcCompat="@drawable/distance_white"
+                android:id="@+id/type_img"
+                android:layout_gravity="center"
+                android:layout_height="40dp"/>
+
+            <TextView
+                android:text="@string/distance_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_challenge_type"
+                android:textSize="24sp"
+                android:gravity="center"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
+                android:textColor="@android:color/white"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp">
+
+            <TextView
+                android:text="@string/on_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_date_description"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_date"
+                android:textSize="20sp"
+                android:textStyle="normal|bold"
+                android:gravity="center"
+                android:text="@string/date_example"
+                android:textColor="@android:color/white"
+                android:layout_weight="1"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_time_description"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:text="@string/at"
+                android:textColor="@android:color/white"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_time"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:text="@string/time_example"
+                android:textColor="@android:color/white"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp">
+
+            <Button
+                android:text="@string/cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:id="@+id/cancel_btn"
+                android:layout_weight="1"
+                android:textAllCaps="false"
+                android:layout_marginRight="30dp"
+                android:layout_marginLeft="15dp"
+                android:background="@drawable/layout_rounded_corners"
+                android:elevation="24dp"
+                android:textColor="@android:color/white"/>
+
+            <Button
+                android:text="@string/decline"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:id="@+id/decline_btn"
+                android:layout_weight="1"
+                android:textAllCaps="false"
+                android:background="@drawable/layout_rounded_corners"
+                android:elevation="24dp"
+                android:textColor="@android:color/white"/>
+
+            <Button
+                android:text="@string/accept"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:id="@+id/accept_btn"
+                android:layout_weight="1"
+                android:textAllCaps="false"
+                android:layout_marginRight="15dp"
+                android:elevation="24dp"
+                android:background="@drawable/button_shape_green"
+                android:layout_marginLeft="10dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

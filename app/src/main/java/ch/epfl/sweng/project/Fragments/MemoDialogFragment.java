@@ -3,43 +3,42 @@ package ch.epfl.sweng.project.Fragments;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
 import java.util.Date;
 
-import ch.epfl.sweng.project.Activities.ChallengeActivity;
+import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.Challenge;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MemoDialogFragment.MemoDialogListener} interface
- * to handle interaction events.
+ * This class displays a memo Dialog which reminds the user of a scheduled challenge.
  */
-public class MemoDialogFragment extends DialogFragment {
+public class MemoDialogFragment extends DialogFragment implements View.OnClickListener {
     private Challenge.Type type;
     private Date scheduledDate;
     private String sender;
     private String opponentEmail;
-    private TextView typeTxt;
-    private TextView dateDescriptionTxt;
-    private TextView dateTxt;
-    private TextView timeDescriptionTxt;
-    private TextView timeTxt;
 
-    /* The activity that creates an instance of this dialog fragment must
-     * implement this interface in order to receive event callbacks.
-     * Each method passes the DialogFragment in case the host needs to query it. */
+    private AlertDialog dialog;
+
+    /**
+     * interface for the listener of this class.
+     */
     public interface MemoDialogListener {
         void onMemoDialogCloseClick(DialogFragment dialog);
         void onMemoDialogDeleteClick(DialogFragment dialog);
@@ -48,10 +47,7 @@ public class MemoDialogFragment extends DialogFragment {
 
     MemoDialogFragment.MemoDialogListener mListener;
 
-    public MemoDialogFragment() {
-        // Required empty public constructor
-    }
-
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -60,35 +56,19 @@ public class MemoDialogFragment extends DialogFragment {
         @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.fragment_memo_dialog, null);
 
         builder.setCancelable(false);
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
-        builder.setView(view)
-                // Add action buttons
-                .setNeutralButton("Close", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        //cancel
-                        // Send the positive button event back to the host activity
-                        mListener.onMemoDialogCloseClick(MemoDialogFragment.this);
-                    }
-                }).setNegativeButton("Delete", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-
-                        mListener.onMemoDialogDeleteClick(MemoDialogFragment.this);
-            }
-                }).setPositiveButton("Challenge", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                //Start the challenge
-                        mListener.onMemoDialogChallengeClick(MemoDialogFragment.this);
-            }
-        });
+        builder.setView(view);
 
         ((TextView)view.findViewById(R.id.txt_requester)).setText(getString(R.string.you_and) + sender + getString(R.string.scheduled_a_run_based_on));
-        typeTxt = (TextView) view.findViewById(R.id.txt_challenge_type);
-        dateDescriptionTxt = (TextView) view.findViewById(R.id.txt_date_description);
-        dateTxt = (TextView) view.findViewById(R.id.txt_date);
-        timeDescriptionTxt = (TextView) view.findViewById(R.id.txt_time_description);
-        timeTxt = (TextView) view.findViewById(R.id.txt_time);
-        typeTxt.setText(type.toString());
+        TextView typeTxt = (TextView) view.findViewById(R.id.txt_challenge_type);
+        TextView dateDescriptionTxt = (TextView) view.findViewById(R.id.txt_date_description);
+        TextView dateTxt = (TextView) view.findViewById(R.id.txt_date);
+        TextView timeDescriptionTxt = (TextView) view.findViewById(R.id.txt_time_description);
+        TextView timeTxt = (TextView) view.findViewById(R.id.txt_time);
+        ImageView typeImg = (ImageView) view.findViewById(R.id.type_img);
+        if(type == Challenge.Type.TIME){
+            typeTxt.setText("Time");
+            typeImg.setImageDrawable(getResources().getDrawable(R.drawable.time_white));
+        }
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(scheduledDate);
@@ -97,16 +77,54 @@ public class MemoDialogFragment extends DialogFragment {
         timeDescriptionTxt.setText(getString(R.string.at));
         timeTxt.setText(String.valueOf(calendar.get(Calendar.HOUR_OF_DAY)) + getString((R.string.due_punti)) + String.valueOf(calendar.get(Calendar.MINUTE)));
 
-        return builder.create();
+        dialog = builder.create();
+
+        view.findViewById(R.id.cancel_btn).setOnClickListener(this);
+        view.findViewById(R.id.decline_btn).setOnClickListener(this);
+        view.findViewById(R.id.accept_btn).setOnClickListener(this);
+
+        return dialog;
     }
 
+    @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
+            case R.id.cancel_btn:
+                mListener.onMemoDialogCloseClick(MemoDialogFragment.this);
+                dialog.dismiss();
+                break;
 
+            case R.id.decline_btn:
+                mListener.onMemoDialogDeleteClick(MemoDialogFragment.this);
+                dialog.dismiss();
+                break;
+            case R.id.accept_btn:
+
+                new FirebaseHelper().listenUserAvailability(opponentEmail, false, new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            if ((boolean) dataSnapshot.getValue()) {
+                                mListener.onMemoDialogChallengeClick(MemoDialogFragment.this);
+                                dialog.dismiss();
+                            } else {
+                                Toast.makeText(getContext(), "User is currently busy, try again later",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            throw new DatabaseException("Corrupted available node for user");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        throw new DatabaseException("Cannot read available status for user");
+                    }
+                });
+                break;
         }
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -118,18 +136,17 @@ public class MemoDialogFragment extends DialogFragment {
         opponentEmail = args.getString("opponentEmail");
     }
 
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         // Verify that the host activity implements the callback interface
         try {
-            // Instantiate the RequestDialogListener so we can send events to the host
+            // Instantiate the ReceiveChallengeDialogListener so we can sendMessage events to the host
             mListener = (MemoDialogFragment.MemoDialogListener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
-                    + " must implement RequestDialogListener");
+                    + " must implement MemoDialogListener");
         }
     }
 
@@ -139,18 +156,26 @@ public class MemoDialogFragment extends DialogFragment {
         mListener = null;
     }
 
+    /**
+     * getter for the challenge type.
+     * @return the challenge type.
+     */
     public Challenge.Type getType() {
         return type;
     }
 
-    public Date getScheduledDate() {
-        return scheduledDate;
-    }
-
+    /**
+     * getter for the opponent mail.
+     * @return the opponent mail.
+     */
     public String getOpponentEmail() {
         return opponentEmail;
     }
 
+    /**
+     * getter for the sender address.
+     * @return the sender address.
+     */
     public String getSender() {
         return sender;
     }

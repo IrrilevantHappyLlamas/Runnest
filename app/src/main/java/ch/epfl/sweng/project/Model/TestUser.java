@@ -1,8 +1,7 @@
 package ch.epfl.sweng.project.Model;
 
 /**
- * Class that implements the <code>User</code> interface, used when we need to test the app without
- * an authenticated user in our app
+ * Class that implements the User interface, used when we need to test the app without an authenticated user.
  */
 public class TestUser implements User {
 
@@ -13,6 +12,9 @@ public class TestUser implements User {
     private String photoUrl = null;
     private String firebaseID = null;
 
+    /**
+     * Public constructor that initializes all the fields to default test values.
+     */
     public TestUser() {
         id = "Test User";
         email = "Test User";
@@ -58,12 +60,8 @@ public class TestUser implements User {
     }
 
     @Override
-    public void logoutStatus() {
-
-    }
+    public void logoutStatus() {}
 
     @Override
-    public void loginStatus() {
-
-    }
+    public void loginStatus() {}
 }

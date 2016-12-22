@@ -1,0 +1,170 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="ch.epfl.sweng.project.Fragments.RequestScheduleDialogFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="1"
+        android:background="@color/backgroundApp">
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/layout_rounded_corners"
+            android:layout_margin="15dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp">
+
+            <ImageView
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/schedule_white"
+                android:id="@+id/imageView10"
+                android:layout_width="40dp"
+                android:layout_marginLeft="5dp"/>
+
+            <TextView
+                android:text="@string/schedule_the_challenge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/challenge_dlg_title"
+                android:textStyle="normal|bold"
+                android:textSize="24sp"
+                android:gravity="center"
+                android:elevation="19dp"
+                android:layout_weight="1"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+
+        <info.hoang8f.android.segmented.SegmentedGroup
+            xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/type_sg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            segmentedgroup:sc_border_width="2dp"
+            segmentedgroup:sc_corner_radius="3dp"
+            segmentedgroup:sc_tint_color="#62B513"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp">
+
+            <RadioButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/distance"
+                style="@style/RadioButton"
+                android:checked="false"
+                android:textSize="20sp"
+                android:id="@+id/distance_radio"
+                android:layout_weight="1"/>
+
+            <RadioButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/time"
+                style="@style/RadioButton"
+                android:textSize="20sp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:id="@+id/time_radio"
+                android:layout_weight="1"/>
+
+        </info.hoang8f.android.segmented.SegmentedGroup>
+
+
+        <TextView
+            android:text="@string/choose_the_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/layout_rounded_corners"
+            android:padding="5dp"
+            android:elevation="16dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="5dp"/>
+
+        <DatePicker
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:id="@+id/datePicker"
+            android:calendarViewShown="false"
+            android:datePickerMode="spinner"
+            tools:ignore="UnusedAttribute"
+            android:theme="@style/AppTheme.Picker"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:text="@string/choose_the_time"
+            android:textColor="@android:color/white"
+            android:background="@drawable/layout_rounded_corners"
+            android:layout_gravity="center_horizontal"
+            android:padding="5dp"
+            android:elevation="16dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="5dp"/>
+
+        <TimePicker
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:id="@+id/timePicker"
+            android:timePickerMode="spinner"
+            tools:ignore="UnusedAttribute"
+            android:theme="@style/AppTheme.Picker"
+            android:layout_gravity="center_horizontal"/>
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="15dp"
+            >
+
+            <Button
+                android:text="@android:string/cancel"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:id="@+id/schedule_negative_btn"
+                android:layout_weight="1"
+                android:background="@drawable/layout_rounded_corners"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="25dp"
+                android:textColor="@android:color/white"
+                android:elevation="24dp"
+                android:textAllCaps="false"/>
+
+            <Button
+                android:text="@string/schedule"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:id="@+id/schedule_positive_btn"
+                android:layout_weight="1"
+                android:background="@drawable/button_shape_green"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="50dp"
+                android:layout_marginLeft="25dp"
+                android:elevation="24dp"
+                android:textAllCaps="false"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

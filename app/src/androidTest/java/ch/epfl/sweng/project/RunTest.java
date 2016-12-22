@@ -10,10 +10,7 @@ import ch.epfl.sweng.project.Model.Track;
 
 /**
  * Test suite for Run class
- *
- * @author Tobia Albergoni
  */
-@SuppressWarnings("TypeMayBeWeakened")
 public class RunTest {
 
     @Test
@@ -40,6 +37,17 @@ public class RunTest {
         Assert.assertEquals(id, testRun3.getId());
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void constructorWithNameThrowsIllegalArgumentOnEmpty() {
+        new Run("");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void constructorWithNameThrowsIllegalArgumentOnNull() {
+        String nullString = null;
+        new Run(nullString);
+    }
+
     @Test
     public void copyConstructorWorks() {
         Run testRun = new Run("test");
@@ -63,6 +71,12 @@ public class RunTest {
         Assert.assertNotEquals(testRun.getTrack().getTotalCheckPoints(), testRun2.getTrack().getTotalCheckPoints());
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void copyConstructorThrowsIllegalArgumentOnNull() {
+        Run nullRun = null;
+        new Run(nullRun);
+    }
+
     @Test
     public void cannotStopOrUpdateNotStartedRun() {
         Run testRun1 = new Run();
@@ -70,6 +84,11 @@ public class RunTest {
         Assert.assertFalse(testRun1.stop());
         Assert.assertFalse(testRun1.update(TrackTest.buildCheckPoint(1, 1)));
         Assert.assertFalse(testRun1.isRunning());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void updateThrowsIllegalArgument() {
+        new Run().update(null);
     }
 
     @Test
@@ -104,29 +123,14 @@ public class RunTest {
     }
 
 
-    @Test
-    public void setDurationIgnoreInvalidArgument() {
-        Run testRun = new Run();
-        testRun.setDuration(10);
-        Assert.assertEquals(10, testRun.getDuration());
-
-        testRun.setDuration(-1);
-        Assert.assertEquals(10, testRun.getDuration());
+    @Test(expected = IllegalArgumentException.class)
+    public void setDurationThrowsIllegalArgument() {
+        new Run().setDuration(-1);
     }
 
-    @Test
-    public void setTrackIgnoreInvalidArgument() {
-        Run testRun1 = new Run();
-        testRun1.start();
-        Assert.assertTrue(testRun1.update(TrackTest.buildCheckPoint(1, 1)));
-        Assert.assertTrue(testRun1.isRunning());
-        Assert.assertTrue(testRun1.update(TrackTest.buildCheckPoint(2, 2)));
-
-        Assert.assertNotNull(testRun1.getTrack());
-
-        testRun1.setTrack(null);
-
-        Assert.assertNotNull(testRun1.getTrack());
+    @Test(expected = IllegalArgumentException.class)
+    public void setTrackThrowsIllegalArgument() {
+        new Run().setTrack(null);
     }
 
     @Test

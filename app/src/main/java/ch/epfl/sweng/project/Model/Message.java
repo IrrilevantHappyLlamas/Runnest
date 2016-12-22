@@ -2,57 +2,49 @@ package ch.epfl.sweng.project.Model;
 
 import java.io.Serializable;
 import java.util.Date;
-
-import ch.epfl.sweng.project.Activities.ChallengeActivity;
-import ch.epfl.sweng.project.Fragments.ChallengeDialogFragment;
+import java.util.Random;
 
 /**
- * This class represents a message that can be sent to de server and retrieved from the server
+ * This class represents a message that can be sent to the server and retrieved by a user
+ *
+ * @author Pablo Pfister
  */
 public class Message implements Serializable {
     private String from;
     private String to;
     private String sender;
     private String addressee;
-    private MessageType type;
+    private Type type;
     private String message;
     private Date time;
     private int firstValue;
     private int secondValue;
     private Challenge.Type challengeType;
-
+    private int UID;
     /**
      * This enumeration represents all types of messages that can be sent to the server
      */
-    public enum MessageType {
-        TEXT, CHALLENGE_REQUEST, CHALLENGE_DISTANCE, CHALLENGE_TIME, CHALLENGE_RESPONSE, MY_IP_IS, SCHEDULE_REQUEST, MEMO
+    public enum Type {
+        TEXT, CHALLENGE_REQUEST, CHALLENGE_RESPONSE, SCHEDULE_REQUEST, MEMO
     }
 
     /**
      * The constructor of the Message
      *
-     * @param from
-     * @param to
-     * @param sender
-     * @param addressee
-     * @param type
-     * @param message
+     * @param from the email (in firebase format) of the sender
+     * @param to the email (in firebase format) of the recipient
+     * @param sender the name of the sender
+     * @param addressee the name of the recipient
+     * @param type the type of the message
+     * @param message the message to be transmitted
      * @throws IllegalArgumentException
      */
 
-    public Message(String from, String to, String sender, String addressee, MessageType type, String message)
-            throws IllegalArgumentException
-    {
-        if (from == null || from.equals("")
-                || to == null || to.equals("")
-                || sender == null || sender.equals("")
-                || addressee == null || addressee.equals("")
-                || type == null
-                || message == null || message.equals("")) {
-            throw new IllegalArgumentException("Invalid argument: parameters can't be null nor empty");
-        }
-        if (from.equals(to)) {
-            throw new IllegalArgumentException("Invalid argument: can't send a message to yourself");
+    public Message(String from, String to, String sender, String addressee, Type type, String message) {
+        if (from == null || to == null || sender == null || addressee == null || type == null || message == null
+                || from.equals("") || to.equals("") || sender.equals("") || addressee.equals("") || message.equals("")
+                || from.equals(to)) {
+            throw new IllegalArgumentException();
         }
 
         this.from = from;
@@ -62,94 +54,101 @@ public class Message implements Serializable {
         this.type = type;
         this.message = message;
         time = new Date();
+        Random rnd = new Random();
+        this.UID = 100000 + rnd.nextInt(900000);
+
+        firstValue = 0;
+        secondValue = 0;
+        challengeType = null;
     }
 
     /**
      * The constructor of the Message that allows to set the time
      *
-     * @param from
-     * @param to
-     * @param sender
-     * @param addressee
-     * @param type
-     * @param message
-     * @param sentAt
+     * @param from the email (in firebase format) of the sender
+     * @param to the email (in firebase format) of the recipient
+     * @param sender the name of the sender
+     * @param addressee the name of the recipient
+     * @param type the type of the message
+     * @param message the message to be transmitted
+     * @param sentAt the date the message was sent
      * @throws IllegalArgumentException
      */
-    public Message(String from, String to, String sender, String addressee, MessageType type, String message, Date sentAt)
-            throws IllegalArgumentException
-    {
+    public Message(String from, String to, String sender, String addressee, Type type, String message, Date sentAt) {
         this(from, to, sender, addressee, type, message);
         if (sentAt == null) {
-            throw new IllegalArgumentException("Invalid argument: parameters can't be null nor empty");
+            throw new IllegalArgumentException();
         }
 
         this.time = sentAt;
     }
 
     /**
-     * The constructor of the Message for challenge requests
+     * The constructor of the Message that allows to set challenge request parameters
      *
-     * @param from
-     * @param to
-     * @param sender
-     * @param addressee
-     * @param type
-     * @param message
-     * @param challengeType
+     * @param from the email (in firebase format) of the sender
+     * @param to the email (in firebase format) of the recipient
+     * @param sender the name of the sender
+     * @param addressee the name of the recipient
+     * @param type the type of the message
+     * @param message the message to be transmitted
+     * @param sentAt the date the message was sent
+     * @param firstValue first value of the picker for the challenge duration (hours or km)
+     * @param secondValue second value of the picker for the challenge duration (minutes or m)
+     * @param challengeType the type of the challenge: based on time or distance
      * @throws IllegalArgumentException
      */
     public Message(String from,
                    String to,
                    String sender,
                    String addressee,
-                   MessageType type,
+                   Type type,
                    String message,
                    Date sentAt,
                    int firstValue,
                    int secondValue,
                    Challenge.Type challengeType)
-            throws IllegalArgumentException
     {
-        this(from, to, sender, addressee, type, message);
-        if (sentAt == null) {
-            throw new IllegalArgumentException("Invalid argument: parameters can't be null nor empty");
+        this(from, to, sender, addressee, type, message, sentAt);
+        if (challengeType == null) {
+            throw new IllegalArgumentException();
         }
 
-        this.time = sentAt;
         this.firstValue = firstValue;
         this.secondValue = secondValue;
         this.challengeType = challengeType;
     }
 
     /**
-     * The constructor of the Message for schedule requests and memo
+     * The constructor of the Message to schedule and memo
      *
-     * @param from
-     * @param to
-     * @param sender
-     * @param addressee
-     * @param type
-     * @param message
-     * @param challengeType
+     * @param from the email (in firebase format) of the sender
+     * @param to the email (in firebase format) of the recipient
+     * @param sender the name of the sender
+     * @param addressee the name of the recipient
+     * @param type the type of the message
+     * @param message the message to be transmitted
+     * @param scheduledDate the date the challenge has been scheduled
+     * @param challengeType the type of the challenge: based on time or distance
      * @throws IllegalArgumentException
      */
     public Message(String from,
                    String to,
                    String sender,
                    String addressee,
-                   MessageType type,
+                   Type type,
                    String message,
                    Date scheduledDate,
                    Challenge.Type challengeType)
-            throws IllegalArgumentException
     {
-        this(from, to, sender, addressee, type, message);
-        if (scheduledDate == null) {
-            throw new IllegalArgumentException("Invalid argument: parameters can't be null nor empty");
+        this(from, to, sender, addressee, type, message, scheduledDate);
+        if (type != Type.SCHEDULE_REQUEST && type != Type.MEMO) {
+            throw new IllegalArgumentException("This constructor can be used only for schedules and memos");
+        }
+        if (challengeType == null) {
+            throw new IllegalArgumentException();
         }
 
-        this.time = scheduledDate;
         this.challengeType = challengeType;
     }
 
@@ -196,7 +195,7 @@ public class Message implements Serializable {
      *
      * @return the type of the message
      */
-    public MessageType getType() {
+    public Type getType() {
         return type;
     }
 
@@ -246,11 +245,20 @@ public class Message implements Serializable {
     }
 
     /**
-     * Computes a message unique id
+     * Getter for UID
      *
      * @return the message's unique id
      */
-    public String getUid() {
-        return from.hashCode() + "_" + time.hashCode();
+
+    public int getUid() {
+        return UID;
     }
+
+    /**
+     * Setter for UID
+     */
+    public void setUid(int UID) {
+        this.UID = UID;
+    }
+
 }

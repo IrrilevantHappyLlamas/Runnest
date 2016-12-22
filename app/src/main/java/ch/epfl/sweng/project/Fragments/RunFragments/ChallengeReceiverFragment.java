@@ -26,34 +26,28 @@ import ch.epfl.sweng.project.Model.Run;
  * This Fragment represent the "receiver side" of a challenge, i.e. it handles the
  * progress done by the opponent user.
  *
- * In particular his <code>Track</code> is shown on a map, as well as the distance
+ * In particular his Track is shown on a map, as well as the distance
  * he ran, from when challenge started until now.
  */
 public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCallback {
 
     // Last opponent update
     private final long TIME_BEFORE_NOTIFY_MISSING_UPDATES = 30000;
-    private TextView warningText;
     private long lastUpdateTime;
-    //TODO caps or not?
-    private final Handler handler = new Handler();
-    private final Runnable runnableCode = new Runnable() {
-        @Override
-        public void run() {
-            updateWarningTextVisibility();
-            handler.postDelayed(runnableCode, TIME_BEFORE_NOTIFY_MISSING_UPDATES);
-        }
-    };
+    private TextView warningText = null;
+
+    private Handler handler = null;
+    private Runnable runnableCode = null;
 
     // Live stats
-    private TextView mDistance = null;
+    private TextView distance = null;
 
     // Data storage
-    private Run mRun = null;
+    private Run run = null;
 
     // Map
-    private MapView mMapView = null;
-    private MapHandler mMapHandler = null;
+    private MapView mapView = null;
+    private MapHandler mapHandler = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,16 +57,24 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
         warningText.setVisibility(View.GONE);
         lastUpdateTime = SystemClock.elapsedRealtime();
 
-        mMapView = (MapView) view.findViewById(R.id.mapView);
-        mMapView.onCreate(savedInstanceState);
-        mMapView.getMapAsync(this);
+        mapView = (MapView) view.findViewById(R.id.mapView);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
 
-        mRun = new Run(((ChallengeActivity)getActivity()).getOpponentName());
-        mRun.start();
+        run = new Run(((ChallengeActivity)getActivity()).getOpponentName());
+        run.start();
 
-        mDistance = (TextView) view.findViewById(R.id.receiver_distance);
+        distance = (TextView) view.findViewById(R.id.receiver_distance);
         updateDisplayedDistance();
 
+        handler = new Handler();
+        runnableCode = new Runnable() {
+            @Override
+            public void run() {
+                updateWarningTextVisibility();
+                handler.postDelayed(runnableCode, TIME_BEFORE_NOTIFY_MISSING_UPDATES);
+            }
+        };
         handler.post(runnableCode);
 
         return view;
@@ -86,7 +88,7 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
 
     private void updateDisplayedDistance() {
 
-        double distanceToShow = mRun.getTrack().getDistance()/1000;
+        double distanceToShow = run.getTrack().getDistance()/1000;
 
         switch (((ChallengeActivity)getActivity()).getChallengeType()) {
             case TIME:
@@ -97,68 +99,79 @@ public class ChallengeReceiverFragment extends Fragment implements OnMapReadyCal
         }
 
         String distanceInKm = String.format(Locale.getDefault(), "%.2f", distanceToShow) + " " + getString(R.string.km);
-        mDistance.setText(distanceInKm);
-    }
-
-    public Run getRun() {
-        return new Run(mRun);
-    }
-
-    public void stopRun() {
-        mRun.stop();
+        distance.setText(distanceInKm);
     }
 
     /**
-     * Handle updates, through <code>CheckPoint</code> of the opponent performance.
+     * Getter for the current Run of the fragment, returns a copy of it to preserve encapsulation.
      *
-     * @param checkPoint    new <code>Checkpoint</code>
+     * @return  Run currently stored by the fragment.
+     */
+    public Run getRun() {
+        return new Run(run);
+    }
+
+    /**
+     * Stops the current Run.
+     */
+    public void stopRun() {
+        run.stop();
+    }
+
+    /**
+     * Handle CheckPoint updates from opponent's performance.
+     *
+     * @param checkPoint    New Checkpoint data, must be non null.
      */
     public void onNewData(CheckPoint checkPoint) {
+
+        if (checkPoint == null) {
+            throw new IllegalArgumentException("New checkpoints received can't be null");
+        }
 
         lastUpdateTime = SystemClock.elapsedRealtime();
         warningText.setVisibility(View.GONE);
 
-        mMapHandler.updateMap(checkPoint);
+        mapHandler.updateMap(checkPoint);
 
-        mRun.update(checkPoint);
+        run.update(checkPoint);
         updateDisplayedDistance();
     }
 
     /**
-     * Called when the <code>GoogleMap</code> is ready. Initialize a MapHandler.
+     * Called when the GoogleMap is ready. Initializes a MapHandler.
      *
-     * @param googleMap     the <code>GoogleMap</code>
+     * @param googleMap     The GoogleMap, must be non null.
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+        if (googleMap == null) {
+            throw new IllegalArgumentException("The GoogleMap can't be null");
+        }
+
         MapStyleOptions mapStyle = MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.map_style_no_label);
         googleMap.setMapStyle(mapStyle);
 
-        mMapHandler = new MapHandler(googleMap, ContextCompat.getColor(getContext(), R.color.colorAccent));
-        mMapHandler.setupRunningMapUI();
+        mapHandler = new MapHandler(googleMap, ContextCompat.getColor(getContext(), R.color.colorAccent));
+        mapHandler.setupRunningMapUI();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mMapView.onResume();
+        mapView.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mMapView.onPause();
+        mapView.onPause();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mMapView.onDestroy();
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mMapView.onLowMemory();
+        mapView.onDestroy();
     }
 }

@@ -13,8 +13,6 @@ import ch.epfl.sweng.project.Model.Track;
 
 /**
  * Test suite for Track class
- *
- * @author Tobia Albergoni
  */
 @SuppressWarnings("MagicNumber")
 public class TrackTest {
@@ -67,13 +65,12 @@ public class TrackTest {
     }
 
     @Test
-    public void legitAddCorrectlyUpdatesTrack() {
+    public void addCorrectlyUpdatesTrack() {
         CheckPoint c1 = buildCheckPoint(50, 50);
         CheckPoint c2 = buildCheckPoint(51, 51);
 
         Track testTrack = new Track(c1);
-
-        Assert.assertTrue(testTrack.add(c2));
+        testTrack.add(c2);
 
         Assert.assertEquals(2, testTrack.getTotalCheckPoints());
         Assert.assertEquals(51, testTrack.getLastPoint().getLatitude(), 0);
@@ -91,11 +88,33 @@ public class TrackTest {
         Assert.assertEquals(4, checkpoints.size(), 0);
     }
 
-    @Test
-    public void addDoNothingWithNullArgument() {
-        Track addTest = new Track();
+    @Test(expected = IllegalArgumentException.class)
+    public void addThrowsIllegalArgument() {
+        new Track().add(null);
+    }
 
-        Assert.assertFalse(addTest.add(null));
-        Assert.assertEquals(0, addTest.getTotalCheckPoints());
+    @Test(expected = IllegalArgumentException.class)
+    public void copyConstructorThrowsIllegalArgumentOnNull() {
+        Track nullTrack = null;
+        new Track(nullTrack);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void constructorThrowsIllegalArgumentOnNull() {
+        CheckPoint nullCheckpoint = null;
+        new Track(nullCheckpoint);
+    }
+
+    @Test
+    public void getLastPointWorks() {
+        Track testTrack = new Track(buildCheckPoint(90, 90));
+
+        Assert.assertEquals(90.0, testTrack.getLastPoint().getLatitude());
+        Assert.assertEquals(90.0, testTrack.getLastPoint().getLongitude());
+    }
+
+    @Test
+    public void getLastPointWorksForEmptyTrack() {
+        Assert.assertTrue(new Track().getLastPoint() == null);
     }
 }

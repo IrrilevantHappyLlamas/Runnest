@@ -22,37 +22,37 @@ public class ChallengeTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void nullOpponentNameThrowsException() {
-        Challenge challenge = new Challenge(null, Challenge.Type.DISTANCE, 100, Challenge.Result.WON, createTestRun(), createTestRun());
+        new Challenge(null, Challenge.Type.DISTANCE, 100, Challenge.Result.WON, createTestRun(), createTestRun());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void emptyOpponentNameThrowsException() {
-        Challenge challenge = new Challenge("", Challenge.Type.TIME, 100, Challenge.Result.LOST, createTestRun(), createTestRun());
+        new Challenge("", Challenge.Type.TIME, 100, Challenge.Result.LOST, createTestRun(), createTestRun());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void nullMyRunThrowsException() {
-        Challenge challenge = new Challenge("someone", Challenge.Type.TIME, 100, Challenge.Result.ABORTED_BY_OTHER, null, createTestRun());
+        new Challenge("someone", Challenge.Type.TIME, 100, Challenge.Result.ABORTED_BY_OTHER, null, createTestRun());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void nullOpponentRunThrowsException() {
-        Challenge challenge = new Challenge("someone", Challenge.Type.TIME, 100, Challenge.Result.ABORTED_BY_ME, createTestRun(), null);
+        new Challenge("someone", Challenge.Type.TIME, 100, Challenge.Result.ABORTED_BY_ME, createTestRun(), null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void nullTypeThrowsException() {
-        Challenge challenge = new Challenge("someone", null, 100, Challenge.Result.WON, createTestRun(), createTestRun());
+        new Challenge("someone", null, 100, Challenge.Result.WON, createTestRun(), createTestRun());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void negativeGoalThrowsException() {
-        Challenge challenge = new Challenge("someone", Challenge.Type.DISTANCE, -100, Challenge.Result.WON, createTestRun(), createTestRun());
+        new Challenge("someone", Challenge.Type.DISTANCE, -100, Challenge.Result.WON, createTestRun(), createTestRun());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void zeroGoalThrowsException() {
-        Challenge challenge = new Challenge("someone", Challenge.Type.DISTANCE, 0, Challenge.Result.WON, createTestRun(), createTestRun());
+        new Challenge("someone", Challenge.Type.DISTANCE, 0, Challenge.Result.WON, createTestRun(), createTestRun());
     }
 
     @Test
@@ -69,17 +69,26 @@ public class ChallengeTest {
         Assert.assertTrue(type == challenge.getType());
         Assert.assertEquals(goal, challenge.getGoal(), 0);
         Assert.assertTrue(result == challenge.getResult());
-        Assert.assertTrue(challenge.isWon());
         Assert.assertEquals(myRun.getDuration(), challenge.getMyRun().getDuration());
         Assert.assertEquals(opponentRun.getDuration(), challenge.getOpponentRun().getDuration());
+        Assert.assertTrue(challenge.isWon());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void setNegativeIdThrowsException() {
+        Run myRun = createTestRun();
+        Run opponentRun = createTestRun();
+        Challenge challenge = new Challenge("someone", Challenge.Type.TIME, 100, Challenge.Result.LOST, myRun, opponentRun);
+        challenge.setId(-123);
     }
 
     @Test
-    public void setId() {
+    public void setters() {
         String opponentName = "someone";
         Run myRun = createTestRun();
         Run opponentRun = createTestRun();
-        Challenge challenge = new Challenge(opponentName, Challenge.Type.TIME, 100, Challenge.Result.WON, myRun, opponentRun);
+        Challenge challenge = new Challenge(opponentName, Challenge.Type.TIME, 100, Challenge.Result.LOST, myRun, opponentRun);
+        Assert.assertFalse(challenge.isWon());
 
         long id = 1234;
         challenge.setId(id);

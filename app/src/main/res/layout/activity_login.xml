@@ -22,7 +22,7 @@
             android:visibility="visible"
             tools:visibility="visible"
             android:layout_marginTop="56dp"
-            android:layout_below="@+id/loginScrrenImage"
+            android:layout_below="@+id/loginScreenImage"
             android:layout_centerHorizontal="true"
             android:background="@drawable/login_button"
             android:typeface="sans"
@@ -32,21 +32,9 @@
             android:textColor="@color/colorSuperDarkGreen"
             android:text="@string/sign_in" />
 
-<!--
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/sign_in_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="visible"
-            tools:visibility="visible"
-            android:layout_marginTop="56dp"
-            android:layout_below="@+id/loginScrrenImage"
-            android:layout_centerHorizontal="true"/>
--->
-
         <ImageView
             app:srcCompat="@drawable/login_screen"
-            android:id="@+id/loginScrrenImage"
+            android:id="@+id/loginScreenImage"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_centerVertical="true"
@@ -80,7 +68,7 @@
             android:fontFamily="sans-serif"
             android:typeface="sans"
             tools:ignore="UnusedAttribute"
-            android:layout_above="@+id/loginScrrenImage"
+            android:layout_above="@+id/loginScreenImage"
             android:layout_centerHorizontal="true"/>
 
     </RelativeLayout>

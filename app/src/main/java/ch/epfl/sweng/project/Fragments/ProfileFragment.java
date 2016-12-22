@@ -3,15 +3,12 @@ package ch.epfl.sweng.project.Fragments;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.TypedValue;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,17 +28,29 @@ import ch.epfl.sweng.project.Model.User;
 
 /**
  * Fragment which serves as profile tab, where profile information are displayed
+ *
+ * @author Pablo Pfister, Hakim Invernizzi
  */
-public class ProfileFragment extends android.support.v4.app.Fragment {
+public class ProfileFragment extends Fragment {
 
-    private ProfileFragmentInteractionListener mListener = null;
-    private String mName = null;
-    private String mEmail = null;
+    private ProfileFragmentInteractionListener listener = null;
+    private String name = null;
+    private String email = null;
 
+    private final FirebaseHelper firebaseHelper = new FirebaseHelper();
+
+    /**
+     * Allows to create an instance of the class specifying the name and email.
+     * It's used to show profile of other users.
+     *
+     * @param name the name of the user
+     * @param email the email of the user
+     * @return an instance of the class
+     */
     public static ProfileFragment newInstance(String name, String email) {
         ProfileFragment fragment = new ProfileFragment();
-        fragment.mName = name;
-        fragment.mEmail = email;
+        fragment.name = name;
+        fragment.email = email;
         return fragment;
     }
 
@@ -50,73 +59,80 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
         // Inflate the layout for this fragment
         final View view =  inflater.inflate(R.layout.fragment_profile, container, false);
 
-        final FirebaseHelper firebaseHelper = new FirebaseHelper();
-
-        if (mEmail == null) {
-            // Handle case self profile
+        if (name == null || email == null) {
+            // Handle case current user profile
             User user = ((AppRunnest) getActivity().getApplicationContext()).getUser();
             setUserStatistics(user.getName(), user.getEmail(), view);
-            String picUrl = user.getPhotoUrl();
-            firebaseHelper.setOrUpdateProfilePicUrl(user.getEmail(), picUrl);
-            setProfileImage(picUrl, view);
+            String profilePictureUrl = user.getPhotoUrl();
+            firebaseHelper.setOrUpdateProfilePicUrl(user.getEmail(), profilePictureUrl);
+            setProfileImage(profilePictureUrl, view);
             view.findViewById(R.id.challenge_schedule_buttons).setVisibility(View.GONE);
         } else {
-            // Handle case others profile
-            setUserStatistics(mName, mEmail, view);
+            // Handle case other user profile
+            setUserStatistics(name, email, view);
             view.findViewById(R.id.challenge_schedule_buttons).setVisibility(View.VISIBLE);
 
-            setProfileImage("", view);
-
-            firebaseHelper.getProfilePicUrl(mEmail, new ValueEventListener() {
+            firebaseHelper.getProfilePicUrl(email, new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
                         String url = (String) dataSnapshot.getValue();
                         setProfileImage(url, view);
+                    } else {
+                        setProfileImage("", view);
                     }
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-
+                    throw databaseError.toException();
                 }
             });
 
-            view.findViewById(R.id.challenge_button).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    FirebaseHelper firebaseHelper = new FirebaseHelper();
-                    firebaseHelper.listenUserAvailability(mEmail, false, new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists()) {
-                                if ((boolean)dataSnapshot.getValue()) {
-                                    mListener.onProfileFragmentInteraction(mName, mEmail);
-                                } else {
-                                    Toast.makeText(getContext(), "User is currently busy, try again later",
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            } else {
-                                throw new DatabaseException("Corrupted available node for user");
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            throw new DatabaseException("Cannot read available status for user");
-                        }
-                    });
-                }
-            });
-
-            view.findViewById(R.id.schedule_button).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mListener.onProfileFragmentInteractionSchedule(mName, mEmail);
-                }
-            });
+            setButtonsListeners(view);
         }
         return view;
+    }
+
+    private void setUserStatistics(final String name, final String email, final View view) {
+        ((TextView) view.findViewById(R.id.nameTxt)).setText(name);
+
+        firebaseHelper.getUserStatistics(email, new FirebaseHelper.statisticsHandler() {
+            @Override
+            public void handleRetrievedStatistics(String[] statistics) {
+
+                double distance = Double.valueOf(statistics[firebaseHelper.TOTAL_RUNNING_DISTANCE_INDEX]);
+                // Transform to km and format with one digit after the coma
+                String distanceToBeDisplayed = "0";
+                if (distance > 100) {
+                    distanceToBeDisplayed = new DecimalFormat("#.0").format(distance / 1000);
+                }
+                //Context context = getActivity().getApplicationContext();
+                distanceToBeDisplayed += " km"; // + getResources().getString(R.string.km);
+                ((TextView) view.findViewById(R.id.total_running_distance)).setText(distanceToBeDisplayed);
+
+                double time = Double.valueOf(statistics[firebaseHelper.TOTAL_RUNNING_TIME_INDEX]);
+                int hours = (int) time / 3600;
+                int minutes = (int) (time) / 60 - hours * 60;
+                ((TextView) view.findViewById(R.id.total_running_time)).setText(hours + "h " + minutes + "m");
+
+                String nbRuns = statistics[firebaseHelper.TOTAL_NUMBER_OF_RUNS_INDEX]
+                        + " runs"; // + getResources().getString(R.string.runs);
+                ((TextView) view.findViewById(R.id.nb_runs)).setText(nbRuns);
+
+                String nbChallenges = statistics[firebaseHelper.TOTAL_NUMBER_OF_CHALLENGES_INDEX]
+                        + " challenges"; // + getResources().getString(R.string.challenges_lowercase);
+                ((TextView) view.findViewById(R.id.total_number_of_challenges)).setText(nbChallenges);
+
+                String nbWon = statistics[firebaseHelper.TOTAL_NUMBER_OF_WON_CHALLENGES_INDEX]
+                        + " won"; // + getResources().getString(R.string.won);
+                ((TextView) view.findViewById(R.id.total_number_of_won_challenges)).setText(nbWon);
+
+                String nbLost = statistics[firebaseHelper.TOTAL_NUMBER_OF_LOST_CHALLENGES_INDEX]
+                        + " lost"; // + getResources().getString(R.string.lost);
+                ((TextView) view.findViewById(R.id.total_number_of_lost_challenges)).setText(nbLost);
+            }
+        });
     }
 
     private void setProfileImage(String url, View view) {
@@ -128,38 +144,63 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
         }
     }
 
-    private void setUserStatistics(final String name, final String email, final View view) {
-        ((TextView) view.findViewById(R.id.nameTxt)).setText(name);
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        final ImageView bitmapImage;
 
-        final FirebaseHelper firebaseHelper = new FirebaseHelper();
-        firebaseHelper.getUserStatistics(email, new FirebaseHelper.statisticsHandler() {
+        public DownloadImageTask(ImageView bmImage) {
+            this.bitmapImage = bmImage;
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... urls) {
+            String urlDisplay = urls[0];
+            Bitmap img = null;
+            try {
+                InputStream in = new java.net.URL(urlDisplay).openStream();
+                img = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return img;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            bitmapImage.setImageBitmap(result);
+        }
+    }
+
+    private void setButtonsListeners(View view) {
+        view.findViewById(R.id.challenge_button).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void handleRetrievedStatistics(String[] statistics) {
+            public void onClick(View v) {
+                firebaseHelper.listenUserAvailability(email, false, new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            if ((boolean) dataSnapshot.getValue()) {
+                                listener.onProfileFragmentInteraction(name, email);
+                            } else {
+                                Toast.makeText(getContext(), "User is currently busy, try again later",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            throw new DatabaseException("Corrupted available node for user");
+                        }
+                    }
 
-                double distance = Double.valueOf(statistics[firebaseHelper.TOTAL_RUNNING_DISTANCE_INDEX]);
-                // Transform to km and format with one digit after the coma
-                String distanceToBeDisplayed = "0 km";
-                if (distance > 100) {
-                    distanceToBeDisplayed = new DecimalFormat("#.0").format(distance / 1000) + " km";
-                }
-                ((TextView) view.findViewById(R.id.total_running_distance)).setText(distanceToBeDisplayed);
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        throw databaseError.toException();
+                    }
+                });
+            }
+        });
 
-                double time = Double.valueOf(statistics[firebaseHelper.TOTAL_RUNNING_TIME_INDEX]);
-                int hours = (int) time / 3600;
-                int minutes = (int) (time - hours * 60) / 60;
-                ((TextView) view.findViewById(R.id.total_running_time)).setText(hours + "h " + minutes + "m");
-
-                String nbRuns = statistics[firebaseHelper.TOTAL_NUMBER_OF_RUNS_INDEX] + " runs";
-                ((TextView) view.findViewById(R.id.nb_runs)).setText(nbRuns);
-
-                String nbChallenges = statistics[firebaseHelper.TOTAL_NUMBER_OF_CHALLENGES_INDEX] + " challenges";
-                ((TextView) view.findViewById(R.id.total_number_of_challenges)).setText(nbChallenges);
-
-                String nbWon = statistics[firebaseHelper.TOTAL_NUMBER_OF_WON_CHALLENGES_INDEX] + " won";
-                ((TextView) view.findViewById(R.id.total_number_of_won_challenges)).setText(nbWon);
-
-                String nbLost = statistics[firebaseHelper.TOTAL_NUMBER_OF_LOST_CHALLENGES_INDEX] + " lost";
-                ((TextView) view.findViewById(R.id.total_number_of_lost_challenges)).setText(nbLost);
+        view.findViewById(R.id.schedule_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onProfileFragmentInteractionSchedule(name, email);
             }
         });
     }
@@ -168,43 +209,17 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof ProfileFragmentInteractionListener) {
-            mListener = (ProfileFragmentInteractionListener) context;
+            listener = (ProfileFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement onProfileFragmentInteraction and onProfileFragmentInteractionSchedule");
         }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
-    }
-
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        @Override
-        protected Bitmap doInBackground(String... urls) {
-            String urlDisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urlDisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
+        listener = null;
     }
 
     /**

@@ -3,124 +3,98 @@ package ch.epfl.sweng.project.Fragments;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
-import android.graphics.Color;
+
 import java.util.Calendar;
 
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.NumberPicker;
-import android.widget.TextView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
-import ch.epfl.sweng.project.Activities.ChallengeActivity;
-import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Model.Challenge;
+import info.hoang8f.android.segmented.SegmentedGroup;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link RequestScheduleDialogFragment.OnRequestScheduleDialogListener} interface
- * to handle interaction events.
+ * this class display a dialog that allows to send a schedule request.
  */
-public class RequestScheduleDialogFragment extends DialogFragment implements View.OnClickListener {
+public class RequestScheduleDialogFragment extends DialogFragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
 
-    //Challenge type
-    Button distanceBtn;
-    Button timeBtn;
+    // Challenge type
+    private SegmentedGroup typeSG;
+    private RadioButton distanceRadio;
 
     DatePicker datePicker;
     TimePicker timePicker;
 
     private Calendar scheduledCalendar;
     Challenge.Type type;
+    private AlertDialog dialog;
 
-
-    /* The activity that creates an instance of this dialog fragment must
- * implement this interface in order to receive event callbacks.
- * Each method passes the DialogFragment in case the host needs to query it. */
-    public interface OnRequestScheduleDialogListener {
-        void onRequestScheduleDialogPositiveClick(DialogFragment dialog);
-        void onRequestScheduleDialogNegativeClick(DialogFragment dialog);
+    /**
+     * interface for the listener of this class.
+     */
+    public interface SendScheduleDialogListener {
+        void onSendScheduleDialogPositiveClick(DialogFragment dialog);
+        void onSendScheduleDialogNegativeClick(DialogFragment dialog);
     }
 
-    RequestScheduleDialogFragment.OnRequestScheduleDialogListener mListener;
+    SendScheduleDialogListener mListener;
 
-    public RequestScheduleDialogFragment() {
-        // Required empty public constructor
-    }
-
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.fragment_request_schedule_dialog, null);
+        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.fragment_send_schedule_dialog, null);
 
         setCurrentDateAndTime(view);
 
         builder.setCancelable(false);
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        builder.setView(view)
-                // Add action buttons
-                .setPositiveButton("Schedule!", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
+        builder.setView(view);
 
-                        mListener.onRequestScheduleDialogPositiveClick(RequestScheduleDialogFragment.this);
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+        typeSG = (SegmentedGroup) view.findViewById(R.id.type_sg);
+        distanceRadio = (RadioButton) view.findViewById(R.id.distance_radio);
 
-                        mListener.onRequestScheduleDialogNegativeClick(RequestScheduleDialogFragment.this);
-                    }
-                });
+        typeSG.setOnCheckedChangeListener(this);
+        view.findViewById(R.id.schedule_positive_btn).setOnClickListener(this);
+        view.findViewById(R.id.schedule_negative_btn).setOnClickListener(this);
 
-        distanceBtn = (Button) view.findViewById(R.id.button_distance);
-        timeBtn = (Button) view.findViewById(R.id.button_time);
-
-        distanceBtn.setOnClickListener(this);
-        timeBtn.setOnClickListener(this);
-
-        distanceBtn.performClick();
-
-        return builder.create();
+        distanceRadio.performClick();
+        dialog = builder.create();
+        return dialog;
     }
 
+    @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
-
-            case R.id.button_distance:
-                distanceBtn.setBackgroundColor(Color.RED);
-                timeBtn.setBackgroundColor(Color.GRAY);
-
-                type = Challenge.Type.DISTANCE;
+            case R.id.schedule_negative_btn:
+                mListener.onSendScheduleDialogNegativeClick(RequestScheduleDialogFragment.this);
+                dialog.dismiss();
                 break;
 
-            case R.id.button_time:
-                distanceBtn.setBackgroundColor(Color.GRAY);
-                timeBtn.setBackgroundColor(Color.RED);
-
-                type = Challenge.Type.TIME;
+            case R.id.schedule_positive_btn:
+                Toast.makeText(getContext(), R.string.challenge_scheduled,
+                        Toast.LENGTH_LONG).show();
+                mListener.onSendScheduleDialogPositiveClick(RequestScheduleDialogFragment.this);
+                dialog.dismiss();
                 break;
         }
     }
 
-    public void setCurrentDateAndTime(View view) {
+    private void setCurrentDateAndTime(View view) {
 
         datePicker = (DatePicker) view.findViewById(R.id.datePicker);
         timePicker = (TimePicker) view.findViewById(R.id.timePicker);
@@ -152,12 +126,12 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
         super.onAttach(activity);
         // Verify that the host activity implements the callback interface
         try {
-            // Instantiate the ChallengeDialogListener so we can send events to the host
-            mListener = (RequestScheduleDialogFragment.OnRequestScheduleDialogListener) activity;
+            // Instantiate the SendChallengeDialogListener so we can sendMessage events to the host
+            mListener = (SendScheduleDialogListener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
-                    + " must implement OnRequestScheduleDialogListener");
+                    + " must implement SendScheduleDialogListener");
         }
     }
 
@@ -167,10 +141,27 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
         mListener = null;
     }
 
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+        if(distanceRadio.isChecked()){
+            type = Challenge.Type.DISTANCE;
+        } else {
+            type = Challenge.Type.TIME;
+        }
+    }
+
+    /**
+     * getter for the challenge type.
+     * @return the challenge type.
+     */
     public Challenge.Type getType() {
         return type;
     }
 
+    /**
+     * getter for scheduled calendar.
+     * @return the scheduled calendar.
+     */
     public Calendar getScheduledCalendar() {
         return scheduledCalendar;
     }

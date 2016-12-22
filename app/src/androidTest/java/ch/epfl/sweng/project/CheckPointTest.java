@@ -9,11 +9,14 @@ import ch.epfl.sweng.project.Model.CheckPoint;
 
 /**
  * Test suite for CheckPoint class
- *
- * @author Tobia Albergoni
  */
 @SuppressWarnings("MagicNumber")
 public class CheckPointTest {
+
+    @Test(expected = IllegalArgumentException.class)
+    public void constructorWithLocationThrowsIllegalArgument() {
+        new CheckPoint(null);
+    }
 
     @Test
     public void correctLocationEncapsulation() {
@@ -29,6 +32,21 @@ public class CheckPointTest {
 
         Assert.assertEquals(50, toTest.getLatitude(), 0);
         Assert.assertEquals(40, toTest.getLongitude(), 0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void constructorWitCoordinatesThrowsIllegalArgumentOnLatitude() {
+        new CheckPoint(100, 120);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void constructorWitCoordinatesThrowsIllegalArgumentOnLongitude() {
+        new CheckPoint(0, 200);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void computeDistanceThrowsIllegalArgument() {
+        new CheckPoint(0, 0).distanceTo(null);
     }
 
     @Test

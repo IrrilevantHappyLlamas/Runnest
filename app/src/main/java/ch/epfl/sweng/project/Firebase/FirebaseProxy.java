@@ -2,7 +2,6 @@ package ch.epfl.sweng.project.Firebase;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.ValueEventListener;
 
 import ch.epfl.sweng.project.Model.ChallengeProxy;
@@ -18,22 +17,24 @@ public class FirebaseProxy implements ChallengeProxy {
     private Handler callbackHandler = null;
     private FirebaseHelper firebaseHelper = null;
 
+    // Challenge participants and settings
     private String challengeName = null;
     private boolean owner = false;
-    private boolean isChallengeTerminated = false;
+    private String localUser = null;
+    private int localUserSeqNum = 0;
+    private String remoteOpponent = null;
+    private int remoteOpponentSeqNum = 0;
 
+    // Challenge control booleans
     private boolean firstReadyCallback = true;
     private boolean firstFinishedCallback = true;
     private boolean firstAbortCallback = true;
     private boolean firstInRoomCallback = true;
     private boolean remoteOpponentFinished = false;
     private boolean localUserFinished = false;
+    private boolean isChallengeTerminated = false;
 
-    private String localUser = null;
-    private int localUserSeqNum = 0;
-    private String remoteOpponent = null;
-    private int remoteOpponentSeqNum = 0;
-
+    // Firebase node listeners
     private ValueEventListener onReadyListener = null;
     private ValueEventListener onFinishedListener = null;
     private ValueEventListener onAbortListener = null;
@@ -43,19 +44,19 @@ public class FirebaseProxy implements ChallengeProxy {
 
     /**
      * Public constructor that takes the two opponents names and instantiates the challenge on firebase. It also takes
-     * as a parameter the <code>Handler</code> that will be used on callbacks events from the firebase remote database.
+     * as a parameter the Handler that will be used on callbacks events from the firebase remote database.
      * The last parameter is a boolean that indicates whether the creator of this proxy is the "owner" of the challenge
      * and must instantiate the challenge node on firebase.
      *
-     * @param localUser         the challenger from the local device
-     * @param remoteOpponent    the remote challenger
-     * @param handler           an handler from the proxy's client, which will handle callbacks
-     * @param owner             indicates if the local user is the owner of the challenge
+     * @param localUser         The challenger from the local device.
+     * @param remoteOpponent    The remote challenger.
+     * @param handler           An handler from the proxy's client, which will handle callbacks.
+     * @param owner             Indicates if the local user is the owner of the challenge.
      */
     public FirebaseProxy(String localUser, String remoteOpponent, final Handler handler, boolean owner, String identifier) {
 
         if (localUser == null || remoteOpponent == null || identifier == null || handler == null) {
-            throw new NullPointerException("FirebaseProxy construction parameters can't be null");
+            throw new IllegalArgumentException("FirebaseProxy construction parameters can't be null");
         } else if (localUser.isEmpty() || remoteOpponent.isEmpty()) {
             throw new IllegalArgumentException("Challenge user in firebase proxy can't be empty");
         }
@@ -71,14 +72,46 @@ public class FirebaseProxy implements ChallengeProxy {
         // Create firebase challenge node if challenge owner
         if (owner) {
             firebaseHelper.addChallengeNode(localUser, remoteOpponent, challengeName);
-            firebaseHelper.setUserStatus(challengeName, localUser, FirebaseHelper.challengeNodeType.IN_ROOM, true);
+            firebaseHelper.setUserStatus(challengeName, localUser, FirebaseNodes.ChallengeStatus.IN_ROOM, true);
             setOpponentListeners();
         } else {
-            firebaseHelper.setUserStatus(challengeName, localUser, FirebaseHelper.challengeNodeType.IN_ROOM, true);
+            firebaseHelper.setUserStatus(challengeName, localUser, FirebaseNodes.ChallengeStatus.IN_ROOM, true);
             setOpponentListeners();
-            checkForPreviousState(FirebaseHelper.challengeNodeType.ABORT);
-            checkForPreviousState(FirebaseHelper.challengeNodeType.READY);
+            checkForPreviousState(FirebaseNodes.ChallengeStatus.ABORT);
+            checkForPreviousState(FirebaseNodes.ChallengeStatus.READY);
         }
+    }
+
+    /**
+     * Utility method to generate the challenge name in the form "userA vs userB id", where "userA" is lexicographically
+     * less than "userB"
+     *
+     * @param user1         First user of the challenge.
+     * @param user2         Second user of the challenge.
+     * @param identifier    Challenge identifier.
+     * @return              Challenge name following the convention.
+     */
+    public static String generateChallengeName(String user1, String user2, String identifier) {
+
+        if (user1 == null || user2 == null || identifier == null) {
+            throw new IllegalArgumentException("Challenge name parameters can't be null");
+        } else if (user1.isEmpty() || user2.isEmpty()) {
+            throw new IllegalArgumentException("Users in challenge name can't be empty");
+        }
+
+        String challengeName;
+        int namesCompare = user1.compareTo(user2);
+        challengeName = (namesCompare <= 0)?user1 + " vs " + user2:user2 + " vs " + user1;
+        challengeName += " " + identifier;
+
+        return challengeName;
+    }
+
+    /**
+     * Deletes the challenge for firebase, to be used only when you are sure to be the last person in the room.
+     */
+    public void deleteChallenge() {
+        firebaseHelper.deleteChallengeNode(challengeName);
     }
 
     private void setOpponentListeners() {
@@ -87,42 +120,43 @@ public class FirebaseProxy implements ChallengeProxy {
         onAbortListener = createAbortListener();
         onDataListener = createDataListener();
 
-        firebaseHelper.setUserChallengeListener(challengeName, remoteOpponent, onReadyListener, FirebaseHelper.challengeNodeType.READY);
-        firebaseHelper.setUserChallengeListener(challengeName, remoteOpponent, onFinishedListener, FirebaseHelper.challengeNodeType.FINISH);
-        firebaseHelper.setUserChallengeListener(challengeName, remoteOpponent, onAbortListener, FirebaseHelper.challengeNodeType.ABORT);
-        firebaseHelper.setUserChallengeListener(challengeName, remoteOpponent, onDataListener, FirebaseHelper.challengeNodeType.DATA);
+        firebaseHelper.setUserChallengeListener(challengeName, remoteOpponent, onReadyListener, FirebaseNodes.ChallengeStatus.READY);
+        firebaseHelper.setUserChallengeListener(challengeName, remoteOpponent, onFinishedListener, FirebaseNodes.ChallengeStatus.FINISH);
+        firebaseHelper.setUserChallengeListener(challengeName, remoteOpponent, onAbortListener, FirebaseNodes.ChallengeStatus.ABORT);
+        firebaseHelper.setUserChallengeListener(challengeName, remoteOpponent, onDataListener, FirebaseNodes.ChallengeStatus.DATA);
 
         // If owner, create listener to see when opponent enters room
         if (owner) {
             inRoomListener = createInRoomListener();
-            firebaseHelper.setUserChallengeListener(challengeName, remoteOpponent, inRoomListener, FirebaseHelper.challengeNodeType.IN_ROOM);
+            firebaseHelper.setUserChallengeListener(challengeName, remoteOpponent, inRoomListener, FirebaseNodes.ChallengeStatus.IN_ROOM);
         }
     }
 
     private void removeActiveListeners() {
         if (onReadyListener != null) {
-            firebaseHelper.removeUserChallengeListener(challengeName, localUser, onReadyListener, FirebaseHelper.challengeNodeType.READY);
+            firebaseHelper.removeUserChallengeListener(challengeName, localUser, onReadyListener, FirebaseNodes.ChallengeStatus.READY);
             onReadyListener = null;
         }
 
         if (onDataListener != null) {
-            firebaseHelper.removeUserChallengeListener(challengeName, localUser, onDataListener, FirebaseHelper.challengeNodeType.DATA);
+            firebaseHelper.removeUserChallengeListener(challengeName, localUser, onDataListener, FirebaseNodes.ChallengeStatus.DATA);
             onDataListener = null;
         }
 
         if (onFinishedListener != null) {
-            firebaseHelper.removeUserChallengeListener(challengeName, localUser, onFinishedListener, FirebaseHelper.challengeNodeType.FINISH);
+            firebaseHelper.removeUserChallengeListener(challengeName, localUser, onFinishedListener, FirebaseNodes.ChallengeStatus.FINISH);
             onFinishedListener = null;
         }
 
         if (onAbortListener != null) {
-            firebaseHelper.removeUserChallengeListener(challengeName, localUser, onAbortListener, FirebaseHelper.challengeNodeType.ABORT);
+            firebaseHelper.removeUserChallengeListener(challengeName, localUser, onAbortListener, FirebaseNodes.ChallengeStatus.ABORT);
             onAbortListener = null;
         }
     }
 
-    private void checkForPreviousState(final FirebaseHelper.challengeNodeType statusType) {
-        firebaseHelper.getDatabase().child("challenges").child(challengeName).child(remoteOpponent)
+    private void checkForPreviousState(final FirebaseNodes.ChallengeStatus statusType) {
+
+        firebaseHelper.getDatabase().child(FirebaseNodes.CHALLENGES).child(challengeName).child(remoteOpponent)
                 .child(statusType.toString()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -133,7 +167,7 @@ public class FirebaseProxy implements ChallengeProxy {
                         case ABORT: removeActiveListeners();
                                     isChallengeTerminated = true;
                                     firebaseHelper.deleteChallengeNode(challengeName);
-                                    callbackHandler.hasAborted();
+                                    callbackHandler.hasLeft();
                                     break;
                         default: throw new IllegalArgumentException("Cannot check that status node before challenge has started");
                     }
@@ -146,68 +180,6 @@ public class FirebaseProxy implements ChallengeProxy {
                 throw databaseError.toException();
             }
         });
-    }
-
-    /**
-     * Deletes the challenge for firebase, to be used only when you are sure to be the last person in the room.
-     */
-    public void deleteChallenge() {
-        firebaseHelper.deleteChallengeNode(challengeName);
-    }
-
-    @Override
-    public void imReady() {
-        if (isChallengeTerminated) {
-            return;
-        }
-        firebaseHelper.setUserStatus(challengeName, localUser, FirebaseHelper.challengeNodeType.READY, true);
-    }
-
-    @Override
-    public void startChallenge() {
-        if (isChallengeTerminated) {
-            return;
-        }
-        firebaseHelper.removeUserChallengeListener(challengeName, remoteOpponent, onReadyListener, FirebaseHelper.challengeNodeType.READY);
-        onReadyListener = null;
-    }
-
-    @Override
-    public void putData(CheckPoint checkPoint) {
-
-        if (checkPoint == null) {
-            throw new NullPointerException("CheckPoint is null");
-        } else if (isChallengeTerminated) {
-            return;
-        }
-
-        if(!localUserFinished) {
-            firebaseHelper.addChallengeCheckPoint(checkPoint, challengeName, localUser, localUserSeqNum);
-            localUserSeqNum++;
-        }
-    }
-
-    @Override
-    public void imFinished() {
-        if (isChallengeTerminated) {
-            return;
-        }
-
-        firebaseHelper.setUserStatus(challengeName, localUser, FirebaseHelper.challengeNodeType.FINISH, true);
-        localUserFinished = true;
-
-        if (remoteOpponentFinished) {
-            removeActiveListeners();
-            firebaseHelper.deleteChallengeNode(challengeName);
-            isChallengeTerminated = true;
-        }
-    }
-
-    @Override
-    public void abortChallenge() {
-        firebaseHelper.setUserStatus(challengeName, localUser, FirebaseHelper.challengeNodeType.ABORT, true);
-        removeActiveListeners();
-        isChallengeTerminated = true;
     }
 
     private ValueEventListener createReadyListener() {
@@ -225,7 +197,7 @@ public class FirebaseProxy implements ChallengeProxy {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-               throw databaseError.toException();
+                throw databaseError.toException();
             }
         };
     }
@@ -267,7 +239,7 @@ public class FirebaseProxy implements ChallengeProxy {
                         removeActiveListeners();
                         isChallengeTerminated = true;
                         deleteChallenge();
-                        callbackHandler.hasAborted();
+                        callbackHandler.hasLeft();
                     }
                 }
             }
@@ -289,12 +261,10 @@ public class FirebaseProxy implements ChallengeProxy {
                         remoteOpponentSeqNum++;
 
                         CheckPoint newCheckPoint = new CheckPoint(
-                                ((double)newCheckPointData.child("latitude").getValue()),
-                                ((double)newCheckPointData.child("longitude").getValue()));
+                                ((double)newCheckPointData.child(FirebaseNodes.LATITUDE).getValue()),
+                                ((double)newCheckPointData.child(FirebaseNodes.LONGITUDE).getValue()));
 
                         callbackHandler.hasNewData(newCheckPoint);
-                    } else {
-                        throw new DatabaseException("Callback was sent without the expected new data");
                     }
                 }
             }
@@ -314,7 +284,7 @@ public class FirebaseProxy implements ChallengeProxy {
                     firstInRoomCallback = false;
                 } else {
                     callbackHandler.opponentInRoom();
-                    firebaseHelper.removeUserChallengeListener(challengeName, remoteOpponent, inRoomListener, FirebaseHelper.challengeNodeType.IN_ROOM);
+                    firebaseHelper.removeUserChallengeListener(challengeName, remoteOpponent, inRoomListener, FirebaseNodes.ChallengeStatus.IN_ROOM);
                 }
             }
 
@@ -325,28 +295,58 @@ public class FirebaseProxy implements ChallengeProxy {
         };
     }
 
-    /**
-     * Utility method to generate the challenge name in the form "userA vs userB id", where "userA" is lexicographically
-     * less than "userB"
-     *
-     * @param user1         first user of the challenge
-     * @param user2         second user of the challenge
-     * @param identifier    challenge identifier
-     * @return              challenge name following the convention
-     */
-    public static String generateChallengeName(String user1, String user2, String identifier) {
+    @Override
+    public void imReady() {
+        if (isChallengeTerminated) {
+            return;
+        }
+        firebaseHelper.setUserStatus(challengeName, localUser, FirebaseNodes.ChallengeStatus.READY, true);
+    }
 
-        if (user1 == null || user2 == null || identifier == null) {
-            throw new NullPointerException("Challenge name parameters can't be null");
-        } else if (user1.isEmpty() || user2.isEmpty()) {
-            throw new IllegalArgumentException("Users in challenge name can't be empty");
+    @Override
+    public void startChallenge() {
+        if (isChallengeTerminated) {
+            return;
+        }
+        firebaseHelper.removeUserChallengeListener(challengeName, remoteOpponent, onReadyListener, FirebaseNodes.ChallengeStatus.READY);
+        onReadyListener = null;
+    }
+
+    @Override
+    public void putData(CheckPoint checkPoint) {
+
+        if (checkPoint == null) {
+            throw new IllegalArgumentException("CheckPoint is null");
+        } else if (isChallengeTerminated) {
+            return;
         }
 
-        String challengeName;
-        int namesCompare = user1.compareTo(user2);
-        challengeName = (namesCompare <= 0)?user1 + " vs " + user2:user2 + " vs " + user1;
-        challengeName += " " + identifier;
+        if(!localUserFinished) {
+            firebaseHelper.addChallengeCheckPoint(checkPoint, challengeName, localUser, localUserSeqNum);
+            localUserSeqNum++;
+        }
+    }
 
-        return challengeName;
+    @Override
+    public void imFinished() {
+        if (isChallengeTerminated) {
+            return;
+        }
+
+        firebaseHelper.setUserStatus(challengeName, localUser, FirebaseNodes.ChallengeStatus.FINISH, true);
+        localUserFinished = true;
+
+        if (remoteOpponentFinished) {
+            removeActiveListeners();
+            firebaseHelper.deleteChallengeNode(challengeName);
+            isChallengeTerminated = true;
+        }
+    }
+
+    @Override
+    public void abortChallenge() {
+        firebaseHelper.setUserStatus(challengeName, localUser, FirebaseNodes.ChallengeStatus.ABORT, true);
+        removeActiveListeners();
+        isChallengeTerminated = true;
     }
 }

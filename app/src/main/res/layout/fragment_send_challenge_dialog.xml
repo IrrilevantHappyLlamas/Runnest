@@ -1,0 +1,190 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="ch.epfl.sweng.project.Fragments.RequestChallengeDialogFragment"
+             android:id="@+id/define_challenge"
+             android:background="@color/backgroundApp">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/backgroundApp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/layout_rounded_corners"
+            android:layout_margin="15dp">
+
+            <ImageView
+                android:layout_height="48dp"
+                app:srcCompat="@drawable/challenge_white"
+                android:id="@+id/imageView9"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="15dp"
+                android:layout_width="40dp"/>
+
+            <TextView
+                android:text="@string/set_the_challenge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/challenge_dlg_title"
+                android:textStyle="normal|bold"
+                android:textSize="24sp"
+                android:gravity="center"
+                android:elevation="19dp"
+                android:layout_weight="1"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+
+        <info.hoang8f.android.segmented.SegmentedGroup
+            xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/type_sg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            segmentedgroup:sc_border_width="2dp"
+            segmentedgroup:sc_corner_radius="3dp"
+            segmentedgroup:sc_tint_color="#62B513"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp">
+
+            <RadioButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/distance"
+                style="@style/RadioButton"
+                android:checked="false"
+                android:textSize="20sp"
+                android:id="@+id/distance_radio"
+                android:layout_weight="1"/>
+
+            <RadioButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/time"
+                style="@style/RadioButton"
+                android:textSize="20sp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:id="@+id/time_radio"
+                android:layout_weight="1"/>
+
+        </info.hoang8f.android.segmented.SegmentedGroup>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:text="@string/h"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txt_first_unit"
+                    android:gravity="center"
+                    android:background="@drawable/layout_rounded_corners"
+                    android:layout_weight="1"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="@android:color/white"
+                    android:elevation="16dp"/>
+
+                <NumberPicker
+                    android:layout_width="wrap_content"
+                    android:id="@+id/first_picker"
+                    android:layout_weight="1"
+                    android:theme="@style/AppTheme.Picker"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_height="100dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:text="@string/min"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txt_second_unit"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:background="@drawable/layout_rounded_corners"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="@android:color/white"
+                    android:elevation="16dp"/>
+
+                <NumberPicker
+                    android:layout_width="wrap_content"
+                    android:id="@+id/second_picker"
+                    android:layout_weight="1"
+                    android:theme="@style/AppTheme.Picker"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_height="100dp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginTop="20dp">
+
+            <Button
+                android:text="@android:string/cancel"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:id="@+id/customize_negative_btn"
+                android:layout_weight="1"
+                android:background="@drawable/layout_rounded_corners"
+                android:textColor="@android:color/white"
+                android:elevation="24dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginLeft="40dp"
+                android:textAllCaps="false"/>
+
+            <Button
+                android:text="@string/challenge"
+                android:layout_height="40dp"
+                android:id="@+id/customize_positive_btn"
+                android:layout_weight="1"
+                android:background="@drawable/button_shape_green"
+                android:elevation="24dp"
+                android:layout_width="0dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="40dp"
+                android:textAllCaps="false"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

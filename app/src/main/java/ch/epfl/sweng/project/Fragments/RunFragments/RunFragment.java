@@ -28,17 +28,16 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import java.util.Locale;
 
 import ch.epfl.sweng.project.AppRunnest;
-import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.CheckPoint;
 import ch.epfl.sweng.project.Model.Run;
 
 /**
- * Abstract class that represent the base skeleton for a <code>Fragment</code> handling
- * a <code>Run</code> and showing the path done by the user thanks to gps services and
- * <code>GoogleMap</code>.
+ * Abstract class that represent the base skeleton for a Fragment handling
+ * a Run and showing the path done by the user thanks to gps services and
+ * GoogleMap.
  *
  * As said the path done is shown, as well as the distance that the user ran, from
- * when challenge started until now.
+ * when the challenge started until now.
  */
 abstract class RunFragment extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -46,29 +45,38 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
         LocationListener
 {
     // Location update
-    protected GoogleApiClient mGoogleApiClient = null;
-    protected boolean mRequestingLocationUpdates = false;
-    protected LocationSettingsHandler mLocationSettingsHandler = null;
+    protected GoogleApiClient googleApiClient = null;
+    protected boolean requestingLocationUpdates = false;
+    protected LocationSettingsHandler locationSettingsHandler = null;
 
     // Live stats
-    protected TextView mDistance = null;
+    protected TextView distance = null;
 
     // Data storage
-    private CheckPoint mLastCheckPoint = null;
-    protected Run mRun = null;
+    private CheckPoint lastCheckPoint = null;
+    protected Run run = null;
 
     // Map
-    protected MapView mMapView = null;
-    private MapHandler mMapHandler = null;
-    private CountDownTimer mLocationChangeSimulation = null;
+    protected MapView mapView = null;
+    private MapHandler mapHandler = null;
+    private CountDownTimer locationChangeSimulation = null;
+
+    /**
+     * Getter for the LocationSettingsHandler of this RunFragment.
+     *
+     * @return      The LocationSettingsHandler of this class.
+     */
+    public LocationSettingsHandler getLocationSettingsHandler() {
+        return locationSettingsHandler;
+    }
 
     protected void startRun() {
-        mRun.start();
+        run.start();
 
-        mDistance.setVisibility(View.VISIBLE);
+        distance.setVisibility(View.VISIBLE);
         updateDisplayedDistance();
 
-        mRequestingLocationUpdates = true;
+        requestingLocationUpdates = true;
         startLocationUpdates();
 
         if(((AppRunnest)getActivity().getApplication()).isTestSession()) {
@@ -77,18 +85,26 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
     }
 
     protected void stopRun() {
-        mRequestingLocationUpdates = false;
+        requestingLocationUpdates = false;
         stopLocationUpdates();
-        mRun.stop();
+        run.stop();
 
         if(((AppRunnest)getActivity().getApplication()).isTestSession()) {
-            mLocationChangeSimulation.onFinish();
+            locationChangeSimulation.onFinish();
         }
     }
 
+    protected void updateDisplayedDistance() {
+        double distanceToShow = run.getTrack().getDistance()/1000.0;
+        String distanceInKm = String.format(Locale.getDefault(), "%.2f", distanceToShow) +
+                " " +
+                getString(R.string.km);
+
+        distance.setText(distanceInKm);
+    }
+
     private void setupLocationChangeSimulation() {
-        //TODO: find a way to bound 10000 to RUN_DURATION in EspressoTest
-        mLocationChangeSimulation = new CountDownTimer(10000, 500) {
+        locationChangeSimulation = new CountDownTimer(5000, 500) {
             private Location location;
             private double lat = 0.001;
             private double lon = 0.001;
@@ -100,7 +116,7 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
                     lat += 0.001;
                     lon += 0.001;
 
-                    location = new Location("test");
+                    location = new Location("AppRunnest Test");
                     location.setLatitude(lat);
                     location.setLongitude(lon);
 
@@ -114,46 +130,37 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
         }.start();
     }
 
-    protected void updateDisplayedDistance() {
-        double distanceToShow = mRun.getTrack().getDistance()/1000.0;
-        String distanceInKm = String.format(Locale.getDefault(), "%.2f", distanceToShow) +
-                " " +
-                getString(R.string.km);
-
-        mDistance.setText(distanceInKm);
-    }
-
     private void startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(getContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
             // Start listening for updates
             LocationServices.FusedLocationApi.requestLocationUpdates(
-                    mGoogleApiClient,
-                    mLocationSettingsHandler.getLocationRequest(),
+                    googleApiClient,
+                    locationSettingsHandler.getLocationRequest(),
                     this
             ).setResultCallback(new ResultCallback<Status>() {
                 @Override
                 public void onResult(@NonNull Status r) {
-                    mRequestingLocationUpdates = true;
+                    requestingLocationUpdates = true;
                 }
             });
 
-            mMapHandler.setupRunningMapUI();
+            mapHandler.setupRunningMapUI();
 
-            mMapHandler.startShowingLocation();
+            mapHandler.startShowingLocation();
         }
     }
 
     private void stopLocationUpdates() {
         LocationServices.FusedLocationApi.removeLocationUpdates(
-                mGoogleApiClient,
+                googleApiClient,
                 this
         ).setResultCallback(new ResultCallback<Status>() {
             @Override
             public void onResult(@NonNull Status r) {
-                mRequestingLocationUpdates = false;
-                mMapHandler.stopShowingLocation();
+                requestingLocationUpdates = false;
+                mapHandler.stopShowingLocation();
             }
         });
     }
@@ -161,38 +168,48 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
     /**
      * Handle a location update.
      *
-     * @param location      the new <code>Location</code>
+     * @param location      The new Location, must be non null.
      */
     @Override
     public void onLocationChanged(Location location) {
-        mLastCheckPoint = new CheckPoint(location);
 
-        if(mRun.isRunning()) {
-            mRun.update(mLastCheckPoint);
+        if (location == null) {
+            throw new IllegalArgumentException("New Location must be non null");
         }
 
-        mMapHandler.updateMap(mLastCheckPoint);
+        lastCheckPoint = new CheckPoint(location);
+
+        if(run.isRunning()) {
+            run.update(lastCheckPoint);
+        }
+
+        mapHandler.updateMap(lastCheckPoint);
 
         updateDisplayedDistance();
     }
 
     /**
-     * Called when the <code>GoogleMap</code> is ready. Initialize a MapHandler.
+     * Called when the GoogleMap is ready. Initialize a MapHandler.
      *
-     * @param googleMap     the <code>GoogleMap</code>
+     * @param googleMap     The GoogleMap must be non null.
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+        if (googleMap == null) {
+            throw new IllegalArgumentException("The GoogleMap must be non null");
+        }
+
         MapStyleOptions mapStyle = MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.map_style_no_label);
         googleMap.setMapStyle(mapStyle);
-        mMapHandler = new MapHandler(googleMap, ContextCompat.getColor(getContext(), R.color.colorAccent));
+        mapHandler = new MapHandler(googleMap, ContextCompat.getColor(getContext(), R.color.colorAccent));
     }
 
     /**
-     * Called when <code>GoogleApiClient</code> is connected. Try to get the last known location and
+     * Called when GoogleApiClient is connected. Try to get the last known location and
      * start location updates if necessary.
      *
-     * @param bundle    not used here
+     * @param bundle    Not used here.
      */
     @Override
     public void onConnected(@Nullable Bundle bundle) {
@@ -201,40 +218,42 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
         if (ActivityCompat.checkSelfPermission(getContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-            location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
 
-            mMapHandler.startShowingLocation();
+            mapHandler.startShowingLocation();
         }
         if(location != null) {
-            mLastCheckPoint = new CheckPoint(location);
+            lastCheckPoint = new CheckPoint(location);
         }
-        if (mRequestingLocationUpdates) {
+        if (requestingLocationUpdates) {
             startLocationUpdates();
         }
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-        mGoogleApiClient.connect();
+        googleApiClient.connect();
     }
 
-    //TODO: Handle connection failure
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        // Retry connecting
+        googleApiClient.connect();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        mGoogleApiClient.connect();
+        googleApiClient.connect();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mMapView.onResume();
+        mapView.onResume();
 
-        if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
+        //Resume location updates
+        if (googleApiClient.isConnected() && requestingLocationUpdates) {
             startLocationUpdates();
         }
     }
@@ -242,30 +261,18 @@ abstract class RunFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onPause() {
         super.onPause();
-        mMapView.onPause();
+        mapView.onPause();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        mGoogleApiClient.disconnect();
+        googleApiClient.disconnect();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mMapView.onDestroy();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mMapView.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mMapView.onLowMemory();
+        mapView.onDestroy();
     }
 }
