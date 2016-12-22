@@ -184,10 +184,10 @@ public class FirebaseHelperTest {
 
     @Test
     public void addNewUser() {
-        firebaseHelper.getDatabase().child(FirebaseNodes.USERS).child("uselessUser").removeValue();
+        firebaseHelper.getDatabase().child(FirebaseNodes.USERS).child("TestNewMail").removeValue();
         // Needed to be sure that the sent message appears on firebase
         SystemClock.sleep(2000);
-        firebaseHelper.addOrUpdateUser("uselessUser", "uselessMail");
+        firebaseHelper.addOrUpdateUser("TestNewUser", "TestNewMail");
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -247,7 +247,7 @@ public class FirebaseHelperTest {
         final String url = "http://url.test.ch";
         firebaseHelper.addOrUpdateUser(TEST_USER, testUserForPic);
         firebaseHelper.setOrUpdateProfilePicUrl(testUserForPic, url);
-        firebaseHelper.getProfilePicUrl(TEST_USER, new ValueEventListener() {
+        firebaseHelper.getProfilePicUrl(testUserForPic, new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String fetchedUrl = (String) dataSnapshot.getValue();
