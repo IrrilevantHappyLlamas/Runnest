@@ -487,6 +487,7 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
                 challengeProxy.deleteChallenge();
 
                 if (phase == ChallengePhase.BEFORE_CHALLENGE) {
+                    setUserAvailable(true);
                     goToSidebar(SideBarActivity.REQUEST_STOP_WAITING);
                 } else {
                     leavingChallenge = true;

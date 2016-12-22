@@ -114,15 +114,13 @@ public class LocationSettingsHandler implements ResultCallback<LocationSettingsR
     @Override
     public void onResult(@NonNull LocationSettingsResult r) {
 
-        final Status status = r.getStatus();
-
-        switch (status.getStatusCode()) {
+        switch (r.getStatus().getStatusCode()) {
             case LocationSettingsStatusCodes.SUCCESS:
                 gpsIsTurnedOn = true;
                 break;
             case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                 try {
-                    status.startResolutionForResult(activity, SideBarActivity.REQUEST_CHECK_SETTINGS);
+                    r.getStatus().startResolutionForResult(activity, SideBarActivity.REQUEST_CHECK_SETTINGS);
                 } catch (IntentSender.SendIntentException ignored) {
                     ignored.printStackTrace();
                 }
