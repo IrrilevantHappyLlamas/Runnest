@@ -8,12 +8,14 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
+import ch.epfl.sweng.project.Activities.SideBarActivity;
 import ch.epfl.sweng.project.AppRunnest;
 
 /**
@@ -21,7 +23,6 @@ import ch.epfl.sweng.project.AppRunnest;
  */
 public class LocationSettingsHandler implements ResultCallback<LocationSettingsResult> {
 
-    private static final int REQUEST_CHECK_SETTINGS = 0x1;
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 4000;
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 2000;
 
@@ -47,6 +48,15 @@ public class LocationSettingsHandler implements ResultCallback<LocationSettingsR
 
         locationRequest = createLocationRequest();
         locationSettingsRequest = buildLocationSettingsRequest();
+    }
+
+    /**
+     * Setter for the gpsIsTurnedOn field.
+     *
+     * @param value     Value to set to the field.
+     */
+    public void setGpsIsTurnedOn(boolean value) {
+        gpsIsTurnedOn = value;
     }
 
     /**
@@ -93,9 +103,9 @@ public class LocationSettingsHandler implements ResultCallback<LocationSettingsR
     }
 
     /**
-     * A getter for mLocationRequest.
+     * A getter for LocationRequest.
      *
-     * @return mLocationRequest
+     * @return LocationRequest
      */
     protected LocationRequest getLocationRequest() {
         return locationRequest;
@@ -112,7 +122,7 @@ public class LocationSettingsHandler implements ResultCallback<LocationSettingsR
                 break;
             case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                 try {
-                    status.startResolutionForResult(activity, REQUEST_CHECK_SETTINGS);
+                    status.startResolutionForResult(activity, SideBarActivity.REQUEST_CHECK_SETTINGS);
                 } catch (IntentSender.SendIntentException ignored) {
                     ignored.printStackTrace();
                 }

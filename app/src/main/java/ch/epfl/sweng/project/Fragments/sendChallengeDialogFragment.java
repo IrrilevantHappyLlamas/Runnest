@@ -27,7 +27,7 @@ import info.hoang8f.android.segmented.SegmentedGroup;
 /**
  * this class display a dialog that allows to send a challenge request.
  */
-public class sendChallengeDialogFragment extends DialogFragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
+public class SendChallengeDialogFragment extends DialogFragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
 
     private AlertDialog dialog;
 
@@ -114,18 +114,18 @@ public class sendChallengeDialogFragment extends DialogFragment implements View.
 
         switch (v.getId()) {
             case R.id.customize_negative_btn:
-                mListener.onSendChallengeDialogNegativeClick(sendChallengeDialogFragment.this);
+                mListener.onSendChallengeDialogNegativeClick(SendChallengeDialogFragment.this);
                 dialog.dismiss();
                 break;
 
             case R.id.customize_positive_btn:
                 if(firstValue + secondValue != 0)  {
-                    mListener.onSendChallengeDialogPositiveClick(sendChallengeDialogFragment.this);
+                    mListener.onSendChallengeDialogPositiveClick(SendChallengeDialogFragment.this);
                     dialog.dismiss();
                 } else {
                     if(((AppRunnest)getActivity().getApplicationContext()).isTestSession()){
                         firstValue = 1;
-                        mListener.onSendChallengeDialogPositiveClick(sendChallengeDialogFragment.this);
+                        mListener.onSendChallengeDialogPositiveClick(SendChallengeDialogFragment.this);
                         dialog.dismiss();
                     } else {
                         Toast.makeText(getContext(), R.string.challenge_not_null,
