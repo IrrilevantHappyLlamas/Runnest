@@ -221,14 +221,9 @@ public class RequestChallengeDialogFragment extends DialogFragment implements Vi
                 try {
                     ColorDrawable colorDrawable = new ColorDrawable(color);
                     pf.set(picker, colorDrawable);
-                } catch (IllegalArgumentException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
-                } catch (Resources.NotFoundException e) {
-                    e.printStackTrace();
-                }
-                catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
+                } 
                 break;
             }
         }
