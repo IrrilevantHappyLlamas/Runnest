@@ -513,7 +513,6 @@ public class FirebaseHelper {
         challengeUpload.put("/" + user2 + "/" + FirebaseNodes.ChallengeStatus.ABORT, false);
 
         challengeRef.updateChildren(challengeUpload);
-
     }
 
     /**

@@ -107,7 +107,7 @@
     <string name="memo">Memo</string>
     <string name="memo_txt">Remember that you have a challenge based on:</string>
     <string name="opponent_intent_extra">opponent</string>
-    <string name="owner_intent_extra">isOwner</string>
+    <string name="owner_intent_extra">owner</string>
     <string name="type_intent_extra">type</string>
     <string name="msg_id_intent_extra">msgId</string>
     <string name="first_value_intent_extra">firstValue</string>
