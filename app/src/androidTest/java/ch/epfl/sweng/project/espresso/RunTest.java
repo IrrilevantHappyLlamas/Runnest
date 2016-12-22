@@ -99,6 +99,14 @@ public class RunTest extends EspressoTest {
         onView(isRoot()).perform(waitForMatch(withId(R.id.stop_run), UI_TEST_TIMEOUT));
         onView(withId(R.id.stop_run)).perform(click());
 
+        // Exit and enter displayChallenge
+        tryIsDisplayed(withId(R.id.button_history), TIME_CHALLENGE_DURATION + UI_TEST_TIMEOUT);
+        onView(withId(R.id.button_history)).perform(click());
+        onView(isRoot()).perform(waitForMatch(withId(R.id.tabs), UI_TEST_TIMEOUT));
+        onView(allOf(withText("Challenges"), isDescendantOfA(withId(R.id.tabs)))).perform(click());
+        onView(isRoot()).perform(waitForMatch(withId(R.id.list), UI_TEST_TIMEOUT));
+        onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());
+
         onView(isRoot()).perform(waitForMatch(withId(R.id.button_delete), UI_TEST_TIMEOUT));
         onView(withId(R.id.button_delete)).perform(click());
 

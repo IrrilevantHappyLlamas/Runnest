@@ -78,6 +78,8 @@ public class AppNavigationTest extends EspressoTest {
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.tabs), UI_TEST_TIMEOUT));
         onView(allOf(withText("Runs"), isDescendantOfA(withId(R.id.tabs)))).perform(click());
+        onView(allOf(withText("Challenges"), isDescendantOfA(withId(R.id.tabs)))).perform(click());
+        onView(allOf(withText("Runs"), isDescendantOfA(withId(R.id.tabs)))).perform(click());
     }
 
     @Test
@@ -90,9 +92,15 @@ public class AppNavigationTest extends EspressoTest {
 
     @Test
     public void navigateToLogout() {
+        // Logout cancel
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_logout));
+        tryIsDisplayed(withId(android.R.id.button2), UI_TEST_TIMEOUT);
+        onView(withId(android.R.id.button2)).perform(click());
 
+        // Logout ok
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_logout));
         tryIsDisplayed(withId(android.R.id.button2), UI_TEST_TIMEOUT);
         onView(withText("OK")).perform(click());
 

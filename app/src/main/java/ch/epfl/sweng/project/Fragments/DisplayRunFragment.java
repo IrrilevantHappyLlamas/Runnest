@@ -90,10 +90,8 @@ public class DisplayRunFragment extends Fragment implements OnMapReadyCallback {
         viewDistance.setText(String.format(Locale.getDefault(), "%.2f", distance) +
                 getString(R.string.white_space) + getString(R.string.km));
 
-        String avgPace;
-        if(distance < 1) {
-            avgPace = "-";
-        } else {
+        String avgPace = "-";
+        if(distance >= 1) {
             avgPace = UtilsUI.timeToString((int)(duration/distance), false);
         }
         TextView viewAvgPace = ((TextView)view.findViewById(R.id.avg_pace_value));

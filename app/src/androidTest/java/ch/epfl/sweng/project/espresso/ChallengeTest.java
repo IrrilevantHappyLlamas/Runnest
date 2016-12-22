@@ -33,7 +33,22 @@ import static org.hamcrest.Matchers.anything;
 public class ChallengeTest extends EspressoTest {
 
     @Test
-    public void challengeTime() {
+    public void challengeBusyUser() {
+        onView(withId(R.id.search)).perform(click());
+        onView(isRoot()).perform(waitForMatch(withId(R.id.empty_layout), UI_TEST_TIMEOUT));
+        onView(isAssignableFrom(EditText.class)).perform(typeText("b"), pressKey(KeyEvent.KEYCODE_ENTER));
+
+        tryIsDisplayed(withText("busyUser"), UI_TEST_TIMEOUT);
+        onView(withText("busyUser")).perform(click());
+
+        onView(isRoot()).perform(waitForMatch(withId(R.id.main_layout), UI_TEST_TIMEOUT));
+        onView(withText(R.string.challenge)).perform(click());
+
+        onView(isRoot()).perform(waitForMatch(withId(R.id.main_layout), UI_TEST_TIMEOUT));
+    }
+
+    @Test
+    public void challengeTimeExitEnterDisplayChallengeAndDelete() {
         onView(withId(R.id.search)).perform(click());
         onView(isRoot()).perform(waitForMatch(withId(R.id.empty_layout), UI_TEST_TIMEOUT));
         onView(isAssignableFrom(EditText.class)).perform(typeText("R"), pressKey(KeyEvent.KEYCODE_ENTER));
@@ -53,9 +68,19 @@ public class ChallengeTest extends EspressoTest {
         onView(isRoot()).perform(waitForMatch(withId(R.id.readyBtn), UI_TEST_TIMEOUT));
         onView(withId(R.id.readyBtn)).perform(click());
 
+
         tryIsDisplayed(withId(R.id.button_history), TIME_CHALLENGE_DURATION + UI_TEST_TIMEOUT);
         onView(withId(R.id.button_history)).perform(click());
-    }
+        onView(isRoot()).perform(waitForMatch(withId(R.id.tabs), UI_TEST_TIMEOUT));
+
+        onView(allOf(withText("Challenges"), isDescendantOfA(withId(R.id.tabs)))).perform(click());
+        onView(isRoot()).perform(waitForMatch(withId(R.id.list), UI_TEST_TIMEOUT));
+        onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());
+
+        onView(isRoot()).perform(waitForMatch(withId(R.id.button_delete), UI_TEST_TIMEOUT));
+        onView(withId(R.id.button_delete)).perform(click());
+
+        onView(isRoot()).perform(waitForMatch(withId(R.id.tabs), UI_TEST_TIMEOUT));    }
 
     @Test
     public void challengeKeepRunningQuit() {
@@ -105,6 +130,8 @@ public class ChallengeTest extends EspressoTest {
         onView(isRoot()).perform(waitForMatch(withId(R.id.main_layout), UI_TEST_TIMEOUT));
         onView(withText(R.string.challenge)).perform(click());
         tryIsDisplayed(withId(R.id.define_challenge), UI_TEST_TIMEOUT);
+        onView(withId(R.id.time_radio)).perform(click());
+        onView(withId(R.id.distance_radio)).perform(click());
         onView(withId(R.id.customize_positive_btn)).perform(click());
 
         //Wait

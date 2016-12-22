@@ -36,7 +36,7 @@ public class MessageTest extends EspressoTest {
         new FirebaseHelper().deleteUserMessages("Test User");
     }
 
-    private void sendTestMessage(Message.Type messageType, boolean createChallenge) {
+    private void sendTestMessage(Message.Type messageType, Challenge.Type challengeType, boolean createChallenge) {
         // Send message
         Message msg1 = new Message("runnest_dot_ihl_at_gmail_dot_com",
                 "Test User",
@@ -47,7 +47,7 @@ public class MessageTest extends EspressoTest {
                 new Date(),
                 1,
                 0,
-                Challenge.Type.DISTANCE);
+                challengeType);
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
         firebaseHelper.sendMessage(msg1);
@@ -64,7 +64,7 @@ public class MessageTest extends EspressoTest {
     @Test
     public void challengeRequestCancelAndDecline() {
         // Send message
-        sendTestMessage(Message.Type.CHALLENGE_REQUEST, true);
+        sendTestMessage(Message.Type.CHALLENGE_REQUEST, Challenge.Type.TIME, true);
 
         //Tap on the request
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
@@ -94,7 +94,7 @@ public class MessageTest extends EspressoTest {
     @Test
     public void challengeRequestAccept() {
         // Send message
-        sendTestMessage(Message.Type.CHALLENGE_REQUEST, true);
+        sendTestMessage(Message.Type.CHALLENGE_REQUEST, Challenge.Type.DISTANCE, true);
 
         //Tap on the request
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
@@ -114,7 +114,7 @@ public class MessageTest extends EspressoTest {
     @Test
     public void scheduleMessageCancelAndAccept() {
         // Send message
-        sendTestMessage(Message.Type.SCHEDULE_REQUEST, false);
+        sendTestMessage(Message.Type.SCHEDULE_REQUEST, Challenge.Type.DISTANCE, false);
 
         //Tap on the request
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
@@ -131,14 +131,12 @@ public class MessageTest extends EspressoTest {
         onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());
         tryIsDisplayed(withId(R.id.accept_btn), UI_TEST_TIMEOUT);
         onView(withId(R.id.accept_btn)).perform(click());
-
-        //TODO: (for Hakim) how check if there is a MEMO
     }
 
     @Test
     public void scheduleMessageDecline() {
         // Send message
-        sendTestMessage(Message.Type.SCHEDULE_REQUEST, false);
+        sendTestMessage(Message.Type.SCHEDULE_REQUEST, Challenge.Type.TIME, false);
 
         //Tap on the request
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
@@ -156,7 +154,7 @@ public class MessageTest extends EspressoTest {
     @Test
     public void memoMessageCloseDelete() {
         // Send message
-        sendTestMessage(Message.Type.MEMO, false);
+        sendTestMessage(Message.Type.MEMO, Challenge.Type.TIME, false);
 
         //Tap on the request
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
@@ -180,7 +178,7 @@ public class MessageTest extends EspressoTest {
     @Test
     public void memoMessageChallenge() {
         // Send message
-        sendTestMessage(Message.Type.MEMO, false);
+        sendTestMessage(Message.Type.MEMO, Challenge.Type.DISTANCE, false);
 
         //Tap on the request
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
@@ -194,6 +192,38 @@ public class MessageTest extends EspressoTest {
         onView(withId(R.id.accept_btn)).perform(click());
 
         tryIsDisplayed(withId(R.id.time_radio), UI_TEST_TIMEOUT);
+    }
+
+    @Test
+    public void memoMessageBusyChallenge() {
+        // Send message
+        Message msg1 = new Message("busyEmail",
+                "Test User",
+                "busyUser",
+                "Test User",
+                Message.Type.MEMO,
+                "test1",
+                new Date(),
+                1,
+                0,
+                Challenge.Type.DISTANCE);
+
+        FirebaseHelper firebaseHelper = new FirebaseHelper();
+        firebaseHelper.sendMessage(msg1);
+
+        // Needed to be sure that the sent message appears on firebase
+        SystemClock.sleep(FIREBASE_DURATION);
+
+        //Tap on the request
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_messages));
+
+        onView(isRoot()).perform(waitForMatch(withId(R.id.list), UI_TEST_TIMEOUT));
+        onData(anything()).inAdapterView(withId(R.id.list)).atPosition(0).perform(click());
+
+        //Tap on Challenge
+        tryIsDisplayed(withId(R.id.accept_btn), UI_TEST_TIMEOUT);
+        onView(withId(R.id.accept_btn)).perform(click());
     }
 
 }
