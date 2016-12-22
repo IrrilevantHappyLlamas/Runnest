@@ -95,7 +95,7 @@ public class FirebaseHelper implements OnCompleteListener {
         }
 
         Date time = message.getTime();
-        String messageId = message.getUid();
+        String messageId = String.valueOf(message.getUid());
         DatabaseReference messageRef = databaseReference.child(FirebaseNodes.MESSAGES).child(message.getTo()).child(messageId);
 
         Map<String, Object> messageUpload = new HashMap<>();
@@ -107,6 +107,7 @@ public class FirebaseHelper implements OnCompleteListener {
         messageUpload.put("/" + FirebaseNodes.MEX_TYPE, message.getType());
         messageUpload.put("/" + FirebaseNodes.MEX_FIRST_VALUE, message.getFirstValue());
         messageUpload.put("/" + FirebaseNodes.MEX_SECOND_VALUE, message.getSecondValue());
+        messageUpload.put("/" + FirebaseNodes.MEX_UID, message.getUid());
         messageUpload.put("/" + FirebaseNodes.MEX_TIME, time);
 
         //TODO: listener
@@ -159,6 +160,7 @@ public class FirebaseHelper implements OnCompleteListener {
                         String messageText = children.child(FirebaseNodes.MEX).getValue(String.class);
                         Date time = children.child(FirebaseNodes.MEX_TIME).getValue(Date.class);
                         Challenge.Type challengeType = children.child(FirebaseNodes.MEX_CHALLENGE_TYPE).getValue(Challenge.Type.class);
+                        int UID = children.child(FirebaseNodes.MEX_UID).getValue(Integer.class);
 
                         int firstValue = 0;
                         if(children.child(FirebaseNodes.MEX_FIRST_VALUE).getValue() != null){
@@ -171,6 +173,7 @@ public class FirebaseHelper implements OnCompleteListener {
                         }
 
                         Message message = new Message(from, forUser, sender, addressee, type, messageText, time, firstValue, secondValue, challengeType);
+                        message.setUid(UID);
                         messages.add(message);
                     }
                 }
@@ -195,7 +198,7 @@ public class FirebaseHelper implements OnCompleteListener {
             throw new IllegalArgumentException("Message to deleteMessage can't be null");
         }
 
-        String messageId = message.getUid();
+        String messageId = String.valueOf(message.getUid());
         //TODO: listener
         databaseReference.child(FirebaseNodes.MESSAGES).child(message.getTo()).child(messageId).removeValue();
     }

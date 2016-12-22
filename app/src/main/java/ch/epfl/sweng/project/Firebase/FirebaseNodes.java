@@ -28,6 +28,7 @@ public class FirebaseNodes {
     public static final String MEX_TYPE = "type";
     public static final String MEX = "message";
     public static final String MEX_TIME = "time";
+    public static final String MEX_UID = "UID";
 
     // User nodes
     public static final String NAME = "name";

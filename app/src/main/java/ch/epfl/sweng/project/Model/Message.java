@@ -2,6 +2,7 @@ package ch.epfl.sweng.project.Model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * This class represents a message that can be sent to the server and retrieved by a user
@@ -19,7 +20,7 @@ public class Message implements Serializable {
     private int firstValue;
     private int secondValue;
     private Challenge.Type challengeType;
-
+    private int UID;
     /**
      * This enumeration represents all types of messages that can be sent to the server
      */
@@ -53,6 +54,8 @@ public class Message implements Serializable {
         this.type = type;
         this.message = message;
         time = new Date();
+        Random rnd = new Random();
+        this.UID = 100000 + rnd.nextInt(900000);
 
         firstValue = 0;
         secondValue = 0;
@@ -242,11 +245,19 @@ public class Message implements Serializable {
     }
 
     /**
-     * Computes a message unique id
+     * Getter for UID
      *
      * @return the message's unique id
      */
-    public String getUid() {
-        return from.hashCode() + "_" + time.hashCode();
+    public int getUid() {
+        return UID;
     }
+
+    /**
+     * Setter for UID
+     */
+    public void setUid(int UID) {
+        this.UID = UID;
+    }
+
 }
