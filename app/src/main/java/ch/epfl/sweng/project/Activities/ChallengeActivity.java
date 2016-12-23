@@ -430,7 +430,6 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         return new ChallengeProxy.Handler() {
             @Override
             public void hasNewData(CheckPoint checkPoint) {
-
                 ((ChallengeReceiverFragment)receiverFragment).onNewData(checkPoint);
             }
 
