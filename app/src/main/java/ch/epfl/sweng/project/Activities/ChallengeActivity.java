@@ -188,8 +188,8 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
         float userDistance = userRun.getTrack().getDistance();
 
         if (opponentDistance == userDistance) {
-            opponentPosition.setText(R.string.righetta);
-            userPosition.setText(R.string.righetta);
+            opponentPosition.setText(R.string.dash);
+            userPosition.setText(R.string.dash);
         } else if (opponentDistance > userDistance) {
             opponentPosition.setText(R.string.first_position);
             userPosition.setText(R.string.second_position);

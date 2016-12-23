@@ -3,9 +3,6 @@ package ch.epfl.sweng.project.Fragments;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-
-import java.util.Calendar;
-
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -19,6 +16,8 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
+
+import java.util.Calendar;
 
 import ch.epfl.sweng.project.Model.Challenge;
 import info.hoang8f.android.segmented.SegmentedGroup;

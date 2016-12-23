@@ -2,13 +2,9 @@ package ch.epfl.sweng.project;
 
 import android.os.SystemClock;
 
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseException;
-
 import org.junit.Assert;
 import org.junit.Test;
 
-import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Firebase.FirebaseProxy;
 import ch.epfl.sweng.project.Model.ChallengeProxy;
 import ch.epfl.sweng.project.Model.CheckPoint;

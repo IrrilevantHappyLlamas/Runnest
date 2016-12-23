@@ -68,9 +68,9 @@ public class ReceiveScheduleDialogFragment extends DialogFragment implements Vie
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(scheduledDate);
         dateDescriptionTxt.setText(getString(R.string.on_date));
-        dateTxt.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)) + getString(R.string.righetta) + String.valueOf(calendar.get(Calendar.MONTH)+1) + getString(R.string.righetta) + String.valueOf(calendar.get(Calendar.YEAR)));
+        dateTxt.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)) + getString(R.string.dash) + String.valueOf(calendar.get(Calendar.MONTH)+1) + getString(R.string.dash) + String.valueOf(calendar.get(Calendar.YEAR)));
         timeDescriptionTxt.setText(R.string.at);
-        timeTxt.setText(String.valueOf(calendar.get(Calendar.HOUR_OF_DAY)) + getString(R.string.due_punti) + String.valueOf(calendar.get(Calendar.MINUTE)));
+        timeTxt.setText(String.valueOf(calendar.get(Calendar.HOUR_OF_DAY)) + getString(R.string.colon_with_space) + String.valueOf(calendar.get(Calendar.MINUTE)));
 
         dialog = builder.create();
 
