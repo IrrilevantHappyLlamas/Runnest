@@ -26,7 +26,6 @@ import java.util.concurrent.TimeoutException;
 
 import ch.epfl.sweng.project.Activities.SideBarActivity;
 import ch.epfl.sweng.project.AppRunnest;
-import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.TestUser;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -40,10 +39,10 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 abstract class EspressoTest {
 
     private class Retry implements TestRule {
-        private int retryCount;
+        private final int retryCount;
 
-        private Retry(int retryCount) {
-            this.retryCount = retryCount;
+        private Retry() {
+            this.retryCount = 3;
         }
 
         public Statement apply(Statement base, Description description) {
@@ -72,17 +71,17 @@ abstract class EspressoTest {
     }
 
     @Rule
-    public ActivityTestRule<SideBarActivity> mActivityRule = new ActivityTestRule<>(
+    public final ActivityTestRule<SideBarActivity> activityRule = new ActivityTestRule<>(
             SideBarActivity.class);
 
     @Rule
-    public Retry retry = new Retry(3);
+    public Retry retry = new Retry();
 
     @Before
     public void setUpApp() {
-        ((AppRunnest) mActivityRule.getActivity().getApplication()).setUser(new TestUser());
-        ((AppRunnest) mActivityRule.getActivity().getApplication()).setTestSession(true);
-        ((AppRunnest) mActivityRule.getActivity().getApplication()).setNetworkHandler();
+        ((AppRunnest) activityRule.getActivity().getApplication()).setUser(new TestUser());
+        ((AppRunnest) activityRule.getActivity().getApplication()).setTestSession(true);
+        ((AppRunnest) activityRule.getActivity().getApplication()).setNetworkHandler();
         onView(isRoot()).perform(waitForMatch(withId(R.id.main_layout), EspressoTest.UI_TEST_TIMEOUT));
     }
 

@@ -26,6 +26,7 @@
                 android:id="@+id/imageView9"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
                 android:layout_width="40dp"/>
 
             <TextView
@@ -116,7 +117,9 @@
                 android:layout_weight="1"
                 android:textAllCaps="false"
                 android:layout_marginRight="30dp"
+                android:layout_marginEnd="30dp"
                 android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
                 android:background="@drawable/layout_rounded_corners"
                 android:elevation="24dp"
                 android:textColor="@android:color/white"/>
@@ -140,9 +143,11 @@
                 android:layout_weight="1"
                 android:textAllCaps="false"
                 android:layout_marginRight="15dp"
+                android:layout_marginEnd="15dp"
                 android:elevation="24dp"
                 android:background="@drawable/button_shape_green"
-                android:layout_marginLeft="10dp"/>
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"/>
         </LinearLayout>
 
     </LinearLayout>

@@ -11,7 +11,7 @@ import ch.epfl.sweng.project.Model.Message;
 public class MessageTest {
 
     @Test
-    public void defaultConstructorDontThrowsException() {
+    public void defaultConstructorDoesNotThrowsException() {
         new Message("me", "you", "me", "you", Message.Type.TEXT, "Hello, world!");
         Assert.assertTrue(true);
     }
@@ -52,7 +52,7 @@ public class MessageTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void defaultConstructorThrowsExceptionWithEmptyAddresseee() {
+    public void defaultConstructorThrowsExceptionWithEmptyAddressee() {
         new Message("me", "you", "me", "", Message.Type.TEXT, "Hello, world!");
     }
     @Test(expected = IllegalArgumentException.class)

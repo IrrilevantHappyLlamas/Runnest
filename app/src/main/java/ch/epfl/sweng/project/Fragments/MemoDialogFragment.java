@@ -45,7 +45,7 @@ public class MemoDialogFragment extends DialogFragment implements View.OnClickLi
         void onMemoDialogChallengeClick(DialogFragment dialog);
     }
 
-    MemoDialogFragment.MemoDialogListener mListener;
+    private MemoDialogFragment.MemoDialogListener listener;
 
     @NonNull
     @Override
@@ -91,12 +91,12 @@ public class MemoDialogFragment extends DialogFragment implements View.OnClickLi
 
         switch (v.getId()) {
             case R.id.cancel_btn:
-                mListener.onMemoDialogCloseClick(MemoDialogFragment.this);
+                listener.onMemoDialogCloseClick(MemoDialogFragment.this);
                 dialog.dismiss();
                 break;
 
             case R.id.decline_btn:
-                mListener.onMemoDialogDeleteClick(MemoDialogFragment.this);
+                listener.onMemoDialogDeleteClick(MemoDialogFragment.this);
                 dialog.dismiss();
                 break;
             case R.id.accept_btn:
@@ -106,7 +106,7 @@ public class MemoDialogFragment extends DialogFragment implements View.OnClickLi
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
                             if ((boolean) dataSnapshot.getValue()) {
-                                mListener.onMemoDialogChallengeClick(MemoDialogFragment.this);
+                                listener.onMemoDialogChallengeClick(MemoDialogFragment.this);
                                 dialog.dismiss();
                             } else {
                                 Toast.makeText(getContext(), "User is currently busy, try again later",
@@ -142,7 +142,7 @@ public class MemoDialogFragment extends DialogFragment implements View.OnClickLi
         // Verify that the host activity implements the callback interface
         try {
             // Instantiate the ReceiveChallengeDialogListener so we can sendMessage events to the host
-            mListener = (MemoDialogFragment.MemoDialogListener) activity;
+            listener = (MemoDialogFragment.MemoDialogListener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
@@ -153,7 +153,7 @@ public class MemoDialogFragment extends DialogFragment implements View.OnClickLi
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        listener = null;
     }
 
     /**

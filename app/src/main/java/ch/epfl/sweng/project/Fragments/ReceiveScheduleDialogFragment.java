@@ -37,7 +37,7 @@ public class ReceiveScheduleDialogFragment extends DialogFragment implements Vie
         void onReceiveScheduleDialogCancelClick(DialogFragment dialog);
     }
 
-    ReceiveScheduleDialogListener mListener;
+    private ReceiveScheduleDialogListener listener;
 
     @SuppressLint("SetTextI18n")
     @NonNull
@@ -86,16 +86,16 @@ public class ReceiveScheduleDialogFragment extends DialogFragment implements Vie
 
         switch (v.getId()) {
             case R.id.cancel_btn:
-                mListener.onReceiveScheduleDialogCancelClick(ReceiveScheduleDialogFragment.this);
+                listener.onReceiveScheduleDialogCancelClick(ReceiveScheduleDialogFragment.this);
                 dialog.dismiss();
                 break;
 
             case R.id.decline_btn:
-                mListener.onReceiveScheduleDialogDeclineClick(ReceiveScheduleDialogFragment.this);
+                listener.onReceiveScheduleDialogDeclineClick(ReceiveScheduleDialogFragment.this);
                 dialog.dismiss();
                 break;
             case R.id.accept_btn:
-                mListener.onReceiveScheduleDialogAcceptClick(ReceiveScheduleDialogFragment.this);
+                listener.onReceiveScheduleDialogAcceptClick(ReceiveScheduleDialogFragment.this);
                 dialog.dismiss();
                 break;
         }
@@ -116,7 +116,7 @@ public class ReceiveScheduleDialogFragment extends DialogFragment implements Vie
         // Verify that the host activity implements the callback interface
         try {
             // Instantiate the ReceiveChallengeDialogListener so we can sendMessage events to the host
-            mListener = (ReceiveScheduleDialogListener) activity;
+            listener = (ReceiveScheduleDialogListener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
@@ -127,7 +127,7 @@ public class ReceiveScheduleDialogFragment extends DialogFragment implements Vie
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        listener = null;
     }
 
     /**

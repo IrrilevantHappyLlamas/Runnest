@@ -25,7 +25,7 @@ import ch.epfl.sweng.project.Model.Message;
 public class FirebaseHelperTest {
 
     private FirebaseHelper firebaseHelper;
-    private ValueEventListener listener = new ValueEventListener() {
+    private final ValueEventListener listener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -36,7 +36,7 @@ public class FirebaseHelperTest {
 
         }
     };
-    private String TEST_USER = "Test User";
+    private final String TEST_USER = "Test User";
 
     private Message createTestMessage() {
         return new Message( "Test Sender",
@@ -366,7 +366,7 @@ public class FirebaseHelperTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void getFirebaseMailThrowsIllegalArgument() {
-        firebaseHelper.getFireBaseMail(null);
+        FirebaseHelper.getFireBaseMail(null);
     }
 
     @Test

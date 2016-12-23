@@ -25,7 +25,7 @@ import static ch.epfl.sweng.project.espresso.EspressoTest.waitForMatch;
 public class SidebarActivityTest {
 
     @Rule
-    public ActivityTestRule<SideBarActivity> activityRule = new ActivityTestRule<>(
+    public final ActivityTestRule<SideBarActivity> activityRule = new ActivityTestRule<>(
             SideBarActivity.class);
 
     private SideBarActivity activity;

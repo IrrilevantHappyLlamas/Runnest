@@ -12,10 +12,6 @@ import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
  * This class is displayed when a User Search yields no results.
  */
 public class EmptySearchFragment extends Fragment {
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

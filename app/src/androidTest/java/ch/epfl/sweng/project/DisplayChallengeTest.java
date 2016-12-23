@@ -18,6 +18,6 @@ public class DisplayChallengeTest {
         myOpponentRun.update(new CheckPoint(10, 10));
         Challenge challenge = new Challenge("Runnest", Challenge.Type.TIME, 100, Challenge.Result.WON, myRun, myOpponentRun);
 
-        DisplayChallengeFragment fragment = DisplayChallengeFragment.newInstance(challenge);
+        DisplayChallengeFragment.newInstance(challenge);
     }
 }

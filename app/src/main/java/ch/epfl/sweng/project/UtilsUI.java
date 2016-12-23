@@ -82,7 +82,7 @@ public class UtilsUI {
      *
      * @param track  Track to be shown
      * @param googleMap map where the Track must be shown
-     * @param color color for the Tarck to be shown
+     * @param color color for the Track to be shown
      */
     public static void recapDisplayTrack(Track track, GoogleMap googleMap, int color) {
         if(track == null || googleMap == null) {

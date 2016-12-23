@@ -29,7 +29,6 @@
     <string name="ready">Ready</string>
     <string name="decline">Decline</string>
     <string name="accept">Accept</string>
-    <string name="km">"km"</string>
     <string name="waiting_opponent">Waiting for your opponent…</string>
     <string name="user_ready">YOU ARE READY!</string>
     <string name="opponent_ready">Your opponent is READY!</string>
@@ -139,6 +138,7 @@
     <string name="zero_distance">0.00 km</string>
     <string name="x_km">X km</string>
     <string name="m">m</string>
+    <string name="km">"km"</string>
     <string name="spaced_h">"h "</string>
     <string name="date_example">14–12–2016</string>
     <string name="time_example">12:40</string>

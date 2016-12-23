@@ -30,13 +30,13 @@ public class BackHandTest extends EspressoTest {
 
     @Test
     public void setRunningWorks() {
-        SideBarActivity listenerTest = mActivityRule.getActivity();
+        SideBarActivity listenerTest = activityRule.getActivity();
         listenerTest.setRunning(true);
     }
 
     @Test
     public void runHistoryOnFragmentListenerWork() {
-        SideBarActivity listenerTest = mActivityRule.getActivity();
+        SideBarActivity listenerTest = activityRule.getActivity();
 
         Run listenerRun= new Run();
         listenerRun.start();
@@ -49,14 +49,14 @@ public class BackHandTest extends EspressoTest {
 
     @Test
     public void uselessOnFragmentListenersWork() {
-        SideBarActivity listenerTest = mActivityRule.getActivity();
+        SideBarActivity listenerTest = activityRule.getActivity();
 
         listenerTest.onProfileFragmentInteraction("test", "test");
     }
 
     @Test
     public void messageOnFragmentListenersWork() {
-        SideBarActivity listenerTest = mActivityRule.getActivity();
+        SideBarActivity listenerTest = activityRule.getActivity();
         Message msg = new Message( "emailSender",
                 "emailReceiver",
                 "tester",
@@ -72,7 +72,7 @@ public class BackHandTest extends EspressoTest {
 
     @Test
     public void displayProfileFragmentListenersWork() {
-        SideBarActivity listenerTest = mActivityRule.getActivity();
+        SideBarActivity listenerTest = activityRule.getActivity();
         listenerTest.onDisplayProfileFragmentInteraction("testName", "test@email.ch");
     }
 
@@ -90,15 +90,15 @@ public class BackHandTest extends EspressoTest {
 
         onView(isRoot()).perform(waitForMatch(withId(R.id.start_run), UI_TEST_TIMEOUT));
 
-        mActivityRule.getActivity().finish();
-        mActivityRule.getActivity();
+        activityRule.getActivity().finish();
+        activityRule.getActivity();
     }
 
     @Test
     public void lifecycleTest() {
-        mActivityRule.getActivity().onPause();
-        mActivityRule.getActivity();
-        mActivityRule.getActivity().onStop();
-        mActivityRule.getActivity().finish();
+        activityRule.getActivity().onPause();
+        activityRule.getActivity();
+        activityRule.getActivity().onStop();
+        activityRule.getActivity().finish();
     }
 }

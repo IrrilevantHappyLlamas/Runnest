@@ -64,7 +64,6 @@ public class ChallengeActivity extends AppCompatActivity implements GoogleApiCli
     private ChallengePhase phase = ChallengePhase.BEFORE_CHALLENGE;
     private double challengeGoal = 0.0;   // time in milliseconds or distance in Km
     private boolean challengeWon = false;
-    private boolean isWinning = false;
     private boolean isIntendedActivityExit = false;
     private boolean leavingChallenge = false;
 

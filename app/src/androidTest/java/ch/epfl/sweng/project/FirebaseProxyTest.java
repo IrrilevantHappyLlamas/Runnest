@@ -14,10 +14,10 @@ import ch.epfl.sweng.project.Model.CheckPoint;
  */
 public class FirebaseProxyTest {
 
-    private String LOCAL_USER = "testLocalUser";
-    private String REMOTE_OPPONENT = "testRemoteOpponent";
+    private final String LOCAL_USER = "testLocalUser";
+    private final String REMOTE_OPPONENT = "testRemoteOpponent";
 
-    public FirebaseProxy createCorrectProxy(boolean owner) {
+    private FirebaseProxy createCorrectProxy(boolean owner) {
 
         String local = owner?LOCAL_USER:REMOTE_OPPONENT;
         String remote = owner?REMOTE_OPPONENT:LOCAL_USER;

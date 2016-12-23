@@ -315,7 +315,6 @@ public class SideBarActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
         return super.onOptionsItemSelected(item);
     }
@@ -648,7 +647,7 @@ public class SideBarActivity extends AppCompatActivity
         }
     }
 
-    public void showRequestChallengeDialog() {
+    private void showRequestChallengeDialog() {
         DialogFragment dialog = new ReceiveChallengeDialogFragment();
         Bundle args = new Bundle();
         args.putSerializable("type", requestMessage.getChallengeType());

@@ -68,8 +68,6 @@ public class CircleImageView extends ImageView {
     private float mDrawableRadius;
     private float mBorderRadius;
 
-    private ColorFilter mColorFilter;
-
     private boolean mReady;
     private boolean mSetupPending;
     private final boolean mBorderOverlay;
