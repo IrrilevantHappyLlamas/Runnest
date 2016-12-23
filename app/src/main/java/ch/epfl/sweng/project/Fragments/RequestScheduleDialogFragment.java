@@ -29,9 +29,6 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
 
     private RadioButton distanceRadio;
 
-    private DatePicker datePicker;
-    private TimePicker timePicker;
-
     private Calendar scheduledCalendar;
     private Challenge.Type type;
     private AlertDialog dialog;
@@ -93,8 +90,8 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
 
     private void setCurrentDateAndTime(View view) {
 
-        datePicker = (DatePicker) view.findViewById(R.id.datePicker);
-        timePicker = (TimePicker) view.findViewById(R.id.timePicker);
+        DatePicker datePicker = (DatePicker) view.findViewById(R.id.datePicker);
+        TimePicker timePicker = (TimePicker) view.findViewById(R.id.timePicker);
         timePicker.setIs24HourView(true);
 
         scheduledCalendar = Calendar.getInstance();
