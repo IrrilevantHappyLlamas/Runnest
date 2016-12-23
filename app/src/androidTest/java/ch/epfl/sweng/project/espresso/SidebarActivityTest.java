@@ -1,7 +1,6 @@
 package ch.epfl.sweng.project.espresso;
 
 import android.content.Intent;
-import android.os.SystemClock;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -26,7 +25,7 @@ import static ch.epfl.sweng.project.espresso.EspressoTest.waitForMatch;
 public class SidebarActivityTest {
 
     @Rule
-    public ActivityTestRule<SideBarActivity> activityRule = new ActivityTestRule<>(
+    public final ActivityTestRule<SideBarActivity> activityRule = new ActivityTestRule<>(
             SideBarActivity.class);
 
     private SideBarActivity activity;

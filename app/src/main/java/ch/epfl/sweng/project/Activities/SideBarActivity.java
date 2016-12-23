@@ -45,20 +45,20 @@ import ch.epfl.sweng.project.AppRunnest;
 import ch.epfl.sweng.project.Database.DBHelper;
 import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Firebase.FirebaseProxy;
-import ch.epfl.sweng.project.Fragments.ReceiveScheduleDialogFragment;
-import ch.epfl.sweng.project.Fragments.RequestChallengeDialogFragment;
 import ch.epfl.sweng.project.Fragments.DBDownloadFragment;
 import ch.epfl.sweng.project.Fragments.DisplayChallengeFragment;
 import ch.epfl.sweng.project.Fragments.DisplayRunFragment;
 import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
 import ch.epfl.sweng.project.Fragments.EmptySearchFragment;
+import ch.epfl.sweng.project.Fragments.HistoryFragment;
 import ch.epfl.sweng.project.Fragments.MemoDialogFragment;
 import ch.epfl.sweng.project.Fragments.MessagesFragment;
 import ch.epfl.sweng.project.Fragments.ProfileFragment;
 import ch.epfl.sweng.project.Fragments.ReceiveChallengeDialogFragment;
+import ch.epfl.sweng.project.Fragments.ReceiveScheduleDialogFragment;
+import ch.epfl.sweng.project.Fragments.RequestChallengeDialogFragment;
 import ch.epfl.sweng.project.Fragments.RequestScheduleDialogFragment;
 import ch.epfl.sweng.project.Fragments.RunFragments.RunningMapFragment;
-import ch.epfl.sweng.project.Fragments.HistoryFragment;
 import ch.epfl.sweng.project.Model.Challenge;
 import ch.epfl.sweng.project.Model.Message;
 import ch.epfl.sweng.project.Model.Run;
@@ -308,16 +308,6 @@ public class SideBarActivity extends AppCompatActivity
             return true;
         }
         return false;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -648,7 +638,7 @@ public class SideBarActivity extends AppCompatActivity
         }
     }
 
-    public void showRequestChallengeDialog() {
+    private void showRequestChallengeDialog() {
         DialogFragment dialog = new ReceiveChallengeDialogFragment();
         Bundle args = new Bundle();
         args.putSerializable("type", requestMessage.getChallengeType());

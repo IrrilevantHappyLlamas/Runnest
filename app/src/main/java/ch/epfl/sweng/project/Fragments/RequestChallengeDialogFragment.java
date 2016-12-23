@@ -3,7 +3,6 @@ package ch.epfl.sweng.project.Fragments;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -50,7 +49,7 @@ public class RequestChallengeDialogFragment extends DialogFragment implements Vi
         void onSendChallengeDialogNegativeClick(DialogFragment dialog);
     }
 
-    SendChallengeDialogListener mListener;
+    private SendChallengeDialogListener listener;
 
     @NonNull
     @Override
@@ -114,18 +113,18 @@ public class RequestChallengeDialogFragment extends DialogFragment implements Vi
 
         switch (v.getId()) {
             case R.id.customize_negative_btn:
-                mListener.onSendChallengeDialogNegativeClick(RequestChallengeDialogFragment.this);
+                listener.onSendChallengeDialogNegativeClick(RequestChallengeDialogFragment.this);
                 dialog.dismiss();
                 break;
 
             case R.id.customize_positive_btn:
                 if(firstValue + secondValue != 0)  {
-                    mListener.onSendChallengeDialogPositiveClick(RequestChallengeDialogFragment.this);
+                    listener.onSendChallengeDialogPositiveClick(RequestChallengeDialogFragment.this);
                     dialog.dismiss();
                 } else {
                     if(((AppRunnest)getActivity().getApplicationContext()).isTestSession()){
                         firstValue = 1;
-                        mListener.onSendChallengeDialogPositiveClick(RequestChallengeDialogFragment.this);
+                        listener.onSendChallengeDialogPositiveClick(RequestChallengeDialogFragment.this);
                         dialog.dismiss();
                     } else {
                         Toast.makeText(getContext(), R.string.challenge_not_null,
@@ -138,17 +137,12 @@ public class RequestChallengeDialogFragment extends DialogFragment implements Vi
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         // Verify that the host activity implements the callback interface
         try {
             // Instantiate the SendChallengeDialogListener so we can sendMessage events to the host
-            mListener = (SendChallengeDialogListener) activity;
+            listener = (SendChallengeDialogListener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
@@ -159,13 +153,13 @@ public class RequestChallengeDialogFragment extends DialogFragment implements Vi
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        listener = null;
     }
 
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         if(distanceRadio.isChecked()){
-            firstUnit.setText("km");
+            firstUnit.setText(getString(R.string.km));
             secondUnit.setText("m");
 
             firstPicker.setValue(0);
@@ -189,7 +183,7 @@ public class RequestChallengeDialogFragment extends DialogFragment implements Vi
             type = Challenge.Type.DISTANCE;
         } else {
             firstUnit.setText("h");
-            secondUnit.setText("min");
+            secondUnit.setText(getString(R.string.min));
 
             firstPicker.setValue(0);
             firstValue = 0;
@@ -230,7 +224,7 @@ public class RequestChallengeDialogFragment extends DialogFragment implements Vi
     }
 
     /**
-     * getter for the challenge type.
+     * Getter for the challenge type.
      *
      * @return the challenge type
      */

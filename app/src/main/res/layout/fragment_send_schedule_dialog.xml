@@ -5,8 +5,6 @@
              android:layout_height="match_parent"
              tools:context="ch.epfl.sweng.project.Fragments.RequestScheduleDialogFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -29,7 +27,9 @@
                 app:srcCompat="@drawable/schedule_white"
                 android:id="@+id/imageView10"
                 android:layout_width="40dp"
-                android:layout_marginLeft="5dp"/>
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"/>
+
 
             <TextView
                 android:text="@string/schedule_the_challenge"
@@ -146,7 +146,9 @@
                 android:background="@drawable/layout_rounded_corners"
                 android:layout_marginTop="20dp"
                 android:layout_marginLeft="50dp"
+                android:layout_marginStart="50dp"
                 android:layout_marginRight="25dp"
+                android:layout_marginEnd="25dp"
                 android:textColor="@android:color/white"
                 android:elevation="24dp"
                 android:textAllCaps="false"/>
@@ -160,7 +162,9 @@
                 android:background="@drawable/button_shape_green"
                 android:layout_marginTop="20dp"
                 android:layout_marginRight="50dp"
+                android:layout_marginEnd="50dp"
                 android:layout_marginLeft="25dp"
+                android:layout_marginStart="25dp"
                 android:elevation="24dp"
                 android:textAllCaps="false"/>
         </LinearLayout>

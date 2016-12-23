@@ -39,7 +39,7 @@ public class ReceiveChallengeDialogFragment extends DialogFragment implements Vi
         void onReceiveChallengeDialogCancelClick(DialogFragment dialog);
     }
 
-    ReceiveChallengeDialogListener mListener;
+    private ReceiveChallengeDialogListener listener;
 
     @SuppressLint("SetTextI18n")
     @NonNull
@@ -86,16 +86,16 @@ public class ReceiveChallengeDialogFragment extends DialogFragment implements Vi
 
         switch (v.getId()) {
             case R.id.cancel_btn:
-                mListener.onReceiveChallengeDialogCancelClick(ReceiveChallengeDialogFragment.this);
+                listener.onReceiveChallengeDialogCancelClick(ReceiveChallengeDialogFragment.this);
                 dialog.dismiss();
                 break;
 
             case R.id.decline_btn:
-                mListener.onReceiveChallengeDialogDeclineClick(ReceiveChallengeDialogFragment.this);
+                listener.onReceiveChallengeDialogDeclineClick(ReceiveChallengeDialogFragment.this);
                 dialog.dismiss();
                 break;
             case R.id.accept_btn:
-                mListener.onReceiveChallengeDialogAcceptClick(ReceiveChallengeDialogFragment.this);
+                listener.onReceiveChallengeDialogAcceptClick(ReceiveChallengeDialogFragment.this);
                 dialog.dismiss();
                 break;
         }
@@ -118,7 +118,7 @@ public class ReceiveChallengeDialogFragment extends DialogFragment implements Vi
         // Verify that the host activity implements the callback interface
         try {
             // Instantiate the ReceiveChallengeDialogListener so we can sendMessage events to the host
-            mListener = (ReceiveChallengeDialogListener) activity;
+            listener = (ReceiveChallengeDialogListener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
@@ -129,7 +129,7 @@ public class ReceiveChallengeDialogFragment extends DialogFragment implements Vi
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        listener = null;
     }
 
     /**

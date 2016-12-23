@@ -3,9 +3,6 @@ package ch.epfl.sweng.project.Fragments;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-
-import java.util.Calendar;
-
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -20,6 +17,8 @@ import android.widget.Toast;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
+import java.util.Calendar;
+
 import ch.epfl.sweng.project.Model.Challenge;
 import info.hoang8f.android.segmented.SegmentedGroup;
 
@@ -28,15 +27,10 @@ import info.hoang8f.android.segmented.SegmentedGroup;
  */
 public class RequestScheduleDialogFragment extends DialogFragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
 
-    // Challenge type
-    private SegmentedGroup typeSG;
     private RadioButton distanceRadio;
 
-    DatePicker datePicker;
-    TimePicker timePicker;
-
     private Calendar scheduledCalendar;
-    Challenge.Type type;
+    private Challenge.Type type;
     private AlertDialog dialog;
 
     /**
@@ -47,7 +41,7 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
         void onSendScheduleDialogNegativeClick(DialogFragment dialog);
     }
 
-    SendScheduleDialogListener mListener;
+    private SendScheduleDialogListener listener;
 
     @NonNull
     @Override
@@ -64,7 +58,7 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
         // Pass null as the parent view because its going in the dialog layout
         builder.setView(view);
 
-        typeSG = (SegmentedGroup) view.findViewById(R.id.type_sg);
+        SegmentedGroup typeSG = (SegmentedGroup) view.findViewById(R.id.type_sg);
         distanceRadio = (RadioButton) view.findViewById(R.id.distance_radio);
 
         typeSG.setOnCheckedChangeListener(this);
@@ -81,14 +75,14 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
 
         switch (v.getId()) {
             case R.id.schedule_negative_btn:
-                mListener.onSendScheduleDialogNegativeClick(RequestScheduleDialogFragment.this);
+                listener.onSendScheduleDialogNegativeClick(RequestScheduleDialogFragment.this);
                 dialog.dismiss();
                 break;
 
             case R.id.schedule_positive_btn:
                 Toast.makeText(getContext(), R.string.challenge_scheduled,
                         Toast.LENGTH_LONG).show();
-                mListener.onSendScheduleDialogPositiveClick(RequestScheduleDialogFragment.this);
+                listener.onSendScheduleDialogPositiveClick(RequestScheduleDialogFragment.this);
                 dialog.dismiss();
                 break;
         }
@@ -96,8 +90,8 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
 
     private void setCurrentDateAndTime(View view) {
 
-        datePicker = (DatePicker) view.findViewById(R.id.datePicker);
-        timePicker = (TimePicker) view.findViewById(R.id.timePicker);
+        DatePicker datePicker = (DatePicker) view.findViewById(R.id.datePicker);
+        TimePicker timePicker = (TimePicker) view.findViewById(R.id.timePicker);
         timePicker.setIs24HourView(true);
 
         scheduledCalendar = Calendar.getInstance();
@@ -127,7 +121,7 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
         // Verify that the host activity implements the callback interface
         try {
             // Instantiate the SendChallengeDialogListener so we can sendMessage events to the host
-            mListener = (SendScheduleDialogListener) activity;
+            listener = (SendScheduleDialogListener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
@@ -138,7 +132,7 @@ public class RequestScheduleDialogFragment extends DialogFragment implements Vie
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        listener = null;
     }
 
     @Override

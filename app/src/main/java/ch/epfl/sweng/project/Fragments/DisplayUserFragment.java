@@ -10,12 +10,12 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import ch.epfl.sweng.project.Activities.SideBarActivity;
-
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import ch.epfl.sweng.project.Activities.SideBarActivity;
 
 /**
  * This class displays a User.
