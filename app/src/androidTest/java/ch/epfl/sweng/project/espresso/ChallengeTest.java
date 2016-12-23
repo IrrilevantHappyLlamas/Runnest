@@ -10,10 +10,13 @@ import android.widget.EditText;
 
 import com.example.android.multidex.ch.epfl.sweng.project.AppRunnest.R;
 
+import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+
+import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -31,6 +34,11 @@ import static org.hamcrest.Matchers.anything;
 @RunWith(AndroidJUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ChallengeTest extends EspressoTest {
+
+    @Before
+    public void setRunnestAvailable() {
+        new FirebaseHelper().setUserAvailable("runnest_dot_ihl_at_gmail_dot_com", true, true);
+    }
 
     @Test
     public void challengeBusyUser() {

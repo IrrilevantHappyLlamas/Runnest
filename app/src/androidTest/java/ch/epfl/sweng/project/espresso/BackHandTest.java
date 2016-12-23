@@ -99,7 +99,9 @@ public class BackHandTest extends EspressoTest {
 
     @Test
     public void lifecycleTest() {
-        mActivityRule.getActivity().finish();
+        mActivityRule.getActivity().onPause();
         mActivityRule.getActivity();
+        mActivityRule.getActivity().onStop();
+        mActivityRule.getActivity().finish();
     }
 }

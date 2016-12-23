@@ -26,6 +26,7 @@ import java.util.concurrent.TimeoutException;
 
 import ch.epfl.sweng.project.Activities.SideBarActivity;
 import ch.epfl.sweng.project.AppRunnest;
+import ch.epfl.sweng.project.Firebase.FirebaseHelper;
 import ch.epfl.sweng.project.Model.TestUser;
 
 import static android.support.test.espresso.Espresso.onView;
