@@ -1,7 +1,6 @@
 package ch.epfl.sweng.project.espresso;
 
 import android.content.Intent;
-import android.os.SystemClock;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 

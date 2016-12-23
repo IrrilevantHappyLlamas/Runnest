@@ -13,11 +13,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import ch.epfl.sweng.project.Activities.SideBarActivity;
-import ch.epfl.sweng.project.Fragments.DisplayUserFragment;
 import ch.epfl.sweng.project.Model.Challenge;
 import ch.epfl.sweng.project.Model.Message;
 import ch.epfl.sweng.project.Model.Run;

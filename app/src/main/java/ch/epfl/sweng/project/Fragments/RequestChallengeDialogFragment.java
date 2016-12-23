@@ -3,7 +3,6 @@ package ch.epfl.sweng.project.Fragments;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -189,7 +188,7 @@ public class RequestChallengeDialogFragment extends DialogFragment implements Vi
             type = Challenge.Type.DISTANCE;
         } else {
             firstUnit.setText("h");
-            secondUnit.setText("min");
+            secondUnit.setText(getString(R.string.min));
 
             firstPicker.setValue(0);
             firstValue = 0;
@@ -230,7 +229,7 @@ public class RequestChallengeDialogFragment extends DialogFragment implements Vi
     }
 
     /**
-     * getter for the challenge type.
+     * Getter for the challenge type.
      *
      * @return the challenge type
      */

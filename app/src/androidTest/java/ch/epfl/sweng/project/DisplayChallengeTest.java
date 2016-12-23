@@ -5,8 +5,8 @@ import org.junit.Test;
 
 import ch.epfl.sweng.project.Fragments.DisplayChallengeFragment;
 import ch.epfl.sweng.project.Model.Challenge;
-import ch.epfl.sweng.project.Model.Run;
 import ch.epfl.sweng.project.Model.CheckPoint;
+import ch.epfl.sweng.project.Model.Run;
 
 public class DisplayChallengeTest {
 
