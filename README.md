@@ -1,7 +1,7 @@
 ![Logo](/screenshots/appicon.png)
 # Runnest
 ## Description
-Developed in the context of the course _CS-305 Software Engineering_ at École polytechinque fédérale de Lausanne (EPFL), Runnest is a native Android running application that is an app that combines fitness and social competition.
+Developed in the context of the course _CS-305 Software Engineering_ at École polytechinque fédérale de Lausanne (EPFL), Runnest is a native Android running application that combines fitness and social competition.
 
 Runnest allows you to track your runs showing your performance during and after the effort, but also introduces a multiplayer experience. Unlike in other running applications, it allows to engage a real competition with other users by sending challenges to any other runner using the application. Once the challenge starts, a split screen view lets the user see the progresses of his opponents towards the winning condition of that particular challenge, creating a competitive and fun experience.
 
