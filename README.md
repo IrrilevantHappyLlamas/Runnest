@@ -1,4 +1,4 @@
-![Logo](/screenshots/Runnest_QR_Code.jpg)
+![Logo](/screenshots/appicon.png)
 # Runnest
 ## Description
 Developed in the context of the course _CS-305 Software Engineering_ at École polytechinque fédérale de Lausanne (EPFL), Runnest is a Native Android running application that allows users to challenge each other in real time.
