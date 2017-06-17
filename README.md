@@ -28,7 +28,7 @@ Runnest ranked 2nd in the course internal competition that saw 16 teams competin
 ![RealChallenge](/screenshots/Screen_RealChallenge.jpg)
 
 ## Deployement
-Runnest does not have any official release. It is nevertheless possible to try it by downloading the APK at [this link](https://github.com/IrrilevantHappyLlamas/Runnest/blob/master/deployement/runnest-alpha.apk) or with the following QR code
+Runnest is not finalized and does not have any official release. We therefore do not make any guarantees about its maintenance and being fully functional on every Android device. It is nevertheless possible to try it by downloading the APK at [this link](https://github.com/IrrilevantHappyLlamas/Runnest/blob/master/deployement/runnest-alpha.apk) or with the following QR code
 
 ![QR](/screenshots/Runnest_QR_Code.jpg)
 
