@@ -1,9 +1,9 @@
 ![Logo](/screenshots/appicon.png)
 # Runnest
 ## Description
-Developed in the context of the course _CS-305 Software Engineering_ at École polytechinque fédérale de Lausanne (EPFL), Runnest is a Native Android running application that allows users to challenge each other in real time.
+Developed in the context of the course _CS-305 Software Engineering_ at École polytechinque fédérale de Lausanne (EPFL), Runnest is a native Android running application that is an app that combines fitness and social competition.
 
-Unlike many other running applications, Runnest does not only provide tracking for your own running performances, but introduces a multiplayer experience: users can send challenges to any other runner using the application. Once the challenge starts, a split screen view lets the user see the progresses of his opponents towards the winning condition of that particular challenge.
+Runnest allows you to track your runs showing your performance during and after the effort, but also introduces a multiplayer experience. Unlike in other running applications, it allows to engage a real competition with other users by sending challenges to any other runner using the application. Once the challenge starts, a split screen view lets the user see the progresses of his opponents towards the winning condition of that particular challenge, creating a competitive and fun experience.
 
 Runnest ranked 2nd in the course internal competition that saw 16 teams competing with their application.
 
@@ -28,18 +28,19 @@ Runnest ranked 2nd in the course internal competition that saw 16 teams competin
 ![RealChallenge](/screenshots/Screen_RealChallenge.jpg)
 
 ## Deployement
-Runnest does not have any official release. It is nevertheless possible to try it by downloading the APK with the following QR code
+Runnest does not have any official release. It is nevertheless possible to try it by downloading the APK at [this link](https://github.com/IrrilevantHappyLlamas/Runnest/blob/master/deployement/runnest-alpha.apk) or with the following QR code
 
 ![QR](/screenshots/Runnest_QR_Code.jpg)
 
 Alternatively, it is possible to clone this repository and open Runnest as a project in Android Studio.
 
 ## Built with
-- Coding Environment : Android Studio
-- Continuous Integration : Jenkins
-- Testing : JaCoCo
+- _Coding Environment_ : Android Studio
+- _Continuous Integration_ : Jenkins
+- _Testing_ : JaCoCo
 
 ## License
+This code is subject to the _Apache License 2.0_, more details in [LICENSE.md](https://github.com/IrrilevantHappyLlamas/Runnest/blob/master/LICENSE.md)
 
 ## Authors
 
