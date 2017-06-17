@@ -21,6 +21,7 @@ Runnest ranked 2nd in the course internal competition that saw 16 teams competin
 
 ![Splash](/screenshots/Screen_SplashScreen.jpg)
 ![Sidebar](/screenshots/Screen_Sidebar.JPG)
+![Profile](/screenshots/Screen_Profile.jpg)
 
 ![Map](/screenshots/Screen_Map.jpg)
 ![Challenge](/screenshots/Screen_Challenge.jpg)
