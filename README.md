@@ -1,3 +1,4 @@
+![Logo](/screenshots/Runnest_QR_Code.jpg)
 # Runnest
 ## Description
 Developed in the context of the course _CS-305 Software Engineering_ at École polytechinque fédérale de Lausanne (EPFL), Runnest is a Native Android running application that allows users to challenge each other in real time.
@@ -16,10 +17,20 @@ Runnest ranked 2nd in the course internal competition that saw 16 teams competin
 - Split screen remote challenge mode
 - Individual runs and challenge history
 
+## Screenshots
+
+![Splash](/screenshots/Screen_SplashScreen.jpg)
+![Sidebar](/screenshots/Screen_Sidebar.JPG)
+![Profile](/screenshots/Screen_Profile.jpg)
+
+![Map](/screenshots/Screen_Map.jpg)
+![Challenge](/screenshots/Screen_Challenge.jpg)
+![RealChallenge](/screenshots/Screen_RealChallenge.jpg)
+
 ## Deployement
 Runnest does not have any official release. It is nevertheless possible to try it by downloading the APK with the following QR code
 
-![QR](https://www.google.it/)
+![QR](/screenshots/Runnest_QR_Code.jpg)
 
 Alternatively, it is possible to clone this repository and open Runnest as a project in Android Studio.
 
