@@ -3,7 +3,7 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              xmlns:app="http://schemas.android.com/apk/res-auto"
-             tools:context="ch.epfl.sweng.project.Fragments.MemoDialogFragment"
+             tools:context="ch.ihl.runnest.Fragments.MemoDialogFragment"
              android:background="@color/backgroundApp">
 
     <LinearLayout

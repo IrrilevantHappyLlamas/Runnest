@@ -9,7 +9,7 @@
     android:orientation="vertical"
     android:keepScreenOn="true"
     android:background="@color/backgroundApp"
-    tools:context="ch.epfl.sweng.project.Activities.ChallengeActivity">
+    tools:context="ch.ihl.runnest.Activities.ChallengeActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
