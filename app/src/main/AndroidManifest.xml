@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.example.android.multidex.ch.epfl.sweng.project.AppRunnest">
+          package="com.example.android.multidex.ch.ihl.runnest.AppRunnest">
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -13,14 +13,14 @@
     <uses-feature android:name="android.hardware.location.gps"/>
 
     <application
-        android:name="ch.epfl.sweng.project.AppRunnest"
+        android:name="ch.ihl.runnest.AppRunnest"
         android:allowBackup="false"
         android:icon="@drawable/appicon"
         android:label="@string/app_name"
         android:supportsRtl="false"
         android:theme="@style/AppTheme.NoActionBar">
         <activity
-            android:name="ch.epfl.sweng.project.Activities.LoginActivity"
+            android:name="ch.ihl.runnest.Activities.LoginActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -41,7 +41,7 @@
             android:value="@string/google_maps_key"/>
 
         <activity
-            android:name="ch.epfl.sweng.project.Activities.SideBarActivity"
+            android:name="ch.ihl.runnest.Activities.SideBarActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -56,7 +56,7 @@
             android:value="@integer/google_play_services_version"/>
 
         <activity
-            android:name="ch.epfl.sweng.project.Activities.ChallengeActivity"
+            android:name="ch.ihl.runnest.Activities.ChallengeActivity"
             android:screenOrientation="portrait">
         </activity>
 
