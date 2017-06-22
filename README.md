@@ -31,7 +31,7 @@ Runnest ranked 2nd in the course internal competition that saw 16 teams competin
 Runnest is published as alpha-version in the _Google Play Store_ but is not finalized yet. We therefore do not make any guarantees about its maintenance and being fully functional on every Android device.
 
 It is nevertheless possible to get it in the following ways.
-- Register as a tester [here](https://play.google.com/apps/testing/ch.ihl.runnest) and download Runnest directlz from the _Google Play Store_
+- Register as a tester [here](https://play.google.com/apps/testing/ch.ihl.runnest) and download Runnest directly from the _Google Play Store_
 - Downloading the APK at [this link](https://github.com/IrrilevantHappyLlamas/Runnest/blob/master/deployement/runnest-alpha.apk)
 - Scan the QR code here below
 - Clone this repository and open Runnest as a project in Android Studio
